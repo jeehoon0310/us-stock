@@ -1,0 +1,41 @@
+{
+  "final_regime": "risk_on",
+  "weighted_score": 0.66,
+  "confidence": 60.0,
+  "signals": {
+    "vix": "neutral",
+    "trend": "risk_on",
+    "breadth": "risk_off",
+    "credit": "risk_on",
+    "yield_curve": "risk_on"
+  },
+  "details": {
+    "vix": {
+      "vix_current": 19.49,
+      "vix_ma20": 25.4,
+      "vix_trend": "falling",
+      "vix_regime": "neutral"
+    },
+    "trend": {
+      "trend_regime": "risk_on",
+      "spy_above_50": true,
+      "spy_above_200": true,
+      "sma200_slope": 6.7966
+    },
+    "breadth": {
+      "breadth_ratio": 0.2913,
+      "breadth_ratio_ma20": 0.2934,
+      "breadth_pct_change": -0.7,
+      "breadth_regime": "risk_off"
+    },
+    "credit": {
+      "credit_ratio": 0.8412,
+      "credit_ratio_ma20": 0.8324,
+      "credit_regime": "risk_on"
+    },
+    "yield_curve": {
+      "yield_spread": 0.71,
+      "yield_regime": "risk_on"
+    }
+  }
+}

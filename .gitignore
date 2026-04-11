@@ -29,6 +29,11 @@ ml/features/
 dashboard/*.json
 !dashboard/.gitkeep
 
+# Git-scraping: dashboard-next/public/data/ is the deploy staging area.
+# Mac pipeline commits daily snapshots here, CI bakes them into the image.
+!dashboard-next/public/data/
+!dashboard-next/public/data/**
+
 # OS
 .DS_Store
 Thumbs.db

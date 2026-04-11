@@ -1,0 +1,100 @@
+[
+  {
+    "date": "2026-04-05",
+    "spy": {
+      "direction": null,
+      "probability": null,
+      "predicted_return": null
+    },
+    "qqq": {
+      "direction": null,
+      "probability": null,
+      "predicted_return": null
+    },
+    "model_accuracy": 0.0
+  },
+  {
+    "date": "2026-04-05",
+    "spy": {
+      "direction": "bearish",
+      "probability": 0.085,
+      "predicted_return": -3.135
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.138,
+      "predicted_return": -3.59
+    },
+    "model_accuracy": 53.2
+  },
+  {
+    "date": "2026-04-05",
+    "spy": {
+      "direction": "bearish",
+      "probability": 0.085,
+      "predicted_return": -3.135
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.138,
+      "predicted_return": -3.59
+    },
+    "model_accuracy": 53.2
+  },
+  {
+    "date": "2026-04-08",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.574,
+      "predicted_return": -0.592
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.151,
+      "predicted_return": -1.623
+    },
+    "model_accuracy": 53.2
+  },
+  {
+    "date": "2026-04-09",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.673,
+      "predicted_return": -0.879
+    },
+    "qqq": {
+      "direction": "bullish",
+      "probability": 0.554,
+      "predicted_return": -0.663
+    },
+    "model_accuracy": 53.2
+  },
+  {
+    "date": "2026-04-10",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.625,
+      "predicted_return": -0.59
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.152,
+      "predicted_return": -1.405
+    },
+    "model_accuracy": 53.2
+  },
+  {
+    "date": "2026-04-10",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.625,
+      "predicted_return": -0.59
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.152,
+      "predicted_return": -1.456
+    },
+    "model_accuracy": 53.2
+  }
+]

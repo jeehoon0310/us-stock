@@ -1,0 +1,87 @@
+{
+  "date": "2026-04-10",
+  "predictions": {
+    "spy": {
+      "direction": "bullish",
+      "probability_up": 0.625,
+      "predicted_return": -0.59,
+      "confidence": "moderate",
+      "confidence_pct": 62.5,
+      "key_drivers": [
+        {
+          "feature": "yield_spread_proxy",
+          "importance": 0.0828,
+          "value": 0.378,
+          "direction": "bullish"
+        },
+        {
+          "feature": "spy_price_vs_50ma_pct",
+          "importance": 0.0822,
+          "value": 0.786,
+          "direction": "bullish"
+        },
+        {
+          "feature": "spy_vol_trend_5d",
+          "importance": 0.0766,
+          "value": -0.322,
+          "direction": "bearish"
+        },
+        {
+          "feature": "spy_return_1m",
+          "importance": 0.0764,
+          "value": 0.403,
+          "direction": "bullish"
+        },
+        {
+          "feature": "xlu_relative_1m",
+          "importance": 0.0652,
+          "value": 0.864,
+          "direction": "bearish"
+        }
+      ],
+      "model_trained_at": "2026-04-05T13:16:26.170162",
+      "model_accuracy": 0.5323
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability_up": 0.152,
+      "predicted_return": -1.456,
+      "confidence": "high",
+      "confidence_pct": 84.8,
+      "key_drivers": [
+        {
+          "feature": "yield_spread_proxy",
+          "importance": 0.0829,
+          "value": 0.378,
+          "direction": "bullish"
+        },
+        {
+          "feature": "xlk_relative_1m",
+          "importance": 0.0742,
+          "value": 1.25,
+          "direction": "bullish"
+        },
+        {
+          "feature": "spy_vol_trend_5d",
+          "importance": 0.0701,
+          "value": -0.322,
+          "direction": "bearish"
+        },
+        {
+          "feature": "xlu_relative_1m",
+          "importance": 0.0693,
+          "value": 0.864,
+          "direction": "bearish"
+        },
+        {
+          "feature": "vix_value",
+          "importance": 0.0664,
+          "value": 19.49,
+          "direction": "bearish"
+        }
+      ],
+      "model_trained_at": "2026-04-05T13:16:27.749048",
+      "model_accuracy": 0.5087
+    }
+  }
+}
