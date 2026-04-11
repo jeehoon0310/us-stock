@@ -1,3 +1,4 @@
+# Python source (not used in Next.js build)
 .venv/
 .git/
 .claude/
@@ -5,22 +6,37 @@
 .pytest_cache/
 __pycache__/
 *.pyc
+analyzers/
+collectors/
+pipeline/
+ml/
+us_market/
+tests/
+docs/
+.docs/
+archive/
+
+# Dashboard legacy HTML (replaced by dashboard-next)
+dashboard/
+
+# Python pipeline outputs (data goes into dashboard-next/public/data)
 data/
 output/
 reports/
 result/
 logs/
-ml/models/*.pkl
-ml/models/*.joblib
-ml/datasets/
-ml/experiments/
-ml/validation/
-ml/features/
-tests/
-docs/
-.docs/
+
+# Secrets
 .env
 .env.production
+.env.local
+
+# Build artifacts in dashboard-next
+dashboard-next/node_modules
+dashboard-next/.next
+dashboard-next/out
+
+# Misc
 .DS_Store
 *.md
-!dashboard/*.html
+!README.md

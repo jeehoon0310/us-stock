@@ -2,19 +2,11 @@ services:
   us-stock:
     build:
       context: .
-      network: host
     container_name: us-stock
     ports:
-      - "8889:8889"
-    env_file:
-      - .env
+      - "3000:3000"
     environment:
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
       - TZ=America/New_York
-    volumes:
-      - ./data:/app/data
-      - ./output:/app/output
-      - ./reports:/app/reports
-      - ./result:/app/result
-      - ./logs:/app/logs
-      - ./ml/models:/app/ml/models
     restart: unless-stopped
