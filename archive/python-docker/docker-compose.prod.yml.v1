@@ -1,0 +1,31 @@
+services:
+  us-stock:
+    image: ghcr.io/jeehoon0310/us-stock:latest
+    container_name: us-stock
+    network_mode: host
+    env_file:
+      - .env.production
+    environment:
+      - TZ=America/New_York
+      - HOSTNAME=0.0.0.0
+    volumes:
+      - /volume1/docker/us-stock/data:/app/data
+      - /volume1/docker/us-stock/output:/app/output
+      - /volume1/docker/us-stock/reports:/app/reports
+      - /volume1/docker/us-stock/result:/app/result
+      - /volume1/docker/us-stock/logs:/app/logs
+      - /volume1/docker/us-stock/ml-models:/app/ml/models
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8889/"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
