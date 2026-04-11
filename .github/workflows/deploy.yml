@@ -53,17 +53,17 @@ jobs:
 
       - name: Deploy to Synology
         uses: appleboy/ssh-action@v1
+        env:
+          GHCR_PULL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SYNOLOGY_HOST }}
           username: ${{ secrets.SYNOLOGY_USERNAME }}
           key: ${{ secrets.SYNOLOGY_SSH_KEY }}
           port: ${{ secrets.SYNOLOGY_PORT }}
+          envs: GHCR_PULL_TOKEN
           script: |
             set -e
-            GHCR_TOKEN="${{ secrets.GHCR_TOKEN }}"
-            if [ -n "$GHCR_TOKEN" ]; then
-              echo "$GHCR_TOKEN" | /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
-            fi
+            echo "$GHCR_PULL_TOKEN" | /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
             /usr/local/bin/docker pull ghcr.io/jeehoon0310/us-stock:latest
             mkdir -p /volume1/docker/us-stock/{data,output,reports,result,logs,ml-models}
             cd /volume1/docker/us-stock
