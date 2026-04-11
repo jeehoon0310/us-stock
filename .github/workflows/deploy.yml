@@ -68,25 +68,25 @@ jobs:
           envs: GHCR_PULL_TOKEN
           script: |
             set -e
-            echo "$GHCR_PULL_TOKEN" | /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
-            /usr/local/bin/docker pull ghcr.io/jeehoon0310/us-stock:latest
-            mkdir -p /volume1/docker/us-stock
+            echo "$GHCR_PULL_TOKEN" | sudo /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
+            sudo /usr/local/bin/docker pull ghcr.io/jeehoon0310/us-stock:latest
+            sudo mkdir -p /volume1/docker/us-stock
             cd /volume1/docker/us-stock
             curl -sfL "https://raw.githubusercontent.com/jeehoon0310/us-stock/main/docker-compose.prod.yml" -o docker-compose.yml.new
             if ! diff -q docker-compose.yml docker-compose.yml.new > /dev/null 2>&1; then
               echo "docker-compose.yml updated from Git"
-              mv docker-compose.yml.new docker-compose.yml
+              sudo mv docker-compose.yml.new docker-compose.yml
             else
               rm docker-compose.yml.new
               echo "docker-compose.yml unchanged"
             fi
-            /usr/local/bin/docker compose down || true
-            /usr/local/bin/docker compose up -d
-            /usr/local/bin/docker image prune -f
+            sudo /usr/local/bin/docker compose down || true
+            sudo /usr/local/bin/docker compose up -d
+            sudo /usr/local/bin/docker image prune -f
             for i in $(seq 1 30); do
               curl -sf http://localhost:8889/api/health && echo " OK" && exit 0
               sleep 2
             done
             echo "Health check failed"
-            /usr/local/bin/docker logs us-stock --tail=80
+            sudo /usr/local/bin/docker logs us-stock --tail=80
             exit 1
