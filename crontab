@@ -1,0 +1,5 @@
+# US-Stock daily pipeline — weekdays at 17:00 ET (1hr after market close)
+# Cron inherits no env vars; the wrapper sources .env.cron
+0 17 * * 1-5 root /bin/bash /app/run_docker_analysis.sh >> /app/logs/cron_output.log 2>&1
+
+# Keep trailing newline (required by cron)

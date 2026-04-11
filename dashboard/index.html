@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Market Intelligence Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-secondary-container":"#6f5c00","tertiary-container":"#ff8e72",
+        "surface-container-low":"#191c22","on-tertiary":"#621100",
+        "background":"#10131a","surface-container-highest":"#32353c",
+        "on-secondary":"#3a3000","primary-fixed-dim":"#3ce36a",
+        "on-background":"#e1e2eb","on-primary-container":"#004c1b",
+        "secondary-fixed":"#ffe170","primary":"#3fe56c",
+        "inverse-primary":"#006e2a","tertiary-fixed":"#ffdad2",
+        "tertiary":"#ffb7a6","surface-bright":"#363940",
+        "primary-fixed":"#69ff87","on-tertiary-fixed":"#3c0700",
+        "secondary":"#fff3d2","on-error-container":"#ffdad6",
+        "error":"#ffb4ab","on-tertiary-fixed-variant":"#8a1d00",
+        "error-container":"#93000a","inverse-on-surface":"#2e3037",
+        "primary-container":"#00c853","on-primary":"#003912",
+        "inverse-surface":"#e1e2eb","on-error":"#690005",
+        "surface-container-high":"#272a31","on-surface":"#e1e2eb",
+        "on-secondary-fixed":"#221b00","outline":"#869583",
+        "on-primary-fixed":"#002108","on-secondary-fixed-variant":"#544600",
+        "surface-variant":"#32353c","surface-container-lowest":"#0b0e14",
+        "on-surface-variant":"#bbcbb8","surface":"#10131a",
+        "secondary-container":"#fdd400","tertiary-fixed-dim":"#ffb4a2",
+        "surface-dim":"#10131a","outline-variant":"#3c4a3c",
+        "secondary-fixed-dim":"#e9c400","surface-tint":"#3ce36a",
+        "surface-container":"#1d2026","on-tertiary-container":"#7f1a00",
+        "on-primary-fixed-variant":"#00531e"
+      },
+      borderRadius: {"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},
+      fontFamily: {"headline":["Inter"],"body":["Inter"],"label":["Inter"]}
+    }
+  }
+}
+</script>
+<style>
+body{font-family:'Inter',sans-serif}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.page{display:none}.page.active{display:block}
+.no-scrollbar::-webkit-scrollbar{display:none}
+.glass-panel{backdrop-filter:blur(20px);background:rgba(39,42,49,.7)}
+.glow-primary{box-shadow:0 0 15px rgba(63,229,108,.3)}
+.glow-secondary{box-shadow:0 0 15px rgba(253,212,0,.3)}
+.glow-error{box-shadow:0 0 15px rgba(255,61,0,.3)}
+.text-glow-primary{text-shadow:0 0 12px rgba(63,229,108,.4)}
+@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 8px #3fe56c}50%{opacity:.4;box-shadow:none}}
+.animate-glow{animation:glow 2s infinite}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.animate-fade-in-up{animation:fadeInUp .4s ease-out both}
+.stagger-1{animation-delay:.05s}.stagger-2{animation-delay:.1s}.stagger-3{animation-delay:.15s}
+.stagger-4{animation-delay:.2s}.stagger-5{animation-delay:.25s}.stagger-6{animation-delay:.3s}
+.stagger-7{animation-delay:.35s}.stagger-8{animation-delay:.4s}.stagger-9{animation-delay:.45s}
+.stagger-10{animation-delay:.5s}.stagger-11{animation-delay:.55s}.stagger-12{animation-delay:.6s}
+</style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface selection:bg-primary selection:text-on-primary">
+
+<!-- TopNavBar -->
+<header class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-surface-container-lowest border-b border-outline-variant/10">
+  <div class="flex items-center gap-4">
+    <span class="text-xl font-black text-on-surface tracking-tighter"><span class="text-primary">Market</span> Intelligence</span>
+  </div>
+  <div class="flex items-center gap-6">
+    <nav class="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest">
+      <span class="text-primary font-bold cursor-pointer">Terminal</span>
+      <span class="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">Insights</span>
+      <span class="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">Reports</span>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+        <span class="material-symbols-outlined text-on-surface">sensors</span>
+      </button>
+      <button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+        <span class="material-symbols-outlined text-on-surface">schedule</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- SideNavBar -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-64 bg-surface-container-low flex-col py-8 z-40 mt-16">
+  <div class="px-6 mb-8">
+    <h2 class="text-lg font-bold text-on-surface tracking-tight">Obsidian Terminal</h2>
+    <p class="text-xs font-medium text-on-surface-variant uppercase tracking-tighter opacity-60">Executive Intelligence</p>
+  </div>
+  <nav class="flex-1 flex flex-col gap-1" id="sidebar-nav">
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-primary font-bold border-r-2 border-primary bg-surface-container-high/50 transition-all active:translate-x-1 cursor-pointer" data-p="dashboard">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="text-sm">Overview</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="regime">
+      <span class="material-symbols-outlined">analytics</span>
+      <span class="text-sm">Market Regime</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="top10">
+      <span class="material-symbols-outlined">star</span>
+      <span class="text-sm">Top Picks</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="ai">
+      <span class="material-symbols-outlined">psychology</span>
+      <span class="text-sm">AI Analysis</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="prediction">
+      <span class="material-symbols-outlined">insights</span>
+      <span class="text-sm">Index Forecast</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="gbm">
+      <span class="material-symbols-outlined">leaderboard</span>
+      <span class="text-sm">ML Rankings</span>
+    </a>
+    <a class="nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer" data-p="cost">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-sm">API Costs</span>
+    </a>
+  </nav>
+  <div class="px-6 mt-auto">
+    <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/10">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="w-2 h-2 rounded-full bg-primary animate-glow"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">System Status</span>
+      </div>
+      <div class="text-[11px] text-on-surface-variant leading-relaxed" id="sys-status">Live Feed Active</div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="md:ml-64 pt-16 min-h-screen bg-surface-container-lowest">
+  <div class="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <div class="page active" id="p-dashboard">
+      <!-- Hero -->
+      <div class="bg-surface-container-low p-8 rounded-xl mb-6 relative overflow-hidden">
+        <div class="relative z-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2">US Stock Market Intelligence</h2>
+          <div class="flex items-center gap-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">LIVE</span>
+            <p class="text-sm text-on-surface-variant">Real-time regime detection &middot; Smart money screening &middot; AI analysis</p>
+          </div>
+        </div>
+        <div class="absolute top-0 right-0 p-4 opacity-5">
+          <span class="material-symbols-outlined text-[120px]">monitoring</span>
+        </div>
+      </div>
+      <!-- Date Navigation -->
+      <div class="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-lg">calendar_month</span>
+          <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Report Date</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="shiftReportDate(-1)" class="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm" title="이전 날짜">&#9664;</button>
+          <input type="date" id="report-date" onchange="loadReportDate(this.value)" class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg px-3 py-1.5 text-sm font-bold text-primary outline-none focus:border-primary transition-colors" style="color-scheme:dark"/>
+          <button onclick="shiftReportDate(1)" class="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm" title="다음 날짜">&#9654;</button>
+          <span id="report-date-status" class="text-[10px] text-on-surface-variant ml-2"></span>
+        </div>
+      </div>
+      <!-- Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="metrics"></div>
+      <!-- 2-col grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Regime Signals -->
+          <div class="bg-surface-container-low rounded-xl p-6">
+            <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">Core Regime Indicators</h4>
+            <div class="flex flex-wrap gap-4" id="d-signals"></div>
+          </div>
+          <!-- Top 5 -->
+          <div class="bg-surface-container-low rounded-xl overflow-hidden">
+            <div class="p-6 border-b border-outline-variant/10 flex justify-between items-center">
+              <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface">Top 5 Alpha Picks</h4>
+              <button class="text-xs font-bold text-primary flex items-center gap-1" onclick="go('top10')">Full Terminal View <span class="material-symbols-outlined text-sm">chevron_right</span></button>
+            </div>
+            <div id="d-top5"></div>
+          </div>
+        </div>
+        <div class="space-y-6">
+          <!-- Market Gate -->
+          <div id="d-gate"></div>
+          <!-- Breadth Gauge -->
+          <div class="bg-surface-container-low rounded-xl p-6">
+            <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">Breadth Gauge</h4>
+            <div class="relative h-4 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2" id="d-breadth">
+              <div class="absolute top-0 left-0 h-full w-[60%] bg-gradient-to-r from-secondary-fixed-dim to-primary"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
+              <span>Bearish</span><span>Neutral</span><span>Bullish</span>
+            </div>
+          </div>
+          <!-- AI Feed -->
+          <div class="bg-surface-container-low rounded-xl p-6">
+            <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">AI Feed</h4>
+            <div class="space-y-4" id="d-feed"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REGIME PAGE ===== -->
+    <div class="page" id="p-regime">
+      <!-- Regime Header Bento -->
+      <section class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6" id="r-hero"></section>
+      <!-- 5 Sensors -->
+      <div class="bg-surface-container-low rounded-xl p-6 mb-6">
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">5 Sensor Status</h4>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="r-sensors"></div>
+      </div>
+      <!-- Adaptive Params -->
+      <div class="bg-surface-container-low rounded-xl p-6 mb-6">
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">Adaptive Parameters</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="r-params"></div>
+      </div>
+      <!-- Volume-Price Divergence Alert -->
+      <div class="bg-surface-container-low rounded-xl p-6 mb-6" id="r-divergence-wrap">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface">Volume-Price Divergence (SPY)</h4>
+          <span class="text-[10px] text-on-surface-variant">거래량-가격 불일치 / Climax 경보</span>
+        </div>
+        <div id="r-divergence"></div>
+      </div>
+      <!-- Sector Gate (11 sectors) -->
+      <div class="bg-surface-container-low rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface">Sector Gate · 11 SPDR ETFs</h4>
+            <p class="text-[10px] text-on-surface-variant mt-1" id="r-gate-summary"></p>
+          </div>
+          <span id="r-gate-badge" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded"></span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="r-sectors"></div>
+        <p class="text-[9px] text-on-surface-variant mt-4">점수 ≥60 BULLISH · 40~60 NEUTRAL · &lt;40 BEARISH · 공식: RSI 30% + MACD 30% + Volume 20% + RS vs SPY 20%</p>
+      </div>
+    </div>
+
+    <!-- ===== TOP 10 PAGE ===== -->
+    <div class="page" id="p-top10">
+      <section class="bg-surface-container-low rounded-xl overflow-hidden">
+        <div class="px-8 py-6 border-b border-outline-variant/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-container-high/50">
+          <div>
+            <h3 class="text-xl font-bold tracking-tight">Smart Money Top 10</h3>
+            <p class="text-xs text-on-surface-variant font-medium" id="t10-info"></p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-surface-container-highest rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-surface-bright transition-colors">Export</button>
+            <button class="px-4 py-2 bg-primary text-on-primary rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20">Scan Now</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto no-scrollbar">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-high/20">
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">#</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Ticker</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Grade</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Intelligence Score</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center">Quant</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center">AI</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center">Tech</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center">Fund</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">RS vs SPY</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Recommendation</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/10" id="t10-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== AI ANALYSIS PAGE ===== -->
+    <div class="page" id="p-ai">
+      <div id="ai-list"></div>
+    </div>
+
+    <!-- ===== INDEX FORECAST PAGE ===== -->
+    <div class="page" id="p-prediction">
+      <header id="pred-header" class="mb-6"></header>
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" id="pred-cards"></section>
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="bg-surface-container-low rounded-xl p-6">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">Key Drivers (SPY)</h4>
+          <div id="pred-drivers-spy" class="space-y-3"></div>
+        </div>
+        <div class="bg-surface-container-low rounded-xl p-6">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">Key Drivers (QQQ)</h4>
+          <div id="pred-drivers-qqq" class="space-y-3"></div>
+        </div>
+      </section>
+      <section class="bg-surface-container-low rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface">Model Info</h4>
+          <span class="text-[10px] text-on-surface-variant">SPY/QQQ · 5-day horizon</span>
+        </div>
+        <div id="pred-model-info" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5"></div>
+
+        <details class="bg-surface-container-high/30 rounded-lg p-4 mb-3">
+          <summary class="text-xs font-bold text-on-surface cursor-pointer select-none flex items-center justify-between">
+            <span>27개 피처 · 8개 카테고리 (클릭해서 펼치기)</span>
+            <span class="material-symbols-outlined text-sm text-on-surface-variant">expand_more</span>
+          </summary>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">SPY · 7개</p>
+              <p class="text-on-surface-variant">returns(1d/1w/1m), SMA 편차, RSI, MACD, BB 위치</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-error/20">
+              <p class="font-bold text-error mb-1">VIX · 4개 <span class="text-[9px]">(INVERSE)</span></p>
+              <p class="text-on-surface-variant">value, change, percentile, above_20. 양수=bearish</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">QQQ · 2개</p>
+              <p class="text-on-surface-variant">return_1w, RSI</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">시장폭 · 2개</p>
+              <p class="text-on-surface-variant">50MA 상회 %, Advance/Decline(Laplace smoothed)</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">섹터 · 3개</p>
+              <p class="text-on-surface-variant">XLK / XLU* / XLY 상대강도 vs SPY (1M)</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-error/20">
+              <p class="font-bold text-error mb-1">매크로 · 3개 <span class="text-[9px]">(일부 INVERSE)</span></p>
+              <p class="text-on-surface-variant">TNX-FVX 스프레드, GOLD, DXY*</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">거래량 · 3개</p>
+              <p class="text-on-surface-variant">SPY/QQQ 거래량 비율, 5일 추세</p>
+            </div>
+            <div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/10">
+              <p class="font-bold text-primary mb-1">모멘텀 · 3개</p>
+              <p class="text-on-surface-variant">ROC_10d, 50MA %, RSI slope</p>
+            </div>
+          </div>
+          <p class="text-[9px] text-error mt-3 italic">* INVERSE 피처: 값이 오르면 시장엔 악재로 작용 (vix_*, xlu_relative, dxy_return)</p>
+        </details>
+
+        <details class="bg-surface-container-high/30 rounded-lg p-4">
+          <summary class="text-xs font-bold text-on-surface cursor-pointer select-none flex items-center justify-between">
+            <span>Confidence 등급 기준</span>
+            <span class="material-symbols-outlined text-sm text-on-surface-variant">expand_more</span>
+          </summary>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px]">
+            <div class="p-3 rounded bg-primary-container/20 border border-primary/30">
+              <p class="font-bold text-primary mb-1">HIGH ≥ 70%</p>
+              <p class="text-on-surface-variant">예측 확률이 70% 이상. 신호 강도 강함.</p>
+            </div>
+            <div class="p-3 rounded bg-secondary-container/20 border border-secondary/30">
+              <p class="font-bold text-secondary mb-1">MODERATE 60~70%</p>
+              <p class="text-on-surface-variant">60~70% 사이. 참고용, 단독 결정 금물.</p>
+            </div>
+            <div class="p-3 rounded bg-error-container/20 border border-error/30">
+              <p class="font-bold text-error mb-1">LOW &lt; 60%</p>
+              <p class="text-on-surface-variant">60% 미만. 시장 불확실성 신호.</p>
+            </div>
+          </div>
+        </details>
+      </section>
+      <section class="bg-surface-container-low rounded-xl p-6">
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">Prediction History</h4>
+        <div id="pred-history-chart" class="mb-4"></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10">
+                <th class="px-4 py-2">Date</th>
+                <th class="px-4 py-2">SPY</th>
+                <th class="px-4 py-2">SPY Prob</th>
+                <th class="px-4 py-2">QQQ</th>
+                <th class="px-4 py-2">QQQ Prob</th>
+                <th class="px-4 py-2 text-right">Model Acc</th>
+              </tr>
+            </thead>
+            <tbody id="pred-history-tbody" class="divide-y divide-outline-variant/10"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== ML RANKINGS PAGE ===== -->
+    <div class="page" id="p-gbm">
+      <section class="bg-surface-container-low rounded-xl overflow-hidden mb-6">
+        <div class="px-8 py-6 border-b border-outline-variant/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-container-high/50">
+          <div>
+            <h3 class="text-xl font-bold tracking-tight">GBM Cross-Sectional Rankings</h3>
+            <p class="text-xs text-on-surface-variant font-medium" id="gbm-info"></p>
+          </div>
+          <span class="px-4 py-2 bg-surface-container-highest rounded-lg text-[10px] font-bold uppercase tracking-wider">20-day horizon</span>
+        </div>
+        <div class="p-4 bg-surface-container-high/20 text-[10px] text-on-surface-variant border-b border-outline-variant/10">
+          <b class="text-on-surface">GBM 점수란?</b> — GradientBoosting 모델이 S&amp;P500 전 종목을 대상으로 20거래일 후 기대 수익률을 예측한 점수(0~1).
+          높을수록 상대적으로 초과수익 가능성이 높다는 뜻이며, 같은 시점 전체 종목 분포 내에서의 순위(cross-sectional)입니다.
+        </div>
+        <div class="overflow-x-auto no-scrollbar">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-high/20">
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">#</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Ticker</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Company</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Sector</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">GBM Score</th>
+                <th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Strength</th>
+              </tr>
+            </thead>
+            <tbody id="gbm-tbody" class="divide-y divide-outline-variant/10"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== COST PAGE ===== -->
+    <div class="page" id="p-cost">
+      <div class="bg-surface-container-low rounded-xl p-6 mb-6">
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">API Pricing</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
+            <h4 class="text-base font-bold text-primary mb-3">Gemini Flash</h4>
+            <p class="text-xs text-on-surface-variant mb-1">Input: $0.10 / 1M tokens</p>
+            <p class="text-xs text-on-surface-variant mb-1">Output: $0.40 / 1M tokens</p>
+            <p class="text-xs text-primary font-medium mt-2">Free tier available</p>
+          </div>
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
+            <h4 class="text-base font-bold text-secondary mb-3">GPT-5-mini</h4>
+            <p class="text-xs text-on-surface-variant mb-1">Input: $0.15 / 1M tokens</p>
+            <p class="text-xs text-on-surface-variant">Output: $0.60 / 1M tokens</p>
+          </div>
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
+            <h4 class="text-base font-bold text-tertiary mb-3">Perplexity Sonar</h4>
+            <p class="text-xs text-on-surface-variant mb-1">$3 / 1,000 requests</p>
+            <p class="text-xs text-on-surface-variant">Per-request pricing</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-surface-container-low rounded-xl p-6">
+        <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">Estimated Cost (10 stocks)</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+            <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">Gemini</p>
+            <p class="text-2xl font-bold text-primary">~$0.005</p>
+          </div>
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+            <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">GPT</p>
+            <p class="text-2xl font-bold text-secondary">~$0.008</p>
+          </div>
+          <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+            <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">Perplexity</p>
+            <p class="text-2xl font-bold text-tertiary">~$0.030</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-low flex justify-around items-center h-16 z-50 border-t border-outline-variant/10">
+  <button class="mob-nav flex flex-col items-center text-primary" data-p="dashboard">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span class="text-[10px] font-bold">Overview</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="regime">
+    <span class="material-symbols-outlined">analytics</span>
+    <span class="text-[10px] font-bold">Regime</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="top10">
+    <span class="material-symbols-outlined">star</span>
+    <span class="text-[10px] font-bold">Picks</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="ai">
+    <span class="material-symbols-outlined">psychology</span>
+    <span class="text-[10px] font-bold">AI</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="prediction">
+    <span class="material-symbols-outlined">insights</span>
+    <span class="text-[10px] font-bold">Forecast</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="gbm">
+    <span class="material-symbols-outlined">leaderboard</span>
+    <span class="text-[10px] font-bold">ML</span>
+  </button>
+  <button class="mob-nav flex flex-col items-center text-on-surface-variant" data-p="cost">
+    <span class="material-symbols-outlined">payments</span>
+    <span class="text-[10px] font-bold">Cost</span>
+  </button>
+</nav>
+
+<script>
+let RC={},RR={},FR={},AI={},IP={},IH=[],MG={},GBM={};
+
+// Color mapping for regime states
+const C={risk_on:'#3fe56c',neutral:'#fdd400',risk_off:'#ffb4ab',crisis:'#93000a'};
+const CB={risk_on:'rgba(63,229,108,.08)',neutral:'rgba(253,212,0,.08)',risk_off:'rgba(255,180,171,.08)',crisis:'rgba(147,0,10,.08)'};
+const CG={risk_on:'glow-primary',neutral:'glow-secondary',risk_off:'glow-error',crisis:'glow-error'};
+
+// Grade badge classes
+function gradeClass(g){
+  const m={A:'bg-primary/10 border-primary/20 text-primary',B:'bg-secondary/10 border-secondary/20 text-secondary',C:'bg-tertiary/10 border-tertiary/20 text-tertiary',D:'bg-error/10 border-error/20 text-error',F:'bg-error/10 border-error/20 text-error'};
+  const k=g.charAt(0).toUpperCase();
+  return m[k]||m.B;
+}
+
+// Score bar color
+function barColor(s){return s>=80?'bg-primary shadow-[0_0_8px_rgba(63,229,108,.5)]':s>=60?'bg-secondary':'bg-error'}
+
+async function ld(p){try{return await(await fetch(p)).json()}catch{return{}}}
+
+/* ── Date Navigation ─────────────────────────────── */
+let reportDate='';
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function shiftReportDate(delta){
+  const inp=document.getElementById('report-date');
+  const d=new Date(inp.value);
+  d.setDate(d.getDate()+delta);
+  inp.value=d.toISOString().slice(0,10);
+  loadReportDate(inp.value);
+}
+async function loadReportDate(dateStr){
+  const ymd=dateStr.replace(/-/g,'');
+  const url=`reports/daily_report_${ymd}.json`;
+  const status=document.getElementById('report-date-status');
+  try{
+    const r=await fetch(url);
+    if(!r.ok)throw new Error(r.status);
+    const report=await r.json();
+    reportDate=dateStr;
+    status.textContent='';
+    renderDashFromReport(report);
+  }catch(e){
+    status.textContent='데이터 없음';
+    showNoDataDash(dateStr);
+  }
+}
+function renderDashFromReport(report){
+  const mt=report.market_timing||{};
+  const regime=mt.regime||'neutral';
+  const score=mt.regime_score||0;
+  const conf=mt.regime_confidence||0;
+  const gate=mt.gate||'CAUTION';
+  const gateScore=mt.gate_score||0;
+  const verdict=report.verdict||'CAUTION';
+  const picks=report.stock_picks||[];
+  const summary=report.summary||{};
+  const verdictColor=verdict==='GO'?C.risk_on:verdict==='STOP'?C.crisis:C.neutral;
+  // Metrics
+  document.getElementById('metrics').innerHTML=`
+    <div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Verdict</p>
+      <p class="text-3xl font-black tracking-tighter" style="color:${verdictColor}">${verdict}</p>
+      <p class="text-xs text-on-surface-variant mt-1">Regime ${regime.replace('_',' ')}</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Confidence</p>
+      <p class="text-3xl font-black tracking-tighter text-primary">${conf}%</p>
+      <p class="text-xs text-on-surface-variant mt-1">Score ${score}</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Screened</p>
+      <p class="text-3xl font-black tracking-tighter text-on-surface">${summary.total_screened||picks.length}</p>
+      <p class="text-xs text-on-surface-variant mt-1">stocks analyzed</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl border border-primary/20">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Market Gate</p>
+      <p class="text-3xl font-black tracking-tighter" style="color:${gate==='GO'?C.risk_on:gate==='STOP'?C.crisis:C.neutral}">${gate}</p>
+      <p class="text-xs text-on-surface-variant mt-1">Score ${gateScore}</p>
+    </div>`;
+  // Signals — ML predictor + regime + gate
+  const ml=mt.ml_predictor||{};
+  const spy=ml.spy||{};const qqq=ml.qqq||{};
+  const signalHtml=[];
+  if(spy.direction){
+    const spyUp=spy.direction==='bullish';
+    signalHtml.push(`<div class="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-2">SPY 5D</p>
+      <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${spyUp?'bg-primary-container text-on-primary-container':'bg-error-container text-on-error-container'}">${spy.direction.toUpperCase()} ${spy.predicted_return>0?'+':''}${spy.predicted_return}%</span>
+      <p class="text-[9px] text-on-surface-variant mt-1">신뢰도 ${spy.confidence_pct||0}%</p>
+    </div>`);
+  }
+  if(qqq.direction){
+    const qqqUp=qqq.direction==='bullish';
+    signalHtml.push(`<div class="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-2">QQQ 5D</p>
+      <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${qqqUp?'bg-primary-container text-on-primary-container':'bg-error-container text-on-error-container'}">${qqq.direction.toUpperCase()} ${qqq.predicted_return>0?'+':''}${qqq.predicted_return}%</span>
+      <p class="text-[9px] text-on-surface-variant mt-1">신뢰도 ${qqq.confidence_pct||0}%</p>
+    </div>`);
+  }
+  signalHtml.push(`<div class="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-2">Regime</p>
+    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold" style="background:${CB[regime]};color:${C[regime]}">${regime.replace('_',' ').toUpperCase()}</span>
+  </div>`);
+  signalHtml.push(`<div class="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-2">Gate</p>
+    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${gate==='GO'?'bg-primary-container text-on-primary-container':gate==='STOP'?'bg-error-container text-on-error-container':'bg-secondary-container text-on-secondary-container'}">${gate}</span>
+  </div>`);
+  document.getElementById('d-signals').innerHTML=signalHtml.join('');
+  // Top 5
+  document.getElementById('d-top5').innerHTML=picks.slice(0,5).map((s,i)=>`
+    <div class="flex items-center px-6 py-4 hover:bg-surface-bright/30 transition-colors cursor-pointer border-b border-outline-variant/5 animate-fade-in-up stagger-${i+1}" onclick="go('ai','${s.ticker}')">
+      <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-xs font-bold mr-4">${s.ticker.charAt(0)}</div>
+      <div class="flex-1">
+        <p class="text-sm font-bold text-on-surface">${s.ticker}</p>
+        <p class="text-[10px] text-on-surface-variant">${s.company_name||''}</p>
+      </div>
+      <span class="inline-flex items-center justify-center px-2 py-0.5 rounded text-[10px] font-bold mr-3 ${s.action==='BUY'||s.action==='SMALL BUY'?'bg-primary/10 text-primary':s.action==='HOLD'?'bg-error/10 text-error':'bg-secondary/10 text-secondary'}">${s.action||'WATCH'}</span>
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg border text-sm font-bold mr-4 ${gradeClass(s.grade)}">${s.grade}</span>
+      <p class="text-sm font-bold text-on-surface mr-3">${s.composite_score||0}</p>
+      <a href="https://kr.tradingview.com/chart/?symbol=${s.ticker}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors" title="TradingView"><span class="material-symbols-outlined text-on-surface-variant hover:text-primary text-base">open_in_new</span></a>
+    </div>`).join('');
+  // Gate card
+  const gateIcon=verdict==='GO'?'check_circle':verdict==='STOP'?'block':'warning';
+  const gateBg=verdict==='GO'?'bg-primary-container text-on-primary-container border-primary':verdict==='STOP'?'bg-error-container text-on-error-container border-error':'bg-secondary-container text-on-secondary-container border-secondary';
+  document.getElementById('d-gate').innerHTML=`
+    <div class="${gateBg} rounded-xl p-8 shadow-2xl border-l-8 flex flex-col items-center text-center">
+      <span class="material-symbols-outlined text-5xl mb-4" style="font-variation-settings:'FILL' 1">${gateIcon}</span>
+      <h5 class="text-3xl font-black tracking-tighter mb-2">${verdict}</h5>
+      <p class="text-sm font-bold uppercase tracking-widest opacity-80 mb-6">Integrated Verdict</p>
+      <div class="w-full bg-black/10 p-4 rounded-lg mb-4">
+        <p class="text-[10px] font-bold uppercase mb-1">Gate Score</p>
+        <p class="text-4xl font-black">${gateScore}</p>
+      </div>
+      <div class="flex gap-4 text-sm">
+        <span>Regime: ${regime.replace('_',' ')}</span>
+        <span>Conf: ${conf}%</span>
+      </div>
+    </div>`;
+  // AI Feed
+  document.getElementById('d-feed').innerHTML=picks.slice(0,3).map(s=>{
+    const isUp=(s.rs_vs_spy||0)>0;
+    return `<div class="flex gap-4">
+      <div class="w-1 h-10 rounded-full ${isUp?'bg-primary':'bg-error'}"></div>
+      <div>
+        <p class="text-xs text-on-surface font-bold">${s.action||'WATCH'}: ${s.ticker}</p>
+        <p class="text-[10px] text-on-surface-variant">Grade ${s.grade} · Score ${s.composite_score||0} · RS ${(s.rs_vs_spy||0)>0?'+':''}${s.rs_vs_spy||0}%</p>
+      </div>
+    </div>`;
+  }).join('');
+  // Header
+  document.getElementById('sys-status').textContent=report.generated_at?`Report: ${report.generated_at}`:'';
+}
+function showNoDataDash(dateStr){
+  document.getElementById('metrics').innerHTML=`
+    <div class="col-span-full bg-surface-container-low rounded-xl p-10 text-center">
+      <span class="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-4">event_busy</span>
+      <p class="text-lg font-bold text-on-surface-variant mb-2">${dateStr}</p>
+      <p class="text-sm text-on-surface-variant/60">해당 날짜에 리포트가 없습니다</p>
+      <p class="text-xs text-on-surface-variant/40 mt-2">다른 날짜를 선택하거나 파이프라인을 실행해주세요</p>
+    </div>`;
+  document.getElementById('d-signals').innerHTML='';
+  document.getElementById('d-top5').innerHTML='';
+  document.getElementById('d-gate').innerHTML='';
+  document.getElementById('d-feed').innerHTML='';
+}
+
+async function init(){
+  RC=await ld('regime_config.json');RR=await ld('regime_result.json');
+  FR=await ld('final_top10_report.json');AI=await ld('ai_summaries.json');
+  IP=await ld('index_prediction.json');IH=await ld('prediction_history.json');
+  MG=await ld('market_gate.json');GBM=await ld('gbm_predictions.json');
+  if(!Array.isArray(IH))IH=[];
+  // Load latest report for Overview
+  const latestReport=await ld('latest_report.json');
+  if(latestReport.data_date){
+    reportDate=latestReport.data_date;
+    document.getElementById('report-date').value=reportDate;
+    renderDashFromReport(latestReport);
+  }else{
+    document.getElementById('report-date').value=todayStr();
+    rDash();
+  }
+  document.getElementById('sys-status').textContent=FR.generated_at?`Synced: ${FR.generated_at}`:'Live Feed Active';
+  rRegime();rSectorGate();rDivergence();rTop10();rAI();rPrediction();rGbm();
+}
+
+function rDash(){
+  const r=RC.regime||'neutral',s=RC.weighted_score||0,t=FR.top10||[];
+
+  // Metrics
+  document.getElementById('metrics').innerHTML=`
+    <div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Market Regime</p>
+      <p class="text-3xl font-black tracking-tighter" style="color:${C[r]}">${r.replace('_',' ').toUpperCase()}</p>
+      <p class="text-xs text-on-surface-variant mt-1">Score ${s}</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Confidence</p>
+      <p class="text-3xl font-black tracking-tighter text-primary">${RC.confidence||0}%</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Screened</p>
+      <p class="text-3xl font-black tracking-tighter text-on-surface">${FR.total_screened||0}</p>
+      <p class="text-xs text-on-surface-variant mt-1">stocks analyzed</p>
+    </div>
+    <div class="bg-surface-container-low p-6 rounded-xl border border-primary/20">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">AI Analyzed</p>
+      <p class="text-3xl font-black tracking-tighter text-primary">${FR.ai_analyzed||0}</p>
+      <p class="text-xs text-on-surface-variant mt-1">via Gemini</p>
+    </div>`;
+
+  // Signals
+  const sg=RC.signals||{},nm={vix:'VIX',trend:'Trend',breadth:'Breadth',credit:'Credit',yield_curve:'Yield Curve'},wt={vix:'30%',trend:'25%',breadth:'18%',credit:'15%',yield_curve:'12%'};
+  document.getElementById('d-signals').innerHTML=Object.entries(sg).map(([k,v])=>{
+    const bgCls=v==='risk_on'?'bg-primary-container text-on-primary-container glow-primary':v==='risk_off'||v==='crisis'?'bg-error-container text-on-error-container glow-error':'bg-secondary-container text-on-secondary-container';
+    return `<div class="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-2">${nm[k]||k}</p>
+      <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${bgCls}">${v.replace('_',' ').toUpperCase()}</span>
+    </div>`;
+  }).join('');
+
+  // Top 5
+  document.getElementById('d-top5').innerHTML=t.slice(0,5).map((s,i)=>`
+    <div class="flex items-center px-6 py-4 hover:bg-surface-bright/30 transition-colors cursor-pointer border-b border-outline-variant/5 animate-fade-in-up stagger-${i+1}" onclick="go('ai','${s.ticker}')">
+      <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-xs font-bold mr-4">${s.ticker.charAt(0)}</div>
+      <div class="flex-1">
+        <p class="text-sm font-bold text-on-surface">${s.ticker}</p>
+        <p class="text-[10px] text-on-surface-variant">${s.company_name||''}</p>
+      </div>
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg border text-sm font-bold mr-4 ${gradeClass(s.grade)}">${s.grade}</span>
+      <p class="text-sm font-bold text-on-surface mr-3">${s.final_score}</p>
+      <a href="https://kr.tradingview.com/chart/?symbol=${s.ticker}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors" title="TradingView"><span class="material-symbols-outlined text-on-surface-variant hover:text-primary text-base">open_in_new</span></a>
+    </div>`).join('');
+
+  // Market Gate
+  const gateR=RC.regime||'neutral';
+  const gateLabel=gateR==='risk_on'?'GO':gateR==='neutral'?'CAUTION':'STOP';
+  const gateBg=gateR==='risk_on'?'bg-primary-container text-on-primary-container border-primary':'bg-secondary-container text-on-secondary-container border-secondary';
+  const gateIcon=gateR==='risk_on'?'check_circle':gateR==='neutral'?'warning':'block';
+  const p=RC.adaptive_params||{};
+  document.getElementById('d-gate').innerHTML=`
+    <div class="${gateBg} rounded-xl p-8 shadow-2xl border-l-8 flex flex-col items-center text-center">
+      <span class="material-symbols-outlined text-5xl mb-4" style="font-variation-settings:'FILL' 1">${gateIcon}</span>
+      <h5 class="text-3xl font-black tracking-tighter mb-2">${gateLabel}</h5>
+      <p class="text-sm font-bold uppercase tracking-widest opacity-80 mb-6">Execution Gate Active</p>
+      <div class="w-full bg-black/10 p-4 rounded-lg mb-4">
+        <p class="text-[10px] font-bold uppercase mb-1">Regime Threshold Score</p>
+        <p class="text-4xl font-black">${s}</p>
+      </div>
+      <div class="flex gap-4 text-sm">
+        <span>Stop: ${p.stop_loss||'N/A'}</span>
+        <span>MDD: ${p.max_drawdown_warning||'N/A'}</span>
+      </div>
+    </div>`;
+
+  // AI Feed
+  const feedItems=t.slice(0,3);
+  document.getElementById('d-feed').innerHTML=feedItems.map(s=>{
+    const isUp=s.rs_vs_spy>0;
+    return `<div class="flex gap-4">
+      <div class="w-1 h-10 rounded-full ${isUp?'bg-primary':'bg-error'}"></div>
+      <div>
+        <p class="text-xs text-on-surface font-bold">${isUp?'Bullish':'Bearish'} Signal: ${s.ticker}</p>
+        <p class="text-[10px] text-on-surface-variant">Grade ${s.grade} · Score ${s.final_score} · RS ${s.rs_vs_spy>0?'+':''}${s.rs_vs_spy}%</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function rRegime(){
+  const r=RC.regime||'neutral',p=RC.adaptive_params||{},sg=RC.signals||{};
+  const nm={vix:'VIX',trend:'Trend',breadth:'Breadth',credit:'Credit',yield_curve:'Yield Curve'};
+  const wt={vix:'30%',trend:'25%',breadth:'18%',credit:'15%',yield_curve:'12%'};
+  const stratLabel=r==='risk_on'?'Aggressive':r==='neutral'?'Balanced':'Defensive';
+
+  // Hero bento
+  document.getElementById('r-hero').innerHTML=`
+    <div class="md:col-span-7 bg-surface-container-low p-8 rounded-xl flex flex-col justify-between relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-[80px]">analytics</span></div>
+      <div class="flex flex-col gap-1 z-10">
+        <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Global Status</span>
+        <div class="flex items-baseline gap-4 mt-2">
+          <h1 class="text-5xl md:text-6xl font-black text-on-surface tracking-tighter leading-none">${r.replace('_',' ').toUpperCase()}</h1>
+          <div class="w-4 h-4 rounded-full" style="background:${C[r]};box-shadow:0 0 15px ${C[r]}50"></div>
+        </div>
+      </div>
+      <div class="mt-10 flex gap-8 md:gap-12 z-10">
+        <div><p class="text-xs font-medium text-on-surface-variant uppercase">Regime Score</p><p class="text-3xl font-bold text-primary">${RC.weighted_score||0}</p></div>
+        <div><p class="text-xs font-medium text-on-surface-variant uppercase">Stop Loss</p><p class="text-3xl font-bold text-error">${p.stop_loss||'N/A'}</p></div>
+        <div><p class="text-xs font-medium text-on-surface-variant uppercase">MDD Warning</p><p class="text-3xl font-bold text-error/80">${p.max_drawdown_warning||'N/A'}</p></div>
+      </div>
+    </div>
+    <div class="md:col-span-5 grid grid-cols-2 gap-4">
+      <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+        <span class="material-symbols-outlined text-primary text-3xl">trending_up</span>
+        <div class="mt-4"><p class="text-xs font-medium text-on-surface-variant uppercase">Confidence</p><p class="text-xl font-bold text-on-surface">${RC.confidence||0}%</p></div>
+      </div>
+      <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
+        <span class="material-symbols-outlined text-tertiary text-3xl">hub</span>
+        <div class="mt-4"><p class="text-xs font-medium text-on-surface-variant uppercase">Strategy</p><p class="text-xl font-bold text-on-surface">${stratLabel}</p></div>
+      </div>
+      <div class="bg-surface-container-high p-6 rounded-xl col-span-2 flex items-center justify-between cursor-pointer hover:bg-surface-bright transition-colors" onclick="go('ai')">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-primary">auto_awesome</span></div>
+          <div><p class="text-sm font-bold">AI Insight</p><p class="text-xs text-on-surface-variant">${r==='risk_on'?'Market expansion — momentum active':'Market consolidating before expansion'}</p></div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+      </div>
+    </div>`;
+
+  // Sensors
+  document.getElementById('r-sensors').innerHTML=Object.entries(sg).map(([k,v])=>`
+    <div class="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10" style="border-top:3px solid ${C[v]}">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">${nm[k]} &middot; ${wt[k]}</p>
+      <p class="text-base font-bold mt-2" style="color:${C[v]}">${v.replace('_',' ').toUpperCase()}</p>
+    </div>`).join('');
+
+  // Params
+  document.getElementById('r-params').innerHTML=`
+    <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+      <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">Stop Loss</p>
+      <p class="text-2xl font-bold text-error">${p.stop_loss||'N/A'}</p>
+    </div>
+    <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+      <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">MDD Warning</p>
+      <p class="text-2xl font-bold text-tertiary">${p.max_drawdown_warning||'N/A'}</p>
+    </div>
+    <div class="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
+      <p class="text-[10px] text-on-surface-variant uppercase font-bold mb-2">Strategy</p>
+      <p class="text-2xl font-bold text-on-surface">${stratLabel}</p>
+    </div>`;
+}
+
+function rSectorGate(){
+  const wrap=document.getElementById('r-sectors');if(!wrap)return;
+  const sectors=MG.sectors||[];
+  if(!sectors.length){wrap.innerHTML='<p class="text-xs text-on-surface-variant col-span-full">섹터 게이트 데이터 없음 (output/market_gate.json)</p>';return;}
+  // summary
+  const m=MG.metrics||{};
+  document.getElementById('r-gate-summary').textContent=
+    `평균 ${MG.score||0}점 · 강세 ${m.bullish_sectors||0} / 약세 ${m.bearish_sectors||0} · Top: ${m.top_sector||'-'} · Bottom: ${m.bottom_sector||'-'}`;
+  const g=MG.gate||'CAUTION';
+  const gateBadge=document.getElementById('r-gate-badge');
+  const bg=g==='GO'?'bg-primary-container text-on-primary-container':g==='STOP'?'bg-error-container text-on-error-container':'bg-secondary-container text-on-secondary-container';
+  gateBadge.className=`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded ${bg}`;
+  gateBadge.textContent=g;
+  // cards
+  wrap.innerHTML=sectors.sort((a,b)=>b.score-a.score).map(s=>{
+    const sig=s.signal||'NEUTRAL';
+    const sigCls=sig==='BULLISH'?'text-primary':sig==='BEARISH'?'text-error':'text-secondary';
+    const rsCls=s.rs_vs_spy>=0?'text-primary':'text-error';
+    const borderTop=sig==='BULLISH'?'#3fe56c':sig==='BEARISH'?'#ffb4ab':'#fdd400';
+    const chgCls=s.change_1d>=0?'text-primary':'text-error';
+    return `<div class="bg-surface-container-high/40 p-4 rounded-lg border border-outline-variant/10" style="border-top:3px solid ${borderTop}">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-xs font-bold text-on-surface">${s.name}</p>
+        <span class="text-[9px] font-bold text-on-surface-variant">${s.ticker}</span>
+      </div>
+      <p class="text-2xl font-black ${sigCls} leading-none mb-2">${s.score}</p>
+      <p class="text-[10px] font-bold ${sigCls} mb-2">${sig}</p>
+      <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
+        <span>RSI ${s.rsi}</span>
+        <span class="${rsCls}">RS ${s.rs_vs_spy>=0?'+':''}${(s.rs_vs_spy*100).toFixed(2)}%</span>
+        <span class="${chgCls}">${s.change_1d>=0?'+':''}${s.change_1d}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function rDivergence(){
+  const wrap=document.getElementById('r-divergence');if(!wrap)return;
+  const d=MG.spy_divergence||{};
+  const sig=d.signal||'none';
+  if(sig==='none'){
+    wrap.innerHTML=`<div class="flex items-center gap-4 p-4 bg-surface-container-high/30 rounded-lg">
+      <span class="material-symbols-outlined text-on-surface-variant text-3xl">check_circle</span>
+      <div>
+        <p class="text-sm font-bold text-on-surface">특이 신호 없음</p>
+        <p class="text-[10px] text-on-surface-variant mt-1">SPY 거래량-가격 다이버전스 탐지되지 않음 (lookback 10일)</p>
+      </div>
+    </div>`;return;
+  }
+  const sev=d.severity||'neutral';
+  const isWarn=sev==='warning';
+  const isOpp=sev==='opportunity';
+  const cardBg=isWarn?'bg-error-container/40 border-error/40':isOpp?'bg-primary-container/30 border-primary/40':'bg-surface-container-high/30';
+  const iconColor=isWarn?'text-error':isOpp?'text-primary':'text-on-surface-variant';
+  const icon=isWarn?'warning':isOpp?'trending_up':'check_circle';
+  const priceChg=d.change_10d_pct;
+  const priceCls=priceChg>=0?'text-primary':'text-error';
+  wrap.innerHTML=`<div class="p-5 rounded-lg border ${cardBg}">
+    <div class="flex items-start gap-4">
+      <span class="material-symbols-outlined text-4xl ${iconColor}" style="font-variation-settings:'FILL' 1">${icon}</span>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-1">
+          <p class="text-base font-bold text-on-surface uppercase tracking-wider">${sig.replace('_',' ')}</p>
+          <span class="text-[9px] font-bold px-2 py-0.5 rounded ${isWarn?'bg-error text-on-error':isOpp?'bg-primary text-on-primary':'bg-surface-container-highest'}">${sev.toUpperCase()}</span>
+        </div>
+        <p class="text-sm text-on-surface-variant mb-3">${d.label||''}</p>
+        <div class="flex flex-wrap gap-4 text-[10px]">
+          <span>SPY $${d.spy_price||'-'}</span>
+          <span class="${priceCls}">10D ${priceChg>=0?'+':''}${priceChg||0}%</span>
+          <span>Vol 2D/20D ratio: ${d.vol_ratio_2d_vs_20d_avg||'-'}x</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function rGbm(){
+  const tbody=document.getElementById('gbm-tbody');if(!tbody)return;
+  const rows=(GBM.top||[]);
+  document.getElementById('gbm-info').textContent=
+    rows.length?`${GBM.model||'GBM'} · top ${rows.length} cross-sectional picks`:'no data';
+  if(!rows.length){tbody.innerHTML='<tr><td class="px-6 py-8 text-xs text-on-surface-variant" colspan="6">output/gbm_predictions.json 없음</td></tr>';return;}
+  const maxScore=Math.max(...rows.map(r=>r.gbm_score),0.001);
+  tbody.innerHTML=rows.map(r=>{
+    const pct=(r.gbm_score/maxScore)*100;
+    return `<tr class="hover:bg-surface-bright/30 transition-colors">
+      <td class="px-6 py-4 text-sm font-bold text-on-surface-variant">${r.gbm_rank}</td>
+      <td class="px-6 py-4"><span class="text-sm font-bold text-on-surface">${r.ticker}</span></td>
+      <td class="px-6 py-4 text-xs text-on-surface">${r.company_name||''}</td>
+      <td class="px-6 py-4 text-[10px] text-on-surface-variant">${r.sector||''}</td>
+      <td class="px-6 py-4 text-sm font-bold text-primary">${r.gbm_score.toFixed(4)}</td>
+      <td class="px-6 py-4 w-48">
+        <div class="flex items-center gap-2 justify-end">
+          <div class="flex-1 max-w-[120px] h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+            <div class="h-full ${barColor(pct)}" style="width:${pct}%"></div>
+          </div>
+          <span class="text-[10px] font-bold text-on-surface-variant w-8 text-right">${Math.round(pct)}</span>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function rTop10(){
+  const t=FR.top10||[];
+  document.getElementById('t10-info').textContent=`Real-time institutional flow and AI scoring · ${FR.total_screened||0} screened · ${FR.ai_analyzed||0} AI`;
+  document.getElementById('t10-body').innerHTML=t.map((s,i)=>{
+    const gc=gradeClass(s.grade);
+    const bw=Math.min(s.final_score,100);
+    const bc=barColor(bw);
+    const rsCol=s.rs_vs_spy>0?'text-primary':'text-error';
+    const recBg=s.ai_recommendation&&s.ai_recommendation.includes('적극')?'bg-primary-container text-on-primary font-bold ring-2 ring-primary/20':s.ai_recommendation&&s.ai_recommendation.includes('매수')?'bg-primary/10 text-primary border border-primary/30':'bg-surface-container-highest text-on-surface-variant border border-outline-variant/30';
+    return `<tr class="hover:bg-surface-bright/30 transition-colors group cursor-pointer animate-fade-in-up stagger-${i+1}" onclick="go('ai','${s.ticker}')">
+      <td class="px-6 py-5 text-sm font-medium text-on-surface-variant">${String(i+1).padStart(2,'0')}</td>
+      <td class="px-6 py-5"><div class="flex flex-col"><span class="text-sm font-black tracking-tight group-hover:text-primary transition-colors">${s.ticker}</span><span class="text-[10px] text-on-surface-variant">${s.company_name||''}</span></div></td>
+      <td class="px-6 py-5"><span class="inline-flex items-center justify-center w-8 h-8 rounded-lg border text-sm font-bold ${gc}">${s.grade}</span></td>
+      <td class="px-6 py-5"><div class="flex items-center gap-3"><span class="text-sm font-bold">${s.final_score}</span><div class="flex-1 h-1.5 w-24 bg-surface-container-highest rounded-full overflow-hidden"><div class="${bc} h-full" style="width:${bw}%"></div></div></div></td>
+      <td class="px-6 py-5 text-center text-sm font-medium">${s.quant_score}</td>
+      <td class="px-6 py-5 text-center text-sm font-medium ${s.ai_score>0?'text-primary':'text-on-surface-variant'}">${s.ai_score>0?'+':''}${s.ai_score}</td>
+      <td class="px-6 py-5 text-center text-sm font-medium">${s.tech_score}</td>
+      <td class="px-6 py-5 text-center text-sm font-medium">${s.fund_score}</td>
+      <td class="px-6 py-5"><span class="text-sm font-bold ${rsCol}">${s.rs_vs_spy>0?'+':''}${s.rs_vs_spy}%</span></td>
+      <td class="px-6 py-5 text-right flex items-center gap-2 justify-end"><span class="px-3 py-1 rounded-full text-[11px] uppercase tracking-tighter font-bold ${recBg}">${s.ai_recommendation||'HOLD'}</span><a href="https://kr.tradingview.com/chart/?symbol=${s.ticker}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors" title="TradingView 차트"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-base">open_in_new</span></a></td>
+    </tr>`;
+  }).join('');
+}
+
+function rAI(){
+  const el=document.getElementById('ai-list');
+  const e=Object.entries(AI);
+  if(!e.length){el.innerHTML='<div class="bg-surface-container-low rounded-xl p-16 text-center text-on-surface-variant">No AI analysis data. Run ai_summary_generator.py first.</div>';return}
+  el.innerHTML=e.map(([tk,d])=>{
+    const rc=d.recommendation==='BUY'?'text-primary':'text-error';
+    const rcBg=d.recommendation==='BUY'?'from-primary to-primary-container text-on-primary':'from-error to-error-container text-on-error';
+    const conf=d.confidence||0;
+
+    const cs=(d.catalysts||[]).map(c=>{
+      const pt=typeof c==='string'?c:c.point;
+      const ev=typeof c==='string'?'':c.evidence||'';
+      return `<div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-primary">
+        <p class="text-sm font-semibold text-on-surface">${pt}</p>
+        ${ev?`<p class="text-xs text-on-surface-variant mt-1 italic">${ev}</p>`:''}
+      </div>`;
+    }).join('');
+
+    const bs=(d.bear_cases||[]).map(b=>{
+      const pt=typeof b==='string'?b:b.point;
+      const ev=typeof b==='string'?'':b.evidence||'';
+      return `<div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-error">
+        <p class="text-sm font-semibold text-on-surface">${pt}</p>
+        ${ev?`<p class="text-xs text-on-surface-variant mt-1 italic">${ev}</p>`:''}
+      </div>`;
+    }).join('');
+
+    const cf=(d.data_conflicts||[]).map(c=>`
+      <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-tertiary">
+        <p class="text-sm font-semibold text-on-surface">${c}</p>
+      </div>`).join('');
+
+    return `<div class="glass-panel rounded-xl overflow-hidden mb-6 ring-1 ring-outline-variant/30" id="ai-${tk}">
+      <!-- Header -->
+      <header class="flex justify-between items-center px-8 py-6 bg-surface-container-lowest/50 border-b border-outline-variant/10">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">psychology</span>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-on-surface">${tk} AI Analysis</h2>
+            <p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">${d.sector||''}</p>
+          </div>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-bold ${d.recommendation==='BUY'?'bg-primary/10 text-primary':'bg-error/10 text-error'}">${d.recommendation||'HOLD'}</span>
+      </header>
+      <!-- Content -->
+      <div class="p-8 space-y-8">
+        <!-- Thesis + Signal -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 space-y-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-primary">Investment Thesis</h3>
+            <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 leading-relaxed text-on-surface">${d.thesis||'N/A'}</div>
+          </div>
+          <div class="flex flex-col justify-center">
+            <div class="bg-surface-container-high p-6 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter mb-2">AI Signal Strength</span>
+              <div class="text-4xl font-black text-primary tracking-tighter text-glow-primary mb-4">${conf}%</div>
+              <div class="w-full py-3 rounded-lg bg-gradient-to-br ${rcBg} font-bold text-lg text-center">${d.recommendation||'HOLD'}</div>
+            </div>
+          </div>
+        </section>
+        <!-- Catalysts / Bear / Conflicts -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          ${cs?`<div class="space-y-4">
+            <div class="flex items-center gap-2 text-primary"><span class="material-symbols-outlined text-sm">trending_up</span><h4 class="text-xs font-bold uppercase tracking-widest">Bull Catalysts</h4></div>
+            <div class="space-y-3">${cs}</div>
+          </div>`:'<div></div>'}
+          ${bs?`<div class="space-y-4">
+            <div class="flex items-center gap-2 text-error"><span class="material-symbols-outlined text-sm">report_problem</span><h4 class="text-xs font-bold uppercase tracking-widest">Bear Risks</h4></div>
+            <div class="space-y-3">${bs}</div>
+          </div>`:'<div></div>'}
+          ${cf?`<div class="space-y-4">
+            <div class="flex items-center gap-2 text-tertiary"><span class="material-symbols-outlined text-sm">error_med</span><h4 class="text-xs font-bold uppercase tracking-widest">Data Conflicts</h4></div>
+            <div class="space-y-3">${cf}</div>
+          </div>`:'<div></div>'}
+        </section>
+      </div>
+      <!-- Footer -->
+      <footer class="px-8 py-4 bg-surface-container-lowest/80 flex justify-between items-center text-[10px] text-on-surface-variant/60 uppercase font-medium border-t border-outline-variant/10">
+        <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-glow"></span><span>AI Engine - Neural Analysis Active</span></div>
+        <div>${FR.generated_at||''}</div>
+      </footer>
+    </div>`;
+  }).join('');
+}
+
+function rPrediction(){
+  const preds=(IP&&IP.predictions)||{};
+  const hdr=document.getElementById('pred-header');
+  const cards=document.getElementById('pred-cards');
+  if(!cards)return;
+  if(!preds.spy&&!preds.qqq){
+    if(hdr)hdr.innerHTML='';
+    cards.innerHTML='<div class="md:col-span-2 bg-surface-container-low rounded-xl p-16 text-center text-on-surface-variant">모델 미학습. <code class="bg-surface-container-highest px-2 py-1 rounded text-xs">python us_market/index_predictor.py</code> 를 먼저 실행하세요.</div>';
+    return;
+  }
+  hdr.innerHTML=`
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h3 class="text-2xl font-bold tracking-tight text-on-surface">Index Forecast</h3>
+        <p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">다음 5 거래일 방향 예측 · GradientBoosting + TimeSeriesSplit CV</p>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">As of</p>
+        <p class="text-sm font-bold text-primary">${IP.date||'—'}</p>
+      </div>
+    </div>`;
+
+  const card=(tk,p)=>{
+    if(!p)return `<div class="bg-surface-container-low rounded-xl p-8 text-center text-on-surface-variant">${tk}: no data</div>`;
+    const bull=p.direction==='bullish';
+    const dc=bull?'text-primary':'text-error',dg=bull?'glow-primary':'glow-error';
+    const arrow=bull?'arrow_upward':'arrow_downward';
+    const prob=(p.probability_up*100).toFixed(1);
+    const w=Math.min(Math.max(p.probability_up*100,0),100);
+    const bc=w>=60?'bg-primary':w>=40?'bg-tertiary':'bg-error';
+    const rc=p.predicted_return>0?'text-primary':'text-error';
+    const cf=p.confidence==='high'?'bg-primary/20 text-primary border-primary/40':p.confidence==='moderate'?'bg-tertiary/20 text-tertiary border-tertiary/40':'bg-surface-container-highest text-on-surface-variant border-outline-variant/30';
+    return `
+      <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+              <span class="text-sm font-bold">${tk}</span>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold ${dc} ${dg}">
+              <span class="material-symbols-outlined text-sm">${arrow}</span>${p.direction.toUpperCase()}
+            </span>
+          </div>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${cf}">
+            ${p.confidence} ${p.confidence_pct}%
+          </span>
+        </div>
+        <div class="mb-3">
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Probability (UP)</p>
+            <p class="text-xs font-bold ${dc}">${prob}%</p>
+          </div>
+          <div class="relative h-3 bg-surface-container-highest rounded-full overflow-hidden">
+            <div class="h-full ${bc} transition-all" style="width:${w}%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="bg-surface-container-lowest p-3 rounded-lg">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase">Predicted Return</p>
+            <p class="text-xl font-black ${rc}">${p.predicted_return>0?'+':''}${p.predicted_return}%</p>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded-lg">
+            <p class="text-[10px] font-bold text-on-surface-variant uppercase">Horizon</p>
+            <p class="text-xl font-black text-on-surface">5D</p>
+          </div>
+        </div>
+      </div>`;
+  };
+  cards.innerHTML=card('SPY',preds.spy)+card('QQQ',preds.qqq);
+
+  const driverHtml=(drivers)=>{
+    if(!drivers||!drivers.length)return '<div class="text-xs text-on-surface-variant">No drivers</div>';
+    const mx=Math.max(...drivers.map(d=>d.importance));
+    return drivers.map(d=>{
+      const w=mx>0?(d.importance/mx*100).toFixed(0):0;
+      const dcl=d.direction==='bullish'?'text-primary':d.direction==='bearish'?'text-error':'text-tertiary';
+      const bcl=d.direction==='bullish'?'bg-primary':d.direction==='bearish'?'bg-error':'bg-tertiary';
+      return `
+        <div>
+          <div class="flex items-center justify-between mb-1 gap-2">
+            <span class="text-xs font-medium text-on-surface truncate flex-1">${d.feature}</span>
+            <span class="text-[10px] font-bold ${dcl} uppercase">${d.direction}</span>
+            <span class="text-xs font-mono text-on-surface-variant w-14 text-right">${d.value}</span>
+          </div>
+          <div class="relative h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+            <div class="h-full ${bcl}" style="width:${w}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+  };
+  document.getElementById('pred-drivers-spy').innerHTML=driverHtml(preds.spy&&preds.spy.key_drivers);
+  document.getElementById('pred-drivers-qqq').innerHTML=driverHtml(preds.qqq&&preds.qqq.key_drivers);
+
+  const spyAcc=preds.spy?(preds.spy.model_accuracy*100).toFixed(1):'—';
+  const qqqAcc=preds.qqq?(preds.qqq.model_accuracy*100).toFixed(1):'—';
+  const tAt=preds.spy&&preds.spy.model_trained_at?preds.spy.model_trained_at.substring(0,10):'—';
+  const aD=preds.spy&&preds.spy.model_trained_at?Math.floor((Date.now()-new Date(preds.spy.model_trained_at).getTime())/86400000):'—';
+  document.getElementById('pred-model-info').innerHTML=`
+    <div class="bg-surface-container-lowest p-4 rounded-lg">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase">SPY CV Acc</p>
+      <p class="text-2xl font-black text-primary">${spyAcc}%</p>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase">QQQ CV Acc</p>
+      <p class="text-2xl font-black text-primary">${qqqAcc}%</p>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase">Trained</p>
+      <p class="text-lg font-bold text-on-surface">${tAt}</p>
+      <p class="text-[10px] text-on-surface-variant">${aD===''||aD==='—'?'—':aD+'d ago'}</p>
+    </div>
+    <div class="bg-surface-container-lowest p-4 rounded-lg">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase">Features</p>
+      <p class="text-2xl font-black text-on-surface">27</p>
+    </div>`;
+
+  const hist=(IH||[]).slice(-20);
+  const tbody=document.getElementById('pred-history-tbody');
+  const chart=document.getElementById('pred-history-chart');
+  if(!hist.length){
+    tbody.innerHTML='<tr><td colspan="6" class="px-4 py-8 text-center text-xs text-on-surface-variant">No history yet</td></tr>';
+    chart.innerHTML='';
+  }else{
+    tbody.innerHTML=hist.slice().reverse().map(h=>{
+      const sp=h.spy||{},qq=h.qqq||{};
+      const sD=sp.direction?(sp.direction==='bullish'?'<span class="text-primary font-bold">↑ UP</span>':'<span class="text-error font-bold">↓ DN</span>'):'—';
+      const qD=qq.direction?(qq.direction==='bullish'?'<span class="text-primary font-bold">↑ UP</span>':'<span class="text-error font-bold">↓ DN</span>'):'—';
+      const sP=sp.probability!=null?(sp.probability*100).toFixed(1)+'%':'—';
+      const qP=qq.probability!=null?(qq.probability*100).toFixed(1)+'%':'—';
+      return `<tr class="hover:bg-surface-bright/10">
+        <td class="px-4 py-2 text-xs font-mono">${h.date||'—'}</td>
+        <td class="px-4 py-2 text-sm">${sD}</td>
+        <td class="px-4 py-2 text-xs font-mono">${sP}</td>
+        <td class="px-4 py-2 text-sm">${qD}</td>
+        <td class="px-4 py-2 text-xs font-mono">${qP}</td>
+        <td class="px-4 py-2 text-xs font-mono text-right">${h.model_accuracy!=null?h.model_accuracy.toFixed(1)+'%':'—'}</td>
+      </tr>`;
+    }).join('');
+    const W=600,H=80,P=4;
+    const pts=(k)=>hist.map((h,i)=>{
+      const v=(h[k]&&h[k].probability)!=null?h[k].probability:0.5;
+      const x=P+(i/Math.max(hist.length-1,1))*(W-2*P);
+      const y=H-P-v*(H-2*P);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    chart.innerHTML=`
+      <svg viewBox="0 0 ${W} ${H}" class="w-full h-20" preserveAspectRatio="none">
+        <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="2,2"/>
+        <polyline points="${pts('spy')}" fill="none" stroke="#3fe56c" stroke-width="2" opacity="0.85"/>
+        <polyline points="${pts('qqq')}" fill="none" stroke="#fdd400" stroke-width="2" opacity="0.85"/>
+      </svg>
+      <div class="flex justify-between text-[10px] text-on-surface-variant mt-1">
+        <span><span class="inline-block w-2 h-2 bg-primary rounded-full mr-1"></span>SPY prob_up</span>
+        <span><span class="inline-block w-2 h-2 bg-tertiary rounded-full mr-1"></span>QQQ prob_up</span>
+        <span class="font-mono">${hist.length}/${IH.length} entries · 0.5 = neutral</span>
+      </div>`;
+  }
+}
+
+// Navigation
+const NAV_ON='nav-link flex items-center gap-4 px-6 py-3 text-primary font-bold border-r-2 border-primary bg-surface-container-high/50 transition-all active:translate-x-1 cursor-pointer';
+const NAV_OFF='nav-link flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 cursor-pointer';
+
+function go(page,ticker){
+  // Sidebar
+  document.querySelectorAll('.nav-link').forEach(n=>{n.className=NAV_OFF});
+  const active=document.querySelector(`.nav-link[data-p="${page}"]`);
+  if(active)active.className=NAV_ON;
+  // Mobile nav
+  document.querySelectorAll('.mob-nav').forEach(n=>{
+    n.classList.remove('text-primary');n.classList.add('text-on-surface-variant');
+  });
+  const mActive=document.querySelector(`.mob-nav[data-p="${page}"]`);
+  if(mActive){mActive.classList.remove('text-on-surface-variant');mActive.classList.add('text-primary');}
+  // Pages
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-'+page).classList.add('active');
+  // Scroll to ticker in AI page
+  if(ticker)setTimeout(()=>{const el=document.getElementById('ai-'+ticker);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},100);
+}
+
+document.querySelectorAll('.nav-link').forEach(b=>b.addEventListener('click',()=>go(b.dataset.p)));
+document.querySelectorAll('.mob-nav').forEach(b=>b.addEventListener('click',()=>go(b.dataset.p)));
+init();
+</script>
+</body>
+</html>

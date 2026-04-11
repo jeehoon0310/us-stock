@@ -1,0 +1,18 @@
+# US-Stock runtime dependencies
+# Generated from .venv (Python 3.13.3)
+yfinance==1.2.0
+fredapi==0.5.2
+curl_cffi==0.13.0
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+lightgbm==4.6.0
+pyarrow==23.0.1
+beautifulsoup4==4.14.3
+requests==2.33.1
+python-dotenv==1.2.2
+matplotlib==3.10.8
+seaborn==0.13.2
+joblib==1.5.3
+lxml==6.0.2
+scipy==1.17.1

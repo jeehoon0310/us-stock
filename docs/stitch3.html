@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Market Intelligence - EIX AI Analysis</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#6f5c00",
+                        "tertiary-container": "#ff8e72",
+                        "surface-container-low": "#191c22",
+                        "on-tertiary": "#621100",
+                        "background": "#10131a",
+                        "surface-container-highest": "#32353c",
+                        "on-secondary": "#3a3000",
+                        "primary-fixed-dim": "#3ce36a",
+                        "on-background": "#e1e2eb",
+                        "on-primary-container": "#004c1b",
+                        "secondary-fixed": "#ffe170",
+                        "primary": "#3fe56c",
+                        "inverse-primary": "#006e2a",
+                        "tertiary-fixed": "#ffdad2",
+                        "tertiary": "#ffb7a6",
+                        "surface-bright": "#363940",
+                        "primary-fixed": "#69ff87",
+                        "on-tertiary-fixed": "#3c0700",
+                        "secondary": "#fff3d2",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#8a1d00",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-container": "#00c853",
+                        "on-primary": "#003912",
+                        "inverse-surface": "#e1e2eb",
+                        "on-error": "#690005",
+                        "surface-container-high": "#272a31",
+                        "on-surface": "#e1e2eb",
+                        "on-secondary-fixed": "#221b00",
+                        "outline": "#869583",
+                        "on-primary-fixed": "#002108",
+                        "on-secondary-fixed-variant": "#544600",
+                        "surface-variant": "#32353c",
+                        "surface-container-lowest": "#0b0e14",
+                        "on-surface-variant": "#bbcbb8",
+                        "surface": "#10131a",
+                        "secondary-container": "#fdd400",
+                        "tertiary-fixed-dim": "#ffb4a2",
+                        "surface-dim": "#10131a",
+                        "outline-variant": "#3c4a3c",
+                        "secondary-fixed-dim": "#e9c400",
+                        "surface-tint": "#3ce36a",
+                        "surface-container": "#1d2026",
+                        "on-tertiary-container": "#7f1a00",
+                        "on-primary-fixed-variant": "#00531e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-panel {
+            background: rgba(39, 42, 49, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .text-glow-primary {
+            text-shadow: 0 0 12px rgba(63, 229, 108, 0.4);
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface overflow-hidden">
+    <!-- DASHBOARD BACKGROUND (DIMMED) -->
+    <div class="fixed inset-0 z-0 flex blur-sm opacity-40 pointer-events-none">
+        <!-- Predicted Component: SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col py-8 bg-[#191C22] w-64">
+            <div class="px-6 mb-10">
+                <h1 class="text-lg font-bold text-[#E1E2EB]">Obsidian Terminal</h1>
+                <p class="text-xs text-[#9BA1B0] uppercase tracking-widest mt-1">Executive Intelligence</p>
+            </div>
+            <nav class="flex-1 space-y-1">
+                <a class="flex items-center px-6 py-3 text-[#9BA1B0] hover:bg-[#272A31] transition-all" href="#"><span
+                        class="material-symbols-outlined mr-3">dashboard</span>Overview</a>
+                <a class="flex items-center px-6 py-3 text-[#9BA1B0] hover:bg-[#272A31] transition-all" href="#"><span
+                        class="material-symbols-outlined mr-3">analytics</span>Market Regime</a>
+                <a class="flex items-center px-6 py-3 text-[#9BA1B0] hover:bg-[#272A31] transition-all" href="#"><span
+                        class="material-symbols-outlined mr-3">star</span>Top Picks</a>
+                <div
+                    class="flex items-center px-6 py-3 text-[#3FE56C] font-bold border-r-2 border-[#3FE56C] bg-[#272A31]/50">
+                    <span class="material-symbols-outlined mr-3">psychology</span>AI Analysis</div>
+                <a class="flex items-center px-6 py-3 text-[#9BA1B0] hover:bg-[#272A31] transition-all" href="#"><span
+                        class="material-symbols-outlined mr-3">payments</span>API Costs</a>
+            </nav>
+        </aside>
+        <!-- Predicted Component: TopNavBar -->
+        <div
+            class="ml-64 w-full h-16 bg-[#0B0E14] flex justify-between items-center px-6 fixed top-0 left-0 right-0 z-10">
+            <div class="text-xl font-black text-[#E1E2EB] tracking-tighter">Market Intelligence</div>
+            <div class="flex items-center space-x-6">
+                <span class="material-symbols-outlined text-[#E1E2EB]">sensors</span>
+                <span class="material-symbols-outlined text-[#E1E2EB]">schedule</span>
+                <div class="w-8 h-8 rounded-full bg-surface-container-high"></div>
+            </div>
+        </div>
+        <!-- Fake Dashboard Content -->
+        <main class="ml-64 pt-20 p-8 w-full grid grid-cols-12 gap-6">
+            <div class="col-span-8 bg-surface-container-low rounded-xl h-64"></div>
+            <div class="col-span-4 bg-surface-container-low rounded-xl h-64"></div>
+            <div class="col-span-4 bg-surface-container-low rounded-xl h-96"></div>
+            <div class="col-span-4 bg-surface-container-low rounded-xl h-96"></div>
+            <div class="col-span-4 bg-surface-container-low rounded-xl h-96"></div>
+        </main>
+    </div>
+    <!-- MODAL OVERLAY -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0E14]/80 backdrop-blur-sm">
+        <!-- MODAL CONTAINER -->
+        <div
+            class="glass-panel w-full max-w-4xl max-h-[921px] rounded-xl overflow-hidden flex flex-col shadow-2xl ring-1 ring-outline-variant/30">
+            <!-- 1. Header -->
+            <header
+                class="flex justify-between items-center px-8 py-6 bg-surface-container-lowest/50 border-b border-outline-variant/10">
+                <div class="flex items-center space-x-4">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <span class="material-symbols-outlined text-primary"
+                            style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight text-on-surface">EIX AI Analysis</h2>
+                        <p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">Edison
+                            International • Utility Sector</p>
+                    </div>
+                </div>
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </header>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-8 space-y-8">
+                <!-- 2 & 3. Investment Thesis & Action Row -->
+                <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-primary">Investment Thesis</h3>
+                        <div
+                            class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 leading-relaxed text-on-surface">
+                            <p class="mb-4">Edison International(EIX)은 최근 S&amp;P 500 유틸리티 섹터 대비 우수한 성과를 보이며 시장의 주목을 받고
+                                있습니다. 지난 분기 대비 6.6%의 주가 상승을 기록했으며, 이는 강력한 펀더멘털과 규제 환경의 개선에 기인합니다.</p>
+                            <p>AI 엔진은 2026-27년 가이던스가 상향 조정될 가능성을 82%로 예측하고 있으며, 특히 캘리포니아 지역의 전력망 현대화 사업이 장기적인 수익성 개선의 핵심
+                                동력이 될 것으로 분석됩니다.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div
+                            class="bg-surface-container-high p-6 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center">
+                            <span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter mb-2">AI
+                                Signal Strength</span>
+                            <div class="text-4xl font-black text-primary tracking-tighter text-glow-primary mb-6">89%
+                            </div>
+                            <button
+                                class="w-full py-4 rounded-lg bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                                BUY
+                            </button>
+                            <p class="mt-4 text-[10px] text-on-surface-variant uppercase">Updated 2m ago</p>
+                        </div>
+                    </div>
+                </section>
+                <!-- 4, 5 & 6. Catalysts, Bear Cases, Data Conflicts -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Catalysts (Positive) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2 text-primary">
+                            <span class="material-symbols-outlined text-sm">trending_up</span>
+                            <h4 class="text-xs font-bold uppercase tracking-widest">Bull Catalysts</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-primary">
+                                <p class="text-sm font-semibold text-on-surface">규제 승인 가능성 확대</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">CPUCC의 비용 회수 승인 기대감</p>
+                            </div>
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-primary">
+                                <p class="text-sm font-semibold text-on-surface">배당 수익률 4.2%</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">섹터 평균 대비 높은 현금 흐름</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bear Cases (Negative) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2 text-error">
+                            <span class="material-symbols-outlined text-sm">report_problem</span>
+                            <h4 class="text-xs font-bold uppercase tracking-widest">Bear Risks</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-error">
+                                <p class="text-sm font-semibold text-on-surface">RSI 과매수 시그널</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">기술적 지표 72.4 기록 (단기 조정 가능성)</p>
+                            </div>
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-error">
+                                <p class="text-sm font-semibold text-on-surface">최근 등급 하향 리포트</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">Morgan Stanley의 비중 축소 의견</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data Conflicts (Neutral/Complex) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2 text-tertiary">
+                            <span class="material-symbols-outlined text-sm">error_med</span>
+                            <h4 class="text-xs font-bold uppercase tracking-widest">Data Conflicts</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-tertiary">
+                                <p class="text-sm font-semibold text-on-surface">산불 책임 배상 규모</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">최종 합의 금액에 대한 시장 예측 불일치</p>
+                            </div>
+                            <div class="p-4 rounded-lg bg-surface-container-lowest border-l-4 border-tertiary">
+                                <p class="text-sm font-semibold text-on-surface">금리 인하 속도 변수</p>
+                                <p class="text-xs text-on-surface-variant mt-1 italic">유틸리티 섹터 민감도와 매크로 지표 충돌</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Footer Metric Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <div class="bg-surface-container-high/40 p-4 rounded-lg border border-outline-variant/10">
+                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">Volatility</p>
+                        <p class="text-lg font-bold text-on-surface">Low (12.1%)</p>
+                    </div>
+                    <div class="bg-surface-container-high/40 p-4 rounded-lg border border-outline-variant/10">
+                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">Inst. Ownership</p>
+                        <p class="text-lg font-bold text-on-surface">84.2%</p>
+                    </div>
+                    <div class="bg-surface-container-high/40 p-4 rounded-lg border border-outline-variant/10">
+                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">AI Sentiment</p>
+                        <p class="text-lg font-bold text-primary">Bullish</p>
+                    </div>
+                    <div class="bg-surface-container-high/40 p-4 rounded-lg border border-outline-variant/10">
+                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">Market Cap</p>
+                        <p class="text-lg font-bold text-on-surface">$31.4B</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <footer
+                class="px-8 py-4 bg-surface-container-lowest/80 flex justify-between items-center text-[10px] text-on-surface-variant/60 uppercase font-medium">
+                <div class="flex items-center space-x-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                    <span>AI Engine v4.2 - Neural Analysis Active</span>
+                </div>
+                <div>Last Refreshed: Oct 24, 2023 - 14:22:11 GMT</div>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
