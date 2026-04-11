@@ -5,12 +5,12 @@ services:
     network_mode: host
     environment:
       - HOSTNAME=0.0.0.0
-      - PORT=3000
+      - PORT=8889
       - TZ=America/New_York
       - NODE_OPTIONS=--dns-result-order=ipv4first --no-network-family-autoselection
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8889/api/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3

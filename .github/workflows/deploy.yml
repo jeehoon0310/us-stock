@@ -84,7 +84,7 @@ jobs:
             /usr/local/bin/docker compose up -d
             /usr/local/bin/docker image prune -f
             for i in $(seq 1 30); do
-              curl -sf http://localhost:3000/api/health && echo " OK" && exit 0
+              curl -sf http://localhost:8889/api/health && echo " OK" && exit 0
               sleep 2
             done
             echo "Health check failed"

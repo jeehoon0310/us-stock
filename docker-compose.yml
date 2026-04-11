@@ -4,9 +4,9 @@ services:
       context: .
     container_name: us-stock
     ports:
-      - "3000:3000"
+      - "8889:8889"
     environment:
       - HOSTNAME=0.0.0.0
-      - PORT=3000
+      - PORT=8889
       - TZ=America/New_York
     restart: unless-stopped
