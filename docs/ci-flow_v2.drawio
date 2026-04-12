@@ -1,6 +1,6 @@
 <mxfile host="Obsidian Drawio" agent="Claude Code" version="24.0.0" type="device">
   <diagram name="CI-CD Flow v2" id="ci-flow-v2">
-    <mxGraphModel dx="2400" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+    <mxGraphModel dx="2400" dy="1700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1700" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,190 +14,284 @@
         </mxCell>
 
         <!-- Zone backgrounds -->
+        <!-- Developer zone: expanded y=100, h=230 -->
         <mxCell id="z_dev_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="100" width="2360" height="90" as="geometry" />
+          <mxGeometry x="20" y="100" width="2360" height="230" as="geometry" />
         </mxCell>
+        <!-- GitHub zone: y=340 (was 200, +140) -->
         <mxCell id="z_gh_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="200" width="2360" height="340" as="geometry" />
+          <mxGeometry x="20" y="340" width="2360" height="340" as="geometry" />
         </mxCell>
+        <!-- Tailscale zone: y=690 (was 550, +140) -->
         <mxCell id="z_ts_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="550" width="2360" height="140" as="geometry" />
+          <mxGeometry x="20" y="690" width="2360" height="140" as="geometry" />
         </mxCell>
+        <!-- Synology zone: y=840 (was 700, +140) -->
         <mxCell id="z_syn_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="700" width="2360" height="420" as="geometry" />
+          <mxGeometry x="20" y="840" width="2360" height="420" as="geometry" />
         </mxCell>
+        <!-- ASUS zone: y=1270 (was 1130, +140) -->
         <mxCell id="z_asus_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="1130" width="2360" height="100" as="geometry" />
+          <mxGeometry x="20" y="1270" width="2360" height="100" as="geometry" />
         </mxCell>
+        <!-- User zone: y=1380 (was 1240, +140) -->
         <mxCell id="z_user_bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=1;opacity=30;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="20" y="1240" width="2360" height="220" as="geometry" />
+          <mxGeometry x="20" y="1380" width="2360" height="220" as="geometry" />
         </mxCell>
 
         <!-- Zone labels -->
         <mxCell id="l_dev" value="Developer / Mac" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#9c8400" vertex="1" parent="1">
-          <mxGeometry x="30" y="125" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="195" width="150" height="40" as="geometry" />
         </mxCell>
+        <!-- GitHub label: y=480 (was 340, +140) -->
         <mxCell id="l_gh" value="GitHub Actions&#10;(ubuntu-latest)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#1a5490" vertex="1" parent="1">
-          <mxGeometry x="30" y="340" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="480" width="150" height="40" as="geometry" />
         </mxCell>
+        <!-- Tailscale label: y=735 (was 595, +140) -->
         <mxCell id="l_ts" value="Tailscale mesh&#10;(overlay network)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#6c3483" vertex="1" parent="1">
-          <mxGeometry x="30" y="595" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="735" width="150" height="40" as="geometry" />
         </mxCell>
+        <!-- Synology label: y=1025 (was 885, +140) -->
         <mxCell id="l_syn" value="Synology NAS&#10;frindle01" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#27ae60" vertex="1" parent="1">
-          <mxGeometry x="30" y="885" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="1025" width="150" height="40" as="geometry" />
         </mxCell>
+        <!-- ASUS label: y=1300 (was 1160, +140) -->
         <mxCell id="l_asus" value="ASUS Router&#10;WAN 443/22211" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontStyle=1;fontColor=#c0392b" vertex="1" parent="1">
-          <mxGeometry x="30" y="1160" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="1300" width="150" height="40" as="geometry" />
         </mxCell>
+        <!-- User label: y=1475 (was 1335, +140) -->
         <mxCell id="l_user" value="End User / Admin" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#b77516" vertex="1" parent="1">
-          <mxGeometry x="30" y="1335" width="150" height="40" as="geometry" />
+          <mxGeometry x="30" y="1475" width="150" height="40" as="geometry" />
         </mxCell>
 
-        <!-- DEV ZONE -->
-        <mxCell id="dev_push" value="git push origin main&#10;or scripts/run_and_commit.sh" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=11;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="220" y="115" width="220" height="60" as="geometry" />
+        <!-- ============================================================ -->
+        <!-- DEV ZONE — EXPANDED with git pipeline (y 100-330) -->
+        <!-- ============================================================ -->
+
+        <!-- Row 1: launchd → run_and_commit.sh → Python pipeline → JSON output -->
+        <mxCell id="dev_launchd" value="launchd timer&#10;(06:00 KST)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="220" y="110" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_script" value="run_and_commit.sh&#10;(wrapper script)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
+          <mxGeometry x="430" y="110" width="180" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_pipeline" value="Python pipeline&#10;run_integrated_analysis.py&#10;+ regen_dashboard_data.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
+          <mxGeometry x="660" y="105" width="220" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="dev_json" value="JSON output files&#10;dashboard-next/&#10;public/data/*.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
+          <mxGeometry x="930" y="110" width="200" height="55" as="geometry" />
         </mxCell>
 
-        <!-- GITHUB ACTIONS ZONE -->
+        <!-- Row 2: Git 4-area model -->
+        <!-- ① Working Area -->
+        <mxCell id="dev_working" value="① Working Area&#10;dashboard-next/&#10;public/data/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=20" vertex="1" parent="1">
+          <mxGeometry x="220" y="195" width="160" height="65" as="geometry" />
+        </mxCell>
+        <!-- Step label ② -->
+        <mxCell id="dev_step_add" value="② git add" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#9c8400;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="400" y="212" width="70" height="30" as="geometry" />
+        </mxCell>
+        <!-- ③ Staging Area -->
+        <mxCell id="dev_staging" value="③ Staging Area&#10;(Index)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=20" vertex="1" parent="1">
+          <mxGeometry x="490" y="195" width="160" height="65" as="geometry" />
+        </mxCell>
+        <!-- Step label ④ -->
+        <mxCell id="dev_step_commit" value="④ git commit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#9c8400;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="668" y="212" width="85" height="30" as="geometry" />
+        </mxCell>
+        <!-- ⑤ Local .git (cylinder) -->
+        <mxCell id="dev_local_git" value="⑤ Local .git&#10;(Repository)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="770" y="190" width="160" height="75" as="geometry" />
+        </mxCell>
+        <!-- Step label ⑥ -->
+        <mxCell id="dev_step_push" value="⑥ git push" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#9c8400;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="948" y="212" width="75" height="30" as="geometry" />
+        </mxCell>
+        <!-- ⑦ Remote GitHub (cylinder) -->
+        <mxCell id="dev_push" value="⑦ Remote&#10;GitHub" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=9;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1040" y="190" width="160" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- DEV ROW 1 EDGES -->
+        <mxCell id="e_launchd_script" value="triggers" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_launchd" target="dev_script">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_script_pipeline" value="runs" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_script" target="dev_pipeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pipeline_json" value="writes" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_pipeline" target="dev_json">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- JSON output feeds into Working Area -->
+        <mxCell id="e_json_working" value="updates" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_json" target="dev_working">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- DEV ROW 2 EDGES (git model) -->
+        <mxCell id="e_working_staging" value="git add" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_working" target="dev_staging">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_staging_local" value="git commit" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_staging" target="dev_local_git">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_local_remote" value="git push" style="endArrow=classic;html=1;rounded=0;strokeColor=#6c8ebf;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#1a5490;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_local_git" target="dev_push">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- GITHUB ACTIONS ZONE (shifted y+140) -->
+        <!-- ============================================================ -->
         <mxCell id="gh_repo" value="GitHub Repo&#10;jeehoon0310/us-stock" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="220" y="230" width="180" height="80" as="geometry" />
+          <mxGeometry x="220" y="370" width="180" height="80" as="geometry" />
         </mxCell>
         <mxCell id="gh_workflow" value="Workflow Trigger&#10;.github/workflows/deploy.yml&#10;on push → main" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="440" y="230" width="200" height="70" as="geometry" />
+          <mxGeometry x="440" y="370" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="gh_checkout" value="Checkout&#10;actions/checkout@v4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="680" y="230" width="160" height="60" as="geometry" />
+          <mxGeometry x="680" y="370" width="160" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gh_buildx" value="Setup Buildx&#10;docker/setup-buildx@v3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="870" y="230" width="180" height="60" as="geometry" />
+          <mxGeometry x="870" y="370" width="180" height="60" as="geometry" />
         </mxCell>
         <mxCell id="gh_login" value="Login GHCR&#10;docker/login-action@v3&#10;GITHUB_TOKEN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="1080" y="230" width="180" height="70" as="geometry" />
+          <mxGeometry x="1080" y="370" width="180" height="70" as="geometry" />
         </mxCell>
         <mxCell id="gh_meta" value="Extract Metadata&#10;docker/metadata-action@v5&#10;tags: latest/sha/ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="1290" y="230" width="200" height="70" as="geometry" />
+          <mxGeometry x="1290" y="370" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="gh_build" value="Build &amp; Push&#10;docker/build-push-action@v6&#10;linux/amd64, cache=gha" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=3;fontSize=10;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1520" y="225" width="220" height="80" as="geometry" />
+          <mxGeometry x="1520" y="365" width="220" height="80" as="geometry" />
         </mxCell>
         <mxCell id="gh_ghcr" value="GHCR&#10;ghcr.io/jeehoon0310/&#10;us-stock:latest" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1770" y="220" width="200" height="100" as="geometry" />
+          <mxGeometry x="1770" y="360" width="200" height="100" as="geometry" />
         </mxCell>
 
         <!-- deploy step (runs after build) -->
         <mxCell id="gh_tailscale_join" value="Connect to Tailscale&#10;tailscale/github-action@v3&#10;authkey=TAILSCALE_AUTHKEY&#10;→ runner joins tailnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;fontSize=10;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="220" y="360" width="260" height="90" as="geometry" />
+          <mxGeometry x="220" y="500" width="260" height="90" as="geometry" />
         </mxCell>
         <mxCell id="gh_ssh_action" value="Deploy to Synology&#10;appleboy/ssh-action@v1&#10;host=100.93.245.113&#10;port=28080&#10;user=jeehoon&#10;key=SYNOLOGY_SSH_KEY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;fontSize=9;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="520" y="350" width="220" height="110" as="geometry" />
+          <mxGeometry x="520" y="490" width="220" height="110" as="geometry" />
         </mxCell>
 
         <!-- Script block running on Synology -->
         <mxCell id="gh_script_block" value="Remote script (executed over SSH):&#10;──────────────────────&#10;sudo docker login ghcr.io&#10;sudo docker pull ghcr.io/.../us-stock:latest&#10;cd /volume1/docker/us-stock&#10;curl docker-compose.prod.yml&#10;sudo docker compose down&#10;sudo docker compose up -d&#10;sudo docker image prune -f&#10;curl /api/health (loop × 30)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=9;align=left;verticalAlign=top;fontFamily=monospace;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="790" y="340" width="360" height="180" as="geometry" />
+          <mxGeometry x="790" y="480" width="360" height="180" as="geometry" />
         </mxCell>
 
         <!-- Secrets panel -->
         <mxCell id="secrets_panel" value="GitHub Secrets (us-stock, 2026-04-12 final state)&#10;─────────────────────────────────────────&#10;SYNOLOGY_HOST       = 100.93.245.113        ← Tailscale IP&#10;SYNOLOGY_PORT       = 28080                   ← 내부 sshd&#10;SYNOLOGY_USERNAME   = jeehoon&#10;SYNOLOGY_SSH_KEY    = ~/.ssh/id_rsa (RSA)&#10;TAILSCALE_AUTHKEY   = tskey-auth-… (90-180d 권장)&#10;GITHUB_TOKEN        = auto (packages:write)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;fontSize=9;align=left;verticalAlign=top;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="1200" y="340" width="400" height="160" as="geometry" />
+          <mxGeometry x="1200" y="480" width="400" height="160" as="geometry" />
         </mxCell>
 
-        <!-- TAILSCALE ZONE -->
+        <!-- ============================================================ -->
+        <!-- TAILSCALE ZONE (shifted y+140) -->
+        <!-- ============================================================ -->
         <mxCell id="ts_mesh" value="Tailscale Tailnet (mesh overlay)&#10;(WireGuard-based private network)&#10;Peers: macbook-pro (admin), frindle01 (Synology), ephemeral CI runners" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="220" y="575" width="680" height="80" as="geometry" />
+          <mxGeometry x="220" y="715" width="680" height="80" as="geometry" />
         </mxCell>
         <mxCell id="ts_authkey_note" value="⚠ authkey (reusable + ephemeral) 필수&#10;same key works for both us-stock &amp; book-finder&#10;Synology 는 이미 가입된 상태라 추가 작업 불필요" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1;fontSize=9;dashed=1;align=left;verticalAlign=top" vertex="1" parent="1">
-          <mxGeometry x="940" y="580" width="360" height="75" as="geometry" />
+          <mxGeometry x="940" y="720" width="360" height="75" as="geometry" />
         </mxCell>
         <mxCell id="ts_mesh_note" value="Tailscale admin 에서 볼 수 있는 것:&#10;• 100.93.245.113  frindle01&#10;• 100.75.163.18   macbook-pro&#10;• 100.x.y.z        (ephemeral, CI 시작 시에만 보임)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=1;fontSize=9;align=left;verticalAlign=top;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="1320" y="580" width="320" height="75" as="geometry" />
+          <mxGeometry x="1320" y="720" width="320" height="75" as="geometry" />
         </mxCell>
 
-        <!-- SYNOLOGY ZONE -->
+        <!-- ============================================================ -->
+        <!-- SYNOLOGY ZONE (shifted y+140) -->
+        <!-- ============================================================ -->
         <mxCell id="syn_tailscale_iface" value="tailscale0 interface&#10;100.93.245.113/32" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=10;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="220" y="730" width="200" height="60" as="geometry" />
+          <mxGeometry x="220" y="870" width="200" height="60" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_tailscaled" value="★ tailscaled (userspace proxy)&#10;/var/packages/Tailscale/target/bin/tailscaled&#10;--state=... --port=41641&#10;&#10;userspace 모드 — tailnet 트래픽을 로컬 sshd 로&#10;user-space TCP 릴레이 (NOT kernel NAT)&#10;→ sshd 입장에서 source IP = 127.0.0.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;fontSize=9;align=left;verticalAlign=top;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="460" y="720" width="380" height="120" as="geometry" />
+          <mxGeometry x="460" y="860" width="380" height="120" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_sshd" value="sshd (OpenSSH)&#10;listen 0.0.0.0:28080&#10;PasswordAuthentication no&#10;(pubkey only, ed25519/rsa)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;fontSize=10;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="880" y="720" width="240" height="90" as="geometry" />
+          <mxGeometry x="880" y="860" width="240" height="90" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_auth_log" value="auth.log 증거 (2026-04-12 09:32:24 KST)&#10;──────────────────────────────&#10;Accepted publickey for jeehoon from&#10;127.0.0.1 port 55340 ssh2: ED25519 …&#10;                ^^^^^^^^^^^^^^^&#10;                localhost = tailscaled proxy!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=1;fontSize=9;dashed=1;align=left;verticalAlign=top;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="1160" y="720" width="380" height="100" as="geometry" />
+          <mxGeometry x="1160" y="860" width="380" height="100" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_sudo_docker" value="jeehoon (sudo NOPASSWD)&#10;──────────────────────&#10;sudo docker login ghcr.io&#10;sudo docker pull …&#10;sudo docker compose down/up&#10;sudo docker image prune" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10;align=left;verticalAlign=top;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="220" y="860" width="260" height="120" as="geometry" />
+          <mxGeometry x="220" y="1000" width="260" height="120" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_docker_daemon" value="Docker Engine 24.0.2&#10;/usr/local/bin/docker&#10;socket: /var/run/docker.sock" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="520" y="870" width="240" height="80" as="geometry" />
+          <mxGeometry x="520" y="1010" width="240" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_container_us" value="us-stock container&#10;Next.js standalone&#10;node:20-slim&#10;listen :8889&#10;network_mode: host" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;fontSize=10;arcSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="800" y="860" width="200" height="100" as="geometry" />
+          <mxGeometry x="800" y="1000" width="200" height="100" as="geometry" />
         </mxCell>
         <mxCell id="syn_container_bf" value="book-finder container&#10;(Next.js :3000)&#10;same pattern" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="1030" y="870" width="160" height="80" as="geometry" />
+          <mxGeometry x="1030" y="1010" width="160" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_dsm_proxy" value="DSM Reverse Proxy&#10;HAProxy, Let's Encrypt TLS&#10;edu.frindle.synology.me :443&#10;→ localhost:8889 (us-stock)&#10;→ localhost:3000 (book-finder)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10;align=left;verticalAlign=top" vertex="1" parent="1">
-          <mxGeometry x="1220" y="860" width="280" height="100" as="geometry" />
+          <mxGeometry x="1220" y="1000" width="280" height="100" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_healthcheck" value="curl /api/health × 30&#10;200 OK → exit 0" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=10" vertex="1" parent="1">
-          <mxGeometry x="1540" y="870" width="170" height="90" as="geometry" />
+          <mxGeometry x="1540" y="1010" width="170" height="90" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_lan_iface" value="LAN interface&#10;ovs_eth0: 192.168.1.11&#10;ovs_eth4: 192.168.1.10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="1740" y="870" width="200" height="80" as="geometry" />
+          <mxGeometry x="1740" y="1010" width="200" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="syn_forensics" value="🔍 오늘 확보한 Synology forensics (ssh -p 22211 jeehoon@frindle.asuscomm.com)&#10;──────────────────────────────────────────────────────────────&#10;• sshd ports:  ss -tlnp | grep sshd   →   0.0.0.0:28080 + :::28080&#10;• tailscaled:  /var/packages/Tailscale/target/bin/tailscaled --port=41641&#10;• DSM:            DSM 7.3.2, synology_r1000_1522+&#10;• sudo:           jeehoon NOPASSWD docker (verified via sudo -n docker --version)&#10;• iptables:    DEFAULT_FORWARD chain (DOCKER-USER), nat PREROUTING 없음 (NAT 직접 설정 아님)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=1;fontSize=9;dashed=1;align=left;verticalAlign=top;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="220" y="1000" width="1720" height="110" as="geometry" />
+          <mxGeometry x="220" y="1140" width="1720" height="110" as="geometry" />
         </mxCell>
 
-        <!-- ASUS ROUTER ZONE -->
+        <!-- ============================================================ -->
+        <!-- ASUS ROUTER ZONE (shifted y+140) -->
+        <!-- ============================================================ -->
         <mxCell id="asus_wan_443" value="ASUS WAN 443 (public)&#10;→ LAN 192.168.1.x:443 (DSM proxy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=10;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="220" y="1145" width="300" height="70" as="geometry" />
+          <mxGeometry x="220" y="1285" width="300" height="70" as="geometry" />
         </mxCell>
         <mxCell id="asus_wan_22211" value="ASUS WAN 22211 (public)&#10;→ LAN 192.168.1.10:22 (internally 28080)&#10;⚠️ external 차단 (AiProtection/Geo-IP?)&#10;LAN/hairpin NAT 에서만 접근 가능" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=9;arcSize=10;align=left;verticalAlign=top" vertex="1" parent="1">
-          <mxGeometry x="560" y="1145" width="360" height="75" as="geometry" />
+          <mxGeometry x="560" y="1285" width="360" height="75" as="geometry" />
         </mxCell>
         <mxCell id="asus_note" value="🛑 FAIL MODE 1: &quot;dial tcp 125.129.119.209:*** i/o timeout&quot;&#10;   Runner 가 WAN 포트로 SSH 시도 → ASUS 차단 → timeout&#10;   ▶ CI 경로는 반드시 Tailscale (100.93.245.113:28080) 로 가야 함" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;dashed=1;align=left;verticalAlign=top" vertex="1" parent="1">
-          <mxGeometry x="940" y="1145" width="500" height="75" as="geometry" />
+          <mxGeometry x="940" y="1285" width="500" height="75" as="geometry" />
         </mxCell>
         <mxCell id="asus_ip_label" value="WAN IP (public):&#10;125.129.119.209&#10;DDNS: frindle.asuscomm.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=1;fontSize=9;dashed=1" vertex="1" parent="1">
-          <mxGeometry x="1460" y="1145" width="260" height="75" as="geometry" />
+          <mxGeometry x="1460" y="1285" width="260" height="75" as="geometry" />
         </mxCell>
 
-        <!-- END USER ZONE -->
+        <!-- ============================================================ -->
+        <!-- END USER ZONE (shifted y+140) -->
+        <!-- ============================================================ -->
         <mxCell id="user_browser" value="End-User Browser&#10;(anywhere on internet)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="220" y="1280" width="200" height="70" as="geometry" />
+          <mxGeometry x="220" y="1420" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="user_dns" value="DNS&#10;edu.frindle.synology.me&#10;→ 125.129.119.209" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
-          <mxGeometry x="460" y="1285" width="200" height="60" as="geometry" />
+          <mxGeometry x="460" y="1425" width="200" height="60" as="geometry" />
         </mxCell>
 
         <mxCell id="admin_mac" value="Admin Mac (LAN)&#10;192.168.219.106&#10;(own Tailscale peer)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=10;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1740" y="1280" width="200" height="70" as="geometry" />
+          <mxGeometry x="1740" y="1420" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="admin_mac_cmd" value="ssh -t jeehoon@frindle.asuscomm.com -p 22211&#10;(works via hairpin NAT from LAN&#10; or via Tailscale peer directly)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1;fontSize=9;dashed=1;fontFamily=monospace" vertex="1" parent="1">
-          <mxGeometry x="1960" y="1275" width="420" height="80" as="geometry" />
+          <mxGeometry x="1960" y="1415" width="420" height="80" as="geometry" />
         </mxCell>
 
         <mxCell id="user_flow_note" value="End-user 경로 (주황 실선): Browser → DNS → ASUS WAN 443 → DSM Reverse Proxy → container :8889" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#b77516;fontStyle=2" vertex="1" parent="1">
-          <mxGeometry x="220" y="1380" width="1000" height="30" as="geometry" />
+          <mxGeometry x="220" y="1520" width="1000" height="30" as="geometry" />
         </mxCell>
         <mxCell id="admin_flow_note" value="Admin 경로 (청록 실선): Mac → ASUS WAN 22211 (LAN/hairpin) → sshd :28080 — 외부 네트워크 차단" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#0e6655;fontStyle=2" vertex="1" parent="1">
-          <mxGeometry x="1240" y="1380" width="1140" height="30" as="geometry" />
+          <mxGeometry x="1240" y="1520" width="1140" height="30" as="geometry" />
         </mxCell>
 
+        <!-- ============================================================ -->
         <!-- EDGES — CI deploy (blue/green primary path) -->
+        <!-- ============================================================ -->
+
+        <!-- dev_push (Remote GitHub cylinder) → gh_repo -->
         <mxCell id="e_dev_gh" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=3;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="dev_push" target="gh_repo">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -219,32 +313,33 @@
         <mxCell id="e_gh6" style="endArrow=classic;html=1;rounded=0;strokeColor=#6c8ebf;strokeWidth=2;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="gh_meta" target="gh_build">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_gh7" value="push image" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#9673a6;fontStyle=1" edge="1" parent="1" source="gh_build" target="gh_ghcr">
+        <mxCell id="e_gh7" value="push image" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#5a3d6e;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="gh_build" target="gh_ghcr">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- Build → Tailscale join -->
         <mxCell id="e_build_tsjoin" style="endArrow=classic;html=1;rounded=0;strokeColor=#6c8ebf;strokeWidth=2;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="gh_build" target="gh_tailscale_join">
-          <mxGeometry relative="1" as="geometry" />
-          <Array as="points">
-            <mxPoint x="350" y="340" />
-          </Array>
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="480" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <!-- Tailscale join → SSH action -->
         <mxCell id="e_tsjoin_ssh" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=2;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="gh_tailscale_join" target="gh_ssh_action">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- SSH action → script block -->
-        <mxCell id="e_ssh_script" value="run remotely" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#82b366;fontStyle=1" edge="1" parent="1" source="gh_ssh_action" target="gh_script_block">
+        <mxCell id="e_ssh_script" value="run remotely" style="endArrow=classic;html=1;rounded=0;strokeColor=#2d6b1c;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#2d6b1c;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="gh_ssh_action" target="gh_script_block">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- SSH action → Tailscale mesh (critical path) -->
-        <mxCell id="e_ssh_mesh" value="TCP connect&#10;100.93.245.113:28080" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#9673a6;fontStyle=1" edge="1" parent="1" source="gh_ssh_action" target="ts_mesh">
+        <mxCell id="e_ssh_mesh" value="TCP connect&#10;100.93.245.113:28080" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#5a3d6e;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="gh_ssh_action" target="ts_mesh">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- Tailscale mesh → Synology tailscale0 -->
-        <mxCell id="e_mesh_iface" value="wg packet" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#9673a6;fontStyle=1" edge="1" parent="1" source="ts_mesh" target="syn_tailscale_iface">
+        <mxCell id="e_mesh_iface" value="wg packet" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#5a3d6e;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="ts_mesh" target="syn_tailscale_iface">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- tailscale0 → tailscaled -->
@@ -252,7 +347,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- tailscaled → sshd (userspace proxy, KEY insight) -->
-        <mxCell id="e_daemon_sshd" value="userspace TCP relay&#10;source = 127.0.0.1" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#82b366;fontStyle=1;dashed=1" edge="1" parent="1" source="syn_tailscaled" target="syn_sshd">
+        <mxCell id="e_daemon_sshd" value="userspace TCP relay&#10;source = 127.0.0.1" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#2d6b1c;labelBackgroundColor=#FFFFFF;dashed=1" edge="1" parent="1" source="syn_tailscaled" target="syn_sshd">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- sshd → sudo docker -->
@@ -264,24 +359,25 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- docker daemon → us-stock container -->
-        <mxCell id="e_daemon_us" value="compose up" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#82b366;fontStyle=1" edge="1" parent="1" source="syn_docker_daemon" target="syn_container_us">
+        <mxCell id="e_daemon_us" value="compose up" style="endArrow=classic;html=1;rounded=0;strokeColor=#82b366;strokeWidth=3;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#2d6b1c;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="syn_docker_daemon" target="syn_container_us">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- container → healthcheck -->
-        <mxCell id="e_us_health" value="probe" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#d6b656" edge="1" parent="1" source="syn_container_us" target="syn_healthcheck">
+        <mxCell id="e_us_health" value="probe" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="syn_container_us" target="syn_healthcheck">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- GHCR → docker daemon (image pull) -->
-        <mxCell id="e_ghcr_pull" value="docker pull" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=9;fontColor=#9673a6" edge="1" parent="1" source="gh_ghcr" target="syn_docker_daemon">
-          <mxGeometry relative="1" as="geometry" />
-          <Array as="points">
-            <mxPoint x="1870" y="550" />
-            <mxPoint x="640" y="550" />
-          </Array>
+        <mxCell id="e_ghcr_pull" value="docker pull" style="endArrow=classic;html=1;rounded=0;strokeColor=#9673a6;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=11;fontStyle=1;fontColor=#5a3d6e;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="gh_ghcr" target="syn_docker_daemon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1870" y="690" />
+              <mxPoint x="640" y="690" />
+            </Array>
+          </mxGeometry>
         </mxCell>
 
         <!-- End-user HTTPS path (orange) -->
-        <mxCell id="e_browser_dns" value="HTTPS GET" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#d79b00" edge="1" parent="1" source="user_browser" target="user_dns">
+        <mxCell id="e_browser_dns" value="HTTPS GET" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#8b6508;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="user_browser" target="user_dns">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e_dns_asus" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="user_dns" target="asus_wan_443">
@@ -290,19 +386,21 @@
         <mxCell id="e_asus_proxy" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle" edge="1" parent="1" source="asus_wan_443" target="syn_dsm_proxy">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_proxy_container" value="reverse&#10;proxy" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#d79b00" edge="1" parent="1" source="syn_dsm_proxy" target="syn_container_us">
+        <mxCell id="e_proxy_container" value="reverse&#10;proxy" style="endArrow=classic;html=1;rounded=0;strokeColor=#d79b00;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#8b6508;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="syn_dsm_proxy" target="syn_container_us">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- Admin SSH path (teal) -->
-        <mxCell id="e_admin_asus" value="LAN/hairpin" style="endArrow=classic;html=1;rounded=0;strokeColor=#0e6655;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#0e6655" edge="1" parent="1" source="admin_mac" target="asus_wan_22211">
+        <mxCell id="e_admin_asus" value="LAN/hairpin" style="endArrow=classic;html=1;rounded=0;strokeColor=#0e6655;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#084d40;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="admin_mac" target="asus_wan_22211">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_asus_sshd" value="forward 22211→28080" style="endArrow=classic;html=1;rounded=0;strokeColor=#0e6655;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=9;fontColor=#0e6655" edge="1" parent="1" source="asus_wan_22211" target="syn_sshd">
+        <mxCell id="e_asus_sshd" value="forward 22211→28080" style="endArrow=classic;html=1;rounded=0;strokeColor=#0e6655;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#084d40;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="asus_wan_22211" target="syn_sshd">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
+        <!-- ============================================================ -->
         <!-- LEGEND -->
+        <!-- ============================================================ -->
         <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=1;dashed=1" vertex="1" parent="1">
           <mxGeometry x="2000" y="100" width="380" height="420" as="geometry" />
         </mxCell>
