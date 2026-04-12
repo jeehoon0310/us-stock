@@ -1,16 +1,16 @@
 {
-  "regime": "risk_on",
-  "weighted_score": 0.66,
-  "confidence": 60.0,
+  "regime": "neutral",
+  "weighted_score": 0.81,
+  "confidence": 40.0,
   "signals": {
     "vix": "neutral",
     "trend": "risk_on",
     "breadth": "risk_off",
-    "credit": "risk_on",
+    "credit": "neutral",
     "yield_curve": "risk_on"
   },
   "adaptive_params": {
-    "stop_loss": "-10%",
-    "max_drawdown_warning": "-12%"
+    "stop_loss": "-8%",
+    "max_drawdown_warning": "-10%"
   }
 }
