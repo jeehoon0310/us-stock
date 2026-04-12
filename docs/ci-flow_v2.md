@@ -447,6 +447,11 @@ gh secret list -R jeehoon0310/book-finder | grep TAILSCALE
 - 달력 리마인더 / GitHub 레포에 `SECURITY.md` 로 기록
 - 이상적으로는 Tailscale OAuth client 전환 (자동 rotation) — 향후 개선
 
+**현재 설정된 리마인더**:
+- Google Calendar 이벤트 `🔑 Tailscale Auth Key 갱신 (us-stock + book-finder)` — 2026-07-04 09:00 KST, 24h 전 이메일 + 30분 전 팝업, Claude Code MCP (`gcal_create_event`) 로 2026-04-12 10:47 KST 에 자동 생성.
+- 생성 방법: Claude.ai 의 Google Calendar connector + Claude Code 의 `mcp__claude_ai_Google_Calendar__gcal_create_event` tool. 제로 setup, 별도 `gcalcli` / API credentials 불필요. 향후 다른 만료 이벤트도 동일 방식으로 "Claude, 이 날짜에 이런 이벤트 잡아줘" 만으로 생성 가능.
+- 대안: `gcalcli` (insanum/gcalcli) — 셸 스크립트에서 headless 로 호출하려면 이쪽이 더 적합. `brew install gcalcli` → `gcalcli init` (1회 OAuth) → `gcalcli add --title … --when …`.
+
 ### 12.6 Rotation history
 
 실제 rotation 발생 기록. 이 문서를 업데이트할 때마다 최상단에 한 줄 추가.
