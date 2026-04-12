@@ -280,7 +280,7 @@ jobs:
 | `SYNOLOGY_PORT` | `28080` | 내부 sshd 리슨 포트 (ASUS 22211 아님) |
 | `SYNOLOGY_USERNAME` | `jeehoon` | DSM 사용자 계정 (NOPASSWD sudo for docker) |
 | `SYNOLOGY_SSH_KEY` | RSA private key (`~/.ssh/id_rsa` 원본) | Mac 에서 검증된 키, Synology `~jeehoon/.ssh/authorized_keys` 에 등록됨 |
-| `TAILSCALE_AUTHKEY` | `tskey-auth-...` | Reusable + Ephemeral + Pre-approved, **90-180일 expiration 권장** |
+| `TAILSCALE_AUTHKEY` | `tskey-auth-k0Kh1QDzEu11CNTRL-…` (key ID prefix, 전체 값은 GitHub secret + 패스워드 매니저에만 저장) | Reusable + Ephemeral + Pre-approved. **Rotated 2026-04-12 10:38 KST**: 구 1일 키 (`kPs0i2c8yd11CNTRL`, Apr 12→Apr 13) 폐기 → 신 키 (**Expiry: Jul 11, 2026**, 약 90일). us-stock + book-finder 양쪽 레포 동시 갱신 완료. |
 | `GITHUB_TOKEN` | 자동 | workflow 실행 시 GitHub 가 주입, `packages:write` 포함 |
 
 **주의**: GitHub Actions secret 은 **write-only** — 설정 후 값을 다시 볼 수 없음. 원본은 반드시 패스워드 매니저 등에 저장할 것.
@@ -446,6 +446,18 @@ gh secret list -R jeehoon0310/book-finder | grep TAILSCALE
 - **90일마다 1회** 또는 **만료 1주일 전**
 - 달력 리마인더 / GitHub 레포에 `SECURITY.md` 로 기록
 - 이상적으로는 Tailscale OAuth client 전환 (자동 rotation) — 향후 개선
+
+### 12.6 Rotation history
+
+실제 rotation 발생 기록. 이 문서를 업데이트할 때마다 최상단에 한 줄 추가.
+
+| 날짜 (KST) | 구 키 ID | 신 키 ID | 신 키 만료 | 대상 레포 | 사유 |
+|---|---|---|---|---|---|
+| 2026-04-12 10:38 | `kPs0i2c8yd11CNTRL` (Apr 12→**Apr 13**, 1일) | `k0Kh1QDzEu11CNTRL` | **Jul 11, 2026** (~90일) | us-stock + book-finder | 초기 발급 시 Expiration 기본값이 1일이어서 내일 만료 예정 → 장기 키로 교체 |
+| 2026-04-12 08:23 | `k5y08ixfm011CNTKL` (Mar 28→Jun 26, 90일, book-finder 전용) | `kPs0i2c8yd11CNTRL` (1일 — 실수) | 2026-04-13 | us-stock 신규 등록 + book-finder 갱신 | us-stock 에 처음으로 TAILSCALE_AUTHKEY 등록 시도. Expiration 1일로 잘못 선택 |
+| 2026-03-28 22:36 | — | `k5y08ixfm011CNTKL` | 2026-06-26 (90일) | book-finder 초기 등록 | 최초 발급 |
+
+**⚠️ Pitfall 주의**: Tailscale admin UI 에서 "Generate auth key..." 모달을 열면 Expiration 드롭다운의 기본 선택이 **1 day** 로 시작하는 것으로 보임. 반드시 **90 days** 또는 **180 days** 로 명시적으로 바꾸고 Generate 클릭할 것.
 
 ---
 
