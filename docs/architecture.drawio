@@ -670,7 +670,7 @@
                 <mxCell id="e_p6_arrow3" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;" edge="1" parent="1" source="p6_train" target="p6_wf">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="p4_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;opacity=30;" parent="1" vertex="1">
+                <mxCell id="p4_deploy_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;opacity=30;" parent="1" vertex="1">
                     <mxGeometry x="30" y="2080" width="1540" height="360" as="geometry"/>
                 </mxCell>
                 <mxCell id="p4_title" value="Part 4: 배포 파이프라인 (Next.js + git-scraping, book-finder 패턴)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1b5e20;" parent="1" vertex="1">
