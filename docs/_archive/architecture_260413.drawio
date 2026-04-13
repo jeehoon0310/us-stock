@@ -1,0 +1,778 @@
+<mxfile host="Obsidian Drawio" agent="Claude Code" version="24.0.0" type="device">
+    <diagram id="arch" name="US Stock System Architecture">
+        <mxGraphModel dx="1641" dy="1010" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="2450" math="0" shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="p1_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="80" width="1540" height="320" as="geometry" />
+                </mxCell>
+                <mxCell id="p2_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="420" width="1540" height="310" as="geometry" />
+                </mxCell>
+                <mxCell id="gate_formula_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="470" width="220" height="100" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#fff3e0;strokeColor=#ef6c00;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="750" width="730" height="160" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#fce4ec;strokeColor=#c62828;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="930" width="730" height="200" as="geometry" />
+                </mxCell>
+                <mxCell id="grade_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="800" width="220" height="120" as="geometry" />
+                </mxCell>
+                <mxCell id="ai_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="975" width="220" height="90" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#ede7f6;strokeColor=#7c4dff;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="750" width="490" height="700" as="geometry" />
+                </mxCell>
+                <mxCell id="cost_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="1010" width="280" height="90" as="geometry" />
+                </mxCell>
+                <mxCell id="tech_score_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1150" width="240" height="210" as="geometry" />
+                </mxCell>
+                <mxCell id="fund_score_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="1150" width="230" height="210" as="geometry" />
+                </mxCell>
+                <mxCell id="sd_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="1150" width="230" height="210" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="1150" width="230" height="210" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#e0f7fa;strokeColor=#00838f;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="1470" width="1540" height="280" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" vertex="1" parent="1">
+                    <mxGeometry x="1080" y="470" width="480" height="250" as="geometry" />
+                </mxCell>
+                <mxCell id="abbr_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#ccc;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1370" width="990" height="90" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_deploy_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="2080" width="1540" height="360" as="geometry" />
+                </mxCell>
+        
+        <!-- ============================================================ -->
+        <!-- LAYER 2: All edges (rendered BELOW nodes) -->
+        <!-- ============================================================ -->
+        <mxCell id="e_sched_integ" style="endArrow=classic;html=1;rounded=0;strokeColor=#7b1fa2;" edge="1" parent="1" source="orch_scheduler" target="orch_integrated">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="src_yf" target="mod_price" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="mod_price" target="pipeline" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="a9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="pipeline" target="csv_prices" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="b1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2e7d32;" parent="1" source="sens_vix" target="regime_file" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="b5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2e7d32;" parent="1" source="regime_file" target="regimes" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="b6" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2e7d32;" parent="1" source="regimes" target="json_regime" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_parser_edge" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#c62828;" parent="1" source="p3_ai" target="p4_parser" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_fetcher" target="p3_screener" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_screener" target="csv_picks" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_news" target="p3_ai" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_ai" target="json_ai" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_final" target="json_final" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_ai" target="p3_final" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="layer12" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666;strokeWidth=2;dashed=1;" parent="1" source="csv_macro" target="sens_vix" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="layer23" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666;strokeWidth=2;dashed=1;" parent="1" source="json_regime" target="p3_screener" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="d1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c4dff;strokeWidth=2;dashed=1;" parent="1" source="json_final" target="dash_web" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="d2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c4dff;strokeWidth=2;dashed=1;" parent="1" source="json_ai" target="dash_web" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#00838f;" parent="1" source="p5_src" target="p5_class" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#00838f;" parent="1" source="p5_class" target="p5_model" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#00838f;" parent="1" source="p5_model" target="p5_out_pred" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e_regime" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666;strokeWidth=1;dashed=1;" parent="1" source="json_regime" target="p5_cfg" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e_dash_pred" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c4dff;strokeWidth=2;dashed=1;" parent="1" source="p5_out_pred" target="dash_web" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_e_dash_hist" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c4dff;strokeWidth=2;dashed=1;" parent="1" source="p5_out_history" target="dash_web" edge="1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p6_arrow1" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="p6_macro" target="p6_train">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p6_arrow2" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="p6_equity" target="p6_train">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p6_arrow3" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="p6_train" target="p6_wf">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_mac_wrapper" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565c0;" edge="1" parent="1" source="p4_mac_actor" target="p4_wrapper">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_wrapper_git" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;strokeWidth=2;" edge="1" parent="1" source="p4_wrapper" target="p4_git">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_git_repo" value="push" style="endArrow=classic;html=1;rounded=0;strokeColor=#2e7d32;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#2d6b1c;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_git" target="p4_gh_repo">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_repo_actions" style="endArrow=classic;html=1;rounded=0;strokeColor=#37474f;" edge="1" parent="1" source="p4_gh_repo" target="p4_gh_actions">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_actions_ghcr" value="build + push" style="endArrow=classic;html=1;rounded=0;strokeColor=#6a1b9a;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#4a0072;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_gh_actions" target="p4_ghcr">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_actions_ts" style="endArrow=classic;html=1;rounded=0;strokeColor=#00acc1;" edge="1" parent="1" source="p4_gh_actions" target="p4_ts">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_ts_container" value="SSH deploy" style="endArrow=classic;html=1;rounded=0;strokeColor=#006064;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#084d40;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_ts" target="p4_container">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_ghcr_container" value="docker pull" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#6a1b9a;fontSize=11;fontStyle=1;fontColor=#4a0072;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_ghcr" target="p4_container">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_container_proxy" value=":3000" style="endArrow=classic;html=1;rounded=0;strokeColor=#00695c;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#084d40;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_container" target="p4_proxy">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_proxy_asus" value="443 LAN" style="endArrow=classic;html=1;rounded=0;strokeColor=#c62828;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#8b2e2a;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_proxy" target="p4_asus">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_asus_user" value="HTTPS 443" style="endArrow=classic;html=1;rounded=0;strokeColor=#0288d1;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#01579b;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="p4_asus" target="p4_user">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e_p4_dash_deprecated" value="Next.js 포팅" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#9e9e9e;fontSize=11;fontStyle=1;fontColor=#333333;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dash_web" target="p4_container">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+        
+        <!-- ============================================================ -->
+        <!-- LAYER 3: All nodes (rendered ABOVE edges) -->
+        <!-- ============================================================ -->
+        <mxCell id="orch_integrated" value="run_integrated_analysis.py&#10;Phase 0/1/2/3 통합 파이프라인&#10;Verdict: GO/CAUTION/STOP → BUY/WATCH/HOLD" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="15" width="260" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="orch" value="run_full_pipeline.py&#10;전체 9단계 오케스트레이터" style="rounded=1;whiteSpace=wrap;fillColor=#6a1b9a;fontColor=#fff;strokeColor=none;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="15" width="280" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="orch_scheduler" value="run_daily_scheduler.py&#10;Cron 스케줄러 (--install-cron)" style="rounded=1;whiteSpace=wrap;fillColor=#7b1fa2;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="15" width="120" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="orch_screening" value="run_screening.py&#10;S&amp;P 500 스크리닝 전용" style="rounded=1;whiteSpace=wrap;fillColor=#9c27b0;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="750" y="15" width="220" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="orch_all" value="run_all.py&#10;레거시 (Part 1+2+3)" style="rounded=1;whiteSpace=wrap;fillColor=#ab47bc;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="15" width="180" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="reports_store" value="reports/&#10;daily_report_YYYYMMDD.json&#10;latest_report.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1200" y="15" width="150" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="logs_store" value="logs/&#10;daily_run_YYYYMMDD.log" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#f3e5f5;strokeColor=#9c27b0;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1370" y="15" width="140" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="src_wiki" value="Wikipedia" style="rounded=1;whiteSpace=wrap;fillColor=#2196F3;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="130" width="100" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="src_yf" value="Yahoo Finance" style="rounded=1;whiteSpace=wrap;fillColor=#2196F3;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="130" width="110" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="src_fred" value="FRED API" style="rounded=1;whiteSpace=wrap;fillColor=#2196F3;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="130" width="100" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="src_cnn" value="CNN F&amp;G" style="rounded=1;whiteSpace=wrap;fillColor=#2196F3;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="130" width="90" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_sp500" value="fetch_sp500_list.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="190" width="130" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_price" value="us_price_fetcher.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="190" width="130" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_tech" value="technical_indicators.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="190" width="140" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_macro" value="macro_collector.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="190" width="130" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_sector" value="sector_analyzer.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="190" width="130" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="pipeline" value="us_data_pipeline.py + run_pipeline.py" style="rounded=1;whiteSpace=wrap;fillColor=#1565c0;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="260" width="280" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="csv_sp500" value="sp500_list.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="330" width="110" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="csv_prices" value="us_daily_prices.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="185" y="330" width="120" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="csv_macro" value="us_macro.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="330" width="110" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="csv_sectors" value="us_sectors.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="445" y="330" width="110" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_fetch_prices" value="fetch_sp500_prices.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="190" width="140" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="mod_heatmap" value="plot_sector_heatmap.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="190" width="140" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="tests_bg" value="tests/&#10;test_price_fetcher.py&#10;test_indicators.py&#10;data_quality_report.py" style="rounded=1;whiteSpace=wrap;fillColor=#e8eaf6;strokeColor=#9fa8da;strokeDasharray=3;fontSize=9;align=left;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="170" width="180" height="80" as="geometry" />
+                </mxCell>
+                <mxCell id="sens_vix" value="VIX 30%" style="rounded=1;whiteSpace=wrap;fillColor=#81c784;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="475" width="80" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="sens_trend" value="Trend 25%" style="rounded=1;whiteSpace=wrap;fillColor=#81c784;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="475" width="80" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="sens_breadth" value="Breadth 18%" style="rounded=1;whiteSpace=wrap;fillColor=#81c784;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="475" width="85" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="sens_credit" value="Credit 15%" style="rounded=1;whiteSpace=wrap;fillColor=#81c784;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="335" y="475" width="80" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="sens_yield" value="Yield 12%" style="rounded=1;whiteSpace=wrap;fillColor=#81c784;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="425" y="475" width="80" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="regime_file" value="market_regime.py&#10;가중 투표 → 체제 판정" style="rounded=1;whiteSpace=wrap;fillColor=#2e7d32;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="540" width="220" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="regimes" value="risk_on | neutral | risk_off | crisis" style="rounded=1;whiteSpace=wrap;fillColor=#a5d6a7;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="540" width="220" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="gate_file" value="market_gate.py&#10;11 섹터 → GO / CAUTION / STOP" style="rounded=1;whiteSpace=wrap;fillColor=#2e7d32;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="610" width="250" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="vol_div" value="거래량-가격 다이버전스&#10;Bullish/Bearish Climax" style="rounded=1;whiteSpace=wrap;fillColor=#a5d6a7;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="665" width="160" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="adaptive" value="적응형 파라미터&#10;stop_loss / max_drawdown" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="610" width="200" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="json_regime" value="regime_config.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="540" width="130" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="json_result2" value="regime_result.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="600" width="130" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_parser" value="ai_response_parser.py&#10;JSON 파싱 + 검증" style="rounded=1;whiteSpace=wrap;fillColor=#f8bbd0;strokeColor=#c62828;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="1020" width="140" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_fetcher" value="data_fetcher.py&#10;yfinance → Finnhub → AV → FMP" style="rounded=1;whiteSpace=wrap;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="810" width="150" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_screener" value="smart_money_screener_v2.py&#10;6팩터 종합 점수 (503종목)&#10;Strategy/Setup: Trend/Swing/Reversal + Breakout/Pullback/Base" style="rounded=1;whiteSpace=wrap;fillColor=#ef6c00;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="810" width="250" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="f_tech" value="Tech 25%" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="870" width="70" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="f_fund" value="Fund 20%" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="870" width="70" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="f_analyst" value="Analyst 15%" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="870" width="80" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="f_rs" value="RS 15%&#10;vs SPY" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="310" y="870" width="70" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="f_vol" value="Vol 15%" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="870" width="70" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="f_13f" value="13F 10%" style="rounded=1;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="870" width="70" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_news" value="NewsCollector&#10;Yahoo + Google + Finnhub" style="rounded=1;whiteSpace=wrap;fillColor=#f8bbd0;strokeColor=#c62828;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="970" width="170" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_ai" value="ai_summary_generator.py&#10;Gemini / OpenAI / Perplexity" style="rounded=1;whiteSpace=wrap;fillColor=#c62828;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="970" width="250" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_cost" value="APIUsageTracker&#10;토큰/비용 추적" style="rounded=1;whiteSpace=wrap;fillColor=#f8bbd0;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="1020" width="120" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_final" value="final_report_generator.py&#10;퀀트(90%) + AI(10%) → Top 10" style="rounded=1;whiteSpace=wrap;fillColor=#c62828;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="1075" width="250" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="csv_picks" value="result/&#10;smart_money_picks&#10;_YYYYMMDD.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fff3e0;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="800" width="130" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="json_ai" value="ai_summaries.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="970" width="130" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="json_final" value="final_top10&#10;_report.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1075" width="130" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_web" value="index.html&#10;Dark Mode SPA" style="rounded=1;whiteSpace=wrap;fillColor=#7c4dff;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="810" width="180" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_regime" value="Market Regime&#10;Banner" style="rounded=1;whiteSpace=wrap;fillColor=#d1c4e9;strokeColor=#7c4dff;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="870" width="100" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_signals" value="5 Sensor&#10;Signals" style="rounded=1;whiteSpace=wrap;fillColor=#d1c4e9;strokeColor=#7c4dff;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="870" width="80" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_gate" value="Gate" style="rounded=1;whiteSpace=wrap;fillColor=#d1c4e9;strokeColor=#7c4dff;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="870" width="60" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_top10" value="Smart Money&#10;Top 10 Table" style="rounded=1;whiteSpace=wrap;fillColor=#d1c4e9;strokeColor=#7c4dff;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="920" width="130" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_modal" value="AI Detail&#10;Modal" style="rounded=1;whiteSpace=wrap;fillColor=#d1c4e9;strokeColor=#7c4dff;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="920" width="90" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_src" value="yfinance 10 tickers&#10;SPY/QQQ/^VIX + XLK/XLU/XLY&#10;GC=F/DX-Y.NYB/^TNX/^FVX" style="rounded=1;whiteSpace=wrap;fillColor=#b3e5fc;strokeColor=#0277bd;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1510" width="200" height="60" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_class" value="index_predictor.py&#10;IndexPredictor 클래스" style="rounded=1;whiteSpace=wrap;fillColor=#00acc1;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1515" width="200" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_model" value="GradientBoosting + TimeSeriesSplit 5-fold CV&#10;Classifier: direction / Regressor: return (%)" style="rounded=1;whiteSpace=wrap;fillColor=#00838f;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="1515" width="300" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_target" value="5일 후 방향 + 수익률 예측 (shift(-5) forward return)" style="rounded=1;whiteSpace=wrap;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="1575" width="300" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_spy" value="SPY 7&#10;returns/MA&#10;RSI/MACD/BB" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_vix" value="VIX 4*&#10;value/change&#10;percentile/&gt;20" style="rounded=1;fillColor=#ffcdd2;strokeColor=#c62828;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_qqq" value="QQQ 2&#10;return_1w&#10;rsi" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_breadth" value="시장폭 2&#10;50ma pct&#10;A/D (Laplace)" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_sector" value="섹터 3*&#10;XLK/XLU*/XLY&#10;rel. vs SPY 1M" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_macro" value="매크로 3*&#10;TNX-FVX/GOLD&#10;DXY*" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_vol" value="거래량 3&#10;SPY/QQQ ratio&#10;trend_5d" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_f_mom" value="모멘텀 3&#10;ROC_10d&#10;50ma%/RSI slope" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="1610" width="85" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_cfg" value="regime_config.json['predictor']&#10;horizon=5 / cv_splits=5 / retrain=7d / confidence 70/60" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;strokeDasharray=3;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1680" width="490" height="32" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_confidence" value="Confidence&#10;high ≥ 70% / moderate ≥ 60% / low" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="1680" width="280" height="32" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_out_pred" value="index_prediction&#10;.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="1510" width="130" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_out_model_spy" value="predictor_model&#10;_spy.joblib" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="1510" width="130" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_out_model_qqq" value="predictor_model&#10;_qqq.joblib" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="1565" width="130" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_out_history" value="prediction_history&#10;.json (max 100)" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="1565" width="130" height="45" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_cli" value="python us_market/index_predictor.py&#10;→ fetch_all_data → build_feature_matrix&#10;→ train(spy/qqq) → predict_next_week" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="1510" width="240" height="60" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_test" value="tests/test_index_predictor.py&#10;8 pytest checks (8/8 passing)" style="rounded=1;whiteSpace=wrap;fillColor=#fff3e0;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="1580" width="240" height="35" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_macro" value="① Macro Features&#10;ml/features/macro/&#10;18 피처 (ERP/VIX/yield)" style="rounded=1;whiteSpace=wrap;fillColor=#f1f8e9;strokeColor=#558b2f;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1850" width="160" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_equity" value="② Equity Features&#10;ml/features/equity/&#10;36 피처 + 5 타겟" style="rounded=1;whiteSpace=wrap;fillColor=#f1f8e9;strokeColor=#558b2f;fontSize=10;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="1850" width="160" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_train" value="③ LightGBM 학습&#10;ml/pipeline/train.py&#10;rank + early stopping" style="rounded=1;whiteSpace=wrap;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="1850" width="160" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_wf" value="④ Walk-Forward&#10;ml/validation/&#10;PBO + DSR" style="rounded=1;whiteSpace=wrap;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="570" y="1850" width="160" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_predict" value="⑤ Top 20 예측 → output/gbm_predictions.{parquet,csv}" style="rounded=1;whiteSpace=wrap;fillColor=#a5d6a7;strokeColor=#1b5e20;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1910" width="720" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_meta" value="★ service-evolver (메타)&#10;매일 1건 자가 진화 7-Phase" style="rounded=1;whiteSpace=wrap;fillColor=#fff59d;strokeColor=#f57f17;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+                    <mxGeometry x="830" y="1850" width="180" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_tier1" value="Tier 1: Rule-based (6)&#10;perf-lead + signal-optimizer&#10;+ backtest + critic + market-researcher + verifier" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1020" y="1850" width="260" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_tier2" value="Tier 2: GBM (15) 5팀×3명&#10;Research · Macro · Equity&#10;MLOps · Model" style="rounded=1;whiteSpace=wrap;fillColor=#90caf9;strokeColor=#0d47a1;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1290" y="1850" width="260" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_mac_actor" value="Mac (M-series)&#10;launchd 평일 06:00 KST" style="rounded=1;whiteSpace=wrap;fillColor=#1565c0;fontColor=#fff;strokeColor=none;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2130" width="180" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_wrapper" value="scripts/run_and_commit.sh&#10;source .venv → pipeline → regen → 검증 → cp JSON → dashboard-next/public/data/" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=9;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2200" width="480" height="60" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_git" value="git add dashboard-next/public/data&#10;git commit -m &quot;chore(data): daily update&quot;&#10;git push origin main" style="rounded=1;whiteSpace=wrap;fillColor=#2e7d32;fontColor=#fff;strokeColor=none;fontSize=10;align=left;spacingLeft=8;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2275" width="480" height="65" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_gh_repo" value="GitHub Repository&#10;jeehoon0310/us-stock" style="rounded=1;whiteSpace=wrap;fillColor=#455a64;fontColor=#fff;strokeColor=none;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="2130" width="180" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_gh_actions" value=".github/workflows/deploy.yml&#10;Checkout → Buildx → Login GHCR&#10;→ Build Next.js 3-stage → Push&#10;→ Tailscale → SSH Synology → pull + compose up&#10;→ health check (/api/health)" style="rounded=1;whiteSpace=wrap;fillColor=#37474f;fontColor=#fff;strokeColor=none;fontSize=9;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="2200" width="380" height="100" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_ghcr" value="GHCR&#10;ghcr.io/jeehoon0310/us-stock:latest&#10;(Next.js standalone,&#10;데이터 베이크됨)" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=10;fillColor=#b39ddb;strokeColor=#4527a0;fontSize=9;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="2130" width="180" height="55" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_ts" value="Tailscale (CI/CD only)" style="ellipse;whiteSpace=wrap;fillColor=#00acc1;fontColor=#fff;strokeColor=none;fontSize=9;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="2315" width="180" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_container" value="us-stock 컨테이너&#10;Next.js standalone (node:20-slim)&#10;port 3000 · host network · /api/health" style="rounded=1;whiteSpace=wrap;fillColor=#1976d2;fontColor=#fff;strokeColor=none;fontSize=10;fontStyle=1;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="2130" width="280" height="75" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_proxy" value="DSM Reverse Proxy&#10;edu.frindle.synology.me :443&#10;(Let's Encrypt)&#10;→ localhost:3000" style="rounded=1;whiteSpace=wrap;fillColor=#00695c;fontColor=#fff;strokeColor=none;fontSize=9;fontStyle=1;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="2215" width="280" height="70" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_asus" value="ASUS Router (WAN)&#10;Port Forward 443 → Synology LAN&#10;※ 다른 서비스와 동일 패턴" style="rounded=1;whiteSpace=wrap;fillColor=#c62828;fontColor=#fff;strokeColor=none;fontSize=9;fontStyle=1;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="2130" width="260" height="60" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_user" value="End User Browser&#10;https://edu.frindle.synology.me" style="rounded=1;whiteSpace=wrap;fillColor=#0288d1;fontColor=#fff;strokeColor=none;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="2200" width="260" height="50" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_deprecated" value="※ dashboard/index.html (바닐라 HTML 1234줄)&#10;→ dashboard-next/app/ 로 포팅 후 deprecated" style="rounded=1;whiteSpace=wrap;fillColor=#eeeeee;strokeColor=#9e9e9e;dashed=1;fontSize=9;fontStyle=2;fontColor=#616161;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="2315" width="260" height="55" as="geometry" />
+                </mxCell>
+        
+        <!-- ============================================================ -->
+        <!-- LAYER 4: Labels, notes, text (highest z-order) -->
+        <!-- ============================================================ -->
+        <mxCell id="p1_title" value="Part 1: 데이터 수집 (collectors/ + pipeline/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1a5276;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="90" width="400" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="p2_title" value="Part 2: 시장 체제 감지 (analyzers/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1b5e20;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="430" width="350" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="gate_formula_title" value="Gate 스코어링 공식" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="475" width="160" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="gf1" value="RSI — 30%" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="498" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="gf2" value="MACD — 30%" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="515" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="gf3" value="Volume ratio — 20%" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="532" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="gf4" value="Relative strength — 20%" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="549" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="p3_title" value="Part 3: Smart Money 스크리닝 (analyzers/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="760" width="400" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_title" value="Part 4: AI 분석 (analyzers/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#c62828;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="933" width="300" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="grade_title" value="등급 체계" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="805" width="100" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="g1" value="A (80+): Strong Accumulation" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="825" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="g2" value="B (65-80): Moderate Accumulation" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="842" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="g3" value="C (50-65): Neutral" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="859" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="g4" value="D (35-50): Moderate Distribution" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="876" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="g5" value="E (20-35): Strong Distribution" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="893" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="g6" value="F (&lt;20): Capitulation" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="910" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ai_title" value="AI Providers" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="980" width="100" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="ai1" value="Gemini (Google) — 기본" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="1000" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ai2" value="GPT (OpenAI) — 대안" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="1017" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ai3" value="Perplexity — 검색 강화" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="1034" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="dash_title" value="Dashboard (dashboard/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#6a1b9a;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="760" width="300" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="cost_title" value="💰 APIUsageTracker" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="1013" width="160" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="cost1" value="Gemini: $0.10/$0.40 per 1M tokens" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="1035" width="250" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="cost2" value="GPT-5-mini: $0.15/$0.60 per 1M tokens" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="1052" width="250" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="cost3" value="Perplexity: $3 per 1K requests" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="1069" width="250" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="tech_score_title" value="기술 분석 스코어링" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1155" width="160" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="ts_h1" value="점수 올라가는 경우" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#2e7d32;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1178" width="120" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts1" value="RSI 과매도 → +10~15점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1195" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts2" value="MACD 상승 전환 → +15점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1212" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts3" value="MA 정배열 (단기&gt;장기) → +15점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1229" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts4" value="골든크로스 → +10점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1246" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts_h2" value="점수 내려가는 경우" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#c62828;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1268" width="120" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts5" value="RSI 과열 → -5점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1285" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts6" value="MACD 하락 전환 → -5점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1302" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="ts7" value="역배열 → -10 / 데스크로스 → -15점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1319" width="220" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fund_score_title" value="펀더멘탈 스코어링" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1155" width="160" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="fs_h1" value="PER (주가수익비율)" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1178" width="120" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs1" value="0~15배 = 싸다! (+15점)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1195" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs2" value="15~25배 = 적당 (+10점)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1212" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs3" value="40배+ = 비싸다 (-10점) / 적자 (-15점)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1229" width="220" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs_h2" value="매출 성장률" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1251" width="120" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs4" value="20%+ → +15 / 10~20% → +10" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1268" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs5" value="0~10% → +5 / 마이너스 → -10점" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1285" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs_h3" value="ROE (자기자본이익률)" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1307" width="140" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="fs6" value="20%+ → +10 / 10~20% → +5 / 음수 → -10" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1324" width="220" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd_title" value="수급 분석 (Supply/Demand)" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1155" width="200" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="sd_h1" value="3가지 핵심 수급 지표" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1178" width="140" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd1" value="MFI (Money Flow Index) 0~100" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1195" width="210" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd2" value="OBV (On-Balance Volume)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1212" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd3" value="Volume Ratio (5일/20일)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1229" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd_h2" value="SD Stage 분류" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1251" width="120" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd4" value="Strong Accumulation: 85~100" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2e7d32;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1268" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd5" value="Accumulation: 55~84" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#558b2f;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1285" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd6" value="Neutral: 40~54" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1302" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="sd7" value="Distribution / Strong Distrib: 0~39" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#c62828;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="1319" width="210" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_title" value="13F 보고서 — 기관 포트폴리오" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1155" width="210" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_1" value="누가? $1억+ 운용 기관" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1178" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_2" value="언제? 분기 종료 후 45일 이내" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1195" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_3" value="어디서? SEC EDGAR + WhaleWisdom" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1212" width="210" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_h2" value="대표 기관" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1234" width="80" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_4" value="Berkshire Hathaway (워렌 버핏)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1251" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_5" value="Bridgewater (레이 달리오)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1268" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_6" value="Renaissance Tech (짐 사이먼스)" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1285" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_7" value="BlackRock, Vanguard, State Street" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1302" width="200" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_h3" value="활용법" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1324" width="80" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="f13_8" value="기관 수 증가 / 보유 비중 증가 / 신규 매도" style="text;fontSize=9;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="1341" width="220" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_title" value="Part 5: ML 지수 예측 (us_market/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#00838f;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="1475" width="300" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_feat_title" value="27개 피처 (카테고리별 + INVERSE 6개)" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#00838f;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1585" width="300" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_inverse_note" value="* INVERSE (양수=bearish): vix_value/change/pct/above_20, xlu_relative, dxy_return" style="text;fontSize=9;fontStyle=2;fillColor=none;strokeColor=none;fontColor=#c62828;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="1658" width="520" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_title" value="📘 체제 지표 용어집 — % 숫자는 가중 투표(weighted voting) 비중, 합계 100%" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1b5e20;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="476" width="470" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_vix" value="VIX (30%) — S&amp;P500 변동성 지수 (공포 지수). 20 이상이면 시장 불안." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="500" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_trend" value="Trend (25%) — SPY 가격이 50일/200일 이동평균(SMA) 위인지 (상승추세 여부)." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="520" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_breadth" value="Breadth (18%) — 시장 폭. RSP(동일가중)/SPY 비율. 소수 대형주만 오르는지 점검." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="540" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_credit" value="Credit (15%) — HYG/IEF 비율. 하이일드 채권 수요 → 시장의 위험선호도." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="560" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_yield" value="Yield Curve (12%) — ^TNX − ^IRX (장단기 금리차). 역전 시 경기침체 신호." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="580" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_sep" value="━━ Gate 스코어 지표 (RSI 30% + MACD 30% + Volume 20% + RS 20%) ━━" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#555;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="604" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_rsi" value="RSI — 상대강도지수 (0~100). 70 이상 과매수 / 30 이하 과매도." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="624" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_macd" value="MACD — 단기 EMA − 장기 EMA. 양수=상승추세, 음수=하락추세." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="644" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_vol" value="Volume Ratio — 최근 5일 / 20일 거래량 비율. 1 초과 = 거래 급증." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="664" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_rs" value="Relative Strength (RS) — 개별 종목 수익률 − SPY 수익률. 상대 성과." style="text;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="684" width="460" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="glo_tip" value="💡 예: 'VIX 30%' = 5개 센서 가중 투표에서 VIX가 전체의 30% 비중을 차지." style="text;fontSize=9;fontStyle=2;fillColor=none;strokeColor=none;fontColor=#c62828;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="702" width="460" height="14" as="geometry" />
+                </mxCell>
+                <mxCell id="abbr_title" value="📖 지표 약어 사전 — % 숫자(Tech 25%, Fund 20% …) = 종합 점수 산출 시 각 팩터 가중치" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="1376" width="970" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="abbr_1" value="SMA=단순이동평균 · EMA=지수이동평균 · RSI=상대강도지수(0~100) · MACD=이동평균수렴확산 · BB=볼린저밴드 · ATR=변동성(Average True Range)" style="text;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="1398" width="970" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="abbr_2" value="MFI=자금흐름지수(거래량 반영 RSI) · OBV=거래량누적지표 · Volume Ratio=최근5일/20일 거래량비 · RS(Relative Strength)=개별종목 − SPY 수익률" style="text;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="1415" width="970" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="abbr_3" value="13F=자산 $1억+ 운용 기관이 분기마다 SEC에 제출하는 보유종목 공시(분기말 후 45일 이내) · PER=주가÷주당순이익 · ROE=순이익÷자기자본" style="text;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="1432" width="970" height="15" as="geometry" />
+                </mxCell>
+                <mxCell id="p5_abbr" value="📗 ML 피처 약어 — ROC=변화율(Rate of Change) · A/D=상승/하락 종목 수(Advance/Decline) · DXY=달러지수 · TNX=10년물 국채금리 · FVX=5년물 국채금리 · GOLD(GC=F)=금 선물 · XLK/XLU/XLY=기술/유틸리티/소비재 SPDR 섹터 ETF · horizon=5 → 5거래일 후 예측" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#00838f;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1720" width="1490" height="28" as="geometry" />
+                </mxCell>
+                <mxCell id="p56_divider" value="⬇⬇⬇  2026-04-05 service-evolver가 추가한 새 레이어 (Part 6 + Part 7)  ⬇⬇⬇" style="text;fontSize=12;fontStyle=1;fillColor=#fff3e0;strokeColor=#ef6c00;fontColor=#e65100;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1770" width="1490" height="28" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_title" value="Part 6: Cross-sectional GBM ML 파이프라인 (ml/ 디렉토리)" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;fontColor=#1b5e20;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1810" width="720" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_title" value="Part 7: 22 에이전트 생태계 (.claude/agents/)" style="rounded=1;whiteSpace=wrap;fillColor=#e3f2fd;strokeColor=#1565c0;fontColor=#0d47a1;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="830" y="1810" width="720" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_cycle" value="일일 사이클 7-Phase: 현황→트렌드리서치→Gap→선정→코딩→검증→문서 | Reflexion memory: .docs/evolution/memory.md" style="text;fontSize=9;fontStyle=2;fillColor=none;strokeColor=none;fontColor=#1565c0;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="830" y="1910" width="720" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_history" value="Evolution 이력: Cycle #1 (ERP 센서, macro_collector.py) · Cycle #2 (IndexPredictor → Step 8 통합) · Cycle #3 (문서 동기화 + 겹침 수정)" style="text;fontSize=9;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#e65100;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="830" y="1926" width="720" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="p7_summary2_ref" value="📚 Summary2.md 22 이미지 분석 → backlog 6건 추가: P0 Brier Score+Platt Scaling(-28%) · P1 Rule↔ML 상충 · P1 Fold별 Accuracy · P2 Feature viz/Sample Weight/Isotonic (2026-04-05)" style="text;fontSize=9;fontStyle=2;fillColor=#fff3e0;strokeColor=#ef6c00;fontColor=#e65100;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1990" width="1490" height="28" as="geometry" />
+                </mxCell>
+                <mxCell id="p6_note" value="run_integrated_analysis.py — Phase 0(데이터) → Phase 1(Regime+Gate+ML→Verdict) → Phase 2(Screening+Strategy) → Phase 3(Action 매핑→daily_report.json) | run_daily_scheduler.py --install-cron 자동화" style="text;fontSize=10;fontStyle=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#bf360c;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="1960" width="1490" height="24" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_deploy_title" value="Part 4: 배포 파이프라인 (Next.js + git-scraping, book-finder 패턴)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1b5e20;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="2090" width="700" height="25" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_env_note" value=".env (Mac only) · API 키 NAS 미복사" style="rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontSize=9;fontStyle=2;fontColor=#e65100;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2350" width="480" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_ssh_note" value="SSH → /volume1/docker/us-stock" style="rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontSize=9;fontStyle=2;fontColor=#006064;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="2350" width="380" height="20" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_nas_note" value="Synology NAS · 데이터 볼륨 마운트 없음 (이미지에 베이크) · API 키 없음 · Python 없음" style="rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontSize=9;fontStyle=2;fontColor=#00695c;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="2290" width="280" height="30" as="geometry" />
+                </mxCell>
+                <mxCell id="p4_browser_flow" value="Browser → HTTPS 443 → ASUS WAN → Port Forward → DSM Reverse Proxy → Next.js :3000" style="rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontSize=9;fontStyle=2;fontColor=#01579b;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="2260" width="260" height="40" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
