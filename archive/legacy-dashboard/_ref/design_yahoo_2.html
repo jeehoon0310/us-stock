@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[봄 특강] AI시대 미국주식 투자 — Frindle TV Dark</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        :root {
+            --bg:    #0D0D0D;
+            --card:  #161616;
+            --card2: #1E1E1E;
+            --bd:    #242424;
+            --bd2:   #2E2E2E;
+            --pp:    #A855F7;   /* bright purple for dark bg */
+            --pp-dk: #7C3AED;
+            --pp-glow: rgba(168,85,247,.14);
+            --text:  #F0F0F0;
+            --sub:   #A0A0A0;
+            --muted: #5A5A5A;
+            --green: #22C55E;
+            --red:   #EF4444;
+            --gold:  #FBBF24;
+            --cyan:  #22D3EE;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); font-family: 'Inter', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+        .wrap { max-width: 800px; margin: 0 auto; background: var(--bg); }
+
+        /* TICKER */
+        .ticker { background: #000; border-bottom: 1px solid var(--bd); height: 38px; padding: 0 32px; display: flex; align-items: center; gap: 18px; }
+        .t-brand { font-size: 11px; font-weight: 800; color: var(--pp); letter-spacing: 1.5px; flex-shrink: 0; }
+        .t-sep   { width: 1px; height: 14px; background: var(--bd2); flex-shrink: 0; }
+        .t-list  { display: flex; gap: 24px; flex: 1; overflow: hidden; }
+        .t-item  { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        .t-sym   { font-size: 10px; font-weight: 600; color: var(--muted); }
+        .t-val   { font-size: 11px; font-weight: 700; color: var(--green); }
+        .t-live  { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: 5px; }
+        .t-live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+        .t-live-txt { font-size: 9px; font-weight: 800; color: var(--green); letter-spacing: 1.5px; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* HERO */
+        .hero { background: var(--bg); padding: 52px 40px 60px; position: relative; overflow: hidden; border-bottom: 1px solid var(--bd); }
+        .hero::before { content: ''; position: absolute; right: -100px; top: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(168,85,247,.18) 0%, transparent 60%); pointer-events: none; }
+        .hero::after  { content: ''; position: absolute; left: -60px; bottom: -60px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(34,211,238,.08) 0%, transparent 60%); pointer-events: none; }
+        .h-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+        .h-pill    { background: rgba(168,85,247,.15); border: 1px solid rgba(168,85,247,.35); color: var(--pp); font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 4px 12px; border-radius: 2px; }
+        .h-live    { display: flex; align-items: center; gap: 5px; }
+        .h-live-d  { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+        .h-live-t  { font-size: 9px; font-weight: 700; color: var(--green); letter-spacing: 1px; }
+        .h-h1      { font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; color: var(--text); line-height: 1.25; margin-bottom: 16px; }
+        .hl-g  { color: var(--gold); text-shadow: 0 0 24px rgba(251,191,36,.3); }
+        .hl-p  { color: var(--pp); }
+        .h-sub { font-size: 15px; color: var(--sub); line-height: 1.9; margin-bottom: 36px; }
+        .h-sub strong { color: var(--cyan); }
+        .h-div { height: 1px; background: var(--bd); margin-bottom: 28px; }
+
+        /* HERO STAT CARDS */
+        .h-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .hg-card { background: var(--card); border: 1px solid var(--bd); border-radius: 4px; padding: 16px 14px; position: relative; overflow: hidden; }
+        .hg-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--pp); }
+        .hg-card.gold::before { background: var(--gold); }
+        .hg-card.green::before { background: var(--green); }
+        .hg-lbl { font-size: 9px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .7px; }
+        .hg-n   { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+        .hg-n.go { color: var(--gold); text-shadow: 0 0 16px rgba(251,191,36,.25); }
+        .hg-n.gr { color: var(--green); }
+        .hg-u   { font-size: 12px; }
+        .hg-chg { font-size: 10px; color: var(--green); }
+
+        /* ANNOUNCE */
+        .announce { background: var(--card2); border-top: 1px solid var(--bd); border-bottom: 1px solid var(--bd); padding: 12px 40px; display: flex; align-items: center; gap: 12px; }
+        .an-badge  { background: var(--pp); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 2px; letter-spacing: 1px; flex-shrink: 0; }
+        .an-txt    { font-size: 13px; color: var(--sub); }
+        .an-end    { margin-left: auto; font-size: 11px; color: var(--pp); font-weight: 700; flex-shrink: 0; }
+
+        /* SECTIONS */
+        .sw  { padding: 48px 40px; border-bottom: 1px solid var(--bd); background: var(--bg); }
+        .sd  { padding: 48px 40px; border-bottom: 1px solid var(--bd); background: var(--card); }
+        .sd2 { padding: 48px 40px; border-bottom: 1px solid var(--bd); background: var(--card2); }
+
+        .cat { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .ct  { font-size: 9px; font-weight: 700; color: var(--pp); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+        .cl  { flex: 1; height: 1px; background: var(--bd); }
+
+        .h1  { font-size: clamp(18px, 3vw, 25px); font-weight: 800; color: var(--text); line-height: 1.35; margin-bottom: 16px; }
+        .body{ font-size: 15px; color: var(--sub); line-height: 1.9; }
+        .body p { margin-bottom: 10px; }
+
+        /* ANALYSIS BOX */
+        .abox { margin: 22px 0; background: var(--card2); border-left: 3px solid var(--pp); padding: 18px 22px; }
+        .abox-tag { font-size: 9px; font-weight: 700; color: var(--pp); letter-spacing: 2px; margin-bottom: 7px; }
+        .abox-txt { font-size: 14px; color: var(--sub); line-height: 1.75; font-style: italic; }
+
+        /* GLOW STAT GRID */
+        .gdata { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+        .gd    { background: var(--card); border: 1px solid var(--bd); border-radius: 4px; padding: 22px 18px; position: relative; overflow: hidden; }
+        .gd::after { content: ''; position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: var(--pp-glow); border-radius: 50%; }
+        .gd-sym{ font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+        .gd-n  { font-size: clamp(28px, 4vw, 36px); font-weight: 800; color: var(--pp); line-height: 1; margin-bottom: 3px; text-shadow: 0 0 20px rgba(168,85,247,.35); }
+        .gd-u  { font-size: 16px; }
+        .gd-d  { font-size: 13px; color: var(--sub); line-height: 1.6; margin-top: 3px; }
+        .gd-s  { font-size: 9px; font-weight: 700; color: var(--green); margin-top: 5px; }
+
+        /* TARGET CARDS */
+        .tgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+        .tc    { background: var(--bg); border: 1px solid var(--bd); border-radius: 4px; padding: 20px 18px; }
+        .tc-full { grid-column: 1/-1; border-color: var(--red); }
+        .tc-tag{ font-size: 9px; font-weight: 700; color: var(--pp); letter-spacing: 1.5px; margin-bottom: 8px; }
+        .tc-tag-r { color: var(--red); }
+        .tc-ttl{ font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.5; }
+        .tc-d  { font-size: 12px; color: var(--sub); line-height: 1.7; }
+
+        /* PROFILE */
+        .p-wrap { border: 1px solid var(--bd2); border-radius: 4px; background: var(--card); padding: 24px; margin-top: 24px; }
+        .p-top  { display: flex; gap: 18px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--bd); margin-bottom: 18px; }
+        .p-av   { width: 76px; height: 76px; border-radius: 4px; object-fit: cover; border: 2px solid rgba(168,85,247,.4); flex-shrink: 0; }
+        .p-name { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+        .p-role { font-size: 11px; color: var(--pp); font-weight: 600; margin-bottom: 8px; }
+        .p-desc { font-size: 13px; color: var(--sub); line-height: 1.85; }
+        .p-hl   { color: var(--pp); }
+        .p-stats{ display: grid; grid-template-columns: repeat(4,1fr); }
+        .ps     { text-align: center; padding: 12px 8px; border-right: 1px solid var(--bd); }
+        .ps:last-child { border-right: none; }
+        .ps-n   { font-size: 17px; font-weight: 700; color: var(--gold); margin-bottom: 3px; line-height: 1; }
+        .ps-n.g { color: var(--green); }
+        .ps-l   { font-size: 10px; color: var(--muted); }
+
+        /* ROLE CARDS */
+        .rgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
+        .rc    { background: var(--bg); border: 1px solid var(--bd); border-radius: 4px; padding: 15px 13px; }
+        .rc-n  { font-size: 9px; font-weight: 700; color: var(--pp); letter-spacing: 1px; margin-bottom: 6px; }
+        .rc-t  { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+        .rc-d  { font-size: 11px; color: var(--muted); line-height: 1.55; }
+
+        /* CURR BAR */
+        .cbar  { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--bd); border-radius: 4px; overflow: hidden; margin: 24px 0; }
+        .cb    { text-align: center; padding: 18px 10px; border-right: 1px solid var(--bd); }
+        .cb:last-child { border-right: none; }
+        .cb-n  { font-size: clamp(20px, 3vw, 28px); font-weight: 800; color: var(--pp); margin-bottom: 3px; line-height: 1; text-shadow: 0 0 16px rgba(168,85,247,.3); }
+        .cb-u  { font-size: 13px; }
+        .cb-l  { font-size: 11px; color: var(--muted); }
+
+        /* CURR CARDS */
+        .csecs { display: grid; gap: 8px; margin-top: 0; }
+        .csec  { background: var(--bg); border: 1px solid var(--bd); border-radius: 4px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+        .cs-num{ font-size: 28px; font-weight: 800; color: var(--bd2); line-height: 1; flex-shrink: 0; width: 36px; }
+        .cs-body { flex: 1; }
+        .cs-ttl  { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+        .cs-pts  { list-style: none; }
+        .cs-pts li { font-size: 12px; color: var(--muted); padding: 3px 0 3px 11px; position: relative; line-height: 1.5; }
+        .cs-pts li::before { content: '›'; position: absolute; left: 0; color: var(--pp); font-weight: 700; }
+        .cs-time { font-size: 11px; font-weight: 700; color: var(--pp); background: rgba(168,85,247,.12); border: 1px solid rgba(168,85,247,.2); padding: 3px 10px; border-radius: 2px; align-self: flex-start; white-space: nowrap; flex-shrink: 0; }
+
+        /* TIMELINE PRINCIPLES */
+        .timeline { margin-top: 24px; display: grid; gap: 0; position: relative; }
+        .timeline::before { content: ''; position: absolute; left: 20px; top: 24px; bottom: 24px; width: 1px; background: linear-gradient(to bottom, var(--pp), var(--cyan), var(--green)); }
+        .tl-item { display: flex; gap: 20px; padding: 0 0 24px 0; align-items: flex-start; position: relative; }
+        .tl-item:last-child { padding-bottom: 0; }
+        .tl-dot  { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--pp); background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
+        .tl-item:nth-child(2) .tl-dot { border-color: var(--cyan); }
+        .tl-item:nth-child(3) .tl-dot { border-color: var(--green); }
+        .tl-num  { font-size: 16px; font-weight: 800; color: var(--pp); }
+        .tl-item:nth-child(2) .tl-num { color: var(--cyan); }
+        .tl-item:nth-child(3) .tl-num { color: var(--green); }
+        .tl-body { background: var(--card); border: 1px solid var(--bd); border-radius: 4px; padding: 18px 20px; flex: 1; margin-top: 8px; }
+        .tl-tag  { font-size: 9px; font-weight: 700; color: var(--pp); letter-spacing: 1.5px; margin-bottom: 4px; }
+        .tl-item:nth-child(2) .tl-tag { color: var(--cyan); }
+        .tl-item:nth-child(3) .tl-tag { color: var(--green); }
+        .tl-ttl  { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+        .tl-desc { font-size: 13px; color: var(--sub); line-height: 1.8; }
+        .tl-src  { font-size: 10px; color: var(--muted); margin-top: 6px; font-weight: 600; }
+
+        /* BENEFITS */
+        .bgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+        .bi    { background: var(--card); border: 1px solid var(--bd); border-radius: 4px; padding: 16px 18px; display: flex; gap: 10px; align-items: flex-start; }
+        .bi-chk{ font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; margin-top: 1px; }
+        .bi-txt{ font-size: 13px; color: var(--sub); line-height: 1.65; }
+        .bi-txt strong { color: var(--text); }
+        .b-qt  { margin-top: 24px; padding: 22px; border: 1px solid rgba(168,85,247,.2); border-radius: 4px; background: rgba(168,85,247,.05); font-size: 15px; color: var(--pp); line-height: 1.8; font-style: italic; }
+
+        /* CTA */
+        .cta   { background: var(--card2); padding: 48px 40px; border-bottom: 1px solid var(--bd); text-align: center; }
+        .itbl  { border: 1px solid var(--bd); border-radius: 4px; overflow: hidden; margin: 24px 0; text-align: left; }
+        .i-row { display: flex; border-bottom: 1px solid var(--bd); }
+        .i-row:last-child { border-bottom: none; }
+        .i-key { font-size: 10px; font-weight: 700; color: var(--pp); background: rgba(168,85,247,.08); padding: 13px 14px; min-width: 70px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: .5px; border-right: 1px solid var(--bd); }
+        .i-val { font-size: 13px; color: var(--sub); padding: 13px 14px; line-height: 1.65; }
+        .btn-dk { display: inline-block; background: var(--pp); color: #fff; font-size: 15px; font-weight: 700; padding: 15px 50px; border-radius: 4px; text-decoration: none; box-shadow: 0 0 32px rgba(168,85,247,.3); }
+        .btn-note { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.9; }
+        .btn-note strong { color: var(--red); }
+
+        /* FOOTER */
+        .foot       { background: #000; border-top: 1px solid var(--bd); padding: 26px 40px; text-align: center; }
+        .foot-brand { font-size: 13px; font-weight: 700; color: var(--pp); margin-bottom: 5px; }
+        .foot-txt   { font-size: 11px; color: var(--muted); line-height: 1.8; }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .hero,.sw,.sd,.sd2,.cta,.foot { padding-left: 20px; padding-right: 20px; }
+            .announce { padding: 10px 20px; }
+            .h-grid { grid-template-columns: 1fr 1fr; }
+            .gdata  { grid-template-columns: 1fr; gap: 0; }
+            .tgrid  { grid-template-columns: 1fr; }
+            .p-top  { flex-direction: column; }
+            .p-stats{ grid-template-columns: 1fr 1fr; }
+            .cbar   { grid-template-columns: 1fr 1fr; }
+            .rgrid  { grid-template-columns: 1fr 1fr; }
+            .bgrid  { grid-template-columns: 1fr; }
+            .csec   { flex-direction: column; gap: 6px; }
+            .timeline::before { left: 15px; }
+            .tl-dot { width: 32px; height: 32px; }
+            .tl-num { font-size: 13px; }
+            .t-list { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- TICKER -->
+<div class="ticker">
+    <div class="t-brand">FRINDLE TV</div>
+    <div class="t-sep"></div>
+    <div class="t-list">
+        <div class="t-item"><span class="t-sym">구독자</span><span class="t-val">42,000 ▲</span></div>
+        <div class="t-item"><span class="t-sym">영상</span><span class="t-val">112편</span></div>
+        <div class="t-item"><span class="t-sym">분석비용</span><span class="t-val">42원/회 ▲</span></div>
+        <div class="t-item"><span class="t-sym">종목</span><span class="t-val">500+</span></div>
+    </div>
+    <div class="t-live"><div class="t-live-dot"></div><div class="t-live-txt">2026 봄 특강</div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="h-eyebrow">
+        <div class="h-pill">MARKET EDUCATION</div>
+        <div class="h-live"><div class="h-live-d"></div><div class="h-live-t">SPECIAL LECTURE</div></div>
+    </div>
+    <div class="h-h1"><span class="hl-g">42,000</span>명이 기다렸다.<br>미국주식 AI 시스템의 <span class="hl-p">모든 것.</span></div>
+    <div class="h-sub">
+        4,190명으로 시작해 42,000명이 됐다.<br>
+        그 3년 동안 만든 시스템을 3시간에 공개한다.<br>
+        500종목을 매일 분석하는 비용: <strong>42원.</strong>
+    </div>
+    <div class="h-div"></div>
+    <div class="h-grid">
+        <div class="hg-card gold"><div class="hg-lbl">YouTube 구독자</div><div class="hg-n go">42,000</div><div class="hg-chg">▲ 4,190 → 42,000</div></div>
+        <div class="hg-card"><div class="hg-lbl">주식투자 영상</div><div class="hg-n">112<span class="hg-u">편</span></div><div class="hg-chg">▲ Frindle TV</div></div>
+        <div class="hg-card green"><div class="hg-lbl">자동 분석 종목</div><div class="hg-n gr">500<span class="hg-u">+</span></div><div class="hg-chg">▲ 매일 업데이트</div></div>
+        <div class="hg-card"><div class="hg-lbl">1회 분석 비용</div><div class="hg-n">42<span class="hg-u">원</span></div><div class="hg-chg">▲ 月 $33.50</div></div>
+    </div>
+</div>
+
+<!-- ANNOUNCE -->
+<div class="announce">
+    <div class="an-badge">NOTICE</div>
+    <div class="an-txt">강의 일정은 Frindle TV 커뮤니티에서 확인하세요</div>
+    <div class="an-end">선착순 마감 →</div>
+</div>
+
+<!-- WHY NOW -->
+<div class="sw">
+    <div class="cat"><div class="ct">Why Now</div><div class="cl"></div></div>
+    <div class="h1">지금 AI 투자를 배우지 않으면<br>매년 두 달을 잃는다</div>
+    <div class="body">
+        <p>AI 도입 기업과 그렇지 않은 기업 간 생산성 격차는 하루 2시간이다. 연간으로 환산하면 500시간, 62.5일이다. 이 격차는 투자에서도 그대로 적용된다.</p>
+        <p>주식시장도 마찬가지다. AI를 쓰는 투자자와 쓰지 않는 투자자의 정보 처리 속도 차이는 매일 벌어지고 있다.</p>
+    </div>
+    <div class="abox">
+        <div class="abox-tag">ANALYSIS</div>
+        <div class="abox-txt">"복리는 세계 8번째 불가사의다. 이해하는 자는 벌고, 이해하지 못하는 자는 낸다." — Einstein</div>
+    </div>
+    <div class="gdata">
+        <div class="gd"><div class="gd-sym">WEF</div><div class="gd-n">850<span class="gd-u">만</span></div><div class="gd-d">AI로 대체될 미국 일자리</div><div class="gd-s">▲ World Economic Forum</div></div>
+        <div class="gd"><div class="gd-sym">FED · 2026.04</div><div class="gd-n">43<span class="gd-u">%</span></div><div class="gd-d">이미 AI를 사용 중인 미국 근로자</div><div class="gd-s">▲ Federal Reserve</div></div>
+        <div class="gd"><div class="gd-sym">GOLDMAN SACHS</div><div class="gd-n">5<span class="gd-u">배</span></div><div class="gd-d">AI 도입 기업의 생산성 상승</div><div class="gd-s">▲ Goldman Sachs Research</div></div>
+        <div class="gd"><div class="gd-sym">DELOITTE</div><div class="gd-n">56<span class="gd-u">%</span></div><div class="gd-d">AI 교육을 받지 못한 글로벌 근로자</div><div class="gd-s">▼ 교육 격차 현황</div></div>
+    </div>
+</div>
+
+<!-- FOR WHO -->
+<div class="sd">
+    <div class="cat"><div class="ct">For Who</div><div class="cl"></div></div>
+    <div class="h1">이런 분이 오시면 됩니다</div>
+    <div class="tgrid">
+        <div class="tc"><div class="tc-tag">TYPE 01</div><div class="tc-ttl">미국주식 시작하고 싶은데 무엇을 어떻게 봐야 할지 모르는 분</div><div class="tc-d">종목 선정부터 매수·매도 원칙까지, 3단계 투자 원칙으로 정리해드립니다.</div></div>
+        <div class="tc"><div class="tc-tag">TYPE 02</div><div class="tc-ttl">매일 차트를 보는데 수익이 나지 않는 분</div><div class="tc-d">Smart Money 흐름 추적법과 터틀 기법 기반 진입 원칙을 구체적으로 알려드립니다.</div></div>
+        <div class="tc"><div class="tc-tag">TYPE 03</div><div class="tc-ttl">AI가 뭔지는 아는데 투자에 실제로 써본 적 없는 분</div><div class="tc-d">500종목 자동 분석 시스템을 月 $33.50으로 구축하는 방법을 공개합니다.</div></div>
+        <div class="tc"><div class="tc-tag">TYPE 04</div><div class="tc-ttl">직장·육아·사업 병행 중 분석할 시간이 없는 분</div><div class="tc-d">하루 5분, AI가 종목을 골라주는 시스템. 12역할 강사가 직접 쓰는 방법입니다.</div></div>
+        <div class="tc tc-full"><div class="tc-tag tc-tag-r">NOT FOR</div><div class="tc-ttl">단기 급등주 추천, 종목 찍어주는 강의를 원하시는 분</div><div class="tc-d">이 강의는 특정 종목 추천이 없습니다. 스스로 판단하는 시스템을 갖추는 강의입니다. 투자 결정은 본인 판단과 책임입니다.</div></div>
+    </div>
+</div>
+
+<!-- INSTRUCTOR -->
+<div class="sw">
+    <div class="cat"><div class="ct">Instructor</div><div class="cl"></div></div>
+    <div class="h1">강사 소개 — Frindle (박지훈)</div>
+    <div class="p-wrap">
+        <div class="p-top">
+            <img src="../_images/프린들_profile.png" alt="Frindle" class="p-av"
+                 onerror="this.style.background='rgba(168,85,247,.15)';this.style.border='2px solid rgba(168,85,247,.35)';">
+            <div>
+                <div class="p-name">Frindle (박지훈)</div>
+                <div class="p-role">교보그룹 디플래닉스 조직장(임원) · Frindle TV 운영자</div>
+                <div class="p-desc">미국주식 20년. YouTube <span class="p-hl">구독자 42,000명</span>, 영상 <span class="p-hl">112편</span>.<br>동시에 150평 만화카페 사장, 8살 쌍둥이 아빠, AI 컨설턴트, 퀀트 시스템 개발자.<br><br>12개 역할을 7시간 수면으로 소화하는 비결:<br>Claude Code 4계정 + 17개 MCP 서버 + 500종목 자동 분석 시스템.</div>
+            </div>
+        </div>
+        <div class="p-stats">
+            <div class="ps"><div class="ps-n">42,000</div><div class="ps-l">YouTube 구독자</div></div>
+            <div class="ps"><div class="ps-n g">112</div><div class="ps-l">주식 영상</div></div>
+            <div class="ps"><div class="ps-n">20년</div><div class="ps-l">투자 경력</div></div>
+            <div class="ps"><div class="ps-n g">12</div><div class="ps-l">동시 역할</div></div>
+        </div>
+    </div>
+    <div style="margin-top:28px;">
+        <div class="cat"><div class="ct">12 Roles</div><div class="cl"></div></div>
+        <div class="rgrid">
+            <div class="rc"><div class="rc-n">ROLE 01</div><div class="rc-t">교보그룹 디플래닉스 조직장</div><div class="rc-d">KANDLE 금융/비금융 플랫폼 총괄. AI 전략·사업계획·개발</div></div>
+            <div class="rc"><div class="rc-n">ROLE 02</div><div class="rc-t">150평 만화카페 사장</div><div class="rc-d">웹/앱 직접 개발. 마케팅·인테리어·소송까지 직접 처리</div></div>
+            <div class="rc"><div class="rc-n">ROLE 03</div><div class="rc-t">주식 투자 강사</div><div class="rc-d">Frindle TV 112편. 온라인 과정 7파트 555슬라이드</div></div>
+            <div class="rc"><div class="rc-n">ROLE 04</div><div class="rc-t">8살 쌍둥이 아빠</div><div class="rc-d">결혼 늦게 해서 육아도 동시 진행</div></div>
+            <div class="rc"><div class="rc-n">ROLE 05</div><div class="rc-t">AI 컨설턴트</div><div class="rc-d">금융사 생성형 AI 도입 자문. CSP 안정성 평가·규제 대응</div></div>
+            <div class="rc"><div class="rc-n">ROLE 06</div><div class="rc-t">퀀트 시스템 개발자</div><div class="rc-d">Market Intelligence Terminal 직접 구축. 月 $33.50</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- CURRICULUM -->
+<div class="sd">
+    <div class="cat"><div class="ct">Curriculum</div><div class="cl"></div></div>
+    <div class="h1">3시간 커리큘럼 — 7개 섹션</div>
+    <div class="cbar">
+        <div class="cb"><div class="cb-n">160<span class="cb-u">분</span></div><div class="cb-l">강의 + Q&A</div></div>
+        <div class="cb"><div class="cb-n">7</div><div class="cb-l">핵심 섹션</div></div>
+        <div class="cb"><div class="cb-n">5</div><div class="cb-l">라이브 데모</div></div>
+        <div class="cb"><div class="cb-n">112</div><div class="cb-l">QR 딥링크</div></div>
+    </div>
+    <div class="csecs">
+        <div class="csec"><div class="cs-num">01</div><div class="cs-body"><div class="cs-ttl">Opening Hook — "세상이 빠르게 변하고 있다"</div><ul class="cs-pts"><li>강남 테헤란로 vs 뒷골목 — 한 도시 안에 30년 격차</li><li>AI 충격 통계 4개: 850만 · 43% · 5배 · 56%</li><li>2026년이 마지막 기회인 이유</li><li>3단계 투자 원칙 대전제 공개</li></ul></div><div class="cs-time">15분</div></div>
+        <div class="csec"><div class="cs-num">02</div><div class="cs-body"><div class="cs-ttl">나는 이렇게 빡세게 산다 — AI 없으면 불가능한 삶</div><ul class="cs-pts"><li>12역할 공개 — AI가 없으면 불가능하다는 증거</li><li>Claude Code 4계정 + $800→$400 비용 최적화</li><li>5연발 라이브 데모: PLAUD · 주간보고 · 500종목 · LLM Wiki</li><li>YouTube 112편 → LLM Wiki → 투자 시스템 파이프라인</li></ul></div><div class="cs-time">20분</div></div>
+        <div class="csec"><div class="cs-num">03</div><div class="cs-body"><div class="cs-ttl">Market Intelligence Terminal — 500종목 AI 분석 시스템</div><ul class="cs-pts"><li>6-Factor Screening: 기술적·펀더멘털·센티먼트·뉴스·거래량·기관</li><li>月 $33.50으로 500종목 실시간 분석하는 방법</li><li>대시보드 라이브 데모 — 1회 42원 비용 구조</li><li>Smart Money 기관 매집 포착 기법 — 13F 공시</li></ul></div><div class="cs-time">30분</div></div>
+        <div class="csec"><div class="cs-num">04</div><div class="cs-body"><div class="cs-ttl">투자 방법론 — Smart Money · 터틀 · ETF 3단계 심화</div><ul class="cs-pts"><li>3단계 투자 원칙 심화 — 13F · 52주 신고가 · SPY/QQQ</li><li>Richard Dennis 터틀 기법 — 오르는 주식만 사는 원칙</li><li>매수·매도·손절 원칙 — 떨어지는 칼날 잡지 않는 법</li><li>포트폴리오 리밸런싱 — 버핏의 인덱스 전략</li></ul></div><div class="cs-time">45분</div></div>
+        <div class="csec"><div class="cs-num">05</div><div class="cs-body"><div class="cs-ttl">최신 트렌드 — 지금 시장이 주목하는 섹터</div><ul class="cs-pts"><li>2026년 AI · 반도체 · 바이오 섹터 현황 데이터</li><li>로보어드바이저 트렌드와 개인 투자자 전략</li><li>GitHub Top10 분석 — 개발자 시각으로 보는 시장</li></ul></div><div class="cs-time">25분</div></div>
+        <div class="csec"><div class="cs-num">06</div><div class="cs-body"><div class="cs-ttl">한국투자증권 API 자동매매 — 시스템 연결</div><ul class="cs-pts"><li>Market Intelligence Terminal → 자동매매 연결 구조</li><li>한국투자증권 OpenAPI 실전 설정 방법</li><li>조건 충족 시 자동 매수·매도 주문 아키텍처</li></ul></div><div class="cs-time">10분</div></div>
+        <div class="csec"><div class="cs-num">07</div><div class="cs-body"><div class="cs-ttl">종합 클로징 + Q&A</div><ul class="cs-pts"><li>3단계 투자 원칙 재확인 — 오늘 당장 실행할 1가지</li><li>수강생 질의응답 자유 진행</li><li>온라인 과정 안내 — 7파트 555슬라이드</li></ul></div><div class="cs-time">5분+Q&A</div></div>
+    </div>
+</div>
+
+<!-- PRINCIPLES -->
+<div class="sw">
+    <div class="cat"><div class="ct">Investment Principles</div><div class="cl"></div></div>
+    <div class="h1">3단계 투자 원칙<br>— 오늘 이것만 기억하세요</div>
+    <div class="body"><p>"1단계를 할 수 있으면 1단계. 못하면 2단계. 그것도 못하면 3단계. 핑계가 없습니다."</p></div>
+    <div class="timeline">
+        <div class="tl-item">
+            <div class="tl-dot"><div class="tl-num">1</div></div>
+            <div class="tl-body"><div class="tl-tag">STEP 01 · ADVANCED</div><div class="tl-ttl">Smart Money를 따라가라</div><div class="tl-desc">기관과 헤지펀드가 매집하는 종목을 추적한다. 13F 공시, 거래량 이상, 기관 보유 비중 변화를 확인 후 진입한다. Market Intelligence Terminal 6-Factor Screening으로 자동화 가능.</div><div class="tl-src">▶ 근거: Market Intelligence Terminal 6-Factor Screening</div></div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-dot"><div class="tl-num">2</div></div>
+            <div class="tl-body"><div class="tl-tag">STEP 02 · INTERMEDIATE</div><div class="tl-ttl">오르는 주식을 사라 (터틀 기법)</div><div class="tl-desc">이미 오르고 있는 주식을 산다. 떨어지는 칼날을 잡지 않는다. 52주 신고가 돌파, 이동평균선 정배열, 거래량 확인 후 진입한다.</div><div class="tl-src">▶ 근거: Richard Dennis 터틀 트레이딩</div></div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-dot"><div class="tl-num">3</div></div>
+            <div class="tl-body"><div class="tl-tag">STEP 03 · BEGINNER</div><div class="tl-ttl">그것도 못 하면 ETF를 사라</div><div class="tl-desc">종목 선정이 어려우면 SPY/QQQ를 떨어질 때 조금씩 산다. 매달 적립, 10년 복리. 이것만 해도 상위 20%에 든다.</div><div class="tl-src">▶ 근거: 버핏 "인덱스 펀드에 투자하라"</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- WHAT YOU GET -->
+<div class="sd2">
+    <div class="cat"><div class="ct">What You Get</div><div class="cl"></div></div>
+    <div class="h1">3시간 후 가져가는 것</div>
+    <div class="bgrid">
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>3단계 투자 원칙</strong> — 종목 선정부터 매수·매도까지, 핑계 없는 기준</div></div>
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>500종목 AI 분석 설계도</strong> — 月 $33.50으로 구축하는 방법</div></div>
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>Claude Code 비용 최적화 3가지</strong> — $800→$400 설정법</div></div>
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>YouTube 112편 QR 딥링크</strong> — 섹션별 핵심 영상 즉시 연결</div></div>
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>한투 API 자동매매 구조도</strong> — 분석에서 주문까지 연결 설계</div></div>
+        <div class="bi"><div class="bi-chk">✓</div><div class="bi-txt"><strong>강의 핵심 자료</strong> — 3단계 원칙 · 통계 · 커리큘럼 요약본</div></div>
+    </div>
+    <div class="b-qt">"아는 것만으로 충분하지 않다. 적용해야만 한다.<br>의지만으로는 충분하지 않다. 실행해야 한다." — Goethe</div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+    <div class="cat" style="justify-content:center;"><div class="cl" style="max-width:48px;"></div><div class="ct">신청 안내</div><div class="cl" style="max-width:48px;"></div></div>
+    <div class="h1" style="text-align:center;">3시간 후, 투자 원칙과 AI 무기를<br>둘 다 갖고 나갑니다</div>
+    <div class="itbl">
+        <div class="i-row"><div class="i-key">일시</div><div class="i-val">추후 공지 — Frindle TV 커뮤니티 확인</div></div>
+        <div class="i-row"><div class="i-key">장소</div><div class="i-val">추후 공지</div></div>
+        <div class="i-row"><div class="i-key">정원</div><div class="i-val">선착순 마감</div></div>
+        <div class="i-row"><div class="i-key">강의</div><div class="i-val">AI시대 미국주식 투자 3시간 특강 (160분 + Q&A)</div></div>
+        <div class="i-row"><div class="i-key">면책</div><div class="i-val">본 강의는 투자 교육 목적이며 특정 종목·ETF·자산에 대한 매수/매도 추천이 아닙니다. 투자 결정은 본인 판단과 책임입니다.</div></div>
+    </div>
+    <a class="btn-dk" href="#">신청하기</a>
+    <div class="btn-note"><strong>주의:</strong> 특정 종목 추천 없음 — 투자 판단은 본인 책임입니다.<br>Frindle TV 구독 후 커뮤니티에서 일정을 확인하세요.</div>
+</div>
+
+<!-- FOOTER -->
+<div class="foot">
+    <div class="foot-brand">Frindle TV · 미국주식 투자 채널</div>
+    <div class="foot-txt">YouTube 42,000명 구독 · 주식투자 영상 112편<br>본 강의 자료는 투자 교육 목적이며 특정 종목 추천이 아닙니다.<br>투자 결정은 본인 판단과 책임하에 이루어져야 합니다.</div>
+</div>
+
+</div>
+</body>
+</html>

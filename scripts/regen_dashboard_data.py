@@ -13,12 +13,15 @@ from __future__ import annotations
 import csv
 import json
 import logging
+import sys
 from dataclasses import asdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
 logger = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "output"
 DATA_DIR = ROOT / "data"
 

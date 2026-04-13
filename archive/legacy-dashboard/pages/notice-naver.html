@@ -1,0 +1,345 @@
+<style>.hero::before {content:"" !important;position:absolute !important;right:-80px !important;top:-80px !important;width:380px !important;height:380px !important;background:radial-gradient(circle, rgba(168, 85, 247, 0.22) 0%, transparent 62%) !important;pointer-events:none !important}
+.hero::after {content:"" !important;position:absolute !important;left:-60px !important;bottom:-40px !important;width:220px !important;height:220px !important;background:radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 60%) !important;pointer-events:none !important}
+.scr-row:nth-child(even) {background:#F7F7F7 !important}
+.ct-row:nth-child(even) {background:#F7F7F7 !important}
+.ct-pts li::before {content:"›" !important;position:absolute !important;left:0 !important;color:#6001D2 !important;font-weight:700 !important}
+.timeline::before {content:"" !important;position:absolute !important;left:19px !important;top:28px !important;bottom:28px !important;width:1px !important;background:linear-gradient(to bottom, #6001D2, #22D3EE 50%, #22C55E) !important}
+.tl-item:nth-child(2) .tl-dot {border-color:#22D3EE !important}
+.tl-item:nth-child(3) .tl-dot {border-color:#22C55E !important}
+.tl-item:nth-child(2) .tl-num {color:#22D3EE !important}
+.tl-item:nth-child(3) .tl-num {color:#22C55E !important}
+.tl-item:nth-child(2) .tl-tag {color:#22D3EE !important}
+.tl-item:nth-child(3) .tl-tag {color:#22C55E !important}
+.yt-url:hover {color:#fff !important}
+@media (max-width: 600px) {
+    .hero, .sw, .sl, .sdk, .sdk2, .cta, .foot {
+        padding-left: 20px !important;
+        padding-right: 20px !important
+        }
+    .strip {
+        padding: 10px 20px !important
+        }
+    .h-stats {
+        grid-template-columns: 1fr 1fr !important
+        }
+    .mdata {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important
+        }
+    .scr-hd, .scr-row {
+        grid-template-columns: 60px 1fr !important
+        }
+    .scr-hdc:last-child, .scr-desc {
+        display: none !important
+        }
+    .p-top {
+        flex-direction: column !important
+        }
+    .p-stats {
+        grid-template-columns: 1fr 1fr !important
+        }
+    .rgrid {
+        grid-template-columns: 1fr 1fr !important
+        }
+    .cbar {
+        grid-template-columns: 1fr 1fr !important
+        }
+    .ct-hd {
+        grid-template-columns: 32px 1fr 50px !important
+        }
+    .ct-row {
+        grid-template-columns: 32px 1fr 50px !important
+        }
+    .timeline::before {
+        left: 15px !important
+        }
+    .tl-dot {
+        width: 32px !important;
+        height: 32px !important
+        }
+    .tl-num {
+        font-size: 12px !important
+        }
+    .bgrid {
+        grid-template-columns: 1fr !important
+        }
+    .tk-list {
+        display: none !important
+        }
+    .ss-grid {
+        grid-template-columns: 1fr 1fr !important
+        }
+    .bonus-grid {
+        grid-template-columns: 1fr !important
+        }
+    }</style>
+
+<div class="wrap" style="max-width:800px; margin:0 auto">
+<!-- ═══════════════ TICKER ═══════════════ -->
+<div class="ticker" height="36" style="background:#000; height:36px; padding:0 32px; display:flex; align-items:center; gap:18px; border-bottom:1px solid #1a1a1a">
+<div class="tk-brand" style="font-size:11px; font-weight:800; color:#A855F7; letter-spacing:1.5px; flex-shrink:0">프린들tv</div>
+<div class="tk-sep" height="13" style="width:1px; height:13px; background:#2a2a2a; flex-shrink:0" width="1"></div>
+<div class="tk-list" style="display:flex; gap:22px; flex:1; overflow:hidden">
+<div class="tk-item" style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span class="tk-sym" style="font-size:9px; font-weight:600; color:#555">구독자</span><span class="tk-val" style="font-size:11px; font-weight:700; color:#22C55E">42,000 ▲</span></div>
+<div class="tk-item" style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span class="tk-sym" style="font-size:9px; font-weight:600; color:#555">영상</span><span class="tk-val" style="font-size:11px; font-weight:700; color:#22C55E">112편</span></div>
+<div class="tk-item" style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span class="tk-sym" style="font-size:9px; font-weight:600; color:#555">분석비용</span><span class="tk-val" style="font-size:11px; font-weight:700; color:#22C55E">42원/회 ▲</span></div>
+<div class="tk-item" style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span class="tk-sym" style="font-size:9px; font-weight:600; color:#555">자동분석</span><span class="tk-val" style="font-size:11px; font-weight:700; color:#22C55E">500+ 종목</span></div>
+</div>
+<div class="tk-live" style="margin-left:auto; flex-shrink:0; display:flex; align-items:center; gap:5px"><div class="tk-dot" height="5" style="width:5px; height:5px; border-radius:50%; background:#22C55E; box-shadow:0 0 6px #22C55E; animation:blink 2s infinite" width="5"></div><div class="tk-txt" style="font-size:9px; font-weight:800; color:#22C55E; letter-spacing:1.5px">2026 봄 특강</div></div>
+</div>
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero" style="background:linear-gradient(rgba(11, 11, 15, 0.8), rgba(11, 11, 15, 0.8)), url(../images/AYP.png) center/cover no-repeat #0B0B0F; padding:52px 40px 60px; position:relative; overflow:hidden">
+<div class="h-eyebrow" style="display:flex; align-items:center; gap:10px; margin-bottom:22px">
+<div class="h-pill" style="background:rgba(168, 85, 247, 0.15); border:1px solid rgba(168, 85, 247, 0.4); color:#A855F7; font-size:9px; font-weight:700; letter-spacing:2px; padding:4px 12px; border-radius:2px">AWAKE YOUR POSSIBILITY  ·  MARKET EDUCATION</div>
+<div class="h-live-wrap" style="display:flex; align-items:center; gap:5px"><div class="h-live-d" height="5" style="width:5px; height:5px; border-radius:50%; background:#22C55E; box-shadow:0 0 8px #22C55E; animation:blink 2s infinite" width="5"></div><div class="h-live-t" style="font-size:9px; font-weight:700; color:#22C55E; letter-spacing:1px">LIVE NOTICE</div></div>
+</div>
+<div class="h-h1" style="font-size:clamp(26px, 4.5vw, 42px); font-weight:800; color:#fff; line-height:1.25; margin-bottom:16px">
+        3년 전, 홀연히 사라졌던<br/>
+<span class="hl-gold" style="color:#F5A623; text-shadow:0 0 28px rgba(245, 166, 35, 0.35)">프린들</span>
+</div>
+<div class="h-awake" style="font-size:clamp(17px, 2.8vw, 24px); font-weight:700; color:#fff; letter-spacing:0.2px; margin-bottom:22px; line-height:1.3">
+        아무 말 없이 사라졌던 프린들이<br/>
+        보여줄 것이 생겼습니다
+    </div>
+<div class="h-sub" style="font-size:14px; color:rgba(255, 255, 255, 0.88); line-height:1.95; margin-bottom:36px">
+        미국주식 <strong style="color:#fff">500종목</strong>을<br/>
+        하루 <strong style="color:#fff">5분</strong>, AI가 골라주는 자동 분석 시스템을 만들었습니다
+    </div>
+<div class="h-awake" style="font-size:clamp(17px, 2.8vw, 24px); font-weight:700; color:#fff; letter-spacing:0.2px; margin-bottom:22px; line-height:1.3">
+        3년을 기다리셨으니,<br/>
+<span class="hl-gold" style="color:#F5A623; text-shadow:0 0 28px rgba(245, 166, 35, 0.35)">3시간에 전부 드리겠습니다</span>
+</div>
+<div class="h-rule" height="1" style="height:1px; background:rgba(255, 255, 255, 0.07); margin-bottom:28px"></div>
+<div class="h-label" style="font-size:12px; color:rgba(255, 255, 255, 0.8); margin-bottom:18px">
+<strong style="color:#fff">6년 만의 오프라인 강의</strong>  ·  다음 강의는 12년을 기다릴 수 있습니다
+    </div>
+<div class="h-stats" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px">
+<div class="hs-card gold" style="background:#141418; border:1px solid #252530; border-top:2px solid #A855F7; border-radius:3px; padding:14px 12px; border-top-color:#F5A623">
+<div class="hs-lbl" style="font-size:9px; color:rgba(255, 255, 255, 0.32); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.7px">YouTube 구독자</div>
+<div class="hs-n go" style="font-size:18px; font-weight:800; color:#F5A623; line-height:1; margin-bottom:3px; text-shadow:0 0 16px rgba(245, 166, 35, 0.3)">42,000</div>
+<div class="hs-chg" style="font-size:10px; color:#22C55E">▲ 0에서 시작</div>
+</div>
+<div class="hs-card gold" style="background:#141418; border:1px solid #252530; border-top:2px solid #A855F7; border-radius:3px; padding:14px 12px; border-top-color:#F5A623">
+<div class="hs-lbl" style="font-size:9px; color:rgba(255, 255, 255, 0.32); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.7px">오프라인 강의</div>
+<div class="hs-n go" style="font-size:18px; font-weight:800; color:#F5A623; line-height:1; margin-bottom:3px; text-shadow:0 0 16px rgba(245, 166, 35, 0.3)">6<span class="hs-u" style="font-size:11px">년만</span></div>
+<div class="hs-chg" style="font-size:10px; color:#22C55E">▲ 다음은 12년 후</div>
+</div>
+<div class="hs-card green" style="background:#141418; border:1px solid #252530; border-top:2px solid #A855F7; border-radius:3px; padding:14px 12px; border-top-color:#22C55E">
+<div class="hs-lbl" style="font-size:9px; color:rgba(255, 255, 255, 0.32); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.7px">자동 분석 종목</div>
+<div class="hs-n gr" style="font-size:18px; font-weight:800; color:#22C55E; line-height:1; margin-bottom:3px">500<span class="hs-u" style="font-size:11px">+</span></div>
+<div class="hs-chg" style="font-size:10px; color:#22C55E">▲ 하루 5분</div>
+</div>
+<div class="hs-card cyan" style="background:#141418; border:1px solid #252530; border-top:2px solid #A855F7; border-radius:3px; padding:14px 12px; border-top-color:#22D3EE">
+<div class="hs-lbl" style="font-size:9px; color:rgba(255, 255, 255, 0.32); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.7px">1회 분석 비용</div>
+<div class="hs-n cy" style="font-size:18px; font-weight:800; color:#22D3EE; line-height:1; margin-bottom:3px">42<span class="hs-u" style="font-size:11px">원</span></div>
+<div class="hs-chg" style="font-size:10px; color:#22C55E">▲ 月 $33.50</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ STRIP ═══════════════ -->
+<div class="strip" style="background:#6001D2; padding:11px 40px; display:flex; align-items:center; gap:12px">
+<div class="st-badge" style="background:#fff; color:#6001D2; font-size:9px; font-weight:800; padding:2px 8px; border-radius:2px; letter-spacing:1px; flex-shrink:0">NOTICE</div>
+<div class="st-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.92)">6년 만의 오프라인 강의  ·  다음 강의는 12년을 기다릴 수 있습니다</div>
+<div class="st-end" style="margin-left:auto; font-size:11px; color:rgba(255, 255, 255, 0.65); font-weight:600; flex-shrink:0">선착순 마감</div>
+</div>
+<!-- ═══════════════ WHY NOW ═══════════════ -->
+<div class="sw" style="padding:48px 40px; border-bottom:1px solid #E4E4E4; background:#FFF">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; text-transform:uppercase; white-space:nowrap">Why Now</div><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4"></div></div>
+<div class="h1" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#0F0F1A; line-height:1.35; margin-bottom:16px">AI를 모르는 투자자는<br/>매년 <span style="color:#6001D2;">두 달치 시간</span>을 그냥 버립니다</div>
+<div class="body" style="font-size:15px; color:#383838; line-height:1.9">
+<p style="margin-bottom:10px">사람이 종목 하나를 분석하는 데 평균 30분이 걸립니다. AI를 쓰는 투자자는 같은 일을 6초에 끝냅니다. 500종목으로 환산하면 연간 500시간 — 두 달치 근무 시간이 매년 격차로 쌓입니다.</p>
+<p style="margin-bottom:10px">문제는 AI 도구가 없는 게 아닙니다. 투자에 어떻게 붙이는지 아는 사람이 없는 겁니다. ChatGPT에 "이 주식 사도 돼?"라고 묻는 건 AI 활용이 아니라 점괘 보기입니다. 원칙이 먼저, 도구는 그다음입니다. 순서가 바뀌면 손실만 자동화됩니다.</p>
+</div>
+<div class="abox" style="margin:22px 0; border-left:3px solid #6001D2; background:#F7F7F7; padding:18px 22px">
+<div class="abox-tag" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; margin-bottom:7px">INSIGHT</div>
+<div class="abox-txt" style="font-size:14px; font-weight:500; color:#383838; line-height:1.75; font-style:italic">"세상에는 두 종류의 투자자가 있다. 시스템을 가진 사람, 그리고 시스템에 끌려가는 사람."</div>
+</div>
+<div class="mdata" style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#E4E4E4; border:1px solid #E4E4E4; border-radius:4px; overflow:hidden; margin-top:24px">
+<div class="md" style="background:#FFF; padding:22px 18px"><div class="md-sym" style="font-size:9px; font-weight:700; color:#787878; letter-spacing:1px; margin-bottom:5px; text-transform:uppercase">WEF</div><div class="md-n" style="font-size:clamp(26px, 3.5vw, 34px); font-weight:800; color:#6001D2; line-height:1; margin-bottom:3px">850<span class="md-u" style="font-size:16px">만</span></div><div class="md-d" style="font-size:13px; color:#383838; line-height:1.6; margin-top:3px">AI로 대체될 미국 일자리</div><div class="md-s" style="font-size:9px; font-weight:700; color:#22C55E; margin-top:5px; letter-spacing:0.5px">▲ World Economic Forum</div></div>
+<div class="md" style="background:#FFF; padding:22px 18px"><div class="md-sym" style="font-size:9px; font-weight:700; color:#787878; letter-spacing:1px; margin-bottom:5px; text-transform:uppercase">FED · 2026.04</div><div class="md-n" style="font-size:clamp(26px, 3.5vw, 34px); font-weight:800; color:#6001D2; line-height:1; margin-bottom:3px">43<span class="md-u" style="font-size:16px">%</span></div><div class="md-d" style="font-size:13px; color:#383838; line-height:1.6; margin-top:3px">이미 AI를 사용 중인 미국 근로자</div><div class="md-s" style="font-size:9px; font-weight:700; color:#22C55E; margin-top:5px; letter-spacing:0.5px">▲ Federal Reserve</div></div>
+<div class="md" style="background:#FFF; padding:22px 18px"><div class="md-sym" style="font-size:9px; font-weight:700; color:#787878; letter-spacing:1px; margin-bottom:5px; text-transform:uppercase">GOLDMAN SACHS</div><div class="md-n" style="font-size:clamp(26px, 3.5vw, 34px); font-weight:800; color:#6001D2; line-height:1; margin-bottom:3px">5<span class="md-u" style="font-size:16px">배</span></div><div class="md-d" style="font-size:13px; color:#383838; line-height:1.6; margin-top:3px">AI 도입 기업의 생산성 상승</div><div class="md-s" style="font-size:9px; font-weight:700; color:#22C55E; margin-top:5px; letter-spacing:0.5px">▲ Goldman Sachs Research</div></div>
+<div class="md" style="background:#FFF; padding:22px 18px"><div class="md-sym" style="font-size:9px; font-weight:700; color:#787878; letter-spacing:1px; margin-bottom:5px; text-transform:uppercase">DELOITTE</div><div class="md-n" style="font-size:clamp(26px, 3.5vw, 34px); font-weight:800; color:#6001D2; line-height:1; margin-bottom:3px">56<span class="md-u" style="font-size:16px">%</span></div><div class="md-d" style="font-size:13px; color:#383838; line-height:1.6; margin-top:3px">AI 교육을 받지 못한 글로벌 근로자</div><div class="md-s" style="font-size:9px; font-weight:700; color:#22C55E; margin-top:5px; letter-spacing:0.5px">▼ 교육 격차 현황</div></div>
+</div>
+</div>
+<!-- ═══════════════ FOR WHO (screener table from yahoo_1) ═══════════════ -->
+<div class="sl" style="padding:48px 40px; border-bottom:1px solid #E4E4E4; background:#F7F7F7">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; text-transform:uppercase; white-space:nowrap">For Who</div><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4"></div></div>
+<div class="h1" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#0F0F1A; line-height:1.35; margin-bottom:16px">이런 분이라면<br/>3시간이 1년치 시행착오를 줄여줍니다</div>
+<div class="screener" style="border:1px solid #E4E4E4; border-radius:4px; overflow:hidden; margin-top:24px">
+<div class="scr-hd" style="background:#F0E6FF; display:grid; grid-template-columns:72px 1fr 1fr; padding:9px 16px; gap:12px">
+<div class="scr-hdc" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1px; text-transform:uppercase">TYPE</div>
+<div class="scr-hdc" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1px; text-transform:uppercase">대상</div>
+<div class="scr-hdc" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1px; text-transform:uppercase">강의에서 얻는 것</div>
+</div>
+<div class="scr-row" style="display:grid; grid-template-columns:72px 1fr 1fr; padding:14px 16px; gap:12px; border-top:1px solid #E4E4E4; align-items:start"><div><span class="scr-tag" style="display:inline-block; font-size:9px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:2px 7px; border-radius:2px; align-self:flex-start; white-space:nowrap">TYPE 01</span></div><div class="scr-title" style="font-size:13px; font-weight:600; color:#0F0F1A; line-height:1.5">미국주식 시작하고 싶은데 무엇을 어떻게 봐야 할지 모르는 분</div><div class="scr-desc" style="font-size:12px; color:#787878; line-height:1.65">종목 선정부터 매수·매도 원칙까지, 3단계 투자 원칙으로 정리해드립니다.</div></div>
+<div class="scr-row" style="display:grid; grid-template-columns:72px 1fr 1fr; padding:14px 16px; gap:12px; border-top:1px solid #E4E4E4; align-items:start"><div><span class="scr-tag" style="display:inline-block; font-size:9px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:2px 7px; border-radius:2px; align-self:flex-start; white-space:nowrap">TYPE 02</span></div><div class="scr-title" style="font-size:13px; font-weight:600; color:#0F0F1A; line-height:1.5">매일 차트를 보는데 수익이 나지 않는 분</div><div class="scr-desc" style="font-size:12px; color:#787878; line-height:1.65">Smart Money 흐름 추적법과 터틀 기법 기반 진입 원칙을 구체적으로 알려드립니다.</div></div>
+<div class="scr-row" style="display:grid; grid-template-columns:72px 1fr 1fr; padding:14px 16px; gap:12px; border-top:1px solid #E4E4E4; align-items:start"><div><span class="scr-tag" style="display:inline-block; font-size:9px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:2px 7px; border-radius:2px; align-self:flex-start; white-space:nowrap">TYPE 03</span></div><div class="scr-title" style="font-size:13px; font-weight:600; color:#0F0F1A; line-height:1.5">AI가 뭔지는 아는데 투자에 실제로 써본 적 없는 분</div><div class="scr-desc" style="font-size:12px; color:#787878; line-height:1.65">500종목 자동 분석 시스템을 月 $33.50으로 구축하는 방법을 공개합니다.</div></div>
+<div class="scr-row" style="display:grid; grid-template-columns:72px 1fr 1fr; padding:14px 16px; gap:12px; border-top:1px solid #E4E4E4; align-items:start"><div><span class="scr-tag" style="display:inline-block; font-size:9px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:2px 7px; border-radius:2px; align-self:flex-start; white-space:nowrap">TYPE 04</span></div><div class="scr-title" style="font-size:13px; font-weight:600; color:#0F0F1A; line-height:1.5">직장·육아·사업 병행 중 분석할 시간이 없는 분</div><div class="scr-desc" style="font-size:12px; color:#787878; line-height:1.65">하루 5분, AI가 종목을 골라주는 시스템. 12역할 강사가 직접 쓰는 방법입니다.</div></div>
+<div class="scr-row" style="display:grid; grid-template-columns:72px 1fr 1fr; padding:14px 16px; gap:12px; border-top:1px solid #E4E4E4; align-items:start"><div><span class="scr-tag scr-tag-r" style="display:inline-block; font-size:9px; font-weight:700; color:#EF4444; background:#FFECEC; padding:2px 7px; border-radius:2px; align-self:flex-start; white-space:nowrap">NOT FOR</span></div><div class="scr-title" style="font-size:13px; font-weight:600; color:#0F0F1A; line-height:1.5">단기 급등주 추천, 종목 찍어주는 강의를 원하시는 분</div><div class="scr-desc" style="font-size:12px; color:#787878; line-height:1.65">이 강의는 특정 종목 추천이 없습니다. 스스로 판단하는 시스템을 갖추는 강의입니다.</div></div>
+</div>
+</div>
+<!-- ═══════════════ INSTRUCTOR (dark section) ═══════════════ -->
+<div class="sdk" style="padding:48px 40px; border-bottom:1px solid #252530; background:#141418">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct-dk" style="font-size:9px; font-weight:700; color:rgba(168, 85, 247, 0.6); letter-spacing:2px; text-transform:uppercase; white-space:nowrap">Instructor</div><div class="cl-dk" height="1" style="flex:1; height:1px; background:#252530"></div></div>
+<div class="h1 h1-lt" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#fff; line-height:1.35; margin-bottom:16px">강사 소개</div>
+<div class="p-card" style="border:1px solid #252530; border-radius:4px; background:#0B0B0F; padding:24px; margin-top:24px">
+<div class="p-top" style="display:flex; gap:18px; align-items:flex-start; padding-bottom:18px; border-bottom:1px solid #252530; margin-bottom:18px">
+<img alt="Frindle" class="p-av" height="76" onerror="this.style.background='rgba(168,85,247,.15)';this.style.border='2px solid rgba(168,85,247,.35)';" src="../images/%ED%94%84%EB%A6%B0%EB%93%A4CI.png" style="width:76px; height:76px; border-radius:4px; object-fit:cover; border:2px solid rgba(168, 85, 247, 0.4); flex-shrink:0" width="76"/>
+<div>
+<div class="p-name" style="font-size:18px; font-weight:800; color:#fff; margin-bottom:3px">Frindle</div>
+<div class="p-role" style="font-size:11px; color:#A855F7; font-weight:600; margin-bottom:8px">프린들tv 운영자, 금융그룹 조직장, AI 컨설턴트, 퀀트 시스템 개발자</div>
+<div class="p-desc" style="font-size:13px; color:rgba(255, 255, 255, 0.58); line-height:1.85">미국주식 20년. YouTube <span class="p-hl" style="color:#A855F7">구독자 42,000명</span>, 영상 <span class="p-hl" style="color:#A855F7">112편</span>.<br/>동시에 150평 만화카페 사장, AI 컨설턴트, 퀀트 시스템 개발자.<br/><br/>12개 역할을 7시간 수면으로 소화하는 비결:<br/>Claude Code 4계정 + 17개 MCP 서버 + 500종목 자동 분석 시스템.</div>
+</div>
+</div>
+<div class="p-stats" style="display:grid; grid-template-columns:repeat(4, 1fr)">
+<div align="center" class="ps" style="text-align:center; padding:12px 6px; border-right:1px solid #252530"><div class="ps-n" style="font-size:16px; font-weight:700; color:#F5A623; margin-bottom:3px; line-height:1">42,000</div><div class="ps-l" style="font-size:10px; color:rgba(255, 255, 255, 0.3)">YouTube 구독자</div></div>
+<div align="center" class="ps" style="text-align:center; padding:12px 6px; border-right:1px solid #252530"><div class="ps-n g" style="font-size:16px; font-weight:700; color:#22C55E; margin-bottom:3px; line-height:1">112</div><div class="ps-l" style="font-size:10px; color:rgba(255, 255, 255, 0.3)">주식 영상</div></div>
+<div align="center" class="ps" style="text-align:center; padding:12px 6px; border-right:1px solid #252530"><div class="ps-n" style="font-size:16px; font-weight:700; color:#F5A623; margin-bottom:3px; line-height:1">20년</div><div class="ps-l" style="font-size:10px; color:rgba(255, 255, 255, 0.3)">투자 경력</div></div>
+<div align="center" class="ps" style="text-align:center; padding:12px 6px; border-right:none"><div class="ps-n g" style="font-size:16px; font-weight:700; color:#22C55E; margin-bottom:3px; line-height:1">12</div><div class="ps-l" style="font-size:10px; color:rgba(255, 255, 255, 0.3)">동시 역할</div></div>
+</div>
+</div>
+<div class="yt-card" style="margin-top:22px; border-radius:4px; overflow:hidden; position:relative">
+<img alt="프린들tv YouTube 채널" class="yt-img" src="../images/%EC%9C%A0%ED%8A%9C%EB%B8%8C.png" style="width:100%; display:block" width="100%"/>
+<div class="yt-over" style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0, 0, 0, 0.88)); padding:20px 18px 14px">
+<a class="yt-url" href="https://www.youtube.com/@TV-vv1oc" style="font-size:12px; color:#A855F7; font-weight:700; text-decoration:none" target="_blank">youtube.com/@TV-vv1oc</a>
+<div class="yt-sub" style="font-size:10px; color:rgba(255, 255, 255, 0.5); margin-top:3px">구독자 42,000명 · 주식투자 영상 112편</div>
+</div>
+</div>
+<div style="margin-top:28px;">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct-dk" style="font-size:9px; font-weight:700; color:rgba(168, 85, 247, 0.6); letter-spacing:2px; text-transform:uppercase; white-space:nowrap">12 Roles — AI 없이 불가능한 삶의 증거</div><div class="cl-dk" height="1" style="flex:1; height:1px; background:#252530"></div></div>
+<div class="rgrid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:20px">
+<div class="rc" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:14px 13px"><div class="rc-n" style="font-size:9px; font-weight:700; color:#A855F7; letter-spacing:1px; margin-bottom:6px">ROLE 01</div><div class="rc-t" style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.4">금융그룹 조직장</div><div class="rc-d" style="font-size:11px; color:rgba(255, 255, 255, 0.42); line-height:1.55">데이터 플랫폼 AI 전략·사업 총괄</div></div>
+<div class="rc" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:14px 13px"><div class="rc-n" style="font-size:9px; font-weight:700; color:#A855F7; letter-spacing:1px; margin-bottom:6px">ROLE 02</div><div class="rc-t" style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.4">150평 만화카페 사장</div><div class="rc-d" style="font-size:11px; color:rgba(255, 255, 255, 0.42); line-height:1.55">웹/앱 직접 개발. 마케팅·인테리어·소송까지 직접 처리</div></div>
+<div class="rc" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:14px 13px"><div class="rc-n" style="font-size:9px; font-weight:700; color:#A855F7; letter-spacing:1px; margin-bottom:6px">ROLE 03</div><div class="rc-t" style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.4">주식 투자 강사</div><div class="rc-d" style="font-size:11px; color:rgba(255, 255, 255, 0.42); line-height:1.55">프린들tv 112편. 온라인 과정 7파트 555슬라이드</div></div>
+<div class="rc" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:14px 13px"><div class="rc-n" style="font-size:9px; font-weight:700; color:#A855F7; letter-spacing:1px; margin-bottom:6px">ROLE 05</div><div class="rc-t" style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.4">AI 컨설턴트</div><div class="rc-d" style="font-size:11px; color:rgba(255, 255, 255, 0.42); line-height:1.55">금융사 생성형 AI 도입 자문. CSP 안정성 평가·규제 대응</div></div>
+<div class="rc" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:14px 13px"><div class="rc-n" style="font-size:9px; font-weight:700; color:#A855F7; letter-spacing:1px; margin-bottom:6px">ROLE 06</div><div class="rc-t" style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.4">퀀트 시스템 개발자</div><div class="rc-d" style="font-size:11px; color:rgba(255, 255, 255, 0.42); line-height:1.55">Market Intelligence Terminal 직접 구축. 月 $33.50</div></div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ CURRICULUM (light, table style from yahoo_1) ═══════════════ -->
+<div class="sw" style="padding:48px 40px; border-bottom:1px solid #E4E4E4; background:#FFF">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; text-transform:uppercase; white-space:nowrap">Curriculum</div><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4"></div></div>
+<div class="h1" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#0F0F1A; line-height:1.35; margin-bottom:16px">3시간 커리큘럼 — 7개 섹션</div>
+<div class="cbar" style="display:grid; grid-template-columns:repeat(4, 1fr); border:1px solid #E4E4E4; border-radius:4px; overflow:hidden; margin:24px 0">
+<div align="center" class="cb" style="text-align:center; padding:18px 10px; border-right:1px solid #E4E4E4; background:#FFF"><div class="cb-n" style="font-size:clamp(20px, 3vw, 28px); font-weight:800; color:#6001D2; margin-bottom:3px; line-height:1">160<span class="cb-u" style="font-size:13px">분</span></div><div class="cb-l" style="font-size:11px; color:#787878">강의 + Q&amp;A</div></div>
+<div align="center" class="cb" style="text-align:center; padding:18px 10px; border-right:1px solid #E4E4E4; background:#FFF"><div class="cb-n" style="font-size:clamp(20px, 3vw, 28px); font-weight:800; color:#6001D2; margin-bottom:3px; line-height:1">7</div><div class="cb-l" style="font-size:11px; color:#787878">핵심 섹션</div></div>
+<div align="center" class="cb" style="text-align:center; padding:18px 10px; border-right:1px solid #E4E4E4; background:#FFF"><div class="cb-n" style="font-size:clamp(20px, 3vw, 28px); font-weight:800; color:#6001D2; margin-bottom:3px; line-height:1">5</div><div class="cb-l" style="font-size:11px; color:#787878">라이브 데모</div></div>
+<div align="center" class="cb" style="text-align:center; padding:18px 10px; border-right:none; background:#FFF"><div class="cb-n" style="font-size:clamp(20px, 3vw, 28px); font-weight:800; color:#6001D2; margin-bottom:3px; line-height:1">112</div><div class="cb-l" style="font-size:11px; color:#787878">QR 딥링크</div></div>
+</div>
+<div class="ctbl" style="border:1px solid #E4E4E4; border-radius:4px; overflow:hidden">
+<div class="ct-hd" style="display:grid; grid-template-columns:38px 1fr 58px; padding:9px 14px; gap:12px; background:#F0E6FF"><div align="center" class="ct-hdc" style="font-size:9px; font-weight:700; color:#6001D2; text-transform:uppercase; letter-spacing:0.5px; text-align:center">#</div><div class="ct-hdc" style="font-size:9px; font-weight:700; color:#6001D2; text-transform:uppercase; letter-spacing:0.5px">섹션</div><div align="right" class="ct-hdc" style="font-size:9px; font-weight:700; color:#6001D2; text-transform:uppercase; letter-spacing:0.5px; text-align:right">시간</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">01</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">당신은 지금 매년 두 달을 버리고 있다</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">AI 없는 투자자 vs AI 쓰는 투자자 — 정보 속도 격차가 수익 격차가 되는 이유</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">오늘 이 강의를 들어야 하는 이유, 딱 하나의 통계로 증명</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">15분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">02</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">이 사람이 AI 없으면 어떻게 될까</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">임원 + 카페 사장 + 투자 강사 — 12개 역할을 7시간 수면으로 돌리는 실제 시스템 라이브 공개</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">AI 비용 $800 → $400으로 반 토막 낸 설정 3가지, 지금 바로 적용 가능</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">20분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">03</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">月 $33.50짜리 증권사급 분석 시스템 — 직접 보여드립니다</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">500종목을 1회 42원에 분석하는 Market Intelligence Terminal, 화면 그대로 시연</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">기관이 쓰는 13F 매집 신호를 개인이 자동으로 잡는 방법</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">30분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">04</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">오르는 주식만 사는 원칙 — 20년이 압축된 3단계</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">당신이 항상 늦게 알았던 이유 — Smart Money 자금 흐름을 먼저 읽는 법</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">떨어지는 칼날 절대 잡지 않는 터틀 기법 + 아무것도 모르면 ETF로 상위 20% 드는 법</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">45분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">05</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">지금 이 순간 기관 자금이 흘러가는 섹터</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">2026년 AI·반도체·바이오 — 데이터로 확인하는 현재 위치와 다음 이동 방향</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">Market Intelligence Terminal이 지금 CAUTION을 띄운 이유</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">25분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">06</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">분석이 끝나면 자동으로 매수된다</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">한국투자증권 API로 분석 → 주문을 자동 연결하는 전체 구조, 처음 공개</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">이걸 혼자 만들면 얼마나 걸리고, 얼마가 드는지</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">10분</div></div>
+<div class="ct-row" style="display:grid; grid-template-columns:38px 1fr 58px; border-top:1px solid #E4E4E4"><div align="center" class="ct-num" style="padding:14px 0; font-size:20px; font-weight:800; color:#E4E4E4; align-self:flex-start; text-align:center">07</div><div class="ct-body" style="padding:13px 10px 13px 0; border-left:1px solid #E4E4E4; border-right:1px solid #E4E4E4"><div class="ct-ttl" style="font-size:12px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">오늘 당장 실행할 것 하나만 가져가세요</div><ul class="ct-pts" style="list-style:none"><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">3단계 원칙 중 지금 내 상황에 맞는 단계 찾기 — 선택지는 3개, 핑계는 없습니다</li><li style="font-size:11px; color:#787878; padding:3px 0 3px 11px; position:relative; line-height:1.5">직접 질문하는 Q&amp;A — 내 종목, 내 상황으로 물어보는 시간</li></ul></div><div align="right" class="ct-time" style="padding:14px 14px; font-size:11px; font-weight:700; color:#6001D2; text-align:right; align-self:flex-start; white-space:nowrap">Q&amp;A</div></div>
+</div>
+</div>
+<!-- ═══════════════ TERMINAL DEMO (dark) ═══════════════ -->
+<div class="sdk" style="padding:48px 40px; border-bottom:1px solid #252530; background:#141418">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct-dk" style="font-size:9px; font-weight:700; color:rgba(168, 85, 247, 0.6); letter-spacing:2px; text-transform:uppercase; white-space:nowrap">Live Demo</div><div class="cl-dk" height="1" style="flex:1; height:1px; background:#252530"></div></div>
+<div class="h1 h1-lt" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#fff; line-height:1.35; margin-bottom:16px">Market Intelligence Terminal<br/>— 실제 화면</div>
+<div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:4px;">Section 03에서 라이브 시연합니다 · <a href="https://edu.frindle.synology.me/" style="color:#A855F7;text-decoration:none;font-weight:700;" target="_blank">edu.frindle.synology.me</a></div>
+<div class="ss-label" style="font-size:10px; font-weight:700; color:rgba(255, 255, 255, 0.32); letter-spacing:1.2px; text-transform:uppercase; margin:24px 0 12px">6개 화면 전체 공개</div>
+<div class="ss-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px">
+<div>
+<img alt="Overview" class="ss-img" src="../images/edu.frindle.synology.me_1.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">Overview · 종합 판정</div>
+</div>
+<div>
+<img alt="Market Regime" class="ss-img" src="../images/edu.frindle.synology.me_2.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">Market Regime · 시장 체제</div>
+</div>
+<div>
+<img alt="Top Picks" class="ss-img" src="../images/edu.frindle.synology.me_3.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">Top Picks · Smart Money</div>
+</div>
+<div>
+<img alt="AI Analysis" class="ss-img" src="../images/edu.frindle.synology.me_4.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">AI Analysis · 투자 논지</div>
+</div>
+<div>
+<img alt="Index Forecast" class="ss-img" src="../images/edu.frindle.synology.me_5.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">Index Forecast · SPY/QQQ</div>
+</div>
+<div>
+<img alt="ML Rankings" class="ss-img" src="../images/edu.frindle.synology.me_6.png" style="width:100%; border-radius:3px; border:1px solid #252530; display:block" width="100%"/>
+<div align="center" class="ss-cap" style="font-size:10px; color:rgba(255, 255, 255, 0.28); margin-top:4px; text-align:center">ML Rankings · GBM 스크리닝</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ PRINCIPLES (timeline from yahoo_2, light bg) ═══════════════ -->
+<div class="sl" style="padding:48px 40px; border-bottom:1px solid #E4E4E4; background:#F7F7F7">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; text-transform:uppercase; white-space:nowrap">Investment Principles</div><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4"></div></div>
+<div class="h1" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#0F0F1A; line-height:1.35; margin-bottom:16px">3단계 투자 원칙<br/>— 오늘 이것만 기억하세요</div>
+<div class="body" style="font-size:15px; color:#383838; line-height:1.9"><p style="margin-bottom:10px">"1단계를 할 수 있으면 1단계. 못하면 2단계. 그것도 못하면 3단계. 핑계가 없습니다."</p></div>
+<div class="timeline" style="margin-top:24px; position:relative; display:grid; gap:0">
+<div class="tl-item" style="display:flex; gap:20px; padding-bottom:20px; align-items:flex-start; position:relative">
+<div class="tl-dot" height="38" style="width:38px; height:38px; border-radius:50%; border:2px solid #6001D2; background:#FFF; display:flex; align-items:center; justify-content:center; flex-shrink:0; z-index:1" width="38"><div class="tl-num" style="font-size:14px; font-weight:800; color:#6001D2; line-height:1">1</div></div>
+<div class="tl-body" style="background:#FFF; border:1px solid #E4E4E4; border-radius:4px; padding:16px 20px; flex:1; margin-top:6px">
+<div class="tl-tag" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1.5px; margin-bottom:4px">STEP 01 · ADVANCED</div>
+<div class="tl-ttl" style="font-size:14px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">Smart Money를 따라가라</div>
+<div class="tl-desc" style="font-size:13px; color:#383838; line-height:1.8">기관과 헤지펀드가 매집하는 종목을 추적한다. 13F 공시, 거래량 이상, 기관 보유 비중 변화를 확인 후 진입한다. Market Intelligence Terminal 6-Factor Screening으로 자동화 가능.</div>
+<div class="tl-src" style="font-size:10px; color:#787878; margin-top:6px; font-weight:600">▶ 근거: Market Intelligence Terminal 6-Factor Screening</div>
+</div>
+</div>
+<div class="tl-item" style="display:flex; gap:20px; padding-bottom:20px; align-items:flex-start; position:relative">
+<div class="tl-dot" height="38" style="width:38px; height:38px; border-radius:50%; border:2px solid #6001D2; background:#FFF; display:flex; align-items:center; justify-content:center; flex-shrink:0; z-index:1" width="38"><div class="tl-num" style="font-size:14px; font-weight:800; color:#6001D2; line-height:1">2</div></div>
+<div class="tl-body" style="background:#FFF; border:1px solid #E4E4E4; border-radius:4px; padding:16px 20px; flex:1; margin-top:6px">
+<div class="tl-tag" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1.5px; margin-bottom:4px">STEP 02 · INTERMEDIATE</div>
+<div class="tl-ttl" style="font-size:14px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">오르는 주식을 사라 (터틀 기법)</div>
+<div class="tl-desc" style="font-size:13px; color:#383838; line-height:1.8">이미 오르고 있는 주식을 산다. 떨어지는 칼날을 잡지 않는다. 52주 신고가 돌파, 이동평균선 정배열, 거래량 확인 후 진입한다.</div>
+<div class="tl-src" style="font-size:10px; color:#787878; margin-top:6px; font-weight:600">▶ 근거: Richard Dennis 터틀 트레이딩</div>
+</div>
+</div>
+<div class="tl-item" style="display:flex; gap:20px; padding-bottom:0; align-items:flex-start; position:relative">
+<div class="tl-dot" height="38" style="width:38px; height:38px; border-radius:50%; border:2px solid #6001D2; background:#FFF; display:flex; align-items:center; justify-content:center; flex-shrink:0; z-index:1" width="38"><div class="tl-num" style="font-size:14px; font-weight:800; color:#6001D2; line-height:1">3</div></div>
+<div class="tl-body" style="background:#FFF; border:1px solid #E4E4E4; border-radius:4px; padding:16px 20px; flex:1; margin-top:6px">
+<div class="tl-tag" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:1.5px; margin-bottom:4px">STEP 03 · BEGINNER</div>
+<div class="tl-ttl" style="font-size:14px; font-weight:700; color:#0F0F1A; margin-bottom:7px; line-height:1.4">그것도 못 하면 ETF를 사라</div>
+<div class="tl-desc" style="font-size:13px; color:#383838; line-height:1.8">종목 선정이 어려우면 SPY/QQQ를 떨어질 때 조금씩 산다. 매달 적립, 10년 복리. 이것만 해도 상위 20%에 든다.</div>
+<div class="tl-src" style="font-size:10px; color:#787878; margin-top:6px; font-weight:600">▶ 근거: 버핏 "인덱스 펀드에 투자하라"</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ WHAT YOU GET (dark) ═══════════════ -->
+<div class="sdk2" style="padding:48px 40px; border-bottom:1px solid #252530; background:#1C1C22">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px"><div class="ct-dk" style="font-size:9px; font-weight:700; color:rgba(168, 85, 247, 0.6); letter-spacing:2px; text-transform:uppercase; white-space:nowrap">What You Get</div><div class="cl-dk" height="1" style="flex:1; height:1px; background:#252530"></div></div>
+<div class="h1 h1-lt" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#fff; line-height:1.35; margin-bottom:16px">3시간 후, 당신이 들고 나가는 것</div>
+<div class="bgrid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:24px">
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">3단계 투자 원칙</strong> — 종목 선정부터 매수·매도까지, 핑계 없는 기준</div></div>
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">500종목 AI 분석 설계도</strong> — 月 $33.50으로 구축하는 방법</div></div>
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">Claude Code 비용 최적화 3가지</strong> — $800→$400 설정법</div></div>
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">YouTube 112편 QR 딥링크</strong> — 섹션별 핵심 영상 즉시 연결</div></div>
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">한투 API 자동매매 구조도</strong> — 분석에서 주문까지 연결 설계</div></div>
+<div class="bi" style="background:#0B0B0F; border:1px solid #252530; border-radius:4px; padding:15px 16px; display:flex; gap:10px; align-items:flex-start"><div class="bi-chk" style="font-size:13px; font-weight:800; color:#22C55E; flex-shrink:0; margin-top:1px">✓</div><div class="bi-txt" style="font-size:13px; color:rgba(255, 255, 255, 0.65); line-height:1.65"><strong style="color:#fff">강의 핵심 자료</strong> — 3단계 원칙 · 통계 · 커리큘럼 요약본</div></div>
+</div>
+<div class="b-qt" style="margin-top:24px; padding:22px; border:1px solid rgba(168, 85, 247, 0.2); border-radius:4px; background:rgba(168, 85, 247, 0.06); font-size:15px; color:#A855F7; line-height:1.8; font-style:italic">"아는 것과 하는 것 사이에는 강이 있다.<br/>그 강은 도구가 아니라 원칙으로 건넌다." — Frindle</div>
+</div>
+<!-- ═══════════════ CTA ═══════════════ -->
+<div align="center" class="cta" style="background:#F7F7F7; padding:48px 40px; border-bottom:1px solid #E4E4E4; text-align:center">
+<div class="cat" style="display:flex; align-items:center; gap:10px; margin-bottom:14px; justify-content:center"><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4; max-width:48px"></div><div class="ct" style="font-size:9px; font-weight:700; color:#6001D2; letter-spacing:2px; text-transform:uppercase; white-space:nowrap">신청 안내</div><div class="cl" height="1" style="flex:1; height:1px; background:#E4E4E4; max-width:48px"></div></div>
+<div align="center" class="h1" style="font-size:clamp(18px, 3vw, 26px); font-weight:800; color:#0F0F1A; line-height:1.35; margin-bottom:16px; text-align:center"><span style="color:#6001D2;">투자 원칙</span>과 <span style="color:#6001D2;">AI 무기</span>를<br/>3시간 안에 한 번에 들고 나갑니다</div>
+<div align="left" class="itbl" style="border:1px solid #E4E4E4; border-radius:4px; overflow:hidden; margin:24px 0; text-align:left; background:#FFF">
+<div class="i-row" style="display:flex; border-bottom:1px solid #E4E4E4"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">신청기간</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65">04월 13일 ~ 04월 18일</div></div>
+<div class="i-row" style="display:flex; border-bottom:1px solid #E4E4E4"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">강의일정</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65"><strong>04월 18일 (토)</strong>  오후 3:00 ~ 오후 6:00</div></div>
+<div class="i-row" style="display:flex; border-bottom:1px solid #E4E4E4"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">수강료</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65"><strong>5만 원</strong>  (부가세 별도)</div></div>
+<div class="i-row" style="display:flex; border-bottom:1px solid #E4E4E4"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">온라인</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65">강의 전 날 단톡방 초대</div></div>
+<div class="i-row" style="display:flex; border-bottom:1px solid #E4E4E4"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">오프라인</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65">강남역 11번출구 배움자리 40인실<br/>서울 강남구 테헤란로 5길 31 3층</div></div>
+<div class="i-row" style="display:flex; border-bottom:none"><div class="i-key" style="font-size:10px; font-weight:700; color:#6001D2; background:#F0E6FF; padding:13px 14px; min-width:70px; display:flex; align-items:center; text-transform:uppercase; letter-spacing:0.5px; border-right:1px solid #E4E4E4">다시보기</div><div class="i-val" style="font-size:13px; color:#383838; padding:13px 14px; line-height:1.65">온·오프 신청자 모두 <strong>3일간</strong> 가능</div></div>
+</div>
+</div>
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div align="center" class="foot" style="background:#000; padding:26px 40px; text-align:center; border-top:1px solid #1a1a1a">
+<div class="foot-brand" style="font-size:13px; font-weight:700; color:#A855F7; margin-bottom:5px"><a href="https://www.youtube.com/@TV-vv1oc" style="color:#A855F7;text-decoration:none;" target="_blank">프린들tv</a> · 미국주식 투자 채널</div>
+<div class="foot-txt" style="font-size:11px; color:#555; line-height:1.8">
+        YouTube 42,000명 구독 · 주식투자 영상 112편<br/>
+<a href="https://www.youtube.com/@TV-vv1oc" style="color:#555;text-decoration:none;" target="_blank">youtube.com/@TV-vv1oc</a>  ·  <a href="https://edu.frindle.synology.me/" style="color:#555;text-decoration:none;" target="_blank">edu.frindle.synology.me</a><br/>
+        본 강의 자료는 투자 교육 목적이며 특정 종목 추천이 아닙니다.<br/>
+        투자 결정은 본인 판단과 책임하에 이루어져야 합니다.
+    </div>
+</div>
+</div>

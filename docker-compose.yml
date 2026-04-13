@@ -10,3 +10,13 @@ services:
       - PORT=8889
       - TZ=America/New_York
     restart: unless-stopped
+
+  dashboard:
+    image: nginx:alpine
+    container_name: us-stock-dashboard
+    ports:
+      - "8080:80"
+    volumes:
+      - ./archive/legacy-dashboard:/usr/share/nginx/html:ro
+      - ./archive/legacy-dashboard/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped

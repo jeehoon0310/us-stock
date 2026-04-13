@@ -12,9 +12,12 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-REPORTS_DIR = BASE_DIR / "reports"
-LOGS_DIR = BASE_DIR / "logs"
+BASE_DIR = Path(__file__).resolve().parent  # scripts/ dir
+ROOT = BASE_DIR.parent  # project root
+sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(BASE_DIR))  # for cross-script imports
+REPORTS_DIR = ROOT / "output" / "reports"
+LOGS_DIR = ROOT / "logs"
 
 
 def run_once():
@@ -69,7 +72,7 @@ def install_cron(time_str: str = "06:00"):
     python_path = sys.executable
     script_path = BASE_DIR / "run_integrated_analysis.py"
 
-    cron_line = f"{minute} {hour} * * 1-5 cd {BASE_DIR} && {python_path} {script_path} >> {LOGS_DIR}/cron_output.log 2>&1"
+    cron_line = f"{minute} {hour} * * 1-5 cd {ROOT} && {python_path} {script_path} >> {LOGS_DIR}/cron_output.log 2>&1"
 
     # 기존 crontab 읽기
     try:

@@ -13,13 +13,13 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path(__file__).resolve().parent
-REPORTS_DIR = BASE_DIR / "reports"
+BASE_DIR = Path(__file__).resolve().parent.parent  # project root
+REPORTS_DIR = BASE_DIR / "output" / "reports"
 LOGS_DIR = BASE_DIR / "logs"
 OUTPUT_DIR = BASE_DIR / "output"
 DATA_DIR = BASE_DIR / "data"
