@@ -11,87 +11,107 @@ US stock market analysis system: data collection → market regime detection →
 ```bash
 source .venv/bin/activate    # Python 3.13.3 venv required
 
-python run_integrated_analysis.py  # 통합 분석 (Phase 0~3: data → timing → screening → report)
-python run_full_pipeline.py        # Full pipeline (data → regime → screening → AI → report)
-python run_screening.py            # S&P 500 screening only
-python run_daily_scheduler.py              # 1회 즉시 실행
-python run_daily_scheduler.py --status     # 마지막 실행 상태 확인
-python run_daily_scheduler.py --install-cron --time 06:00  # macOS cron 등록
+python scripts/run_integrated_analysis.py  # 통합 분석 (Phase 0~3: data → timing → screening → report)
+python scripts/run_full_pipeline.py        # Full pipeline (data → regime → screening → AI → report)
+python scripts/run_screening.py            # S&P 500 screening only
+python scripts/run_daily_scheduler.py              # 1회 즉시 실행
+python scripts/run_daily_scheduler.py --status     # 마지막 실행 상태 확인
+python scripts/run_daily_scheduler.py --install-cron --time 06:00  # macOS cron 등록
 ```
 
 ## Architecture
 
 ```
-collectors/                  # Data acquisition
-├── us_price_fetcher.py      # USPriceFetcher — yfinance + curl_cffi
-├── fetch_sp500_list.py      # S&P 500 list from Wikipedia (no __main__ guard!)
-├── fetch_sp500_prices.py    # Batch OHLCV download for all 503 stocks
-├── macro_collector.py       # MacroDataCollector — FRED API + VIX + Fear&Greed
-└── data_fetcher.py          # USStockDataFetcher — yfinance primary, Finnhub fallback
+src/
+├── collectors/                  # Data acquisition
+│   ├── us_price_fetcher.py      # USPriceFetcher — yfinance + curl_cffi
+│   ├── fetch_sp500_list.py      # S&P 500 list from Wikipedia (no __main__ guard!)
+│   ├── fetch_sp500_prices.py    # Batch OHLCV download for all 503 stocks
+│   ├── macro_collector.py       # MacroDataCollector — FRED API + VIX + Fear&Greed
+│   └── data_fetcher.py          # USStockDataFetcher — yfinance primary, Finnhub fallback
+│
+├── analyzers/                   # Analysis engines
+│   ├── technical_indicators.py  # SMA/RSI/ATR/BB (pure functions, returns copies)
+│   ├── sector_analyzer.py       # SectorAnalyzer — 11 SPDR sector ETFs
+│   ├── market_regime.py         # MarketRegimeDetector — 5-sensor weighted voting
+│   ├── market_gate.py           # Market gate (GO/CAUTION/STOP) + volume-price divergence
+│   ├── smart_money_screener_v2.py # EnhancedSmartMoneyScreener — composite scoring
+│   ├── ai_summary_generator.py  # NewsCollector + Gemini/OpenAI/Perplexity generators
+│   └── final_report_generator.py # FinalReportGenerator — quant + AI final ranking
+│
+├── pipeline/                    # Orchestration
+│   ├── us_data_pipeline.py      # USDataPipeline — Part 1 orchestrator
+│   ├── run_pipeline.py          # CLI: --top-n, --period, --output-dir
+│   ├── data_quality_report.py   # 100-point quality scoring per CSV
+│   └── plot_sector_heatmap.py   # Sector heatmap visualization
+│
+├── ml/                          # Machine learning
+│   ├── pipeline/train.py        # GBM training
+│   ├── pipeline/predict.py      # GBM inference
+│   ├── pipeline/feature_store.py
+│   └── validation/walk_forward.py
+│
+└── us_market/
+    └── index_predictor.py       # IndexPredictor — SPY/QQQ direction forecast
 
-analyzers/                   # Analysis engines
-├── technical_indicators.py  # SMA/RSI/ATR/BB (pure functions, returns copies)
-├── sector_analyzer.py       # SectorAnalyzer — 11 SPDR sector ETFs
-├── market_regime.py         # MarketRegimeDetector — 5-sensor weighted voting
-├── market_gate.py           # Market gate (GO/CAUTION/STOP) + volume-price divergence
-├── smart_money_screener_v2.py # EnhancedSmartMoneyScreener — composite scoring
-├── ai_summary_generator.py  # NewsCollector + Gemini/OpenAI/Perplexity generators
-└── final_report_generator.py # FinalReportGenerator — quant + AI final ranking
+scripts/                         # Entry points
+├── run_integrated_analysis.py   # 통합 분석 (Phase 0/1/2/3 — verdict + action 매핑)
+├── run_daily_scheduler.py       # 일일 스케줄러 (--status, --install-cron, --time)
+├── run_full_pipeline.py         # Full 9-step pipeline (data → regime → gate → screening → AI → report → ML)
+├── run_all.py                   # Legacy: Part 1 + 2 + 3 basic run
+├── run_screening.py             # S&P 500 screening with progress display
+└── regen_dashboard_data.py      # Regenerate dashboard JSONs
 
-pipeline/                    # Orchestration
-├── us_data_pipeline.py      # USDataPipeline — Part 1 orchestrator
-├── run_pipeline.py          # CLI: --top-n, --period, --output-dir
-├── data_quality_report.py   # 100-point quality scoring per CSV
-└── plot_sector_heatmap.py   # Sector heatmap visualization
+output/                          # Analysis results
+├── reports/                     # Daily reports
+│   ├── daily_report_YYYYMMDD.json
+│   └── latest_report.json
+├── picks/                       # Screened stock picks
+│   └── smart_money_picks_YYYYMMDD.csv
+├── models/                      # ML model files
+│   └── predictor_model_*.joblib
+├── regime_result.json
+├── final_top10_report.json
+└── ...
 
-run_integrated_analysis.py   # 통합 분석 (Phase 0/1/2/3 — verdict + action 매핑)
-run_daily_scheduler.py       # 일일 스케줄러 (--status, --install-cron, --time)
-run_full_pipeline.py         # Full 9-step pipeline (data → regime → gate → screening → AI → report → ML)
-run_all.py                   # Legacy: Part 1 + 2 + 3 basic run
-run_screening.py             # S&P 500 screening with progress display (saves to result/)
-
-reports/                     # Daily reports
-├── daily_report_YYYYMMDD.json  # 날짜별 종합 리포트
-└── latest_report.json          # 최신 리포트 (복사본)
-
-logs/                        # Execution logs
-└── daily_run_YYYYMMDD.log      # 일일 실행 로그
+logs/                            # Execution logs
+└── daily_run_YYYYMMDD.log
 ```
 
 ## Data Flow
 
 ```
-[Wikipedia/Yahoo/FRED] → collectors/ → data/*.csv
-                                         ↓
-                         analyzers/market_regime.py → output/regime_config.json
-                         analyzers/market_gate.py   → GO/CAUTION/STOP
-                                         ↓
-                         analyzers/smart_money_screener_v2.py → result/smart_money_picks_YYYYMMDD.csv
-                                         ↓
-                         analyzers/ai_summary_generator.py → output/ai_summaries.json
-                                         ↓
-                         analyzers/final_report_generator.py → output/final_top10_report.json
+[Wikipedia/Yahoo/FRED] → src/collectors/ → data/*.csv
+                                             ↓
+                         src/analyzers/market_regime.py → output/regime_config.json
+                         src/analyzers/market_gate.py   → GO/CAUTION/STOP
+                                             ↓
+                         src/analyzers/smart_money_screener_v2.py → output/picks/smart_money_picks_YYYYMMDD.csv
+                                             ↓
+                         src/analyzers/ai_summary_generator.py → output/ai_summaries.json
+                                             ↓
+                         src/analyzers/final_report_generator.py → output/final_top10_report.json
 ```
 
 ## Key Commands
 
 ```bash
 # Part 1: Data collection
-python pipeline/run_pipeline.py --top-n 50 --period 1y --output-dir data
+python src/pipeline/run_pipeline.py --top-n 50 --period 1y --output-dir data
 
 # Part 2: Market regime
-python -m analyzers.market_regime              # 5-sensor regime detection
-python -m analyzers.market_gate                # 11-sector gate signal
+python src/analyzers/market_regime.py              # 5-sensor regime detection
+python src/analyzers/market_gate.py                # 11-sector gate signal
 
 # Part 3: Smart money screening
-python run_screening.py                        # Full S&P 500 (saves to result/)
-python analyzers/ai_summary_generator.py --provider gemini --ticker AAPL
-python analyzers/final_report_generator.py     # Final top 10 report
+python scripts/run_screening.py                    # Full S&P 500 (saves to output/picks/)
+python src/analyzers/ai_summary_generator.py --provider gemini --ticker AAPL
+python src/analyzers/final_report_generator.py     # Final top 10 report
 
 # Tests
 python tests/test_price_fetcher.py             # Price fetcher (4 checks)
 python tests/test_indicators.py                # Technical indicators (5 checks)
-python pipeline/data_quality_report.py         # CSV quality scoring
+python src/pipeline/data_quality_report.py     # CSV quality scoring
 ```
 
 ## Market Regime Detection
@@ -159,17 +179,17 @@ Action 매핑 (verdict + grade):
 ## Key Patterns
 
 - **curl_cffi**: All yfinance sessions use `Session(impersonate="chrome")` to avoid rate limits
-- **Immutable indicators**: `technical_indicators.py` always returns copies
+- **Immutable indicators**: `src/analyzers/technical_indicators.py` always returns copies
 - **fetch_sp500_list.py**: No `__main__` guard — pipeline reimplements logic internally
 - **Symbol format**: Dots → dashes for yfinance (BRK.B → BRK-B)
 - **Look-ahead bias**: `load_data()` filters holdings by filing_date ≤ yesterday
 - **AI fallback**: All generators return fallback JSON on error, never crash
 - **API cost tracking**: `APIUsageTracker` singleton tracks tokens/cost per provider
-- **sys.path**: Cross-package imports use `sys.path.insert(0, parent_dir)` pattern
+- **sys.path**: Scripts in `scripts/` insert `parent.parent/src` for cross-package imports
 
 ## API Cost Tracking
 
-`ai_summary_generator.py` has a module-level `usage_tracker` singleton:
+`src/analyzers/ai_summary_generator.py` has a module-level `usage_tracker` singleton:
 
 | Provider | Input | Output |
 |----------|-------|--------|
@@ -177,17 +197,20 @@ Action 매핑 (verdict + grade):
 | GPT-5-mini | $0.15/1M tokens | $0.60/1M tokens |
 | Perplexity Sonar | $3/1K requests | — |
 
-`run_full_pipeline.py` prints cost summary at the end.
+`scripts/run_full_pipeline.py` prints cost summary at the end.
 
 ## Dashboard
 
 ```bash
-cd dashboard && python3 -m http.server 8889
-# Open http://localhost:8889
+# Next.js dashboard (active)
+cd frontend && npm run dev
+# Open http://localhost:3000
+
+# Legacy static dashboard (archived)
+cd archive/legacy-dashboard && python3 -m http.server 8889
 ```
 
-Dark-mode SPA dashboard showing regime, signals, gate, top 10, and AI detail modals.
-Data loaded from symlinked JSON files in `dashboard/` → `output/`.
+Data files synced from `output/` to `frontend/public/data/` by pipeline.
 
 ## Output Files
 
@@ -201,4 +224,6 @@ Data loaded from symlinked JSON files in `dashboard/` → `output/`.
 | output/regime_config.json | Regime + adaptive params |
 | output/ai_summaries.json | AI analysis per ticker |
 | output/final_top10_report.json | Final ranked top 10 |
-| result/smart_money_picks_YYYYMMDD.csv | Date-stamped screening results |
+| output/picks/smart_money_picks_YYYYMMDD.csv | Date-stamped screening results |
+| output/reports/latest_report.json | Latest integrated analysis report |
+| output/reports/daily_report_YYYYMMDD.json | Daily report archive |

@@ -15,7 +15,7 @@ Part 1: 데이터 수집        Part 2: 시장 체제 감지      Part 3: 종목
  주가 데이터 수집     →    추세(200일선) 판단     →    기술/펀더멘털/애널리스트
  기술적 지표 계산          금리/채권 신호              AI 뉴스 분석 (Gemini)
  매크로 경제 지표          종합 체제 판정              최종 Top 10 리포트
- 섹터별 분석 + ERP (신규)  적응형 파라미터              result/ 날짜별 저장
+ 섹터별 분석 + ERP (신규)  적응형 파라미터              output/picks/ 날짜별 저장
 
 Part 4: 다음 주 예보        Part 5: Cross-sectional    Part 6: Agent 생태계 (신규)
 (기상청)                   GBM ML (신규)              (서비스 자가 진화)
@@ -33,7 +33,7 @@ Part 4: 다음 주 예보        Part 5: Cross-sectional    Part 6: Agent 생태
 
 ```bash
 source .venv/bin/activate
-python run_full_pipeline.py    # 8단계 전체 자동 실행!
+python scripts/run_full_pipeline.py    # 8단계 전체 자동 실행!
 ```
 
 **8단계 구성**:
@@ -46,94 +46,55 @@ python run_full_pipeline.py    # 8단계 전체 자동 실행!
 
 ```
 us-stock/
-├── collectors/                  # 데이터 수집 (심부름꾼들)
-│   ├── us_price_fetcher.py      # 주가 수집 (yfinance + curl_cffi)
-│   ├── fetch_sp500_list.py      # S&P 500 종목 목록 (Wikipedia)
-│   ├── fetch_sp500_prices.py    # 503개 종목 일괄 수집
-│   ├── macro_collector.py       # 매크로 경제 지표 (FRED + VIX)
-│   └── data_fetcher.py          # 통합 수집기 (yfinance + Finnhub fallback)
+├── src/                         # Python 소스 모듈
+│   ├── src/collectors/              # 데이터 수집 (심부름꾼들)
+│   │   ├── us_price_fetcher.py  # 주가 수집 (yfinance + curl_cffi)
+│   │   ├── fetch_sp500_list.py  # S&P 500 종목 목록 (Wikipedia)
+│   │   ├── fetch_sp500_prices.py # 503개 종목 일괄 수집
+│   │   ├── macro_collector.py   # 매크로 경제 지표 (FRED + VIX)
+│   │   └── data_fetcher.py      # 통합 수집기
+│   │
+│   ├── src/analyzers/               # 분석 엔진
+│   │   ├── technical_indicators.py
+│   │   ├── market_regime.py
+│   │   ├── market_gate.py
+│   │   ├── smart_money_screener_v2.py
+│   │   ├── ai_summary_generator.py
+│   │   └── final_report_generator.py
+│   │
+│   ├── src/us_market/
+│   │   └── index_predictor.py
+│   │
+│   ├── src/pipeline/
+│   │   ├── us_data_pipeline.py
+│   │   ├── run_pipeline.py
+│   │   ├── data_quality_report.py
+│   │   └── plot_sector_heatmap.py
+│   │
+│   └── src/ml/                      # GBM ML 파이프라인 (Part 5)
+│       ├── src/pipeline/
+│       ├── validation/
+│       └── ...
 │
-├── analyzers/                   # 분석 엔진 (요리사들)
-│   ├── technical_indicators.py  # 기술적 지표 (SMA/RSI/ATR/BB)
-│   ├── sector_analyzer.py       # 11개 섹터 분석 + 히트맵
-│   ├── market_regime.py         # 시장 체제 감지 (5개 센서)
-│   ├── market_gate.py           # 매수 신호등 (GO/CAUTION/STOP)
-│   ├── smart_money_screener_v2.py  # 503종목 종합 스크리닝
-│   ├── ai_summary_generator.py  # AI 분석 (Gemini/OpenAI/Perplexity)
-│   └── final_report_generator.py   # 최종 Top 10 리포트
+├── scripts/                     # 실행 엔트리포인트
+│   ├── scripts/run_full_pipeline.py
+│   ├── run_integrated_analysis.py
+│   ├── scripts/run_screening.py
+│   ├── run_all.py
+│   ├── run_daily_scheduler.py
+│   └── regen_dashboard_data.py
 │
-├── us_market/                   # ML 기반 지수 예측 (기상청)
-│   └── index_predictor.py       # SPY/QQQ 5일 방향 예측 (27 피처 + GradientBoosting)
-│
-├── pipeline/                    # 파이프라인 (주방 관리자)
-│   ├── us_data_pipeline.py      # Part 1 통합 오케스트레이터
-│   ├── run_pipeline.py          # CLI (--top-n, --period, --output-dir)
-│   ├── data_quality_report.py   # 데이터 품질 100점 채점
-│   └── plot_sector_heatmap.py   # 섹터 히트맵 시각화
-│
-├── tests/                       # 테스트 + 연습
-│   ├── test_price_fetcher.py    # 가격 수집 테스트 (4개 검증)
-│   ├── test_indicators.py       # 지표 계산 테스트 (5개 검증)
-│   ├── test_index_predictor.py  # IndexPredictor 테스트 (8개 검증, pytest)
-│   └── (연습 스크립트들)
-│
-├── run_full_pipeline.py         # 전체 6단계 파이프라인 (메인!)
-├── run_screening.py             # S&P 500 스크리닝 (진행 상황 표시)
-├── run_all.py                   # 기본 실행 (Part 1+2+3)
-│
-├── data/                        # CSV 출력 (시장 데이터)
-├── output/                      # JSON 출력 (분석 결과)
-├── result/                      # 날짜별 스크리닝 결과
-├── docs/                        # 문서
-│   ├── README.md                # 이 파일!
-│   └── architecture.drawio      # 시스템 구조도
-│
-├── ml/                          # 신규 GBM ML 파이프라인 (Part 5)
-│   ├── features/
-│   │   ├── macro/               # 18 거시 피처 (ERP/TIPS/VIX/Yield)
-│   │   ├── equity/              # 36 종목 피처 + 5 타겟
-│   │   └── merged/              # feature store 조인 결과
-│   ├── pipeline/
-│   │   ├── train.py             # LightGBM rank 학습 + early stopping
-│   │   ├── predict.py           # Top 20 cross-sectional 예측
-│   │   └── feature_store.py     # parquet 기반 피처 버저닝
-│   ├── models/                  # 학습된 .pkl + metadata.json
-│   ├── validation/
-│   │   └── walk_forward.py      # Purged K-Fold + PBO + DSR
-│   ├── datasets/                # train/val/test split
-│   └── experiments/             # Optuna HPO 로그
-│
-├── .claude/agents/              # 22 에이전트 (Part 6)
-│   ├── perf-lead.md             # 21에이전트 최상위 오케스트레이터
-│   ├── signal-optimizer.md      # rule 파라미터 튜닝
-│   ├── backtest-engineer.md     # 백테스트 엔진
-│   ├── critic-reviewer.md       # Bull/Bear 양면 비판
-│   ├── market-researcher.md     # Perplexity 웹 리서치
-│   ├── perf-verifier.md         # A/B 회귀 검증
-│   ├── service-evolver.md       # ★ 매일 서비스 자가 진화 메타 에이전트
-│   ├── research-lead.md, paper-researcher.md, factor-discoverer.md   (Research 3)
-│   ├── macro-lead.md, macro-feature-engineer.md, regime-ml-classifier.md   (Macro 3)
-│   ├── equity-lead.md, equity-factor-builder.md, equity-flow-analyst.md   (Equity 3)
-│   ├── mlops-lead.md, ml-pipeline-architect.md, gbm-code-reviewer.md   (MLOps 3)
-│   └── model-lead.md, gbm-trainer.md, walk-forward-validator.md   (Model 3)
-│
-├── .docs/evolution/             # service-evolver 학습 이력 (Reflexion memory)
-│   ├── memory.md                # Do's/Don'ts 누적
-│   ├── backlog.md               # P0/P1/P2/P3 개선 후보
-│   └── YYYY-MM-DD_cycle*.md     # 일일 사이클 로그
-│
-├── dashboard/                   # 정적 HTML 대시보드 (nginx:alpine, :8080)
-│   ├── pages/                   # 관리 HTML 페이지
-│   │   ├── terminal.html        # Market Intelligence Terminal (메인, Yahoo Finance 퍼플)
-│   │   ├── reports.html         # Daily Report 뷰어 (날짜 이동 가능)
-│   │   └── notice.html          # 강의 공지 페이지
-│   ├── images/                  # 이미지 에셋 (PNG/JPG)
-│   ├── reports/                 # 날짜별 JSON 리포트
-│   ├── _ref/                    # 참고용 디자인 시안 (수정 금지)
-│   └── nginx.conf               # 라우팅: / → terminal, /reports, /notice, proxy_pass → :8889
-│
-├── .env                         # API 키 (5개)
-└── CLAUDE.md                    # Claude Code 설정
+├── frontend/                    # Next.js 대시보드
+├── tests/
+├── data/
+├── output/
+│   ├── picks/                   # 날짜별 스크리닝 결과
+│   └── reports/
+├── docs/
+│   └── evolution/               # service-evolver 학습 이력
+├── archive/legacy-archive/legacy-dashboard/    # 레거시 정적 대시보드
+├── .env
+└── CLAUDE.md
 ```
 
 ---
@@ -195,7 +156,7 @@ us-stock/
 
 **파일: `pipeline/us_data_pipeline.py` + `pipeline/run_pipeline.py`**
 - 버튼 하나로 모든 데이터를 수집합니다
-- `python pipeline/run_pipeline.py --top-n 50 --period 1y --output-dir ./data`
+- `python src/pipeline/run_pipeline.py --top-n 50 --period 1y --output-dir ./data`
 - 4개 CSV 파일을 자동 생성
 
 ### 프롬프트 7: 품질 검사
@@ -416,7 +377,7 @@ us-stock/
 
 ```bash
 # 전체 자동 실행 (데이터 수집 → 학습 → 예측 → 저장)
-python us_market/index_predictor.py
+python src/us_market/index_predictor.py
 
 # 테스트 (8개 단위 테스트)
 pytest tests/test_index_predictor.py -v
@@ -515,7 +476,7 @@ python -m ml.pipeline.predict
 
 > 이 시스템은 스스로 개선돼요. **매일 1건씩 작은 진화**를 누적하는 **22 에이전트 생태계**가 움직입니다.
 
-**파일: `.claude/agents/*.md`, `.docs/evolution/*`**
+**파일: `.claude/agents/*.md`, `docs/evolution/*`**
 
 ### 비유로 이해하기
 
@@ -555,7 +516,7 @@ Phase 7 (5분)  문서 갱신     — memory.md + backlog.md + README.md
 | # | 날짜 | 변경 | 근거 | 결과 |
 |---|------|------|------|------|
 | 1 | 2026-04-05 | **ERP 센서 추가** (`macro_collector.py`) | [Morningstar 2025](https://global.morningstar.com/en-nd/markets/this-simple-metric-could-predict-future-us-stock-market-returns) | ERP 1.87% → "과열 (주식 고평가)" 신호 |
-| 2 | 2026-04-05 | **IndexPredictor를 run_full_pipeline.py Step 8에 통합** | backlog P0 | SPY/QQQ BEARISH 92%/86% 신호 |
+| 2 | 2026-04-05 | **IndexPredictor를 scripts/run_full_pipeline.py Step 8에 통합** | backlog P0 | SPY/QQQ BEARISH 92%/86% 신호 |
 
 ### 호출 방법
 
@@ -569,7 +530,7 @@ Phase 7 (5분)  문서 갱신     — memory.md + backlog.md + README.md
 
 ### Reflexion Memory 시스템
 
-`.docs/evolution/memory.md`에 **모든 성공/실패가 누적 학습**됨:
+`docs/evolution/memory.md`에 **모든 성공/실패가 누적 학습**됨:
 - **Do's**: 반복할 성공 패턴 (예: "이미 구현된 모듈 재활용이 최고 ROI")
 - **Don'ts**: 반복 금지 실수 (예: "format code 추측 금지, 실제 타입 확인")
 - **Open Questions**: 추가 리서치 필요 항목
@@ -585,22 +546,22 @@ Phase 7 (5분)  문서 갱신     — memory.md + backlog.md + README.md
 source .venv/bin/activate
 
 # 전체 파이프라인 (8단계 자동 실행)
-python run_full_pipeline.py
+python scripts/run_full_pipeline.py
 
 # 개별 실행 (Part 1~3)
-python pipeline/run_pipeline.py --top-n 50 --period 1y   # Part 1: 데이터 수집
+python src/pipeline/run_pipeline.py --top-n 50 --period 1y   # Part 1: 데이터 수집
 python -m analyzers.market_regime                         # Part 2: 시장 체제
 python -m analyzers.market_gate                           # Part 2: 매수 신호등
 python -m collectors.macro_collector                      # 매크로 (ERP 포함)
-python run_screening.py                                   # Part 3: S&P 500 스크리닝
+python scripts/run_screening.py                                   # Part 3: S&P 500 스크리닝
 
 # AI 분석
-python analyzers/ai_summary_generator.py --provider gemini --top 10
-python analyzers/ai_summary_generator.py --provider perplexity --ticker AAPL
-python analyzers/final_report_generator.py
+python src/analyzers/ai_summary_generator.py --provider gemini --top 10
+python src/analyzers/ai_summary_generator.py --provider perplexity --ticker AAPL
+python src/analyzers/final_report_generator.py
 
 # Part 4: ML 지수 예측 (SPY/QQQ 5일 방향)
-python us_market/index_predictor.py
+python src/us_market/index_predictor.py
 
 # Part 5: Cross-sectional GBM (신규)
 python -m ml.features.macro.build_macro_features       # 18 거시 피처
@@ -628,14 +589,14 @@ python -m ml.pipeline.predict                          # Top 20 예측
 | output/predictor_model_spy.joblib | SPY 학습 모델 | "학습된 기상청 SPY 예보관" |
 | output/predictor_model_qqq.joblib | QQQ 학습 모델 | "학습된 기상청 QQQ 예보관" |
 | output/prediction_history.json | 과거 예보 100개 누적 | "예보 맞힘 기록장" |
-| result/smart_money_picks_YYYYMMDD.csv | 날짜별 스크리닝 결과 | "매일의 전체 성적표" |
+| output/picks/smart_money_picks_YYYYMMDD.csv | 날짜별 스크리닝 결과 | "매일의 전체 성적표" |
 | **output/gbm_predictions.{parquet,csv}** | **Cross-sectional Top 20 (Part 5)** | "**50+ 학생 중 상위 20명 랭킹**" |
-| **ml/features/macro/*.parquet** | **18 거시 피처 (ERP/VIX/yield)** | "반 전체 분위기 체크표" |
-| **ml/features/equity/*.parquet** | **36 종목 피처 + 5 타겟** | "학생 개개인 과제 점수" |
-| **ml/models/lgbm_*.pkl + .json** | **학습된 LightGBM + metadata** | "훈련된 과외 선생님" |
-| **ml/validation/walk_forward_*.json** | **PBO/DSR + fold별 IC** | "모의고사 채점표" |
-| **.docs/evolution/memory.md** | **service-evolver Reflexion 메모리** | "어제 배운 교훈 노트" |
-| **.docs/evolution/backlog.md** | **P0/P1/P2/P3 개선 후보** | "해야 할 일 목록" |
+| **src/ml/features/macro/*.parquet** | **18 거시 피처 (ERP/VIX/yield)** | "반 전체 분위기 체크표" |
+| **src/ml/features/equity/*.parquet** | **36 종목 피처 + 5 타겟** | "학생 개개인 과제 점수" |
+| **src/ml/models/lgbm_*.pkl + .json** | **학습된 LightGBM + metadata** | "훈련된 과외 선생님" |
+| **src/ml/validation/walk_forward_*.json** | **PBO/DSR + fold별 IC** | "모의고사 채점표" |
+| **docs/evolution/memory.md** | **service-evolver Reflexion 메모리** | "어제 배운 교훈 노트" |
+| **docs/evolution/backlog.md** | **P0/P1/P2/P3 개선 후보** | "해야 할 일 목록" |
 
 ---
 
@@ -688,7 +649,7 @@ AI 분석할 때마다 얼마나 돈이 드는지 자동으로 계산해줘요.
 | GPT-5-mini | $0.15 / 100만 토큰 | $0.60 / 100만 토큰 |
 | Perplexity Sonar | $3 / 1000 요청 | — |
 
-`run_full_pipeline.py` 실행하면 마지막에 비용 요약이 나와요:
+`scripts/run_full_pipeline.py` 실행하면 마지막에 비용 요약이 나와요:
 ```
 ──────────────────────────────────────────────────
   💰 API 비용 요약

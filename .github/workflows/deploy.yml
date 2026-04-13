@@ -75,7 +75,7 @@ jobs:
           username: ${{ secrets.SYNOLOGY_USERNAME }}
           key: ${{ secrets.SYNOLOGY_SSH_KEY }}
           port: ${{ secrets.SYNOLOGY_PORT }}
-          source: "dashboard/pages/notice.html,dashboard/pages/terminal.html,dashboard/pages/reports.html,dashboard/nginx.conf,dashboard/images"
+          source: "archive/legacy-dashboard/pages/notice.html,archive/legacy-dashboard/pages/terminal.html,archive/legacy-dashboard/pages/reports.html,archive/legacy-dashboard/nginx.conf,archive/legacy-dashboard/images"
           target: /volume1/docker/us-stock/dashboard
           strip_components: 1
 
