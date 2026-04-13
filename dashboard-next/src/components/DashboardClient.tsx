@@ -67,7 +67,7 @@ export function DashboardClient({ initial, regime }: Props) {
       ? "bg-primary-container text-on-primary-container border-primary"
       : verdict === "STOP"
         ? "bg-error-container text-on-error-container border-error"
-        : "bg-secondary-container text-on-secondary-container border-secondary";
+        : "bg-secondary-container text-black border-secondary-container";
 
   return (
     <div>

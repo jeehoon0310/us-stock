@@ -56,6 +56,28 @@ jobs:
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
+      - name: Prepare Synology dashboard directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SYNOLOGY_HOST }}
+          username: ${{ secrets.SYNOLOGY_USERNAME }}
+          key: ${{ secrets.SYNOLOGY_SSH_KEY }}
+          port: ${{ secrets.SYNOLOGY_PORT }}
+          script: |
+            sudo mkdir -p /volume1/docker/us-stock/dashboard/pages
+            sudo mkdir -p /volume1/docker/us-stock/dashboard/images
+
+      - name: Sync dashboard files to Synology
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SYNOLOGY_HOST }}
+          username: ${{ secrets.SYNOLOGY_USERNAME }}
+          key: ${{ secrets.SYNOLOGY_SSH_KEY }}
+          port: ${{ secrets.SYNOLOGY_PORT }}
+          source: "dashboard/pages/notice.html,dashboard/pages/terminal.html,dashboard/pages/reports.html,dashboard/nginx.conf,dashboard/images"
+          target: /volume1/docker/us-stock/dashboard
+          strip_components: 1
+
       - name: Deploy to Synology
         uses: appleboy/ssh-action@v1
         env:
