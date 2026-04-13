@@ -66,6 +66,7 @@ jobs:
           script: |
             sudo mkdir -p /volume1/docker/us-stock/dashboard/pages
             sudo mkdir -p /volume1/docker/us-stock/dashboard/images
+            sudo chown -R jeehoon /volume1/docker/us-stock/dashboard
 
       - name: Sync dashboard files to Synology
         uses: appleboy/scp-action@v0.1.7
