@@ -1,14 +1,14 @@
 # Stage 1: Dependencies
 FROM node:20-slim AS deps
 WORKDIR /app
-COPY dashboard-next/package*.json ./
+COPY frontend/package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm install
 
 # Stage 2: Build
 FROM node:20-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY dashboard-next/ .
+COPY frontend/ .
 RUN npm run build
 
 # Stage 3: Runner
