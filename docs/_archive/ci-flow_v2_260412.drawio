@@ -1,5 +1,5 @@
 <mxfile host="Obsidian Drawio" agent="Claude Code" version="24.0.0" type="device">
-  <diagram name="CI-CD Flow v3" id="ci-flow-v2">
+  <diagram name="CI-CD Flow v2" id="ci-flow-v2">
     <mxGraphModel dx="2400" dy="1700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1700" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -181,7 +181,7 @@
         <!-- ============================================================ -->
 
         <!-- Title -->
-        <mxCell id="title" value="US Stock — CI/CD Flow v3 (2026-04-13 nginx 라우팅 추가 + SCP chmod 수정)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
+        <mxCell id="title" value="US Stock — CI/CD Flow v2 (실제 동작 구조, 2026-04-12 debug 세션 반영)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
           <mxGeometry x="100" y="20" width="2200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="subtitle" value="Mac push → GitHub Actions build+push GHCR → Tailscale tunnel → tailscaled userspace proxy → sshd :28080 → docker compose up → /api/health" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666" vertex="1" parent="1">
@@ -327,7 +327,7 @@
           <mxGeometry x="1030" y="1010" width="160" height="80" as="geometry" />
         </mxCell>
 
-        <mxCell id="syn_dsm_proxy" value="DSM Reverse Proxy&#10;HAProxy, Let&#39;s Encrypt TLS&#10;edu.frindle.synology.me :443&#10;→ localhost:8080 (nginx)&#10; · /pages/*.html 정적 서빙&#10; · / → proxy_pass :8889 (us-stock)&#10;→ localhost:3000 (book-finder)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10;align=left;verticalAlign=top" vertex="1" parent="1">
+        <mxCell id="syn_dsm_proxy" value="DSM Reverse Proxy&#10;HAProxy, Let's Encrypt TLS&#10;edu.frindle.synology.me :443&#10;→ localhost:8889 (us-stock)&#10;→ localhost:3000 (book-finder)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=9;arcSize=10;align=left;verticalAlign=top" vertex="1" parent="1">
           <mxGeometry x="1220" y="1000" width="280" height="100" as="geometry" />
         </mxCell>
 
@@ -372,7 +372,7 @@
         <!-- LAYER 4: Text labels, legend, callout notes (top z-order) -->
         <!-- ============================================================ -->
 
-        <mxCell id="user_flow_note" value="End-user 경로 (주황 실선): Browser → DNS → ASUS WAN 443 → DSM Reverse Proxy → nginx :8080 → container :8889" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#b77516;fontStyle=2" vertex="1" parent="1">
+        <mxCell id="user_flow_note" value="End-user 경로 (주황 실선): Browser → DNS → ASUS WAN 443 → DSM Reverse Proxy → container :8889" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#b77516;fontStyle=2" vertex="1" parent="1">
           <mxGeometry x="220" y="1520" width="1000" height="30" as="geometry" />
         </mxCell>
         <mxCell id="admin_flow_note" value="Admin 경로 (청록 실선): Mac → ASUS WAN 22211 (LAN/hairpin) → sshd :28080 — 외부 네트워크 차단" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#0e6655;fontStyle=2" vertex="1" parent="1">
