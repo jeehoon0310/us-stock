@@ -49,16 +49,12 @@ Simon Willison이 2020년부터 실증한 패턴:
 - GHCR: `ghcr.io/jeehoon0310/us-stock:latest`
 - Tailscale: CI/CD **전용** (runtime 경로 아님, book-finder 인프라 재사용)
 
-### Synology NAS (서빙 레이어)
-- **us-stock 컨테이너**: Container Manager → Next.js standalone
-  - `network_mode: host`, `PORT=8889`, `HEALTHCHECK /api/health`
-  - **데이터 볼륨 마운트 없음** (이미지에 모두 베이크)
-  - API 키 없음, Python 없음, cron 없음, 학습 모델 없음
-- **us-stock-dashboard 컨테이너**: nginx (bridge network, `:8080`)
-  - 정적 파일(`/pages/*.html`, `/images/`) 직접 서빙
-  - 나머지 경로 → `proxy_pass http://192.168.1.11:8889` (Next.js)
-  - notice.html 등 강의 공지 페이지 호스팅
-- DSM Reverse Proxy: `edu.frindle.synology.me` (443, Let's Encrypt) → **`localhost:8080`** (nginx)
+### Synology NAS (정적 서빙)
+- Container Manager → Next.js standalone 컨테이너
+- `network_mode: host`, `ports: 3000`, `HEALTHCHECK /api/health`
+- **데이터 볼륨 마운트 없음** (이미지에 모두 베이크)
+- API 키 없음, Python 없음, cron 없음, 학습 모델 없음
+- DSM Reverse Proxy: `edu.frindle.synology.me` (443, Let's Encrypt) → `localhost:3000`
 
 ### ASUS Router (WAN)
 - 포트포워드 443 → Synology LAN IP
@@ -66,7 +62,7 @@ Simon Willison이 2020년부터 실증한 패턴:
 
 ### End User (Browser)
 - `https://edu.frindle.synology.me` 접속
-- 경로: Browser → HTTPS → ASUS WAN 443 → Synology 역방향 프록시 → nginx `:8080` → (정적 `/pages/`) 또는 (proxy_pass → Next.js `:8889`)
+- 경로: Browser → HTTPS → ASUS WAN 443 → Synology 역방향 프록시 → Next.js `:3000`
 - **Tailscale을 사용하지 않음** (CI/CD 전용)
 
 ## 데이터 흐름 (ASCII)
@@ -102,12 +98,9 @@ GitHub Actions (.github/workflows/deploy.yml)
        → health check loop (30×2s, curl /api/health)
                 ↓
 Synology Container Manager
-  us-stock 컨테이너 (node:20-slim, standalone, host network, :8889)
-  us-stock-dashboard 컨테이너 (nginx, bridge network, :8080)
-    ├─ /pages/*.html, /images/ → 정적 파일 직접 서빙
-    └─ / → proxy_pass http://192.168.1.11:8889
+  us-stock 컨테이너 (node:20-slim, standalone, host network, :3000)
                 ↓
-DSM Reverse Proxy (443, Let's Encrypt) → localhost:8080 (nginx)
+DSM Reverse Proxy (443, Let's Encrypt) → localhost:3000
                 ↓
 ASUS Router WAN 443 포트포워드
                 ↓
@@ -394,28 +387,27 @@ jobs:
           envs: GHCR_PULL_TOKEN
           script: |
             set -e
-            echo "$GHCR_PULL_TOKEN" | sudo /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
-            sudo /usr/local/bin/docker pull ghcr.io/jeehoon0310/us-stock:latest
-            sudo mkdir -p /volume1/docker/us-stock
-            sudo chown -R jeehoon /volume1/docker/us-stock
+            echo "$GHCR_PULL_TOKEN" | /usr/local/bin/docker login ghcr.io -u jeehoon0310 --password-stdin
+            /usr/local/bin/docker pull ghcr.io/jeehoon0310/us-stock:latest
+            mkdir -p /volume1/docker/us-stock
             cd /volume1/docker/us-stock
             curl -sfL "https://raw.githubusercontent.com/jeehoon0310/us-stock/main/docker-compose.prod.yml" -o docker-compose.yml.new
             if ! diff -q docker-compose.yml docker-compose.yml.new > /dev/null 2>&1; then
               echo "docker-compose.yml updated from Git"
-              sudo mv docker-compose.yml.new docker-compose.yml
+              mv docker-compose.yml.new docker-compose.yml
             else
               rm docker-compose.yml.new
               echo "docker-compose.yml unchanged"
             fi
-            sudo /usr/local/bin/docker compose down || true
-            sudo /usr/local/bin/docker compose up -d
-            sudo /usr/local/bin/docker image prune -f
+            /usr/local/bin/docker compose down || true
+            /usr/local/bin/docker compose up -d
+            /usr/local/bin/docker image prune -f
             for i in $(seq 1 30); do
-              curl -sf http://localhost:8889/api/health && echo " OK" && exit 0
+              curl -sf http://localhost:3000/api/health && echo " OK" && exit 0
               sleep 2
             done
             echo "Health check failed"
-            sudo /usr/local/bin/docker logs us-stock --tail=80
+            /usr/local/bin/docker logs us-stock --tail=80
             exit 1
 ```
 
