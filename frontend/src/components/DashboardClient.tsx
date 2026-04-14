@@ -171,14 +171,14 @@ export function DashboardClient({ initial, regime }: Props) {
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl">
               <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
-                Confidence <HelpBtn topic="confidence" />
+                Confidence <HelpBtn topic="confidence" value={conf} />
               </p>
               <p className={`text-3xl font-black tracking-tighter ${conf >= 90 ? "text-primary" : conf >= 60 ? "text-secondary" : "text-error"}`}>{conf}%</p>
               <p className={`text-xs mt-1 ${(score ?? 0) >= 2 ? "text-primary" : (score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>Score {score}</p>
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl">
               <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
-                Screened <HelpBtn topic="picks" />
+                Screened <HelpBtn topic="picks" value={summary.total_screened ?? picks.length} />
               </p>
               <p className="text-3xl font-black tracking-tighter text-on-surface">
                 {summary.total_screened ?? picks.length}
@@ -187,7 +187,7 @@ export function DashboardClient({ initial, regime }: Props) {
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl border border-primary/20">
               <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
-                Market Gate <HelpBtn topic="gate" />
+                Market Gate <HelpBtn topic="gate" value={gate} />
               </p>
               <p
                 className="text-3xl font-black tracking-tighter"
@@ -207,13 +207,13 @@ export function DashboardClient({ initial, regime }: Props) {
               {/* Signals */}
               <div className="bg-surface-container-low rounded-xl p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-                  Core Regime Indicators <HelpBtn topic="regime" />
+                  Core Regime Indicators <HelpBtn topic="regime" value={score} />
                 </h4>
                 <div className="flex flex-wrap gap-4">
                   {spy?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                        SPY 5D <HelpBtn topic="ml" />
+                        SPY 5D <HelpBtn topic="ml" value={spy.confidence_pct} />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${spy.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
@@ -230,7 +230,7 @@ export function DashboardClient({ initial, regime }: Props) {
                   {qqq?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                        QQQ 5D <HelpBtn topic="ml" />
+                        QQQ 5D <HelpBtn topic="ml" value={qqq.confidence_pct} />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${qqq.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}

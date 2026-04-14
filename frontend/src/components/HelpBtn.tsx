@@ -574,11 +574,59 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
   },
 };
 
+// ── ValueInterpretation — 실제 값이 어느 범주인지 팝업 상단에 표시 ────────────
+
+function ValueInterpretation({ topic, value }: { topic: string; value?: number | string }) {
+  if (value == null) return null;
+
+  let content: React.ReactNode = null;
+
+  if (topic === "confidence" && typeof value === "number") {
+    const cls = value >= 90 ? H.green : value >= 60 ? H.yellow : H.red;
+    const label = value >= 90 ? "높음 ✅" : value >= 60 ? "보통 ⚠️" : "낮음 ❌";
+    const msg = value >= 90 ? "거의 틀림없어요" : value >= 60 ? "꽤 확실해요" : "불확실해요, 조심하세요";
+    content = <p>현재 신뢰도: <span className={cls}>{value}%</span> → <span className={cls}>{label}</span> — {msg}</p>;
+  }
+
+  if ((topic === "regime" || topic === "regime_score") && typeof value === "number") {
+    const cls = value >= 2 ? H.green : value >= 1 ? H.yellow : H.red;
+    const label = value >= 2 ? "RISK ON ✅ 투자하기 좋아요" : value >= 1 ? "NEUTRAL ⚠️ 보통이에요" : "RISK OFF ❌ 조심하세요";
+    content = <p>현재 Regime Score: <span className={cls}>{value}</span> → <span className={cls}>{label}</span></p>;
+  }
+
+  if (topic === "picks" && typeof value === "number") {
+    const cls = value >= 30 ? H.green : value >= 10 ? H.yellow : H.red;
+    const hint = value >= 30 ? "시장이 좋아요! 종목이 많아요 ✅" : value >= 10 ? "보통이에요" : "오늘은 통과 종목이 적어요 ⚠️";
+    content = <p>오늘 통과 종목: <span className={cls}>{value}개</span> — S&P 500 중 {value}개가 통과 ({hint})</p>;
+  }
+
+  if (topic === "gate" && typeof value === "string") {
+    const cls = value === "GO" ? H.green : value === "STOP" ? H.red : H.yellow;
+    const msg = value === "GO" ? "매수 진입 가능! ✅" : value === "STOP" ? "지금은 매수 자제 ❌" : "조심해서 소량만 ⚠️";
+    content = <p>현재 Gate: <span className={cls}>{value}</span> → <span className={cls}>{msg}</span></p>;
+  }
+
+  if (topic === "ml" && typeof value === "number") {
+    const cls = value >= 70 ? H.green : value >= 50 ? H.yellow : H.red;
+    const label = value >= 70 ? "높음 ✅ 신호 믿어도 돼요" : value >= 50 ? "보통 ⚠️ 다른 신호도 참고하세요" : "낮음 ❌ 이번 예측은 불확실해요";
+    content = <p>현재 신뢰도: <span className={cls}>{value}%</span> → <span className={cls}>{label}</span></p>;
+  }
+
+  if (!content) return null;
+
+  return (
+    <div className="bg-primary/10 border border-primary/25 rounded-lg px-4 py-3 mb-4 text-xs">
+      <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-1">📍 지금 이 값이 의미하는 것</p>
+      {content}
+    </div>
+  );
+}
+
 // ── HelpBtn 컴포넌트 ──────────────────────────────────────────────────────────
 
 type Topic = keyof typeof HELP_DATA;
 
-export function HelpBtn({ topic }: { topic: Topic }) {
+export function HelpBtn({ topic, value }: { topic: Topic; value?: number | string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -624,6 +672,7 @@ export function HelpBtn({ topic }: { topic: Topic }) {
             </div>
             {/* Body */}
             <div className="px-5 py-4 text-[13px] text-on-surface-variant leading-relaxed">
+              <ValueInterpretation topic={topic} value={value} />
               {data.body}
             </div>
           </div>
