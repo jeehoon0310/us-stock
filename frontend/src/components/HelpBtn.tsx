@@ -90,6 +90,10 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p>전체 평균 <span className={H.bold}>40~70점</span> → CAUTION</p>
           <p>전체 평균 <span className={H.bold}>40점 미만</span> → STOP</p>
         </Box>
+        <Sec>❓ 데이터가 없는데 왜 CAUTION이 뜨나요?</Sec>
+        <p>섹터 데이터가 아직 계산되지 않은 날짜거나 최신 리포트가 아닌 경우,<br />
+        <span className={H.bold}>CAUTION이 기본값</span>으로 표시돼요.<br />
+        "섹터 게이트 데이터 없음" 메시지가 함께 보이면 데이터가 없는 상태예요!</p>
       </>
     ),
   },

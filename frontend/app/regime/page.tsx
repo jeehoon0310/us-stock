@@ -368,11 +368,14 @@ export default function RegimePage() {
               {m.bearish_sectors ?? 0} · Top: {m.top_sector ?? "-"} · Bottom: {m.bottom_sector ?? "-"}
             </p>
           </div>
-          <span
-            className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded ${gateBadgeBg}`}
-          >
-            {g}
-          </span>
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded ${gateBadgeBg}`}
+            >
+              {g}
+            </span>
+            <HelpBtn topic="gate" />
+          </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {sectors.length === 0 ? (
