@@ -5,8 +5,135 @@
     "regime": "neutral",
     "regime_score": 1.5,
     "regime_confidence": 40,
+    "signals": {
+      "vix": "neutral",
+      "trend": "neutral",
+      "breadth": "neutral",
+      "credit": "neutral",
+      "yield_curve": "neutral"
+    },
+    "adaptive_params": {
+      "stop_loss": "6%",
+      "max_drawdown_warning": "10%"
+    },
     "gate": "CAUTION",
     "gate_score": 44.4,
+    "sectors": [
+      {
+        "name": "Materials",
+        "ticker": "XLB",
+        "score": 37.1,
+        "signal": "BEARISH",
+        "rsi": 36.2,
+        "rs_vs_spy": -0.047,
+        "change_1d": 0.43
+      },
+      {
+        "name": "Communication",
+        "ticker": "XLC",
+        "score": 49.9,
+        "signal": "BEARISH",
+        "rsi": 43.2,
+        "rs_vs_spy": 0.0038,
+        "change_1d": 0.77
+      },
+      {
+        "name": "Energy",
+        "ticker": "XLE",
+        "score": 64.9,
+        "signal": "BULLISH",
+        "rsi": 71.0,
+        "rs_vs_spy": 0.0404,
+        "change_1d": 0.35
+      },
+      {
+        "name": "Financials",
+        "ticker": "XLF",
+        "score": 43.7,
+        "signal": "BEARISH",
+        "rsi": 34.0,
+        "rs_vs_spy": -0.0137,
+        "change_1d": 0.84
+      },
+      {
+        "name": "Industrials",
+        "ticker": "XLI",
+        "score": 38.7,
+        "signal": "BEARISH",
+        "rsi": 38.9,
+        "rs_vs_spy": -0.0465,
+        "change_1d": 0.86
+      },
+      {
+        "name": "Technology",
+        "ticker": "XLK",
+        "score": 55.2,
+        "signal": "NEUTRAL",
+        "rsi": 46.9,
+        "rs_vs_spy": 0.0199,
+        "change_1d": 1.45
+      },
+      {
+        "name": "Consumer Staples",
+        "ticker": "XLP",
+        "score": 45.1,
+        "signal": "BEARISH",
+        "rsi": 43.5,
+        "rs_vs_spy": -0.0167,
+        "change_1d": 0.28
+      },
+      {
+        "name": "Real Estate",
+        "ticker": "XLRE",
+        "score": 49.4,
+        "signal": "NEUTRAL",
+        "rsi": 47.5,
+        "rs_vs_spy": -0.0052,
+        "change_1d": 0.78
+      },
+      {
+        "name": "Utilities",
+        "ticker": "XLU",
+        "score": 59.4,
+        "signal": "BULLISH",
+        "rsi": 62.9,
+        "rs_vs_spy": 0.023,
+        "change_1d": 0.64
+      },
+      {
+        "name": "Healthcare",
+        "ticker": "XLV",
+        "score": 43.2,
+        "signal": "BEARISH",
+        "rsi": 37.9,
+        "rs_vs_spy": -0.0221,
+        "change_1d": 0.81
+      },
+      {
+        "name": "Consumer Disc",
+        "ticker": "XLY",
+        "score": 47.2,
+        "signal": "BEARISH",
+        "rsi": 36.3,
+        "rs_vs_spy": -0.0026,
+        "change_1d": 1.21
+      }
+    ],
+    "gate_metrics": {
+      "avg_score": 48.5,
+      "bullish_sectors": 2,
+      "bearish_sectors": 7,
+      "top_sector": "Energy",
+      "bottom_sector": "Materials"
+    },
+    "spy_divergence": {
+      "signal": "none",
+      "label": "",
+      "severity": "neutral",
+      "spy_price": 667.21,
+      "change_10d_pct": -2.53,
+      "vol_ratio_2d_vs_20d_avg": 1.05
+    },
     "ml_predictor": {
       "spy": {
         "direction": "bearish",
