@@ -32,7 +32,7 @@ export function SideNav({ syncedAt }: { syncedAt: string }) {
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 bg-surface-container-low flex-col py-8 z-40 mt-16">
       <div className="px-6 mb-8">
-        <h2 className="text-lg font-bold text-on-surface tracking-tight">Obsidian Terminal</h2>
+        <h2 className="text-lg font-bold text-on-surface tracking-tight">Frindle Tools</h2>
         <p className="text-xs font-medium text-on-surface-variant uppercase tracking-tighter opacity-60">
           Executive Intelligence
         </p>
