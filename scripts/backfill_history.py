@@ -19,8 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 REPORTS_DIR = BASE_DIR / "output" / "reports"
 FRONTEND_REPORTS = BASE_DIR / "frontend" / "public" / "data" / "reports"
 
-# Good Friday 2026 등 시장 휴장일
+# 미국 시장 휴장일 (2026)
 MARKET_HOLIDAYS = {
+    date(2026, 2, 16),  # Presidents Day (Washington's Birthday)
     date(2026, 4, 3),   # Good Friday
 }
 
@@ -127,7 +128,8 @@ def main():
         target = _dt.strptime(args.date, "%Y%m%d").date()
         to_run = [target]
     else:
-        start = date(2026, 3, 16)
+        # 2달치: Feb 17 ~ Apr 14 (Presidents Day Feb 16 제외)
+        start = date(2026, 2, 17)
         end = date(2026, 4, 14)
         trading = get_trading_days(start, end)
         to_run = missing_dates(trading)
