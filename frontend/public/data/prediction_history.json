@@ -166,5 +166,19 @@
       "predicted_return": -0.072
     },
     "model_accuracy": 52.7
+  },
+  {
+    "date": "2026-04-15",
+    "spy": {
+      "direction": "bearish",
+      "probability": 0.47,
+      "predicted_return": -0.184
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.31,
+      "predicted_return": 0.077
+    },
+    "model_accuracy": 52.7
   }
 ]

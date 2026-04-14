@@ -1,41 +1,41 @@
 {
-  "date": "2026-04-14",
+  "date": "2026-04-15",
   "predictions": {
     "spy": {
-      "direction": "bullish",
-      "probability_up": 0.744,
-      "predicted_return": 0.451,
-      "confidence": "high",
-      "confidence_pct": 74.4,
+      "direction": "bearish",
+      "probability_up": 0.47,
+      "predicted_return": -0.184,
+      "confidence": "low",
+      "confidence_pct": 53.0,
       "key_drivers": [
         {
           "feature": "spy_vol_trend_5d",
           "importance": 0.0912,
-          "value": -0.304,
+          "value": -0.318,
           "direction": "bearish"
         },
         {
           "feature": "yield_spread_proxy",
           "importance": 0.0766,
-          "value": 0.38,
+          "value": 0.385,
           "direction": "bullish"
         },
         {
           "feature": "spy_price_vs_50ma_pct",
           "importance": 0.0727,
-          "value": 1.776,
+          "value": 3.008,
           "direction": "bullish"
         },
         {
           "feature": "xlu_relative_1m",
           "importance": 0.0675,
-          "value": -3.245,
+          "value": -5.901,
           "direction": "bullish"
         },
         {
           "feature": "spy_return_1m",
           "importance": 0.0633,
-          "value": 3.009,
+          "value": 4.857,
           "direction": "bullish"
         }
       ],
@@ -44,39 +44,39 @@
     },
     "qqq": {
       "direction": "bearish",
-      "probability_up": 0.286,
-      "predicted_return": -0.072,
-      "confidence": "high",
-      "confidence_pct": 71.4,
+      "probability_up": 0.31,
+      "predicted_return": 0.077,
+      "confidence": "moderate",
+      "confidence_pct": 69.0,
       "key_drivers": [
         {
           "feature": "yield_spread_proxy",
           "importance": 0.0939,
-          "value": 0.38,
+          "value": 0.385,
           "direction": "bullish"
         },
         {
           "feature": "spy_vol_trend_5d",
           "importance": 0.0767,
-          "value": -0.304,
+          "value": -0.318,
           "direction": "bearish"
         },
         {
           "feature": "vix_value",
           "importance": 0.0677,
-          "value": 19.12,
+          "value": 18.36,
           "direction": "bearish"
         },
         {
           "feature": "xlu_relative_1m",
           "importance": 0.0639,
-          "value": -3.245,
+          "value": -5.901,
           "direction": "bullish"
         },
         {
           "feature": "xlk_relative_1m",
           "importance": 0.0611,
-          "value": 2.628,
+          "value": 3.286,
           "direction": "bullish"
         }
       ],
