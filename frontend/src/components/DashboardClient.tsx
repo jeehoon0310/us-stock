@@ -34,10 +34,27 @@ export function DashboardClient({ initial, regime }: Props) {
     }
   }
 
-  function shiftDate(delta: number) {
+  async function shiftDate(delta: number) {
     const d = new Date(date);
-    d.setDate(d.getDate() + delta);
-    void loadReport(d.toISOString().slice(0, 10));
+    // 주말·공휴일 자동 skip: 최대 7일 탐색
+    for (let attempt = 0; attempt < 7; attempt++) {
+      d.setDate(d.getDate() + delta);
+      const dateStr = d.toISOString().slice(0, 10);
+      const ymd = dateStr.replace(/-/g, "");
+      try {
+        const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+        if (r.ok) {
+          const data = (await r.json()) as LatestReport;
+          setReport(data);
+          setDate(dateStr);
+          setStatus("");
+          return;
+        }
+      } catch {
+        // 계속 탐색
+      }
+    }
+    setStatus("데이터 없음");
   }
 
   useEffect(() => {
