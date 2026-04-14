@@ -1,87 +1,87 @@
 {
-  "date": "2026-04-12",
+  "date": "2026-04-14",
   "predictions": {
     "spy": {
       "direction": "bullish",
-      "probability_up": 0.546,
-      "predicted_return": -0.822,
-      "confidence": "low",
-      "confidence_pct": 54.6,
+      "probability_up": 0.654,
+      "predicted_return": 0.502,
+      "confidence": "moderate",
+      "confidence_pct": 65.4,
       "key_drivers": [
         {
+          "feature": "spy_vol_trend_5d",
+          "importance": 0.0912,
+          "value": -0.305,
+          "direction": "bearish"
+        },
+        {
           "feature": "yield_spread_proxy",
-          "importance": 0.0828,
-          "value": 0.378,
+          "importance": 0.0766,
+          "value": 0.38,
           "direction": "bullish"
         },
         {
           "feature": "spy_price_vs_50ma_pct",
-          "importance": 0.0822,
-          "value": 0.767,
+          "importance": 0.0727,
+          "value": 1.776,
           "direction": "bullish"
         },
         {
-          "feature": "spy_vol_trend_5d",
-          "importance": 0.0766,
-          "value": -0.353,
-          "direction": "bearish"
+          "feature": "xlu_relative_1m",
+          "importance": 0.0675,
+          "value": -3.245,
+          "direction": "bullish"
         },
         {
           "feature": "spy_return_1m",
-          "importance": 0.0764,
-          "value": 0.463,
+          "importance": 0.0633,
+          "value": 3.009,
           "direction": "bullish"
-        },
-        {
-          "feature": "xlu_relative_1m",
-          "importance": 0.0652,
-          "value": 1.248,
-          "direction": "bearish"
         }
       ],
-      "model_trained_at": "2026-04-05T13:16:26.170162",
-      "model_accuracy": 0.5323
+      "model_trained_at": "2026-04-14T09:22:56.864696",
+      "model_accuracy": 0.5266
     },
     "qqq": {
       "direction": "bearish",
-      "probability_up": 0.182,
-      "predicted_return": -1.475,
-      "confidence": "high",
-      "confidence_pct": 81.8,
+      "probability_up": 0.301,
+      "predicted_return": -0.039,
+      "confidence": "moderate",
+      "confidence_pct": 69.9,
       "key_drivers": [
         {
           "feature": "yield_spread_proxy",
-          "importance": 0.0829,
-          "value": 0.378,
-          "direction": "bullish"
-        },
-        {
-          "feature": "xlk_relative_1m",
-          "importance": 0.0742,
-          "value": 1.097,
+          "importance": 0.0939,
+          "value": 0.38,
           "direction": "bullish"
         },
         {
           "feature": "spy_vol_trend_5d",
-          "importance": 0.0701,
-          "value": -0.353,
-          "direction": "bearish"
-        },
-        {
-          "feature": "xlu_relative_1m",
-          "importance": 0.0693,
-          "value": 1.248,
+          "importance": 0.0767,
+          "value": -0.305,
           "direction": "bearish"
         },
         {
           "feature": "vix_value",
-          "importance": 0.0664,
-          "value": 19.23,
+          "importance": 0.0677,
+          "value": 19.12,
           "direction": "bearish"
+        },
+        {
+          "feature": "xlu_relative_1m",
+          "importance": 0.0639,
+          "value": -3.245,
+          "direction": "bullish"
+        },
+        {
+          "feature": "xlk_relative_1m",
+          "importance": 0.0611,
+          "value": 2.628,
+          "direction": "bullish"
         }
       ],
-      "model_trained_at": "2026-04-05T13:16:27.749048",
-      "model_accuracy": 0.5087
+      "model_trained_at": "2026-04-14T09:22:58.653118",
+      "model_accuracy": 0.5031
     }
   }
 }
