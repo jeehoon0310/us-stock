@@ -128,6 +128,14 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.yellow}>50~69%</span> = 어느 정도 확신해요 — 참고는 하되 다른 신호도 봐요</p>
           <p><span className={H.red}>50% 미만</span> = 확신이 낮아요 ⚠️ — 이번 예측은 불확실해요</p>
         </Box>
+        <Sec>❓ 신뢰도가 높은데 BEARISH가 나오면?</Sec>
+        <p>신뢰도는 <span className={H.bold}>"오를 것"이 아니라 "얼마나 확실한가"</span>예요!</p>
+        <Box>
+          <p><span className={H.red}>BEARISH + 신뢰도 높음</span> = AI가 <span className={H.bold}>"내릴 것 같아!"를 매우 확신</span>해요 ⚠️</p>
+          <p><span className={H.green}>BULLISH + 신뢰도 높음</span> = AI가 <span className={H.bold}>"오를 것 같아!"를 매우 확신</span>해요 ✅</p>
+          <p><span className={H.yellow}>BULLISH + 신뢰도 낮음</span> = "오를 것 같긴 한데… 잘 모르겠어" 상태예요</p>
+        </Box>
+        <p className="text-[11px]">⚡ 신뢰도 높음 = 확실하다는 뜻이지, 오른다는 뜻이 아니에요! BEARISH여도 신뢰도가 높으면 "확실하게 내린다"는 신호예요.</p>
       </>
     ),
   },
@@ -606,7 +614,28 @@ function ValueInterpretation({ topic, value }: { topic: string; value?: number |
     content = <p>현재 Gate: <span className={cls}>{value}</span> → <span className={cls}>{msg}</span></p>;
   }
 
-  if (topic === "ml" && typeof value === "number") {
+  if (topic === "ml" && typeof value === "string" && value.includes(":")) {
+    const [dir, pctStr] = value.split(":");
+    const pct = parseFloat(pctStr);
+    const isBullish = dir === "bullish";
+    const dirCls = isBullish ? H.green : H.red;
+    const dirLabel = isBullish ? "BULLISH ▲" : "BEARISH ▼";
+    const confCls = pct >= 70 ? H.green : pct >= 50 ? H.yellow : H.red;
+    const confLabel = pct >= 70 ? "높음" : pct >= 50 ? "보통" : "낮음";
+    const combo = isBullish && pct >= 70
+      ? "AI가 '오를 것 같아!'를 매우 확신해요 ✅"
+      : !isBullish && pct >= 70
+      ? "AI가 '내릴 것 같아!'를 매우 확신해요 ⚠️ — BEARISH를 확신하는 상태예요"
+      : isBullish
+      ? "AI가 '오를 것 같긴 한데...' 확신은 낮아요"
+      : "AI가 '내릴 것 같긴 한데...' 확신도 낮아요";
+    content = (
+      <>
+        <p>현재: <span className={dirCls}>{dirLabel}</span> + 신뢰도 <span className={confCls}>{pct}% ({confLabel})</span></p>
+        <p className="mt-1 text-on-surface">{combo}</p>
+      </>
+    );
+  } else if (topic === "ml" && typeof value === "number") {
     const cls = value >= 70 ? H.green : value >= 50 ? H.yellow : H.red;
     const label = value >= 70 ? "높음 ✅ 신호 믿어도 돼요" : value >= 50 ? "보통 ⚠️ 다른 신호도 참고하세요" : "낮음 ❌ 이번 예측은 불확실해요";
     content = <p>현재 신뢰도: <span className={cls}>{value}%</span> → <span className={cls}>{label}</span></p>;

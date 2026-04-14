@@ -213,7 +213,7 @@ export function DashboardClient({ initial, regime }: Props) {
                   {spy?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                        SPY 5D <HelpBtn topic="ml" value={spy.confidence_pct} />
+                        SPY 5D <HelpBtn topic="ml" value={`${spy.direction}:${spy.confidence_pct ?? 0}`} />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${spy.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
@@ -230,7 +230,7 @@ export function DashboardClient({ initial, regime }: Props) {
                   {qqq?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                        QQQ 5D <HelpBtn topic="ml" value={qqq.confidence_pct} />
+                        QQQ 5D <HelpBtn topic="ml" value={`${qqq.direction}:${qqq.confidence_pct ?? 0}`} />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${qqq.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
