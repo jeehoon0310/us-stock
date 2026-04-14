@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { LatestReport, RegimeConfig, StockPick } from "@/lib/data";
 import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
+import { CalendarPicker } from "@/components/CalendarPicker";
 
 type Props = {
   initial: LatestReport;
@@ -18,6 +19,7 @@ export function DashboardClient({ initial, regime }: Props) {
   const [date, setDate] = useState<string>(initial.data_date ?? todayStr());
   const [report, setReport] = useState<LatestReport | null>(initial ?? null);
   const [status, setStatus] = useState<string>("");
+  const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
     const ymd = dateStr.replace(/-/g, "");
@@ -59,7 +61,9 @@ export function DashboardClient({ initial, regime }: Props) {
   }
 
   useEffect(() => {
-    // no-op: initial state already set
+    fetch("/data/dates_manifest.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
   }, []);
 
   const mt = report?.market_timing;
@@ -119,30 +123,13 @@ export function DashboardClient({ initial, regime }: Props) {
             Report Date
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => shiftDate(-1)}
-            className="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm"
-            title="이전 날짜"
-          >
-            ◀
-          </button>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => void loadReport(e.target.value)}
-            className="bg-surface-container-lowest border border-outline-variant/10 rounded-lg px-3 py-1.5 text-sm font-bold text-primary outline-none focus:border-primary transition-colors"
-            style={{ colorScheme: "dark" }}
-          />
-          <button
-            onClick={() => shiftDate(1)}
-            className="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm"
-            title="다음 날짜"
-          >
-            ▶
-          </button>
-          <span className="text-[10px] text-on-surface-variant ml-2">{status}</span>
-        </div>
+        <CalendarPicker
+          value={date}
+          availableDates={availableDates}
+          onChange={(d) => void loadReport(d)}
+          onShift={shiftDate}
+          status={status}
+        />
       </div>
 
       {!report ? (
