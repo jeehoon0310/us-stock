@@ -194,7 +194,7 @@ export default function RegimePage() {
           <div className="mt-10 flex gap-8 md:gap-12 z-10">
             <div>
               <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Regime Score <HelpBtn topic="regime_score" /></p>
-              <p className="text-3xl font-bold text-primary">{mt.regime_score ?? 0}</p>
+              <p className={`text-3xl font-bold ${(mt.regime_score ?? 0) >= 2 ? "text-primary" : (mt.regime_score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>{mt.regime_score ?? 0}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Stop Loss <HelpBtn topic="stop_loss" /></p>
