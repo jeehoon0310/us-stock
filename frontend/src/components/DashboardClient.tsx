@@ -216,7 +216,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         SPY 5D <HelpBtn topic="ml" value={`${spy.direction}:${spy.confidence_pct ?? 0}`} />
                       </p>
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${spy.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
+                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
+                        style={{ background: spy.direction === "bullish" ? CB["risk_on"] : CB["risk_off"], color: spy.direction === "bullish" ? C["risk_on"] : C["risk_off"] }}
                       >
                         {spy.direction.toUpperCase()}{" "}
                         {spy.predicted_return > 0 ? "+" : ""}
@@ -233,7 +234,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         QQQ 5D <HelpBtn topic="ml" value={`${qqq.direction}:${qqq.confidence_pct ?? 0}`} />
                       </p>
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${qqq.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
+                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
+                        style={{ background: qqq.direction === "bullish" ? CB["risk_on"] : CB["risk_off"], color: qqq.direction === "bullish" ? C["risk_on"] : C["risk_off"] }}
                       >
                         {qqq.direction.toUpperCase()}{" "}
                         {qqq.predicted_return > 0 ? "+" : ""}
@@ -260,35 +262,32 @@ export function DashboardClient({ initial, regime }: Props) {
                       Gate <HelpBtn topic="gate" />
                     </p>
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${gate === "GO" ? "bg-primary-container text-on-primary-container" : gate === "STOP" ? "bg-error-container text-on-error-container" : "bg-secondary-container text-on-secondary-container"}`}
+                      className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
+                      style={{
+                        background: gate === "GO" ? CB["risk_on"] : gate === "STOP" ? CB["risk_off"] : CB["neutral"],
+                        color: gate === "GO" ? C["risk_on"] : gate === "STOP" ? C["risk_off"] : C["neutral"],
+                      }}
                     >
                       {gate}
                     </span>
                   </div>
                   {/* Sensor fallback */}
-                  {Object.entries(signals).map(([k, v]) => {
-                    const cls =
-                      v === "risk_on"
-                        ? "bg-primary-container text-on-primary-container glow-primary"
-                        : v === "risk_off"
-                          ? "bg-error-container text-on-error-container glow-error"
-                          : "bg-secondary-container text-on-secondary-container";
-                    return (
-                      <div
-                        key={k}
-                        className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5"
+                  {Object.entries(signals).map(([k, v]) => (
+                    <div
+                      key={k}
+                      className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5"
+                    >
+                      <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                        {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
+                      </p>
+                      <span
+                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
+                        style={{ background: CB[v as string], color: C[v as string] }}
                       >
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                          {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
-                        </p>
-                        <span
-                          className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${cls}`}
-                        >
-                          {regimeLabel(String(v))}
-                        </span>
-                      </div>
-                    );
-                  })}
+                        {regimeLabel(String(v))}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
