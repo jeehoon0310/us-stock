@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type Holding = {
   ticker: string;
@@ -73,7 +74,7 @@ export default function PerformancePage() {
       {/* Header */}
       <div className="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-2xl font-bold tracking-tight mb-1">Portfolio Return Simulator</h2>
+          <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">Portfolio Return Simulator <HelpBtn topic="performance" /></h2>
           <p className="text-sm text-on-surface-variant">
             {data.note} · 기준일 {data.current_date}
           </p>
@@ -88,8 +89,8 @@ export default function PerformancePage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
-          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">
-            Top 10 종목
+          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex items-center gap-1">
+            Top 10 종목 <HelpBtn topic="picks" />
           </p>
           <div className="flex flex-wrap gap-1 mt-2">
             {data.tickers.map((t) => (
@@ -103,8 +104,8 @@ export default function PerformancePage() {
           </div>
         </div>
         <div className="bg-primary-container p-6 rounded-xl border-l-4 border-primary">
-          <p className="text-[10px] font-bold text-on-primary-container uppercase tracking-widest mb-1">
-            최고 매입일
+          <p className="text-[10px] font-bold text-on-primary-container uppercase tracking-widest mb-1 flex items-center gap-1">
+            최고 매입일 <HelpBtn topic="performance" />
           </p>
           <p className="text-2xl font-black text-primary">{best.portfolio_return_pct > 0 ? "+" : ""}{best.portfolio_return_pct.toFixed(1)}%</p>
           <p className="text-sm font-bold text-on-primary-container mt-1">{best.buy_date}</p>
@@ -113,8 +114,8 @@ export default function PerformancePage() {
           </p>
         </div>
         <div className="bg-error-container p-6 rounded-xl border-l-4 border-error">
-          <p className="text-[10px] font-bold text-on-error-container uppercase tracking-widest mb-1">
-            최악 매입일
+          <p className="text-[10px] font-bold text-on-error-container uppercase tracking-widest mb-1 flex items-center gap-1">
+            최악 매입일 <HelpBtn topic="performance" />
           </p>
           <p className="text-2xl font-black text-error">{worst.portfolio_return_pct > 0 ? "+" : ""}{worst.portfolio_return_pct.toFixed(1)}%</p>
           <p className="text-sm font-bold text-on-error-container mt-1">{worst.buy_date}</p>
@@ -126,8 +127,8 @@ export default function PerformancePage() {
 
       {/* Return Chart */}
       <div className="bg-surface-container-low rounded-xl p-6">
-        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">
-          매입일별 수익률 ({data.portfolios.length}거래일)
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
+          매입일별 수익률 ({data.portfolios.length}거래일) <HelpBtn topic="performance" />
         </h4>
         <div className="space-y-1.5 max-h-96 overflow-y-auto no-scrollbar">
           {data.portfolios.map((p) => {
@@ -207,12 +208,18 @@ export default function PerformancePage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-surface-container-high/20">
-                  {["#", "종목", "매입가", "현재가", "수익률"].map((h) => (
+                  {([
+                    { label: "#" },
+                    { label: "종목", topic: "picks" },
+                    { label: "매입가" },
+                    { label: "현재가" },
+                    { label: "수익률", topic: "performance" },
+                  ] as { label: string; topic?: string }[]).map((h) => (
                     <th
-                      key={h}
+                      key={h.label}
                       className="px-6 py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest"
                     >
-                      {h}
+                      <span className="flex items-center gap-1">{h.label}{h.topic && <HelpBtn topic={h.topic} />}</span>
                     </th>
                   ))}
                 </tr>

@@ -170,15 +170,15 @@ export function DashboardClient({ initial, regime }: Props) {
               <p className="text-xs text-on-surface-variant mt-1">Regime {r.replace("_", " ")}</p>
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-                Confidence
+              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+                Confidence <HelpBtn topic="confidence" />
               </p>
               <p className="text-3xl font-black tracking-tighter text-primary">{conf}%</p>
               <p className="text-xs text-on-surface-variant mt-1">Score {score}</p>
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-                Screened
+              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+                Screened <HelpBtn topic="picks" />
               </p>
               <p className="text-3xl font-black tracking-tighter text-on-surface">
                 {summary.total_screened ?? picks.length}
@@ -206,8 +206,8 @@ export function DashboardClient({ initial, regime }: Props) {
             <div className="lg:col-span-2 space-y-6">
               {/* Signals */}
               <div className="bg-surface-container-low rounded-xl p-6">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-                  Core Regime Indicators
+                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+                  Core Regime Indicators <HelpBtn topic="regime" />
                 </h4>
                 <div className="flex flex-wrap gap-4">
                   {spy?.direction && (
@@ -295,8 +295,8 @@ export function DashboardClient({ initial, regime }: Props) {
               {/* Top 5 Alpha Picks */}
               <div className="bg-surface-container-low rounded-xl overflow-hidden">
                 <div className="p-6 border-b border-outline-variant/10 flex justify-between items-center">
-                  <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface">
-                    Top 5 Alpha Picks
+                  <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
+                    Top 5 Alpha Picks <HelpBtn topic="picks" />
                   </h4>
                   <Link
                     href="/top-picks"
@@ -376,7 +376,7 @@ export function DashboardClient({ initial, regime }: Props) {
                   Integrated Verdict <HelpBtn topic="verdict" />
                 </p>
                 <div className="w-full bg-black/10 p-4 rounded-lg mb-4">
-                  <p className="text-[10px] font-bold uppercase mb-1">Gate Score</p>
+                  <p className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1">Gate Score <HelpBtn topic="gate" /></p>
                   <p className="text-4xl font-black">{gateScore}</p>
                 </div>
                 <div className="flex gap-4 text-sm">
@@ -391,8 +391,8 @@ export function DashboardClient({ initial, regime }: Props) {
 
               {/* Breadth Gauge */}
               <div className="bg-surface-container-low rounded-xl p-6">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-                  Breadth Gauge
+                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+                  Breadth Gauge <HelpBtn topic="regime" />
                 </h4>
                 <div className="relative h-4 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2">
                   <div className="absolute top-0 left-0 h-full w-[60%] bg-gradient-to-r from-secondary-fixed-dim to-primary"></div>
@@ -406,8 +406,8 @@ export function DashboardClient({ initial, regime }: Props) {
 
               {/* AI Feed */}
               <div className="bg-surface-container-low rounded-xl p-6">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-                  AI Feed
+                <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+                  AI Feed <HelpBtn topic="ai_thesis" />
                 </h4>
                 <div className="space-y-4">
                   {picks.slice(0, 3).map((stock) => {
