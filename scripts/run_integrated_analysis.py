@@ -89,6 +89,7 @@ def phase1_market_timing() -> dict:
         timing["regime"] = regime_result["final_regime"]
         timing["regime_score"] = regime_result["weighted_score"]
         timing["regime_confidence"] = regime_result["confidence"]
+        timing["signals"] = regime_result.get("signals", {})
         logger.info("  Regime: %s (score=%.2f, confidence=%.0f%%)",
                      timing["regime"], timing["regime_score"], timing["regime_confidence"])
     except Exception as e:
@@ -96,6 +97,7 @@ def phase1_market_timing() -> dict:
         timing["regime"] = "neutral"
         timing["regime_score"] = 1.5
         timing["regime_confidence"] = 50
+        timing["signals"] = {}
 
     # 2/3: Sector Gate Signal
     try:
@@ -233,6 +235,7 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
             "regime": timing.get("regime", "neutral"),
             "regime_score": timing.get("regime_score", 0),
             "regime_confidence": timing.get("regime_confidence", 0),
+            "signals": timing.get("signals", {}),
             "gate": timing.get("gate", "CAUTION"),
             "gate_score": timing.get("gate_score", 0),
             "ml_predictor": timing.get("ml_predictor", {}),

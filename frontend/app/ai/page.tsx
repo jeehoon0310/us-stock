@@ -159,6 +159,8 @@ export default function AIPage() {
             const gc = gradeClass(s.grade);
             const score = s.composite_score ?? 0;
             const rsPos = (s.rs_vs_spy ?? 0) > 0;
+            const scoreClr = (v: number | null | undefined) =>
+              v == null ? "text-on-surface-variant" : v >= 75 ? "text-primary" : v >= 50 ? "text-secondary" : "text-error";
             const rcBg =
               ai?.recommendation === "BUY"
                 ? "from-primary to-primary-container text-on-primary"
@@ -215,10 +217,10 @@ export default function AIPage() {
                   {/* Quant Score Cards */}
                   <section className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     {([
-                      { label: "Composite", value: score.toFixed(1), color: "text-on-surface", topic: "composite_score" },
-                      { label: "Technical", value: String(s.technical_score ?? "—"), color: "text-on-surface", topic: "technical_score" },
-                      { label: "Fundamental", value: String(s.fundamental_score ?? "—"), color: "text-on-surface", topic: "fundamental_score" },
-                      { label: "Analyst", value: String(s.analyst_score ?? "—"), color: "text-on-surface", topic: "analyst_score" },
+                      { label: "Composite", value: score.toFixed(1), color: scoreClr(score), topic: "composite_score" },
+                      { label: "Technical", value: String(s.technical_score ?? "—"), color: scoreClr(s.technical_score), topic: "technical_score" },
+                      { label: "Fundamental", value: String(s.fundamental_score ?? "—"), color: scoreClr(s.fundamental_score), topic: "fundamental_score" },
+                      { label: "Analyst", value: String(s.analyst_score ?? "—"), color: scoreClr(s.analyst_score), topic: "analyst_score" },
                       {
                         label: "RS vs SPY",
                         value: rsPos ? `+${s.rs_vs_spy}%` : `${s.rs_vs_spy ?? 0}%`,

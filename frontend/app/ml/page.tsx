@@ -214,7 +214,7 @@ export default function MLPage() {
                         {s.grade}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-sm font-black text-primary">
+                    <td className={`px-5 py-4 text-sm font-black ${score >= 75 ? "text-primary" : score >= 50 ? "text-secondary" : "text-error"}`}>
                       {score.toFixed(1)}
                     </td>
                     <td className="px-5 py-4 text-center text-sm font-medium">

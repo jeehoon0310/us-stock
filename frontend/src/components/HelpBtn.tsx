@@ -69,6 +69,12 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.red}>RISK OFF</span> = 조심! 비 올 것 같아요 🌧️</p>
           <p><span className={H.red}>CRISIS</span> = 위험! 태풍이에요! 🌪️</p>
         </Box>
+        <Sec>Regime Score 기준</Sec>
+        <Box>
+          <p>Score <span className={H.green}>2 이상</span> → RISK ON (투자 좋아요)</p>
+          <p>Score <span className={H.yellow}>1~2</span> → NEUTRAL (보통)</p>
+          <p>Score <span className={H.red}>1 미만</span> → RISK OFF / CRISIS (조심!)</p>
+        </Box>
       </>
     ),
   },
@@ -115,6 +121,12 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.red}>▼ BEARISH</span> = "내릴 것 같아요!" (곰이 발로 아래로 내려쳐요)</p>
           <p><span className={H.bold}>Probability</span> = 오를 확률 (50% 넘으면 오를 가능성이 더 높아요)</p>
           <p><span className={H.bold}>Confidence</span> = AI가 얼마나 확신하는지 (HIGH=확신)</p>
+        </Box>
+        <Sec>신뢰도 % 읽는 법</Sec>
+        <Box>
+          <p><span className={H.green}>70% 이상</span> = AI가 많이 확신해요 ✅ — 신호 믿어도 돼요</p>
+          <p><span className={H.yellow}>50~69%</span> = 어느 정도 확신해요 — 참고는 하되 다른 신호도 봐요</p>
+          <p><span className={H.red}>50% 미만</span> = 확신이 낮아요 ⚠️ — 이번 예측은 불확실해요</p>
         </Box>
       </>
     ),
@@ -255,7 +267,11 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.bold}>이동평균선</span> — 평균 가격보다 위에 있으면 좋은 신호</p>
           <p><span className={H.bold}>모멘텀</span> — 요즘 빠르게 오르고 있는지 확인</p>
         </Box>
-        <p className="text-[11px]">점수가 높을수록 그래프 모양이 예쁘고 오를 것 같다는 뜻이에요!</p>
+        <Box>
+          <p><span className={H.green}>75점 이상</span> = 그래프 매우 좋아요 🚀 강한 매수 신호</p>
+          <p><span className={H.yellow}>50~74점</span> = 보통이에요 — 참고용으로 봐요</p>
+          <p><span className={H.red}>50점 미만</span> = 그래프가 약해요 ⚠️ 지금은 조심</p>
+        </Box>
       </>
     ),
   },
@@ -271,7 +287,11 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.bold}>성장성</span> — 매출이 늘어나고 있나요?</p>
           <p><span className={H.bold}>재무 건전성</span> — 빚이 너무 많지 않나요?</p>
         </Box>
-        <p className="text-[11px]">점수가 높은 회사 = 좋은 학교 성적을 꾸준히 받는 학생 같아요!</p>
+        <Box>
+          <p><span className={H.green}>75점 이상</span> = 재무 아주 우량해요 💪 믿을 수 있는 회사</p>
+          <p><span className={H.yellow}>50~74점</span> = 보통 수준 — 특별히 좋지도 나쁘지도 않아요</p>
+          <p><span className={H.red}>50점 미만</span> = 재무가 약해요 ⚠️ 리스크 주의</p>
+        </Box>
       </>
     ),
   },
@@ -286,6 +306,12 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.green}>Buy (매수 추천)</span> = "이 주식 사세요!" 라고 말한 전문가가 많을수록 점수↑</p>
           <p><span className={H.yellow}>Hold (보유)</span> = "그냥 갖고 있어요"</p>
           <p><span className={H.red}>Sell (매도)</span> = "팔아요!" 라고 말하면 점수↓</p>
+        </Box>
+        <Sec>점수 기준</Sec>
+        <Box>
+          <p><span className={H.green}>75점 이상</span> = BUY 추천 전문가 대다수 🎯 강한 매수 의견</p>
+          <p><span className={H.yellow}>50~74점</span> = BUY/HOLD 혼재 — 긍정적이지만 만장일치 아님</p>
+          <p><span className={H.red}>50점 미만</span> = HOLD/SELL 의견 많음 ⚠️ 전문가 신뢰도 낮음</p>
         </Box>
       </>
     ),

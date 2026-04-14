@@ -173,8 +173,8 @@ export function DashboardClient({ initial, regime }: Props) {
               <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
                 Confidence <HelpBtn topic="confidence" />
               </p>
-              <p className="text-3xl font-black tracking-tighter text-primary">{conf}%</p>
-              <p className="text-xs text-on-surface-variant mt-1">Score {score}</p>
+              <p className={`text-3xl font-black tracking-tighter ${conf >= 90 ? "text-primary" : conf >= 60 ? "text-secondary" : "text-error"}`}>{conf}%</p>
+              <p className={`text-xs mt-1 ${(score ?? 0) >= 2 ? "text-primary" : (score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>Score {score}</p>
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl">
               <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
@@ -222,8 +222,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         {spy.predicted_return > 0 ? "+" : ""}
                         {spy.predicted_return}%
                       </span>
-                      <p className="text-[9px] text-on-surface-variant mt-1">
-                        신뢰도 {spy.confidence_pct ?? 0}%
+                      <p className={`text-[9px] font-bold mt-1 ${(spy.confidence_pct ?? 0) >= 70 ? "text-primary" : (spy.confidence_pct ?? 0) >= 50 ? "text-secondary" : "text-error"}`}>
+                        신뢰도 {spy.confidence_pct ?? 0}% · {(spy.confidence_pct ?? 0) >= 70 ? "높음" : (spy.confidence_pct ?? 0) >= 50 ? "보통" : "낮음"}
                       </p>
                     </div>
                   )}
@@ -239,8 +239,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         {qqq.predicted_return > 0 ? "+" : ""}
                         {qqq.predicted_return}%
                       </span>
-                      <p className="text-[9px] text-on-surface-variant mt-1">
-                        신뢰도 {qqq.confidence_pct ?? 0}%
+                      <p className={`text-[9px] font-bold mt-1 ${(qqq.confidence_pct ?? 0) >= 70 ? "text-primary" : (qqq.confidence_pct ?? 0) >= 50 ? "text-secondary" : "text-error"}`}>
+                        신뢰도 {qqq.confidence_pct ?? 0}% · {(qqq.confidence_pct ?? 0) >= 70 ? "높음" : (qqq.confidence_pct ?? 0) >= 50 ? "보통" : "낮음"}
                       </p>
                     </div>
                   )}
