@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { data } from "@/lib/data";
 import { SideNav, MobileNav } from "@/components/Navigation";
+import { QuotesTicker } from "@/components/QuotesTicker";
 
 export const metadata: Metadata = {
   title: "Market Intelligence Terminal",
@@ -27,13 +28,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-surface-container-lowest text-on-surface selection:bg-primary selection:text-on-primary">
         {/* TopNavBar */}
-        <header className="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-surface-container-lowest border-b border-outline-variant/10">
-          <div className="flex items-center gap-4">
+        <header className="fixed top-0 z-50 flex items-center w-full px-6 h-16 bg-surface-container-lowest border-b border-outline-variant/10">
+          <div className="flex items-center gap-4 flex-shrink-0">
             <span className="text-xl font-black text-on-surface tracking-tighter">
               <span className="text-primary">Market</span> Intelligence
             </span>
           </div>
-          <div className="flex items-center gap-6">
+          <QuotesTicker />
+          <div className="flex items-center gap-6 flex-shrink-0">
             <nav className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest">
               <span className="text-primary font-bold cursor-pointer">Terminal</span>
               <span className="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">
