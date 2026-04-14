@@ -92,8 +92,8 @@ export function DashboardClient({ initial, regime }: Props) {
       {/* Hero */}
       <div className="bg-surface-container-low p-8 rounded-xl mb-6 relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2">
-            US Stock Market Intelligence
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2 flex items-center gap-3">
+            US Stock Market Intelligence <HelpBtn topic="verdict" />
           </h2>
           <div className="flex items-center gap-3">
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
@@ -212,8 +212,8 @@ export function DashboardClient({ initial, regime }: Props) {
                 <div className="flex flex-wrap gap-4">
                   {spy?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
-                      <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2">
-                        SPY 5D
+                      <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                        SPY 5D <HelpBtn topic="ml" />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${spy.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
@@ -229,8 +229,8 @@ export function DashboardClient({ initial, regime }: Props) {
                   )}
                   {qqq?.direction && (
                     <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
-                      <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2">
-                        QQQ 5D
+                      <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                        QQQ 5D <HelpBtn topic="ml" />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${qqq.direction === "bullish" ? "bg-primary-container text-on-primary-container" : "bg-error-container text-on-error-container"}`}
@@ -278,8 +278,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         key={k}
                         className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5"
                       >
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2">
-                          {SIGNAL_NAMES[k] ?? k}
+                        <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                          {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
                         </p>
                         <span
                           className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${cls}`}
