@@ -1,97 +1,265 @@
-import { data } from "@/lib/data";
-import { barColor } from "@/lib/ui";
+"use client";
+import { useEffect, useState } from "react";
+import { gradeClass, barColor } from "@/lib/ui";
+
+type StockPick = {
+  ticker: string;
+  company_name?: string;
+  composite_score?: number;
+  grade: string;
+  grade_label?: string;
+  strategy?: string;
+  setup?: string;
+  technical_score?: number;
+  fundamental_score?: number;
+  analyst_score?: number;
+  rs_score?: number;
+  volume_score?: number;
+  "13f_score"?: number;
+  rs_vs_spy?: number;
+  action?: string;
+};
+
+type DailyReport = {
+  data_date?: string;
+  generated_at?: string;
+  stock_picks?: StockPick[];
+  summary?: { total_screened?: number };
+};
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 export default function MLPage() {
-  const GBM = data.gbmPredictions;
-  const rows = GBM?.top ?? [];
-  const maxScore = Math.max(...rows.map((r) => r.gbm_score), 0.001);
+  const [date, setDate] = useState<string>(todayStr());
+  const [picks, setPicks] = useState<StockPick[]>([]);
+  const [screened, setScreened] = useState<number>(0);
+  const [generatedAt, setGeneratedAt] = useState<string>("");
+  const [status, setStatus] = useState<string>("로딩 중...");
+
+  async function loadReport(dateStr: string) {
+    const ymd = dateStr.replace(/-/g, "");
+    try {
+      const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+      if (!r.ok) throw new Error(String(r.status));
+      const d = (await r.json()) as DailyReport;
+      setPicks(d.stock_picks ?? []);
+      setScreened(d.summary?.total_screened ?? d.stock_picks?.length ?? 0);
+      setGeneratedAt(d.generated_at ?? dateStr);
+      setDate(dateStr);
+      setStatus("");
+    } catch {
+      setPicks([]);
+      setDate(dateStr);
+      setStatus("데이터 없음");
+    }
+  }
+
+  async function shiftDate(delta: number) {
+    const d = new Date(date);
+    for (let attempt = 0; attempt < 7; attempt++) {
+      d.setDate(d.getDate() + delta);
+      const dateStr = d.toISOString().slice(0, 10);
+      const ymd = dateStr.replace(/-/g, "");
+      try {
+        const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+        if (r.ok) {
+          const data = (await r.json()) as DailyReport;
+          setPicks(data.stock_picks ?? []);
+          setScreened(data.summary?.total_screened ?? data.stock_picks?.length ?? 0);
+          setGeneratedAt(data.generated_at ?? dateStr);
+          setDate(dateStr);
+          setStatus("");
+          return;
+        }
+      } catch { /* 계속 탐색 */ }
+    }
+    setStatus("데이터 없음");
+  }
+
+  useEffect(() => {
+    fetch("/data/latest_report.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: DailyReport) => {
+        const dateStr = d.data_date ?? todayStr();
+        setPicks(d.stock_picks ?? []);
+        setScreened(d.summary?.total_screened ?? d.stock_picks?.length ?? 0);
+        setGeneratedAt(d.generated_at ?? dateStr);
+        setDate(dateStr);
+        setStatus("");
+      })
+      .catch(() => setStatus("데이터 없음"));
+  }, []);
+
+  const maxScore = Math.max(...picks.map((p) => p.composite_score ?? 0), 0.001);
 
   return (
     <section className="bg-surface-container-low rounded-xl overflow-hidden mb-6">
-      <div className="px-8 py-6 border-b border-outline-variant/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-container-high/50">
-        <div>
-          <h3 className="text-xl font-bold tracking-tight">GBM Cross-Sectional Rankings</h3>
-          <p className="text-xs text-on-surface-variant font-medium">
-            {rows.length
-              ? `${GBM?.model ?? "GBM"} · top ${rows.length} cross-sectional picks`
-              : "no data"}
+      {/* Header */}
+      <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h3 className="text-xl font-bold tracking-tight">Quantitative Score Breakdown</h3>
+            <p className="text-xs text-on-surface-variant font-medium">
+              Multi-factor scoring · {screened} screened · {generatedAt}
+            </p>
+          </div>
+          {/* Date nav */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => shiftDate(-1)}
+              className="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm"
+            >
+              ◀
+            </button>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => void loadReport(e.target.value)}
+              className="bg-surface-container-lowest border border-outline-variant/10 rounded-lg px-3 py-1.5 text-sm font-bold text-primary outline-none focus:border-primary transition-colors"
+              style={{ colorScheme: "dark" }}
+            />
+            <button
+              onClick={() => shiftDate(1)}
+              className="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center text-sm"
+            >
+              ▶
+            </button>
+            {status && (
+              <span className="text-[10px] text-on-surface-variant ml-1">{status}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Score legend */}
+      <div className="p-4 bg-surface-container-high/20 text-[10px] text-on-surface-variant border-b border-outline-variant/10">
+        <b className="text-on-surface">Composite Score</b> — 6개 팩터 가중 합산 (Technical +
+        Fundamental + Analyst + RS + Volume + 13F). 높을수록 당일 스크리닝 상위권.
+      </div>
+
+      {picks.length === 0 ? (
+        <div className="p-10 text-center">
+          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 block mb-3">
+            event_busy
+          </span>
+          <p className="text-sm text-on-surface-variant/60">
+            {status === "로딩 중..." ? "로딩 중..." : "해당 날짜에 리포트가 없습니다"}
           </p>
         </div>
-        <span className="px-4 py-2 bg-surface-container-highest rounded-lg text-[10px] font-bold uppercase tracking-wider">
-          20-day horizon
-        </span>
-      </div>
-      <div className="p-4 bg-surface-container-high/20 text-[10px] text-on-surface-variant border-b border-outline-variant/10">
-        <b className="text-on-surface">GBM 점수란?</b> — GradientBoosting 모델이 S&amp;P500 전
-        종목을 대상으로 20거래일 후 기대 수익률을 예측한 점수(0~1). 높을수록 상대적으로 초과수익
-        가능성이 높다는 뜻이며, 같은 시점 전체 종목 분포 내에서의 순위(cross-sectional)입니다.
-      </div>
-      <div className="overflow-x-auto no-scrollbar">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-surface-container-high/20">
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                #
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                Ticker
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                Company
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                Sector
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                GBM Score
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">
-                Strength
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline-variant/10">
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-8 text-xs text-on-surface-variant">
-                  output/gbm_predictions.json 없음
-                </td>
+      ) : (
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-surface-container-high/20">
+                {[
+                  "#",
+                  "Ticker",
+                  "Grade",
+                  "Composite",
+                  "Tech",
+                  "Fund",
+                  "Analyst",
+                  "RS Score",
+                  "Volume",
+                  "13F",
+                  "RS vs SPY",
+                  "Strength",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    className="px-5 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest whitespace-nowrap"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ) : (
-              rows.map((r) => {
-                const pct = (r.gbm_score / maxScore) * 100;
+            </thead>
+            <tbody className="divide-y divide-outline-variant/10">
+              {picks.map((s, i) => {
+                const score = s.composite_score ?? 0;
+                const pct = (score / maxScore) * 100;
+                const gc = gradeClass(s.grade);
+                const rsCol = (s.rs_vs_spy ?? 0) > 0 ? "text-primary" : "text-error";
+
                 return (
-                  <tr key={r.ticker} className="hover:bg-surface-bright/30 transition-colors">
-                    <td className="px-6 py-4 text-sm font-bold text-on-surface-variant">
-                      {r.gbm_rank}
+                  <tr
+                    key={s.ticker}
+                    className="hover:bg-surface-bright/30 transition-colors"
+                  >
+                    <td className="px-5 py-4 text-sm font-bold text-on-surface-variant">
+                      {String(i + 1).padStart(2, "0")}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-on-surface">{r.ticker}</span>
+                    <td className="px-5 py-4">
+                      <div className="flex flex-col">
+                        <a
+                          href={`https://kr.tradingview.com/chart/?symbol=${s.ticker}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-bold text-on-surface hover:text-primary transition-colors"
+                        >
+                          {s.ticker}
+                        </a>
+                        <span className="text-[10px] text-on-surface-variant">
+                          {s.company_name ?? ""}
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-on-surface">{r.company_name ?? ""}</td>
-                    <td className="px-6 py-4 text-[10px] text-on-surface-variant">
-                      {r.sector ?? ""}
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border text-sm font-bold ${gc}`}
+                      >
+                        {s.grade}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-bold text-primary">
-                      {r.gbm_score.toFixed(4)}
+                    <td className="px-5 py-4 text-sm font-black text-primary">
+                      {score.toFixed(1)}
                     </td>
-                    <td className="px-6 py-4 w-48">
-                      <div className="flex items-center gap-2 justify-end">
-                        <div className="flex-1 max-w-[120px] h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                          <div className={`h-full ${barColor(pct)}`} style={{ width: `${pct}%` }}></div>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s.technical_score ?? "—"}
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s.fundamental_score ?? "—"}
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s.analyst_score ?? "—"}
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s.rs_score != null ? s.rs_score.toFixed(0) : "—"}
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s.volume_score != null ? s.volume_score.toFixed(0) : "—"}
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm font-medium">
+                      {s["13f_score"] ?? "—"}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`text-sm font-bold ${rsCol}`}>
+                        {(s.rs_vs_spy ?? 0) > 0 ? "+" : ""}
+                        {s.rs_vs_spy ?? 0}%
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 w-40">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${barColor(pct)}`}
+                            style={{ width: `${pct}%` }}
+                          />
                         </div>
-                        <span className="text-[10px] font-bold text-on-surface-variant w-8 text-right">
+                        <span className="text-[10px] font-bold text-on-surface-variant w-6 text-right">
                           {Math.round(pct)}
                         </span>
                       </div>
                     </td>
                   </tr>
                 );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 }
