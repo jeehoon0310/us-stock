@@ -397,6 +397,9 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.yellow}>NEUTRAL 시장</span> → 손절선 6%</p>
           <p><span className={H.red}>RISK OFF 시장</span> → 손절선 5% (더 빨리 팔아요)</p>
         </Box>
+        <Sec>❓ N/A가 왜 뜨나요?</Sec>
+        <p>과거 날짜 리포트는 체제 계산이 안 된 경우 N/A로 표시돼요.<br />
+        <span className={H.bold}>가장 최근 날짜</span>로 이동하면 정상 값이 나와요!</p>
       </>
     ),
   },
@@ -413,6 +416,9 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p>→ MDD Warning이 10%면 경보 울림! 🚨</p>
         </Box>
         <p className="text-[11px]">이 수치를 넘으면 "지금 시장이 좀 이상한 것 같으니 조심해요!" 라는 신호예요.</p>
+        <Sec>❓ N/A가 왜 뜨나요?</Sec>
+        <p>과거 날짜 리포트는 체제 계산이 안 된 경우 N/A로 표시돼요.<br />
+        <span className={H.bold}>가장 최근 날짜</span>로 이동하면 정상 값이 나와요!</p>
       </>
     ),
   },

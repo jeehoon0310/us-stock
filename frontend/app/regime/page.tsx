@@ -279,20 +279,20 @@ export default function RegimePage() {
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
-            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">
-              Stop Loss
+            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
+              Stop Loss <HelpBtn topic="stop_loss" />
             </p>
             <p className="text-2xl font-bold text-error">{p.stop_loss ?? "N/A"}</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
-            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">
-              MDD Warning
+            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
+              MDD Warning <HelpBtn topic="mdd_warning" />
             </p>
             <p className="text-2xl font-bold text-tertiary">{p.max_drawdown_warning ?? "N/A"}</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
-            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">
-              Strategy
+            <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
+              Strategy <HelpBtn topic="strategy" />
             </p>
             <p className="text-2xl font-bold text-on-surface">{stratLabel}</p>
           </div>
