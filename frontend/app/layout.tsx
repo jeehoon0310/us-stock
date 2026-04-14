@@ -56,11 +56,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
 
+        {/* Mobile Quotes Bar - 헤더 바로 아래, lg 미만에서만 표시 */}
+        <QuotesTicker bar />
+
         {/* SideNavBar */}
         <SideNav syncedAt={syncedAt} />
 
         {/* Main Content */}
-        <main className="md:ml-64 pt-16 min-h-screen bg-surface-container-lowest">
+        <main className="md:ml-64 pt-24 lg:pt-16 min-h-screen bg-surface-container-lowest">
           <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 pb-24 md:pb-8">{children}</div>
         </main>
 

@@ -94,9 +94,9 @@ export function DashboardClient({ initial, regime }: Props) {
   return (
     <div>
       {/* Hero */}
-      <div className="bg-surface-container-low p-8 rounded-xl mb-6 relative overflow-hidden">
+      <div className="bg-surface-container-low p-5 md:p-8 rounded-xl mb-6 relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2 flex items-center gap-3">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2 flex flex-wrap items-center gap-2 md:gap-3">
             US Stock Market Intelligence <HelpBtn topic="verdict" />
           </h2>
           <div className="flex items-center gap-3">
@@ -147,8 +147,8 @@ export function DashboardClient({ initial, regime }: Props) {
         <>
           {/* Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+            <div className="bg-surface-container-low p-4 md:p-6 rounded-xl relative overflow-hidden">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
                 Verdict <HelpBtn topic="verdict" />
               </p>
               <p className="text-3xl font-black tracking-tighter" style={{ color: verdictColor }}>
@@ -156,15 +156,15 @@ export function DashboardClient({ initial, regime }: Props) {
               </p>
               <p className="text-xs text-on-surface-variant mt-1">Regime {r.replace("_", " ")}</p>
             </div>
-            <div className="bg-surface-container-low p-6 rounded-xl">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+            <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
                 Confidence <HelpBtn topic="confidence" value={conf} />
               </p>
               <p className={`text-3xl font-black tracking-tighter ${conf >= 90 ? "text-primary" : conf >= 60 ? "text-secondary" : "text-error"}`}>{conf}%</p>
               <p className={`text-xs mt-1 ${(score ?? 0) >= 2 ? "text-primary" : (score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>Score {score}</p>
             </div>
-            <div className="bg-surface-container-low p-6 rounded-xl">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+            <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
                 Screened <HelpBtn topic="picks" value={summary.total_screened ?? picks.length} />
               </p>
               <p className="text-3xl font-black tracking-tighter text-on-surface">
@@ -172,8 +172,8 @@ export function DashboardClient({ initial, regime }: Props) {
               </p>
               <p className="text-xs text-on-surface-variant mt-1">stocks analyzed</p>
             </div>
-            <div className="bg-surface-container-low p-6 rounded-xl border border-primary/20">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+            <div className="bg-surface-container-low p-4 md:p-6 rounded-xl border border-primary/20">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
                 Market Gate <HelpBtn topic="gate" value={gate} />
               </p>
               <p
@@ -198,7 +198,7 @@ export function DashboardClient({ initial, regime }: Props) {
                 </h4>
                 <div className="flex flex-wrap gap-4">
                   {spy?.direction && (
-                    <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+                    <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
                         SPY 5D <HelpBtn topic="ml" value={`${spy.direction}:${spy.confidence_pct ?? 0}`} />
                       </p>
@@ -216,7 +216,7 @@ export function DashboardClient({ initial, regime }: Props) {
                     </div>
                   )}
                   {qqq?.direction && (
-                    <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+                    <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
                         QQQ 5D <HelpBtn topic="ml" value={`${qqq.direction}:${qqq.confidence_pct ?? 0}`} />
                       </p>
@@ -233,7 +233,7 @@ export function DashboardClient({ initial, regime }: Props) {
                       </p>
                     </div>
                   )}
-                  <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+                  <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                     <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
                       Regime <HelpBtn topic="regime" />
                     </p>
@@ -244,7 +244,7 @@ export function DashboardClient({ initial, regime }: Props) {
                       {regimeLabel(r)}
                     </span>
                   </div>
-                  <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
+                  <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                     <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
                       Gate <HelpBtn topic="gate" />
                     </p>
@@ -259,7 +259,7 @@ export function DashboardClient({ initial, regime }: Props) {
                   {Object.entries(signals).map(([k, v]) => (
                     <div
                       key={k}
-                      className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5"
+                      className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5"
                     >
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
                         {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
