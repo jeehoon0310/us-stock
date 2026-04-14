@@ -77,7 +77,7 @@ jobs:
           port: ${{ secrets.SYNOLOGY_PORT }}
           source: "archive/legacy-dashboard/pages/notice.html,archive/legacy-dashboard/pages/terminal.html,archive/legacy-dashboard/pages/reports.html,archive/legacy-dashboard/nginx.conf,archive/legacy-dashboard/images"
           target: /volume1/docker/us-stock/dashboard
-          strip_components: 1
+          strip_components: 2
 
       - name: Deploy to Synology
         uses: appleboy/ssh-action@v1
