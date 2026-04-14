@@ -10,6 +10,7 @@ const NAV = [
   { href: "/forecast", icon: "insights", label: "Index Forecast", key: "prediction" },
   { href: "/ml", icon: "leaderboard", label: "ML Rankings", key: "gbm" },
   { href: "/costs", icon: "payments", label: "API Costs", key: "cost" },
+  { href: "/performance", icon: "trending_up", label: "Performance", key: "performance" },
 ];
 
 const MOBILE_NAV = [
@@ -20,6 +21,7 @@ const MOBILE_NAV = [
   { href: "/forecast", icon: "insights", label: "Forecast" },
   { href: "/ml", icon: "leaderboard", label: "ML" },
   { href: "/costs", icon: "payments", label: "Cost" },
+  { href: "/performance", icon: "trending_up", label: "Perf" },
 ];
 
 export function SideNav({ syncedAt }: { syncedAt: string }) {
