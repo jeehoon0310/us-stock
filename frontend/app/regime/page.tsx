@@ -217,7 +217,7 @@ export default function RegimePage() {
           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
             <span className="material-symbols-outlined text-tertiary text-3xl">hub</span>
             <div className="mt-4">
-              <p className="text-xs font-medium text-on-surface-variant uppercase">Strategy</p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Strategy <HelpBtn topic="strategy" /></p>
               <p className="text-xl font-bold text-on-surface">{stratLabel}</p>
             </div>
           </div>
@@ -230,7 +230,7 @@ export default function RegimePage() {
                 <span className="material-symbols-outlined text-primary">auto_awesome</span>
               </div>
               <div>
-                <p className="text-sm font-bold">AI Insight</p>
+                <p className="text-sm font-bold flex items-center gap-1">AI Insight <HelpBtn topic="ai_insight" /></p>
                 <p className="text-xs text-on-surface-variant">
                   {r === "risk_on"
                     ? "Market expansion — momentum active"
@@ -252,20 +252,24 @@ export default function RegimePage() {
           <p className="text-xs text-on-surface-variant/60">센서 데이터 없음</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {Object.entries(signals).map(([k, v]) => (
-              <div
-                key={k}
-                className="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10"
-                style={{ borderTop: `3px solid ${C[v as string] ?? "#888"}` }}
-              >
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-1">
-                  {SIGNAL_NAMES[k] ?? k} · {SIGNAL_WEIGHTS[k] ?? ""}
-                </p>
-                <p className="text-base font-bold mt-2" style={{ color: C[v as string] ?? "#888" }}>
-                  {regimeLabel(String(v))}
-                </p>
-              </div>
-            ))}
+            {Object.entries(signals).map(([k, v]) => {
+              const sensorTopic = ({ vix: "vix", trend: "trend", breadth: "breadth", credit: "credit", yield_curve: "yield_curve" } as Record<string, "vix" | "trend" | "breadth" | "credit" | "yield_curve">)[k];
+              return (
+                <div
+                  key={k}
+                  className="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10"
+                  style={{ borderTop: `3px solid ${C[v as string] ?? "#888"}` }}
+                >
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-1 flex items-center gap-1">
+                    {SIGNAL_NAMES[k] ?? k} · {SIGNAL_WEIGHTS[k] ?? ""}
+                    {sensorTopic && <HelpBtn topic={sensorTopic} />}
+                  </p>
+                  <p className="text-base font-bold mt-2" style={{ color: C[v as string] ?? "#888" }}>
+                    {regimeLabel(String(v))}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

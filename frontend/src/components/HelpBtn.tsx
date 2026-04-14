@@ -565,6 +565,111 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  ai_insight: {
+    title: "AI Insight (AI 시장 요약) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🤖 AI가 지금 시장을 한 줄로 요약해줘요!</Sec>
+        <p>뉴스·지표·체제 데이터를 종합해서 AI가 <span className={H.bold}>"지금 시장이 어떤 상황인지"</span> 설명해줘요.</p>
+        <Box>
+          <p><span className={H.green}>Market expansion</span> = 시장이 넓게 상승 중 (좋은 신호!) ✅</p>
+          <p><span className={H.yellow}>Consolidating before expansion</span> = 잠깐 쉬다가 오를 것 같아요 ⚠️</p>
+          <p><span className={H.red}>Risk-off environment</span> = 투자 조심 시기 ❌</p>
+        </Box>
+        <p className="text-[11px]">AI Analysis 페이지에서 종목별 더 자세한 논거를 볼 수 있어요!</p>
+      </>
+    ),
+  },
+
+  vix: {
+    title: "VIX (공포 지수) — 가중치 30%",
+    body: (
+      <>
+        <Sec>😱 사람들이 얼마나 무서워하는지 측정해요!</Sec>
+        <p><span className={H.bold}>VIX</span>는 시장에서 앞으로 한 달간 변동성을 예상하는 지수예요. 숫자가 높을수록 공포가 큰 거예요.</p>
+        <Box>
+          <p><span className={H.green}>VIX 20 미만</span> = 안심! 여유로운 상태예요 😌 → RISK ON</p>
+          <p><span className={H.yellow}>VIX 20~30</span> = 긴장하기 시작했어요 😐 → NEUTRAL</p>
+          <p><span className={H.red}>VIX 30 이상</span> = 모두가 겁에 질려있어요 😱 → RISK OFF</p>
+        </Box>
+        <p className="text-[11px]">⚡ 5개 센서 중 가장 중요해요 (30%). 공포 지수가 갑자기 치솟으면 시장 위험 신호!</p>
+      </>
+    ),
+  },
+
+  trend: {
+    title: "Trend (추세 센서) — 가중치 25%",
+    body: (
+      <>
+        <Sec>📈 주가가 오르는 방향인지 내리는 방향인지 확인해요!</Sec>
+        <p>S&P 500 (SPY) 주가를 <span className={H.bold}>50일·200일 이동평균선</span>과 비교해요.</p>
+        <Box>
+          <p><span className={H.green}>RISK ON</span> = SPY가 50일·200일 평균 모두 위 ✅ "추세 좋아요"</p>
+          <p><span className={H.yellow}>NEUTRAL</span> = 200일 평균은 위, 50일 평균은 아래 — 흔들리는 중</p>
+          <p><span className={H.red}>RISK OFF</span> = 200일 평균 아래로 내려감 ❌ "하락 추세예요"</p>
+        </Box>
+        <p className="text-[11px]">가중치: 25% — "지금 상승 중인지, 하락 중인지" 기본 방향을 알려줘요</p>
+      </>
+    ),
+  },
+
+  breadth: {
+    title: "Breadth (시장 폭) — 가중치 18%",
+    body: (
+      <>
+        <Sec>🌊 전체 주식이 고르게 오르고 있는지 봐요!</Sec>
+        <p>일부 대형주만 오르는지, <span className={H.bold}>500개 주식이 전반적으로 오르는지</span> 확인해요.</p>
+        <Box>
+          <p><span className={H.bold}>RSP</span> = 500개 주식 동일 비중 ETF (중소형주 반영)</p>
+          <p><span className={H.bold}>SPY</span> = 대형주 위주 ETF (애플·MS·엔비디아 비중 큼)</p>
+        </Box>
+        <Box>
+          <p><span className={H.green}>RSP &gt; SPY</span> = 전체 시장이 고르게 상승 → RISK ON ✅</p>
+          <p><span className={H.yellow}>비슷</span> = 보통 → NEUTRAL</p>
+          <p><span className={H.red}>RSP &lt; SPY</span> = 대형주만 오르는 중, 시장 폭 좁음 → RISK OFF ❌</p>
+        </Box>
+        <p className="text-[11px]">가중치: 18%</p>
+      </>
+    ),
+  },
+
+  credit: {
+    title: "Credit (신용 센서) — 가중치 15%",
+    body: (
+      <>
+        <Sec>💳 투자자들이 위험한 투자를 선호하는지 봐요!</Sec>
+        <p>사람들이 <span className={H.bold}>안전한 국채</span>를 선호하는지, <span className={H.bold}>위험한 회사채</span>를 선호하는지로 투자 심리를 파악해요.</p>
+        <Box>
+          <p><span className={H.bold}>HYG</span> = 위험한 회사채 ETF (고수익·고위험)</p>
+          <p><span className={H.bold}>IEF</span> = 안전한 7~10년 국채 ETF (저위험)</p>
+        </Box>
+        <Box>
+          <p><span className={H.green}>HYG 강세</span> = "위험해도 더 벌겠다!" 공격적 → RISK ON ✅</p>
+          <p><span className={H.yellow}>비슷</span> = 관망 중 → NEUTRAL</p>
+          <p><span className={H.red}>IEF 강세</span> = "안전하게 피신하자!" 방어적 → RISK OFF ❌</p>
+        </Box>
+        <p className="text-[11px]">가중치: 15%</p>
+      </>
+    ),
+  },
+
+  yield_curve: {
+    title: "Yield Curve (금리 곡선) — 가중치 12%",
+    body: (
+      <>
+        <Sec>📉 단기·장기 이자율 차이로 경기를 예측해요!</Sec>
+        <p>보통 장기 금리가 단기 금리보다 높아요. 이게 <span className={H.bold}>뒤집히면 (역전되면) 경기침체 경고</span>예요!</p>
+        <Box>
+          <p><span className={H.bold}>10년 금리 - 단기 금리</span> = 금리 차이</p>
+          <p><span className={H.green}>차이 + (양수)</span> = 정상! 경기 좋아요 → RISK ON ✅</p>
+          <p><span className={H.yellow}>차이 0 근처</span> = 주의 구간 → NEUTRAL</p>
+          <p><span className={H.red}>차이 - (음수) 역전!</span> = 경기침체 경고 🚨 → RISK OFF ❌</p>
+        </Box>
+        <p className="text-[11px]">가중치: 12% — 과거 경기침체 전에 항상 금리 역전이 먼저 일어났어요!</p>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (
