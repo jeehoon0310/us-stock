@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## LLM Wiki (운영 규칙 & Gotchas)
+
+코드 구조는 아래 Architecture 섹션, **운영 규칙·알려진 버그·색상 임계값**은 wiki 참고:
+
+| Wiki | 핵심 내용 |
+|------|-----------|
+| [.omc/wiki/pipeline-gotchas.md](.omc/wiki/pipeline-gotchas.md) | **맥북=분석, Synology=서빙 전용**, 실행 순서, signals 버그 수정 이력 |
+| [.omc/wiki/frontend-color-rules.md](.omc/wiki/frontend-color-rules.md) | 점수별 색상 임계값, HelpBtn 패턴, 전체 토픽 목록 |
+| [.omc/wiki/deployment.md](.omc/wiki/deployment.md) | GHA 배포 흐름, Synology Tailscale IP, 수동 배포 명령 |
+
 ## Project Overview
 
 US stock market analysis system: data collection → market regime detection → smart money screening → AI-powered reports. Three-part educational project, all parts implemented.
