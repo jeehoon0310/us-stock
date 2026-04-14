@@ -1,9 +1,35 @@
 #!/bin/bash
 # us-stock daily pipeline + deploy via git-scraping
-# Runs on Mac (launchd / weekdays 06:00 KST), pushes JSON to git → GitHub Actions builds & deploys.
+# Runs on Mac (launchd / weekdays 07:00 KST), pushes JSON to git → GitHub Actions builds & deploys.
 set -euo pipefail
 cd /Users/frindle/workspace/education/us-stock
 source .venv/bin/activate
+
+# --- Mac 알림 헬퍼 ---
+notify() {
+  local msg="$1" subtitle="${2:-}" sound="${3:-Default}"
+  osascript -e "display notification \"${msg}\" with title \"US Stock 📊\" subtitle \"${subtitle}\" sound name \"${sound}\"" 2>/dev/null || true
+}
+
+# --- ERR 트랩: 어느 단계든 실패 시 알림 ---
+on_error() {
+  local exit_code=$?
+  notify "오류 발생 (exit ${exit_code}) — 수동 실행 필요" "파이프라인 실패 ❌" "Basso"
+}
+trap on_error ERR
+
+# --- 늦은 실행 감지: 07:30 이후 = 맥북이 잠들어 있었음 ---
+CURRENT_HOUR=$((10#$(date +%H)))
+CURRENT_MIN=$((10#$(date +%M)))
+if [ "$CURRENT_HOUR" -gt 7 ] || ([ "$CURRENT_HOUR" -eq 7 ] && [ "$CURRENT_MIN" -gt 30 ]); then
+  notify "07:00 이후 실행됨 (현재 $(date +%H:%M)) — 맥북이 잠들어 있었을 수 있음" "늦은 실행 ⚠️" "Ping"
+fi
+
+# --- 네트워크 체크 ---
+if ! ping -c 1 -W 3 8.8.8.8 &>/dev/null; then
+  notify "네트워크 없음 — 수동 실행 필요" "네트워크 오류 ❌" "Basso"
+  exit 1
+fi
 
 LOG="logs/deploy_$(date +%Y%m%d_%H%M%S).log"
 mkdir -p logs frontend/public/data/reports
@@ -53,3 +79,5 @@ mkdir -p logs frontend/public/data/reports
     echo "[$(date)] === No data changes, skipping commit ==="
   fi
 } 2>&1 | tee "$LOG"
+
+notify "분석 완료 — 데이터 갱신 후 GitHub 배포 트리거됨" "$(date +%H:%M) 완료 ✅" "Glass"
