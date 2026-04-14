@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { C, SIGNAL_NAMES, SIGNAL_WEIGHTS, regimeLabel, strategyLabel } from "@/lib/ui";
+import { HelpBtn } from "@/components/HelpBtn";
 import Link from "next/link";
 
 type SectorItem = {
@@ -177,8 +178,8 @@ export default function RegimePage() {
             </span>
           </div>
           <div className="flex flex-col gap-1 z-10">
-            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-              Global Status
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-1">
+              Global Status <HelpBtn topic="regime" />
             </span>
             <div className="flex items-baseline gap-4 mt-2">
               <h1 className="text-5xl md:text-6xl font-black text-on-surface tracking-tighter leading-none">
@@ -192,15 +193,15 @@ export default function RegimePage() {
           </div>
           <div className="mt-10 flex gap-8 md:gap-12 z-10">
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase">Regime Score</p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Regime Score <HelpBtn topic="regime_score" /></p>
               <p className="text-3xl font-bold text-primary">{mt.regime_score ?? 0}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase">Stop Loss</p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Stop Loss <HelpBtn topic="stop_loss" /></p>
               <p className="text-3xl font-bold text-error">{p.stop_loss ?? "N/A"}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase">MDD Warning</p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">MDD Warning <HelpBtn topic="mdd_warning" /></p>
               <p className="text-3xl font-bold text-error/80">
                 {p.max_drawdown_warning ?? "N/A"}
               </p>
@@ -211,7 +212,7 @@ export default function RegimePage() {
           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
             <span className="material-symbols-outlined text-primary text-3xl">trending_up</span>
             <div className="mt-4">
-              <p className="text-xs font-medium text-on-surface-variant uppercase">Confidence</p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Confidence <HelpBtn topic="confidence" /></p>
               <p className="text-xl font-bold text-on-surface">{mt.regime_confidence ?? 0}%</p>
             </div>
           </div>
@@ -246,8 +247,8 @@ export default function RegimePage() {
 
       {/* 5 Sensors */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-          5 Sensor Status
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+          5 Sensor Status <HelpBtn topic="regime" />
         </h4>
         {Object.keys(signals).length === 0 ? (
           <p className="text-xs text-on-surface-variant/60">센서 데이터 없음</p>
@@ -273,8 +274,8 @@ export default function RegimePage() {
 
       {/* Adaptive Params */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-          Adaptive Parameters
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+          Adaptive Parameters <HelpBtn topic="stop_loss" />
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
@@ -301,8 +302,8 @@ export default function RegimePage() {
       {/* Volume-Price Divergence */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface">
-            Volume-Price Divergence (SPY)
+          <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
+            Volume-Price Divergence (SPY) <HelpBtn topic="spy_divergence" />
           </h4>
           <span className="text-[10px] text-on-surface-variant">
             거래량-가격 불일치 / Climax 경보
@@ -359,8 +360,8 @@ export default function RegimePage() {
       <div className="bg-surface-container-low rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface">
-              Sector Gate · 11 SPDR ETFs
+            <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
+              Sector Gate · 11 SPDR ETFs <HelpBtn topic="gate" />
             </h4>
             <p className="text-[10px] text-on-surface-variant mt-1">
               평균 {m.avg_score ?? mt.gate_score ?? 0}점 · 강세 {m.bullish_sectors ?? 0} / 약세{" "}

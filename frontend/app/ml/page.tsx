@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { gradeClass, barColor } from "@/lib/ui";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type StockPick = {
   ticker: string;
@@ -153,25 +154,25 @@ export default function MLPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
-                {[
-                  "#",
-                  "Ticker",
-                  "Grade",
-                  "Composite",
-                  "Tech",
-                  "Fund",
-                  "Analyst",
-                  "RS Score",
-                  "Volume",
-                  "13F",
-                  "RS vs SPY",
-                  "Strength",
-                ].map((h) => (
+                {([
+                  { label: "#" },
+                  { label: "Ticker" },
+                  { label: "Grade", topic: "grade" },
+                  { label: "Composite", topic: "composite_score" },
+                  { label: "Tech", topic: "technical_score" },
+                  { label: "Fund", topic: "fundamental_score" },
+                  { label: "Analyst", topic: "analyst_score" },
+                  { label: "RS Score", topic: "rs_score" },
+                  { label: "Volume", topic: "volume_score" },
+                  { label: "13F", topic: "score_13f" },
+                  { label: "RS vs SPY", topic: "rs_vs_spy" },
+                  { label: "Strength" },
+                ] as { label: string; topic?: string }[]).map((h) => (
                   <th
-                    key={h}
+                    key={h.label}
                     className="px-5 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest whitespace-nowrap"
                   >
-                    {h}
+                    <span className="flex items-center gap-1">{h.label}{h.topic && <HelpBtn topic={h.topic} />}</span>
                   </th>
                 ))}
               </tr>

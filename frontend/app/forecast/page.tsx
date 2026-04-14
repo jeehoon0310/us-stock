@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type KeyDriver = {
   feature: string;
@@ -81,8 +82,8 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
 
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-            Probability (UP)
+          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-1">
+            Probability (UP) <HelpBtn topic="probability" />
           </p>
           <p className={`text-xs font-bold ${dc}`}>{prob}%</p>
         </div>
@@ -233,7 +234,7 @@ export default function ForecastPage() {
       <header className="mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-2xl font-bold tracking-tight text-on-surface">Index Forecast</h3>
+            <h3 className="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">Index Forecast <HelpBtn topic="ml" /></h3>
             <p className="text-xs text-on-surface-variant font-medium uppercase tracking-widest">
               다음 5 거래일 방향 예측 · GradientBoosting + TimeSeriesSplit CV
             </p>
@@ -285,14 +286,14 @@ export default function ForecastPage() {
           {/* Key Drivers */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="bg-surface-container-low rounded-xl p-6">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">
-                Key Drivers (SPY)
+              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
+                Key Drivers (SPY) <HelpBtn topic="drivers" />
               </h4>
               <Drivers drivers={spy?.key_drivers} />
             </div>
             <div className="bg-surface-container-low rounded-xl p-6">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">
-                Key Drivers (QQQ)
+              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
+                Key Drivers (QQQ) <HelpBtn topic="drivers" />
               </h4>
               <Drivers drivers={qqq?.key_drivers} />
             </div>

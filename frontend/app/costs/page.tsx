@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type DailyReport = {
   data_date?: string;
@@ -95,8 +96,8 @@ export default function CostsPage() {
 
       {/* Pricing (static) */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-2">
-          API Pricing
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-2 flex items-center gap-2">
+          API Pricing <HelpBtn topic="api_costs" />
         </h4>
         <p className="text-[10px] text-on-surface-variant mb-6">As of {date}</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

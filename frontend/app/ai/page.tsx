@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { gradeClass } from "@/lib/ui";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type StockPick = {
   ticker: string;
@@ -213,23 +214,24 @@ export default function AIPage() {
                 <div className="p-8 space-y-6">
                   {/* Quant Score Cards */}
                   <section className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    {[
-                      { label: "Composite", value: score.toFixed(1), color: "text-on-surface" },
-                      { label: "Technical", value: String(s.technical_score ?? "—"), color: "text-on-surface" },
-                      { label: "Fundamental", value: String(s.fundamental_score ?? "—"), color: "text-on-surface" },
-                      { label: "Analyst", value: String(s.analyst_score ?? "—"), color: "text-on-surface" },
+                    {([
+                      { label: "Composite", value: score.toFixed(1), color: "text-on-surface", topic: "composite_score" },
+                      { label: "Technical", value: String(s.technical_score ?? "—"), color: "text-on-surface", topic: "technical_score" },
+                      { label: "Fundamental", value: String(s.fundamental_score ?? "—"), color: "text-on-surface", topic: "fundamental_score" },
+                      { label: "Analyst", value: String(s.analyst_score ?? "—"), color: "text-on-surface", topic: "analyst_score" },
                       {
                         label: "RS vs SPY",
                         value: rsPos ? `+${s.rs_vs_spy}%` : `${s.rs_vs_spy ?? 0}%`,
                         color: rsPos ? "text-primary" : "text-error",
+                        topic: "rs_vs_spy",
                       },
-                    ].map((m) => (
+                    ] as { label: string; value: string; color: string; topic: string }[]).map((m) => (
                       <div
                         key={m.label}
                         className="bg-surface-container-low p-4 rounded-xl text-center border border-outline-variant/10"
                       >
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                          {m.label}
+                        <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+                          {m.label}<HelpBtn topic={m.topic} />
                         </p>
                         <p className={`text-xl font-black ${m.color}`}>{m.value}</p>
                       </div>
@@ -265,8 +267,8 @@ export default function AIPage() {
                     <>
                       <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2 space-y-4">
-                          <h3 className="text-sm font-bold uppercase tracking-wider text-primary">
-                            Investment Thesis
+                          <h3 className="text-sm font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                            Investment Thesis <HelpBtn topic="ai_thesis" />
                           </h3>
                           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 leading-relaxed text-on-surface">
                             {ai.thesis ?? "N/A"}
@@ -274,8 +276,8 @@ export default function AIPage() {
                         </div>
                         <div className="flex flex-col justify-center">
                           <div className="bg-surface-container-high p-6 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center">
-                            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter mb-2">
-                              AI Signal Strength
+                            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter mb-2 flex items-center justify-center gap-1">
+                              AI Signal Strength <HelpBtn topic="confidence" />
                             </span>
                             <div className="text-4xl font-black text-primary tracking-tighter text-glow-primary mb-4">
                               {conf}%
@@ -294,8 +296,8 @@ export default function AIPage() {
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-primary">
                               <span className="material-symbols-outlined text-sm">trending_up</span>
-                              <h4 className="text-xs font-bold uppercase tracking-widest">
-                                Bull Catalysts
+                              <h4 className="text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+                                Bull Catalysts <HelpBtn topic="catalysts" />
                               </h4>
                             </div>
                             <div className="space-y-3">
@@ -324,8 +326,8 @@ export default function AIPage() {
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-error">
                               <span className="material-symbols-outlined text-sm">report_problem</span>
-                              <h4 className="text-xs font-bold uppercase tracking-widest">
-                                Bear Risks
+                              <h4 className="text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+                                Bear Risks <HelpBtn topic="bear_cases" />
                               </h4>
                             </div>
                             <div className="space-y-3">

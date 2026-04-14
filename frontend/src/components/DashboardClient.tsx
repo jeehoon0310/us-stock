@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { LatestReport, RegimeConfig, StockPick } from "@/lib/data";
 import { C, CB, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type Props = {
   initial: LatestReport;
@@ -160,8 +161,8 @@ export function DashboardClient({ initial, regime }: Props) {
           {/* Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-                Verdict
+              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+                Verdict <HelpBtn topic="verdict" />
               </p>
               <p className="text-3xl font-black tracking-tighter" style={{ color: verdictColor }}>
                 {verdict}
@@ -185,8 +186,8 @@ export function DashboardClient({ initial, regime }: Props) {
               <p className="text-xs text-on-surface-variant mt-1">stocks analyzed</p>
             </div>
             <div className="bg-surface-container-low p-6 rounded-xl border border-primary/20">
-              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">
-                Market Gate
+              <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+                Market Gate <HelpBtn topic="gate" />
               </p>
               <p
                 className="text-3xl font-black tracking-tighter"
@@ -244,8 +245,8 @@ export function DashboardClient({ initial, regime }: Props) {
                     </div>
                   )}
                   <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
-                    <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2">
-                      Regime
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                      Regime <HelpBtn topic="regime" />
                     </p>
                     <span
                       className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
@@ -255,8 +256,8 @@ export function DashboardClient({ initial, regime }: Props) {
                     </span>
                   </div>
                   <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[140px] border border-outline-variant/5">
-                    <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2">
-                      Gate
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
+                      Gate <HelpBtn topic="gate" />
                     </p>
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${gate === "GO" ? "bg-primary-container text-on-primary-container" : gate === "STOP" ? "bg-error-container text-on-error-container" : "bg-secondary-container text-on-secondary-container"}`}
@@ -371,8 +372,8 @@ export function DashboardClient({ initial, regime }: Props) {
                   {gateIcon}
                 </span>
                 <h5 className="text-3xl font-black tracking-tighter mb-2">{verdict}</h5>
-                <p className="text-sm font-bold uppercase tracking-widest opacity-80 mb-6">
-                  Integrated Verdict
+                <p className="text-sm font-bold uppercase tracking-widest opacity-80 mb-6 flex items-center justify-center gap-2">
+                  Integrated Verdict <HelpBtn topic="verdict" />
                 </p>
                 <div className="w-full bg-black/10 p-4 rounded-lg mb-4">
                   <p className="text-[10px] font-bold uppercase mb-1">Gate Score</p>

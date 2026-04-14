@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { gradeClass, barColor } from "@/lib/ui";
+import { HelpBtn } from "@/components/HelpBtn";
 
 type StockPick = {
   ticker: string;
@@ -143,24 +144,24 @@ export default function TopPicksPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
-                {[
-                  "#",
-                  "Ticker",
-                  "Grade",
-                  "Composite Score",
-                  "Strategy",
-                  "Setup",
-                  "Tech",
-                  "Fund",
-                  "Analyst",
-                  "RS vs SPY",
-                  "Action",
-                ].map((h) => (
+                {([
+                  { label: "#" },
+                  { label: "Ticker" },
+                  { label: "Grade", topic: "grade" },
+                  { label: "Composite Score", topic: "composite_score" },
+                  { label: "Strategy", topic: "strategy" },
+                  { label: "Setup", topic: "setup" },
+                  { label: "Tech", topic: "technical_score" },
+                  { label: "Fund", topic: "fundamental_score" },
+                  { label: "Analyst", topic: "analyst_score" },
+                  { label: "RS vs SPY", topic: "rs_vs_spy" },
+                  { label: "Action", topic: "action" },
+                ] as { label: string; topic?: string }[]).map((h) => (
                   <th
-                    key={h}
+                    key={h.label}
                     className="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest whitespace-nowrap"
                   >
-                    {h}
+                    <span className="flex items-center gap-1">{h.label}{h.topic && <HelpBtn topic={h.topic} />}</span>
                   </th>
                 ))}
               </tr>
