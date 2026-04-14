@@ -136,6 +136,14 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     title: "Stock Picks (추천 종목) 이게 뭐야?",
     body: (
       <>
+        <Sec>📊 "20"이 뭐예요? 점수 아닌가요?</Sec>
+        <Box>
+          <p>여기 숫자는 <span className={H.bold}>점수가 아니에요!</span></p>
+          <p>S&P 500 (미국 대표 주식 500개)을 전부 검사해서,<br />
+          오늘 조건을 통과한 <span className={H.bold}>종목 수</span>예요.</p>
+          <p><span className={H.green}>20</span> → "오늘 500개 중 20개가 통과했어요"</p>
+        </Box>
+        <p className="text-[11px]">숫자가 많을수록 좋은 종목이 많다는 뜻이지만, 많다고 무조건 좋은 건 아니에요. 시장이 좋을 때 더 많이 통과해요!</p>
         <Sec>🏆 컴퓨터가 뽑은 "공부 잘하는 학생" 명단이에요!</Sec>
         <p>수백 개 미국 주식 중에서 <span className={H.bold}>가장 좋아 보이는 종목</span>을 골라줘요.</p>
         <Sec>6가지를 보고 점수를 매겨요</Sec>
