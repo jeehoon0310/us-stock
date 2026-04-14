@@ -148,7 +148,7 @@ def phase1_market_timing() -> dict:
 
 # ── Phase 2: 종목 선별 (Stock Selection) ──────────────────────────
 
-def phase2_stock_selection() -> list[dict]:
+def phase2_stock_selection(target_date: datetime | None = None) -> list[dict]:
     """Volume Analysis + Smart Money Screening."""
     logger.info("=" * 60)
     logger.info("[Phase 2] 종목 선별 (Stock Selection)")
@@ -177,8 +177,8 @@ def phase2_stock_selection() -> list[dict]:
         # 날짜별 CSV 저장
         result_dir = BASE_DIR / "result"
         result_dir.mkdir(exist_ok=True)
-        today = datetime.now().strftime("%Y%m%d")
-        top20.to_csv(result_dir / f"smart_money_picks_{today}.csv", index=False, encoding="utf-8-sig")
+        ref = (target_date or datetime.now()).strftime("%Y%m%d")
+        top20.to_csv(result_dir / f"smart_money_picks_{ref}.csv", index=False, encoding="utf-8-sig")
 
     logger.info("[Phase 2] 완료 (%.1f초)", time.time() - t0)
     return picks
@@ -200,14 +200,14 @@ def _assign_action(verdict: str, grade: str) -> str:
         return "HOLD"
 
 
-def phase3_report(timing: dict, picks: list[dict]) -> dict:
+def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None = None) -> dict:
     """종합 리포트 생성 — daily_report_YYYYMMDD.json."""
     logger.info("=" * 60)
     logger.info("[Phase 3] 종합 리포트 생성")
     t0 = time.time()
 
     verdict = timing.get("verdict", "CAUTION")
-    now = datetime.now()
+    now = target_date or datetime.now()
 
     # Action 매핑
     for pick in picks:
@@ -269,33 +269,47 @@ def phase3_report(timing: dict, picks: list[dict]) -> dict:
 
 # ── 메인 ──────────────────────────────────────────────────────────
 
-def run_integrated_analysis() -> dict:
-    """전체 통합 분석 실행."""
+def run_integrated_analysis(target_date: datetime | None = None, skip_ai: bool = False) -> dict:
+    """전체 통합 분석 실행.
+
+    Args:
+        target_date: 백필 날짜. None이면 오늘 날짜로 실행.
+        skip_ai: AI 요약 스킵 여부 (현재 이 스크립트에선 no-op).
+    """
     setup_dirs()
 
     start = datetime.now()
-    today = start.strftime("%Y%m%d")
+    ref = target_date or start
+    today = ref.strftime("%Y%m%d")
     log_path = LOGS_DIR / f"daily_run_{today}.log"
     fh = setup_file_logger(log_path)
 
     print()
     print("=" * 65)
     print("  US Stock Market — Integrated Analysis")
-    print(f"  {start.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  실행: {start.strftime('%Y-%m-%d %H:%M:%S')}", end="")
+    if target_date:
+        print(f"  (백필 날짜: {today})")
+    else:
+        print()
     print("=" * 65)
 
     try:
-        # Phase 0: 데이터 수집
-        data_result = phase0_data_collection()
+        # Phase 0: 데이터 수집 (백필 모드에서는 스킵)
+        if target_date is None:
+            data_result = phase0_data_collection()
+        else:
+            logger.info("[Phase 0] 백필 모드 — 데이터 수집 스킵 (날짜: %s)", today)
+            data_result = {"method": "skipped (backfill)"}
 
         # Phase 1: 시장 분석
         timing = phase1_market_timing()
 
         # Phase 2: 종목 선별
-        picks = phase2_stock_selection()
+        picks = phase2_stock_selection(target_date=target_date)
 
         # Phase 3: 종합 리포트
-        report = phase3_report(timing, picks)
+        report = phase3_report(timing, picks, target_date=target_date)
 
         # 종합 요약
         elapsed = (datetime.now() - start).total_seconds()
@@ -339,4 +353,15 @@ def run_integrated_analysis() -> dict:
 
 
 if __name__ == "__main__":
-    run_integrated_analysis()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="US Stock 통합 분석")
+    parser.add_argument("--date", help="백필 날짜 YYYYMMDD (미입력 시 오늘 날짜로 실행)")
+    parser.add_argument("--skip-ai", action="store_true", help="AI 요약 스킵 (현재 no-op)")
+    args = parser.parse_args()
+
+    _target = None
+    if args.date:
+        _target = datetime.strptime(args.date, "%Y%m%d")
+
+    run_integrated_analysis(target_date=_target, skip_ai=args.skip_ai)
