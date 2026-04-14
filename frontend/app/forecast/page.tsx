@@ -75,9 +75,12 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
             {p.direction.toUpperCase()}
           </span>
         </div>
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${cf}`}>
-          {p.confidence} {p.confidence_pct}%
-        </span>
+        <div className="flex items-center gap-1">
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${cf}`}>
+            {p.confidence} {p.confidence_pct}%
+          </span>
+          <HelpBtn topic="ml" value={`${p.direction}:${p.confidence_pct}`} />
+        </div>
       </div>
 
       <div className="mb-3">
@@ -234,7 +237,7 @@ export default function ForecastPage() {
       <header className="mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">Index Forecast <HelpBtn topic="ml" /></h3>
+            <h3 className="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">Index Forecast <HelpBtn topic="ml" value={spy ? `${spy.direction}:${spy.confidence_pct}` : undefined} /></h3>
             <p className="text-xs text-on-surface-variant font-medium uppercase tracking-widest">
               다음 5 거래일 방향 예측 · GradientBoosting + TimeSeriesSplit CV
             </p>
