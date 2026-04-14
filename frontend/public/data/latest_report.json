@@ -1,24 +1,31 @@
 {
-  "generated_at": "2026-04-14 09:29:51",
+  "generated_at": "2026-04-14 16:49:39",
   "data_date": "2026-04-14",
   "market_timing": {
     "regime": "neutral",
     "regime_score": 0.81,
     "regime_confidence": 40.0,
+    "signals": {
+      "vix": "neutral",
+      "trend": "risk_on",
+      "breadth": "risk_off",
+      "credit": "neutral",
+      "yield_curve": "risk_on"
+    },
     "gate": "CAUTION",
-    "gate_score": 55.6,
+    "gate_score": 55.7,
     "ml_predictor": {
       "spy": {
         "direction": "bullish",
-        "probability_up": 0.654,
-        "predicted_return": 0.502,
-        "confidence": "moderate",
-        "confidence_pct": 65.4,
+        "probability_up": 0.744,
+        "predicted_return": 0.451,
+        "confidence": "high",
+        "confidence_pct": 74.4,
         "key_drivers": [
           {
             "feature": "spy_vol_trend_5d",
             "importance": 0.0912,
-            "value": -0.305,
+            "value": -0.304,
             "direction": "bearish"
           },
           {
@@ -51,10 +58,10 @@
       },
       "qqq": {
         "direction": "bearish",
-        "probability_up": 0.301,
-        "predicted_return": -0.039,
-        "confidence": "moderate",
-        "confidence_pct": 69.9,
+        "probability_up": 0.286,
+        "predicted_return": -0.072,
+        "confidence": "high",
+        "confidence_pct": 71.4,
         "key_drivers": [
           {
             "feature": "yield_spread_proxy",
@@ -65,7 +72,7 @@
           {
             "feature": "spy_vol_trend_5d",
             "importance": 0.0767,
-            "value": -0.305,
+            "value": -0.304,
             "direction": "bearish"
           },
           {

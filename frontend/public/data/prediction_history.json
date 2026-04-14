@@ -124,5 +124,47 @@
       "predicted_return": -0.039
     },
     "model_accuracy": 52.7
+  },
+  {
+    "date": "2026-04-14",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.618,
+      "predicted_return": 0.509
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.299,
+      "predicted_return": -0.039
+    },
+    "model_accuracy": 52.7
+  },
+  {
+    "date": "2026-04-14",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.618,
+      "predicted_return": 0.509
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.299,
+      "predicted_return": -0.039
+    },
+    "model_accuracy": 52.7
+  },
+  {
+    "date": "2026-04-14",
+    "spy": {
+      "direction": "bullish",
+      "probability": 0.744,
+      "predicted_return": 0.451
+    },
+    "qqq": {
+      "direction": "bearish",
+      "probability": 0.286,
+      "predicted_return": -0.072
+    },
+    "model_accuracy": 52.7
   }
 ]

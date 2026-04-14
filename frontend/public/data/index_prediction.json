@@ -3,15 +3,15 @@
   "predictions": {
     "spy": {
       "direction": "bullish",
-      "probability_up": 0.654,
-      "predicted_return": 0.502,
-      "confidence": "moderate",
-      "confidence_pct": 65.4,
+      "probability_up": 0.744,
+      "predicted_return": 0.451,
+      "confidence": "high",
+      "confidence_pct": 74.4,
       "key_drivers": [
         {
           "feature": "spy_vol_trend_5d",
           "importance": 0.0912,
-          "value": -0.305,
+          "value": -0.304,
           "direction": "bearish"
         },
         {
@@ -44,10 +44,10 @@
     },
     "qqq": {
       "direction": "bearish",
-      "probability_up": 0.301,
-      "predicted_return": -0.039,
-      "confidence": "moderate",
-      "confidence_pct": 69.9,
+      "probability_up": 0.286,
+      "predicted_return": -0.072,
+      "confidence": "high",
+      "confidence_pct": 71.4,
       "key_drivers": [
         {
           "feature": "yield_spread_proxy",
@@ -58,7 +58,7 @@
         {
           "feature": "spy_vol_trend_5d",
           "importance": 0.0767,
-          "value": -0.305,
+          "value": -0.304,
           "direction": "bearish"
         },
         {
