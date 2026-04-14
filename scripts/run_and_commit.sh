@@ -6,13 +6,13 @@ cd /Users/frindle/workspace/education/us-stock
 source .venv/bin/activate
 
 LOG="logs/deploy_$(date +%Y%m%d_%H%M%S).log"
-mkdir -p logs dashboard-next/public/data/reports
+mkdir -p logs frontend/public/data/reports
 
 {
   echo "[$(date)] === Starting pipeline ==="
 
-  python run_integrated_analysis.py
-  python regen_dashboard_data.py
+  python scripts/run_integrated_analysis.py
+  python scripts/regen_dashboard_data.py
 
   # Verify all required JSON files exist before committing
   MISSING=""
@@ -20,7 +20,7 @@ mkdir -p logs dashboard-next/public/data/reports
            output/market_gate.json output/final_top10_report.json \
            output/gbm_predictions.json output/ai_summaries.json \
            output/index_prediction.json output/prediction_history.json \
-           output/latest_report.json reports/latest_report.json; do
+           output/latest_report.json output/reports/latest_report.json; do
     if [ ! -f "$f" ]; then
       MISSING="${MISSING} $f"
     fi
@@ -31,7 +31,7 @@ mkdir -p logs dashboard-next/public/data/reports
   fi
 
   # Copy JSON to Next.js public/data (build-time import source)
-  DATA_DIR="dashboard-next/public/data"
+  DATA_DIR="frontend/public/data"
   cp output/regime_config.json "$DATA_DIR/"
   cp output/regime_result.json "$DATA_DIR/"
   cp output/market_gate.json "$DATA_DIR/"
@@ -41,7 +41,7 @@ mkdir -p logs dashboard-next/public/data/reports
   cp output/index_prediction.json "$DATA_DIR/"
   cp output/prediction_history.json "$DATA_DIR/"
   cp output/latest_report.json "$DATA_DIR/"
-  cp reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
+  cp output/reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
 
   # Git commit & push if there are changes
   if ! git diff --quiet "$DATA_DIR" 2>/dev/null; then
