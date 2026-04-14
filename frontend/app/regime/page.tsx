@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { C, CB, SIGNAL_NAMES, SIGNAL_WEIGHTS, regimeLabel, strategyLabel } from "@/lib/ui";
+import { C, regimeBadgeCls, regimeBadgeStyle, SIGNAL_NAMES, SIGNAL_WEIGHTS, regimeLabel, strategyLabel } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import Link from "next/link";
 
@@ -111,10 +111,8 @@ export default function RegimePage() {
   const sectors = (mt.sectors ?? []).slice().sort((a, b) => b.score - a.score);
   const m = mt.gate_metrics ?? {};
   const g = mt.gate ?? "CAUTION";
-  const gateBadgeStyle = {
-    background: g === "GO" ? CB["risk_on"] : g === "STOP" ? CB["risk_off"] : CB["neutral"],
-    color: g === "GO" ? C["risk_on"] : g === "STOP" ? C["risk_off"] : C["neutral"],
-  };
+  const gateBadgeCls = regimeBadgeCls(g);
+  const gateBadgeSty = regimeBadgeStyle(g);
 
   const d = mt.spy_divergence ?? {};
   const divSig = d.signal ?? "none";
@@ -372,8 +370,8 @@ export default function RegimePage() {
           </div>
           <div className="flex items-center gap-2">
             <span
-              className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded"
-              style={gateBadgeStyle}
+              className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded ${gateBadgeCls}`}
+              style={gateBadgeSty}
             >
               {g}
             </span>

@@ -64,3 +64,25 @@ export function strategyLabel(r: string): string {
   if (r === "neutral") return "Balanced";
   return "Defensive";
 }
+
+/**
+ * 배지 Tailwind className 반환.
+ * neutral 은 "" 반환 → regimeBadgeStyle() 로 inline style 처리.
+ */
+export function regimeBadgeCls(v: string): string {
+  if (v === "neutral") return "";
+  if (v === "risk_on" || v === "bullish" || v === "GO")
+    return "bg-primary-container text-on-primary-container";
+  if (v === "risk_off" || v === "crisis" || v === "bearish" || v === "STOP")
+    return "bg-error-container text-on-error-container";
+  return "bg-secondary-container text-on-secondary-container"; // CAUTION, default
+}
+
+/**
+ * neutral 전용 inline style (어두운 bg + 노란 텍스트).
+ * 나머지 값은 undefined 반환.
+ */
+export function regimeBadgeStyle(v: string): { background: string; color: string } | undefined {
+  if (v === "neutral") return { background: CB.neutral, color: C.neutral };
+  return undefined;
+}

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { LatestReport, RegimeConfig, StockPick } from "@/lib/data";
-import { C, CB, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
+import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 
 type Props = {
@@ -216,8 +216,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         SPY 5D <HelpBtn topic="ml" value={`${spy.direction}:${spy.confidence_pct ?? 0}`} />
                       </p>
                       <span
-                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
-                        style={{ background: spy.direction === "bullish" ? CB["risk_on"] : CB["risk_off"], color: spy.direction === "bullish" ? C["risk_on"] : C["risk_off"] }}
+                        className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(spy.direction)}`}
+                        style={regimeBadgeStyle(spy.direction)}
                       >
                         {spy.direction.toUpperCase()}{" "}
                         {spy.predicted_return > 0 ? "+" : ""}
@@ -234,8 +234,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         QQQ 5D <HelpBtn topic="ml" value={`${qqq.direction}:${qqq.confidence_pct ?? 0}`} />
                       </p>
                       <span
-                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
-                        style={{ background: qqq.direction === "bullish" ? CB["risk_on"] : CB["risk_off"], color: qqq.direction === "bullish" ? C["risk_on"] : C["risk_off"] }}
+                        className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(qqq.direction)}`}
+                        style={regimeBadgeStyle(qqq.direction)}
                       >
                         {qqq.direction.toUpperCase()}{" "}
                         {qqq.predicted_return > 0 ? "+" : ""}
@@ -251,8 +251,8 @@ export function DashboardClient({ initial, regime }: Props) {
                       Regime <HelpBtn topic="regime" />
                     </p>
                     <span
-                      className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
-                      style={{ background: CB[r], color: C[r] }}
+                      className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(r)}`}
+                      style={regimeBadgeStyle(r)}
                     >
                       {regimeLabel(r)}
                     </span>
@@ -262,11 +262,8 @@ export function DashboardClient({ initial, regime }: Props) {
                       Gate <HelpBtn topic="gate" />
                     </p>
                     <span
-                      className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
-                      style={{
-                        background: gate === "GO" ? CB["risk_on"] : gate === "STOP" ? CB["risk_off"] : CB["neutral"],
-                        color: gate === "GO" ? C["risk_on"] : gate === "STOP" ? C["risk_off"] : C["neutral"],
-                      }}
+                      className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(gate)}`}
+                      style={regimeBadgeStyle(gate)}
                     >
                       {gate}
                     </span>
@@ -281,8 +278,8 @@ export function DashboardClient({ initial, regime }: Props) {
                         {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
                       </p>
                       <span
-                        className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold"
-                        style={{ background: CB[v as string], color: C[v as string] }}
+                        className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(v as string)}`}
+                        style={regimeBadgeStyle(v as string)}
                       >
                         {regimeLabel(String(v))}
                       </span>
