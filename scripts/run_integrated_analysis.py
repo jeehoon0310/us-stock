@@ -90,6 +90,11 @@ def phase1_market_timing() -> dict:
         timing["regime_score"] = regime_result["weighted_score"]
         timing["regime_confidence"] = regime_result["confidence"]
         timing["signals"] = regime_result.get("signals", {})
+        _ap = detector.ADAPTIVE_PARAMS.get(timing["regime"], detector.ADAPTIVE_PARAMS["neutral"])
+        timing["adaptive_params"] = {
+            "stop_loss": f"{_ap['stop_loss']:.0%}",
+            "max_drawdown_warning": f"{_ap['max_drawdown_warning']:.0%}",
+        }
         logger.info("  Regime: %s (score=%.2f, confidence=%.0f%%)",
                      timing["regime"], timing["regime_score"], timing["regime_confidence"])
     except Exception as e:
@@ -98,6 +103,7 @@ def phase1_market_timing() -> dict:
         timing["regime_score"] = 1.5
         timing["regime_confidence"] = 50
         timing["signals"] = {}
+        timing["adaptive_params"] = {"stop_loss": "-8%", "max_drawdown_warning": "-10%"}
 
     # 2/3: Sector Gate Signal
     try:
@@ -239,6 +245,7 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
             "gate": timing.get("gate", "CAUTION"),
             "gate_score": timing.get("gate_score", 0),
             "ml_predictor": timing.get("ml_predictor", {}),
+            "adaptive_params": timing.get("adaptive_params", {}),
         },
         "verdict": verdict,
         "stock_picks": picks,
