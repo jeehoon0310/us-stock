@@ -24,7 +24,7 @@ Phase 1 — 건강 점검:
 
 Phase 2 — 이슈 분석:
 2. Phase 1 리포트에서 이슈를 추출하고 분류해 (Critical/Improvement/Enhancement).
-3. .docs/backlog/evolution_backlog.md 업데이트.
+3. docs/notes/backlog.md 업데이트.
 
 Phase 3 — 개선 실행:
 4. 이슈 유형에 따라 적절한 에이전트에 위임:

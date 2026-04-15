@@ -52,72 +52,50 @@ us-stock/
 │   │   ├── fetch_sp500_list.py  # S&P 500 종목 목록 (Wikipedia)
 │   │   ├── fetch_sp500_prices.py # 503개 종목 일괄 수집
 │   │   ├── macro_collector.py   # 매크로 경제 지표 (FRED + VIX)
-│   │   └── data_fetcher.py      # 통합 수집기 (yfinance + Finnhub fallback)
+│   │   └── data_fetcher.py      # 통합 수집기
 │   │
-│   ├── src/analyzers/               # 분석 엔진 (요리사들)
-│   │   ├── technical_indicators.py  # 기술적 지표 (SMA/RSI/ATR/BB)
-│   │   ├── sector_analyzer.py   # 11개 섹터 분석 + 히트맵
-│   │   ├── market_regime.py     # 시장 체제 감지 (5개 센서)
-│   │   ├── market_gate.py       # 매수 신호등 (GO/CAUTION/STOP)
-│   │   ├── smart_money_screener_v2.py  # 503종목 종합 스크리닝
-│   │   ├── ai_summary_generator.py  # AI 분석 (Gemini/OpenAI/Perplexity)
-│   │   └── final_report_generator.py   # 최종 Top 10 리포트
+│   ├── src/analyzers/               # 분석 엔진
+│   │   ├── technical_indicators.py
+│   │   ├── market_regime.py
+│   │   ├── market_gate.py
+│   │   ├── smart_money_screener_v2.py
+│   │   ├── ai_summary_generator.py
+│   │   └── final_report_generator.py
 │   │
-│   ├── src/us_market/               # ML 기반 지수 예측 (기상청)
-│   │   └── index_predictor.py   # SPY/QQQ 5일 방향 예측
+│   ├── src/us_market/
+│   │   └── index_predictor.py
 │   │
-│   ├── src/pipeline/                # 파이프라인 (주방 관리자)
-│   │   ├── us_data_pipeline.py  # Part 1 통합 오케스트레이터
-│   │   ├── run_pipeline.py      # CLI (--top-n, --period, --output-dir)
-│   │   ├── data_quality_report.py  # 데이터 품질 100점 채점
-│   │   └── plot_sector_heatmap.py  # 섹터 히트맵 시각화
+│   ├── src/pipeline/
+│   │   ├── us_data_pipeline.py
+│   │   ├── run_pipeline.py
+│   │   ├── data_quality_report.py
+│   │   └── plot_sector_heatmap.py
 │   │
-│   └── src/ml/                      # 신규 GBM ML 파이프라인 (Part 5)
+│   └── src/ml/                      # GBM ML 파이프라인 (Part 5)
 │       ├── src/pipeline/
-│       │   ├── train.py         # LightGBM rank 학습 + early stopping
-│       │   ├── predict.py       # Top 20 cross-sectional 예측
-│       │   └── feature_store.py # parquet 기반 피처 버저닝
 │       ├── validation/
-│       │   └── walk_forward.py  # Purged K-Fold + PBO + DSR
 │       └── ...
 │
 ├── scripts/                     # 실행 엔트리포인트
-│   ├── scripts/run_full_pipeline.py     # 전체 파이프라인 (메인!)
-│   ├── run_integrated_analysis.py  # 통합 분석 (Phase 0~3)
-│   ├── scripts/run_screening.py         # S&P 500 스크리닝
-│   ├── run_all.py               # 기본 실행 (Part 1+2+3)
-│   ├── run_daily_scheduler.py   # 일일 스케줄러
-│   └── regen_dashboard_data.py  # 대시보드 데이터 재생성
+│   ├── scripts/run_full_pipeline.py
+│   ├── run_integrated_analysis.py
+│   ├── scripts/run_screening.py
+│   ├── run_all.py
+│   ├── run_daily_scheduler.py
+│   └── regen_dashboard_data.py
 │
 ├── frontend/                    # Next.js 대시보드
-│
-├── tests/                       # 테스트 + 연습
-│   ├── test_price_fetcher.py    # 가격 수집 테스트 (4개 검증)
-│   ├── test_indicators.py       # 지표 계산 테스트 (5개 검증)
-│   └── test_index_predictor.py  # IndexPredictor 테스트 (8개 검증, pytest)
-│
-├── data/                        # CSV 입력 (시장 데이터)
-├── output/                      # 분석 결과
-│   ├── picks/                   # 날짜별 스크리닝 결과 (smart_money_picks_YYYYMMDD.csv)
-│   └── reports/                 # 일일 리포트 (daily_report_YYYYMMDD.json)
-│
-├── docs/                        # 문서
-│   ├── README.md                # 이 파일!
-│   ├── OPERATIONS.md            # 운영 매뉴얼
-│   └── evolution/               # service-evolver 학습 이력 (Reflexion memory)
-│       ├── memory.md            # Do's/Don'ts 누적
-│       ├── backlog.md           # P0/P1/P2/P3 개선 후보
-│       └── YYYY-MM-DD_cycle*.md # 일일 사이클 로그
-│
-├── archive/legacy-dashboard/    # 레거시 정적 대시보드
-│
-├── .claude/agents/              # 22 에이전트 (Part 6)
-│   ├── perf-lead.md             # 21에이전트 최상위 오케스트레이터
-│   ├── service-evolver.md       # ★ 매일 서비스 자가 진화 메타 에이전트
-│   └── ...
-│
-├── .env                         # API 키 (5개)
-└── CLAUDE.md                    # Claude Code 설정
+├── tests/
+├── data/
+├── output/
+│   ├── picks/                   # 날짜별 스크리닝 결과
+│   └── reports/
+├── docs/
+│   ├── notes/                   # 통합 노트 (daily + backlog + research)
+│   └── _archive/                # 기존 파일 보존
+├── archive/legacy-archive/legacy-dashboard/    # 레거시 정적 대시보드
+├── .env
+└── CLAUDE.md
 ```
 
 ---
@@ -499,7 +477,7 @@ python -m ml.pipeline.predict
 
 > 이 시스템은 스스로 개선돼요. **매일 1건씩 작은 진화**를 누적하는 **22 에이전트 생태계**가 움직입니다.
 
-**파일: `.claude/agents/*.md`, `docs/evolution/*`**
+**파일: `.claude/agents/*.md`, `docs/notes/*`**
 
 ### 비유로 이해하기
 
@@ -553,7 +531,7 @@ Phase 7 (5분)  문서 갱신     — memory.md + backlog.md + README.md
 
 ### Reflexion Memory 시스템
 
-`docs/evolution/memory.md`에 **모든 성공/실패가 누적 학습**됨:
+`docs/notes/memory.md`에 **모든 성공/실패가 누적 학습**됨:
 - **Do's**: 반복할 성공 패턴 (예: "이미 구현된 모듈 재활용이 최고 ROI")
 - **Don'ts**: 반복 금지 실수 (예: "format code 추측 금지, 실제 타입 확인")
 - **Open Questions**: 추가 리서치 필요 항목
@@ -618,8 +596,8 @@ python -m ml.pipeline.predict                          # Top 20 예측
 | **src/ml/features/equity/*.parquet** | **36 종목 피처 + 5 타겟** | "학생 개개인 과제 점수" |
 | **src/ml/models/lgbm_*.pkl + .json** | **학습된 LightGBM + metadata** | "훈련된 과외 선생님" |
 | **src/ml/validation/walk_forward_*.json** | **PBO/DSR + fold별 IC** | "모의고사 채점표" |
-| **docs/evolution/memory.md** | **service-evolver Reflexion 메모리** | "어제 배운 교훈 노트" |
-| **docs/evolution/backlog.md** | **P0/P1/P2/P3 개선 후보** | "해야 할 일 목록" |
+| **docs/notes/memory.md** | **service-evolver Reflexion 메모리** | "어제 배운 교훈 노트" |
+| **docs/notes/backlog.md** | **P0/P1/P2/P3 개선 후보** | "해야 할 일 목록" |
 
 ---
 
