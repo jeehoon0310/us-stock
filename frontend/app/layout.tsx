@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { data } from "@/lib/data";
 import { SideNav, MobileNav } from "@/components/Navigation";
 import { QuotesTicker } from "@/components/QuotesTicker";
 
@@ -10,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const syncedAt = data.top10?.generated_at ?? data.latestReport?.generated_at ?? "Live Feed Active";
+  const syncedAt = "Live Feed Active";
 
   return (
     <html lang="ko" className="dark">

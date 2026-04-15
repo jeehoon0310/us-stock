@@ -670,6 +670,114 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  risk_alert: {
+    title: "Risk Alert (리스크 알림) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🛡️ 내 돈을 지키는 골키퍼예요!</Sec>
+        <p>"뭘 살까"만 알려주는 게 아니라, <span className={H.bold}>"언제 팔까, 얼마나 살까, 위험이 얼마인가"</span>까지 알려줘요.</p>
+        <Box>
+          <p><span className={H.red}>CRITICAL</span> = 즉시 행동 필요! 손절선 돌파 등 🚨</p>
+          <p><span className={H.yellow}>WARNING</span> = 주의 관찰! 위험 근접 ⚠️</p>
+          <p><span className={H.green}>INFO</span> = 참고 사항 ℹ️</p>
+        </Box>
+        <Sec>뭘 체크하나요?</Sec>
+        <Box>
+          <p><span className={H.bold}>Stop-Loss</span> — 손절선 돌파/근접 확인</p>
+          <p><span className={H.bold}>VaR</span> — 포트폴리오 전체 위험도</p>
+          <p><span className={H.bold}>포지션 사이징</span> — 종목별 투자 비중</p>
+          <p><span className={H.bold}>집중도</span> — 한 섹터에 몰빵 여부</p>
+        </Box>
+      </>
+    ),
+  },
+
+  position_sizing: {
+    title: "Position Sizing (포지션 사이징) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>⚖️ "얼마나 살 것인가"를 정하는 거예요!</Sec>
+        <p>좋은 종목이라도 <span className={H.bold}>너무 많이 사면 위험</span>해요. 3단계로 비중을 조절해요.</p>
+        <Box>
+          <p><span className={H.bold}>1단계 Grade 조정</span> — A등급은 많이, D등급은 적게</p>
+          <p><span className={H.bold}>2단계 Regime 조정</span> — 위기 시 전체 줄이기</p>
+          <p><span className={H.bold}>3단계 Verdict 상한</span> — STOP이면 0%, CAUTION이면 50% 상한</p>
+        </Box>
+        <Box>
+          <p><span className={H.green}>GO</span> → 제한 없이 투자 가능</p>
+          <p><span className={H.yellow}>CAUTION</span> → 최대 50%만 투자, 나머지 현금</p>
+          <p><span className={H.red}>STOP</span> → 전액 현금! 투자 0%</p>
+        </Box>
+      </>
+    ),
+  },
+
+  var_risk: {
+    title: "VaR (위험 가치) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>📉 "최악의 경우 얼마나 잃을 수 있나?"예요!</Sec>
+        <p><span className={H.bold}>Value at Risk (VaR)</span> = 5일 동안 95% 확률로 최대 이만큼 잃을 수 있다는 뜻이에요.</p>
+        <Box>
+          <p>예) VaR = <span className={H.bold}>$3,200</span></p>
+          <p>→ "5일 동안 $3,200 이상 잃을 확률은 5%밖에 안 돼요"</p>
+          <p>→ 반대로, $3,200까지는 잃을 수 있다는 뜻!</p>
+        </Box>
+        <Sec>리스크 예산</Sec>
+        <Box>
+          <p><span className={H.green}>OK</span> = VaR이 포트폴리오의 5% 이내 ✅</p>
+          <p><span className={H.yellow}>WARNING</span> = 5%에 근접 (80% 이상) ⚠️</p>
+          <p><span className={H.red}>EXCEEDED</span> = 5% 초과! 포지션 줄여야 해요 🚨</p>
+        </Box>
+      </>
+    ),
+  },
+
+  trailing_stop: {
+    title: "Trailing Stop (추적 손절) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>📈 수익을 보호하는 자동 안전장치예요!</Sec>
+        <p>가격이 오를수록 <span className={H.bold}>손절선도 같이 올라가서</span> 이미 번 수익을 보호해요.</p>
+        <Box>
+          <p><span className={H.bold}>Fixed Stop (고정 손절)</span></p>
+          <p>→ 진입가 기준으로 일정 % 하락하면 매도</p>
+          <p>→ 예: 100에 매수, -8%면 92에서 매도</p>
+        </Box>
+        <Box>
+          <p><span className={H.bold}>Trailing Stop (추적 손절)</span></p>
+          <p>→ 최고가 기준으로 일정 % 하락하면 매도</p>
+          <p>→ 예: 100 매수 → 120 상승 → -4%면 115에서 매도</p>
+          <p>→ 수익 15%를 보호! (고정 손절은 92까지 기다림)</p>
+        </Box>
+        <Box>
+          <p><span className={H.red}>BREACHED</span> = 손절선 돌파! 매도 검토 🚨</p>
+          <p><span className={H.yellow}>WARNING</span> = 손절선에 근접 (2% 이내) ⚠️</p>
+          <p><span className={H.green}>OK</span> = 안전 구간 ✅</p>
+        </Box>
+      </>
+    ),
+  },
+
+  concentration: {
+    title: "Concentration Risk (집중 위험) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🎯 한 바구니에 계란을 몰아넣으면 위험해요!</Sec>
+        <p>같은 업종(섹터)이나 비슷한 주식에 <span className={H.bold}>너무 몰아서 투자</span>하면 위험해요.</p>
+        <Box>
+          <p><span className={H.bold}>섹터 집중도</span> — 한 섹터 40% 초과하면 경고</p>
+          <p><span className={H.bold}>상관관계</span> — 같이 오르내리는 종목이 많으면 경고</p>
+        </Box>
+        <Box>
+          <p>예) Technology 종목이 45%면?</p>
+          <p>→ "기술주 폭락하면 포트폴리오 절반이 위험!" ⚠️</p>
+          <p>→ 다른 섹터로 분산 필요</p>
+        </Box>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (

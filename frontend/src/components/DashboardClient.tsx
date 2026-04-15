@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { LatestReport, RegimeConfig, StockPick } from "@/lib/data";
+import type { LatestReport, RegimeConfig, StockPick, RiskAlertData, RiskAlert } from "@/lib/data";
 import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
@@ -16,6 +16,7 @@ export function DashboardClient() {
   const [regime, setRegime] = useState<RegimeConfig>({} as RegimeConfig);
   const [status, setStatus] = useState<string>("로딩 중...");
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
+  const [riskData, setRiskData] = useState<RiskAlertData | null>(null);
 
   async function loadReport(dateStr: string) {
     const ymd = dateStr.replace(/-/g, "");
@@ -74,6 +75,11 @@ export function DashboardClient() {
     fetch("/data/regime_config.json", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: RegimeConfig) => setRegime(d))
+      .catch(() => {});
+
+    fetch("/data/risk_alerts.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: RiskAlertData) => setRiskData(d))
       .catch(() => {});
   }, []);
 
@@ -447,6 +453,250 @@ export function DashboardClient() {
               </div>
             </div>
           </div>
+
+          {/* Risk Alert Section */}
+          {riskData && (
+            <div className="mt-6 space-y-6">
+              {/* Risk Overview Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
+                    Risk Status <HelpBtn topic="risk_alert" />
+                  </p>
+                  <p className={`text-3xl font-black tracking-tighter ${
+                    (riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0) > 0
+                      ? "text-error"
+                      : (riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0) > 0
+                        ? "text-secondary"
+                        : "text-primary"
+                  }`}>
+                    {(riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0) > 0
+                      ? "ALERT"
+                      : (riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0) > 0
+                        ? "WATCH"
+                        : "CLEAR"}
+                  </p>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0} critical ·{" "}
+                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0} warning
+                  </p>
+                </div>
+
+                <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
+                    Allocation <HelpBtn topic="position_sizing" />
+                  </p>
+                  <p className="text-3xl font-black tracking-tighter text-on-surface">
+                    {riskData.portfolio_summary?.invested_pct ?? 0}%
+                  </p>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    투자 {riskData.portfolio_summary?.invested_pct ?? 0}% · 현금 {riskData.portfolio_summary?.cash_pct ?? 100}%
+                  </p>
+                </div>
+
+                <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
+                    VaR (5D) <HelpBtn topic="var_risk" />
+                  </p>
+                  <p className={`text-3xl font-black tracking-tighter ${
+                    riskData.portfolio_summary?.risk_budget_status === "EXCEEDED"
+                      ? "text-error"
+                      : riskData.portfolio_summary?.risk_budget_status === "WARNING"
+                        ? "text-secondary"
+                        : "text-primary"
+                  }`}>
+                    ${(riskData.portfolio_summary?.total_var_dollar ?? 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    Budget: {riskData.portfolio_summary?.risk_budget_status ?? "N/A"}
+                  </p>
+                </div>
+
+                <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
+                    Portfolio <HelpBtn topic="concentration" />
+                  </p>
+                  <p className="text-3xl font-black tracking-tighter text-on-surface">
+                    ${((riskData.portfolio_summary?.total_value ?? 100000) / 1000).toFixed(0)}K
+                  </p>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    Total value
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Alerts List */}
+                <div className="lg:col-span-2 bg-surface-container-low rounded-xl overflow-hidden">
+                  <div className="p-6 border-b border-outline-variant/10">
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
+                      Risk Alerts <HelpBtn topic="risk_alert" />
+                    </h4>
+                  </div>
+                  <div>
+                    {(riskData.alerts ?? [])
+                      .filter((a: RiskAlert) => a.level !== "INFO")
+                      .length === 0 ? (
+                      <div className="px-6 py-8 text-center">
+                        <span className="material-symbols-outlined text-3xl text-primary/40 mb-2">verified</span>
+                        <p className="text-sm text-on-surface-variant">All Clear — 리스크 항목 없음</p>
+                      </div>
+                    ) : (
+                      (riskData.alerts ?? [])
+                        .filter((a: RiskAlert) => a.level !== "INFO")
+                        .map((alert: RiskAlert, i: number) => (
+                          <div
+                            key={i}
+                            className={`flex items-start px-6 py-4 border-b border-outline-variant/5 ${
+                              alert.level === "CRITICAL" ? "bg-error/5" : ""
+                            }`}
+                          >
+                            <span
+                              className={`material-symbols-outlined text-lg mr-3 mt-0.5 ${
+                                alert.level === "CRITICAL" ? "text-error" : "text-secondary"
+                              }`}
+                              style={{ fontVariationSettings: "'FILL' 1" }}
+                            >
+                              {alert.level === "CRITICAL" ? "error" : "warning"}
+                            </span>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span
+                                  className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                    alert.level === "CRITICAL"
+                                      ? "bg-error/10 text-error"
+                                      : "bg-secondary/10 text-secondary"
+                                  }`}
+                                >
+                                  {alert.level}
+                                </span>
+                                <span className="text-[10px] font-bold text-on-surface-variant uppercase">
+                                  {alert.category}
+                                </span>
+                              </div>
+                              <p className="text-xs text-on-surface">{alert.message}</p>
+                            </div>
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ml-3 ${
+                                alert.action === "SELL"
+                                  ? "bg-error/10 text-error"
+                                  : alert.action === "REDUCE"
+                                    ? "bg-secondary/10 text-secondary"
+                                    : "bg-primary/10 text-on-surface-variant"
+                              }`}
+                            >
+                              {alert.action}
+                            </span>
+                          </div>
+                        ))
+                    )}
+                  </div>
+                </div>
+
+                {/* Position Sizing */}
+                <div className="bg-surface-container-low rounded-xl p-6">
+                  <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+                    Position Sizing <HelpBtn topic="position_sizing" />
+                  </h4>
+
+                  {/* Allocation Bar */}
+                  <div className="mb-4">
+                    <div className="relative h-4 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-secondary"
+                        style={{ width: `${riskData.portfolio_summary?.invested_pct ?? 0}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
+                      <span>투자 {riskData.portfolio_summary?.invested_pct ?? 0}%</span>
+                      <span>현금 {riskData.portfolio_summary?.cash_pct ?? 100}%</span>
+                    </div>
+                  </div>
+
+                  {/* Position List */}
+                  <div className="space-y-2">
+                    {(riskData.position_sizes ?? [])
+                      .filter((p) => p.ticker !== "CASH" && p.final_pct > 0)
+                      .slice(0, 8)
+                      .map((pos) => (
+                        <div key={pos.ticker} className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center justify-center w-6 h-6 rounded text-[10px] font-bold border ${gradeClass(pos.grade)}`}
+                          >
+                            {pos.grade}
+                          </span>
+                          <span className="text-xs font-bold text-on-surface flex-1">{pos.ticker}</span>
+                          <div className="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary rounded-full"
+                              style={{ width: `${Math.min(pos.final_pct * 2, 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] font-bold text-on-surface-variant w-10 text-right">
+                            {pos.final_pct}%
+                          </span>
+                        </div>
+                      ))}
+                    {/* Cash */}
+                    {riskData.portfolio_summary?.cash_pct != null && riskData.portfolio_summary.cash_pct > 0 && (
+                      <div className="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded text-[10px] font-bold bg-surface-container-highest text-on-surface-variant">
+                          $
+                        </span>
+                        <span className="text-xs font-bold text-on-surface-variant flex-1">CASH</span>
+                        <div className="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-on-surface-variant/30 rounded-full"
+                            style={{ width: `${Math.min(riskData.portfolio_summary.cash_pct, 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-on-surface-variant w-10 text-right">
+                          {riskData.portfolio_summary.cash_pct}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Stop-Loss Summary */}
+                  <div className="mt-6 pt-4 border-t border-outline-variant/10">
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
+                      Stop-Loss Status <HelpBtn topic="trailing_stop" />
+                    </p>
+                    <div className="flex gap-3">
+                      {(() => {
+                        const stops = riskData.alerts?.filter((a: RiskAlert) => a.category === "stop_loss") ?? [];
+                        const breached = stops.filter((a: RiskAlert) => a.level === "CRITICAL").length;
+                        const warned = stops.filter((a: RiskAlert) => a.level === "WARNING").length;
+                        const ok = (riskData.position_sizes?.filter((p) => p.ticker !== "CASH").length ?? 0) - breached - warned;
+                        return (
+                          <>
+                            {breached > 0 && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-error">
+                                <span className="w-2 h-2 rounded-full bg-error" />
+                                {breached} BREACHED
+                              </span>
+                            )}
+                            {warned > 0 && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-secondary">
+                                <span className="w-2 h-2 rounded-full bg-secondary" />
+                                {warned} WARNING
+                              </span>
+                            )}
+                            {ok > 0 && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary">
+                                <span className="w-2 h-2 rounded-full bg-primary" />
+                                {ok > 0 ? ok : 0} OK
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
