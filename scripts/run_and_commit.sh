@@ -46,7 +46,8 @@ mkdir -p logs frontend/public/data/reports
            output/market_gate.json output/final_top10_report.json \
            output/gbm_predictions.json output/ai_summaries.json \
            output/index_prediction.json output/prediction_history.json \
-           output/latest_report.json output/reports/latest_report.json; do
+           output/latest_report.json output/reports/latest_report.json \
+           output/risk_alerts.json; do
     if [ ! -f "$f" ]; then
       MISSING="${MISSING} $f"
     fi
@@ -67,6 +68,7 @@ mkdir -p logs frontend/public/data/reports
   cp output/index_prediction.json "$DATA_DIR/"
   cp output/prediction_history.json "$DATA_DIR/"
   cp output/latest_report.json "$DATA_DIR/"
+  cp output/risk_alerts.json "$DATA_DIR/" 2>/dev/null || true
   cp output/reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
 
   # Git commit & push if there are changes
