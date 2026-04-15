@@ -6,19 +6,15 @@ import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass, SIGNAL_NAMES, regimeLa
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
 
-type Props = {
-  initial: LatestReport;
-  regime: RegimeConfig;
-};
-
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function DashboardClient({ initial, regime }: Props) {
-  const [date, setDate] = useState<string>(initial.data_date ?? todayStr());
-  const [report, setReport] = useState<LatestReport | null>(initial ?? null);
-  const [status, setStatus] = useState<string>("");
+export function DashboardClient() {
+  const [date, setDate] = useState<string>(todayStr());
+  const [report, setReport] = useState<LatestReport | null>(null);
+  const [regime, setRegime] = useState<RegimeConfig>({} as RegimeConfig);
+  const [status, setStatus] = useState<string>("로딩 중...");
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
@@ -64,6 +60,21 @@ export function DashboardClient({ initial, regime }: Props) {
     fetch("/data/dates_manifest.json", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
+
+    // CSR: 최신 리포트 + regime_config 초기 로딩
+    fetch("/data/latest_report.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: LatestReport) => {
+        setReport(d);
+        setDate(d.data_date ?? todayStr());
+        setStatus("");
+      })
+      .catch(() => setStatus("데이터 없음"));
+
+    fetch("/data/regime_config.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: RegimeConfig) => setRegime(d))
+      .catch(() => {});
   }, []);
 
   const mt = report?.market_timing;
@@ -377,14 +388,33 @@ export function DashboardClient({ initial, regime }: Props) {
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
                   Breadth Gauge <HelpBtn topic="regime" />
                 </h4>
-                <div className="relative h-4 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2">
-                  <div className="absolute top-0 left-0 h-full w-[60%] bg-gradient-to-r from-secondary-fixed-dim to-primary"></div>
-                </div>
-                <div className="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
-                  <span>Bearish</span>
-                  <span>Neutral</span>
-                  <span>Bullish</span>
-                </div>
+                {(() => {
+                  const breadthAbove = (report?.market_timing as Record<string, unknown> | undefined)
+                    ?.breadth_above_200ma as number | undefined;
+                  const breadthPct = (() => {
+                    if (typeof breadthAbove === "number")
+                      return Math.max(5, Math.min(95, breadthAbove));
+                    const signal = signals.breadth;
+                    if (signal === "risk_on") return 75;
+                    if (signal === "risk_off") return 30;
+                    return 50;
+                  })();
+                  return (
+                    <>
+                      <div className="relative h-4 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2">
+                        <div
+                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-secondary-fixed-dim to-primary"
+                          style={{ width: `${breadthPct}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
+                        <span>Bearish</span>
+                        <span>Neutral</span>
+                        <span>Bullish</span>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               {/* AI Feed */}

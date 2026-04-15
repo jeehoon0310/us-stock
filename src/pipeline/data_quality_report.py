@@ -41,6 +41,28 @@ class DataQualityReporter:
     def __init__(self, data_dir: str = "."):
         self.data_dir = data_dir
 
+    def _check_ohlc_integrity(self, df: pd.DataFrame) -> dict:
+        if not all(c in df.columns for c in ["Open", "High", "Low", "Close"]):
+            return {"ohlc_integrity": "columns_missing"}
+        violations = (
+            (df["High"] < df["Close"]) |
+            (df["Low"] > df["Close"]) |
+            (df["High"] < df["Open"]) |
+            (df["Low"] > df["Open"])
+        ).sum()
+        return {"ohlc_integrity_violations": int(violations)}
+
+    def _check_volume_anomaly(self, df: pd.DataFrame) -> dict:
+        if "Volume" not in df.columns:
+            return {}
+        vol_ma20 = df["Volume"].rolling(20).mean()
+        anomalies = (df["Volume"] > vol_ma20 * 3).sum()
+        return {"volume_anomaly_days": int(anomalies)}
+
+    def _check_duplicate_dates(self, df: pd.DataFrame) -> dict:
+        dupes = df.index.duplicated().sum() if hasattr(df.index, 'duplicated') else 0
+        return {"duplicate_dates": int(dupes)}
+
     def check_file(self, filename: str, spec: dict) -> dict:
         filepath = os.path.join(self.data_dir, filename)
         checks = []
@@ -119,7 +141,13 @@ class DataQualityReporter:
         if date_ok:
             score += 20
 
-        return {"file": filename, "score": score, "rows": rows, "cols": cols, "checks": checks}
+        # 추가 검증: OHLC 무결성, 거래량 이상치, 중복 날짜
+        extra_checks = {}
+        extra_checks.update(self._check_ohlc_integrity(df))
+        extra_checks.update(self._check_volume_anomaly(df))
+        extra_checks.update(self._check_duplicate_dates(df))
+
+        return {"file": filename, "score": score, "rows": rows, "cols": cols, "checks": checks, "extra": extra_checks}
 
     def run_full_report(self) -> dict:
         results = {}
@@ -145,6 +173,22 @@ class DataQualityReporter:
                 detail = check[3] if len(check) > 3 else ""
                 icon = "✅" if passed else "❌"
                 print(f"       {icon} {name} ({pts}점) {detail}")
+            if result.get("extra"):
+                extra = result["extra"]
+                if "ohlc_integrity_violations" in extra:
+                    v = extra["ohlc_integrity_violations"]
+                    icon = "✅" if v == 0 else "⚠️"
+                    print(f"       {icon} OHLC 무결성 위반: {v}건")
+                elif "ohlc_integrity" in extra:
+                    print(f"       ⚠️ OHLC 무결성: {extra['ohlc_integrity']}")
+                if "volume_anomaly_days" in extra:
+                    v = extra["volume_anomaly_days"]
+                    icon = "✅" if v == 0 else "⚠️"
+                    print(f"       {icon} 거래량 이상치 (20일MA×3 초과): {v}일")
+                if "duplicate_dates" in extra:
+                    v = extra["duplicate_dates"]
+                    icon = "✅" if v == 0 else "⚠️"
+                    print(f"       {icon} 중복 날짜: {v}건")
 
         avg = total_score / len(FILE_SPECS)
         results["average_score"] = round(avg, 1)

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -34,8 +35,33 @@ class EnhancedSmartMoneyScreener:
 
         logger.info("EnhancedSmartMoneyScreener 초기화 (output: %s)", self.output_dir)
 
+    def _filter_13f_no_lookahead(self, holdings_df: pd.DataFrame,
+                                   as_of_date: datetime = None) -> pd.DataFrame:
+        """13F look-ahead bias 방지 필터
+
+        - filing_date <= as_of_date (공시일 기준)
+        - report_period_of_report + 45일 <= as_of_date (실제 데이터 가용 시점)
+        """
+        if as_of_date is None:
+            as_of_date = datetime.now()
+
+        if 'filing_date' not in holdings_df.columns:
+            return holdings_df
+
+        # filing_date 기준 필터
+        mask = pd.to_datetime(holdings_df['filing_date']) <= as_of_date
+
+        # report_period_of_report + 45일 필터 (있는 경우)
+        if 'report_period_of_report' in holdings_df.columns:
+            period_mask = (
+                pd.to_datetime(holdings_df['report_period_of_report']) +
+                pd.Timedelta(days=45)
+            ) <= as_of_date
+            mask = mask & period_mask
+
+        return holdings_df[mask].copy()
+
     def load_data(self) -> bool:
-        from datetime import datetime, timedelta
         base = self.output_dir
         data_dir = Path(__file__).resolve().parent.parent / "data"
 
@@ -52,14 +78,9 @@ class EnhancedSmartMoneyScreener:
         holdings_path = base / "us_13f_holdings.csv"
         if holdings_path.exists():
             self.holdings_df = pd.read_csv(holdings_path)
-            if "filing_date" in self.holdings_df.columns:
-                self.holdings_df["filing_date"] = pd.to_datetime(self.holdings_df["filing_date"], errors="coerce")
-                yesterday = datetime.now() - timedelta(days=1)
-                before = len(self.holdings_df)
-                self.holdings_df = self.holdings_df[self.holdings_df["filing_date"] <= yesterday]
-                logger.info("holdings_df 로드: %d→%d행 (look-ahead bias 필터)", before, len(self.holdings_df))
-            else:
-                logger.info("holdings_df 로드: %d행", len(self.holdings_df))
+            before = len(self.holdings_df)
+            self.holdings_df = self._filter_13f_no_lookahead(self.holdings_df)
+            logger.info("holdings_df 로드: %d→%d행 (look-ahead bias 필터)", before, len(self.holdings_df))
         else:
             logger.info("holdings_df 미제공 (선택): %s — 13f_score 기본값 50 사용", holdings_path)
 
@@ -108,6 +129,113 @@ class EnhancedSmartMoneyScreener:
         spy_ret = (float(spy_close.iloc[-1]) / float(spy_close.iloc[-1 - lookback]) - 1) * 100
 
         return round(stock_ret - spy_ret, 1)
+
+    def _calculate_volume_sd_score(self, ticker: str, lookback: int = 20) -> float:
+        """거래량 표준편차 기반 수급 점수 (0-100)
+
+        최근 거래량이 20일 평균 대비 얼마나 높은지
+        높을수록 기관 매수 가능성
+        """
+        try:
+            hist = self.fetcher.get_history(ticker, period="3mo")
+            if hist.empty or len(hist) < lookback + 1:
+                return 50.0
+
+            vol_data = hist['Volume'].dropna()
+            if len(vol_data) < lookback + 1:
+                return 50.0
+
+            rolling_mean = vol_data.rolling(lookback).mean()
+            rolling_std = vol_data.rolling(lookback).std()
+
+            current_vol = vol_data.iloc[-1]
+            mean_vol = rolling_mean.iloc[-1]
+            std_vol = rolling_std.iloc[-1]
+
+            if std_vol == 0 or pd.isna(std_vol):
+                return 50.0
+
+            # Z-score를 0-100으로 정규화
+            z_score = (current_vol - mean_vol) / std_vol
+            # z=-3 → 0점, z=0 → 50점, z=3 → 100점
+            normalized = min(100.0, max(0.0, (z_score + 3) / 6 * 100))
+            return round(normalized, 1)
+        except Exception:
+            return 50.0
+
+    def _get_momentum_score(self, ticker: str) -> float:
+        """표준 크로스섹션 모멘텀 (Jegadeesh & Titman)
+
+        12개월 수익률에서 최근 1개월 제외 (12-1 momentum)
+        """
+        try:
+            hist = self.fetcher.get_history(ticker, period="1y")
+            if hist.empty:
+                return 50.0
+
+            close = hist['Close'].dropna()
+            if len(close) < 252:
+                return 50.0
+
+            # 각 기간 수익률
+            ret_1m = (close.iloc[-1] / close.iloc[-21] - 1) * 100
+            ret_3m = (close.iloc[-1] / close.iloc[-63] - 1) * 100
+            ret_6m = (close.iloc[-1] / close.iloc[-126] - 1) * 100
+
+            # 12-1 모멘텀 (skipping most recent month)
+            ret_12_1 = (close.iloc[-21] / close.iloc[-252] - 1) * 100
+
+            # 가중 합산 (최근 = 낮은 가중치)
+            momentum = (ret_12_1 * 0.4 + ret_6m * 0.3 + ret_3m * 0.2 + ret_1m * 0.1)
+
+            # 0-100 정규화 (momentum -50% → 0점, 0% → 50점, +50% → 100점)
+            normalized = min(100.0, max(0.0, (momentum + 50) / 100 * 100))
+            return round(normalized, 1)
+        except Exception:
+            return 50.0
+
+    def _get_quality_score(self, ticker_info: dict) -> float:
+        """간소화된 퀄리티 점수 (0-100)
+
+        Piotroski F-Score 기반 지표들 중 yfinance로 획득 가능한 것들:
+        1. ROE > 0 (수익성)
+        2. FCF > 0 (현금흐름)
+        3. 부채비율 개선 (D/E 비율)
+        4. 유동비율 > 1 (단기 안정성)
+        5. 순이익 증가율 > 0
+        """
+        try:
+            score = 0.0
+            max_score = 5.0
+
+            # ROE > 0
+            roe = ticker_info.get('returnOnEquity', None)
+            if roe is not None and roe > 0:
+                score += 1
+
+            # FCF > 0 (freeCashflow)
+            fcf = ticker_info.get('freeCashflow', None)
+            if fcf is not None and fcf > 0:
+                score += 1
+
+            # D/E 비율 < 1 (보수적 기준)
+            de_ratio = ticker_info.get('debtToEquity', None)
+            if de_ratio is not None and de_ratio < 100:  # yfinance는 %, 100% = 1.0
+                score += 1
+
+            # 유동비율 > 1
+            current_ratio = ticker_info.get('currentRatio', None)
+            if current_ratio is not None and current_ratio > 1.0:
+                score += 1
+
+            # 순이익 마진 > 5%
+            profit_margin = ticker_info.get('profitMargins', None)
+            if profit_margin is not None and profit_margin > 0.05:
+                score += 1
+
+            return (score / max_score) * 100
+        except Exception:
+            return 50.0  # 데이터 없으면 중립
 
     @staticmethod
     def _default_technical() -> dict:
@@ -349,6 +477,11 @@ class EnhancedSmartMoneyScreener:
 
         score = max(0, min(100, score))
 
+        # Quality score (Piotroski 간소화) 20% 반영
+        quality_score = self._get_quality_score(info)
+        score = int(score * 0.8 + quality_score * 0.2)
+        score = max(0, min(100, score))
+
         return {
             "pe_trailing": round(pe, 2),
             "pe_forward": round(pe_fwd, 2),
@@ -400,12 +533,20 @@ class EnhancedSmartMoneyScreener:
         # RS를 0~100 스케일로 보정 (-20% ~ +20% → 0 ~ 100)
         rs_score = max(0, min(100, 50 + rs_raw * 2.5))
 
-        # volume_df에서 sd_score
+        # volume_df에서 sd_score (없거나 NaN이면 직접 계산)
         sd_score = 50
         if self.volume_df is not None and "ticker" in self.volume_df.columns:
             row = self.volume_df[self.volume_df["ticker"] == ticker]
             if not row.empty and "sd_score" in row.columns:
-                sd_score = float(row.iloc[0]["sd_score"])
+                val = row.iloc[0]["sd_score"]
+                if not pd.isna(val):
+                    sd_score = float(val)
+                else:
+                    sd_score = self._calculate_volume_sd_score(ticker)
+            else:
+                sd_score = self._calculate_volume_sd_score(ticker)
+        else:
+            sd_score = self._calculate_volume_sd_score(ticker)
 
         # holdings_df에서 13f_score
         f13_score = 50

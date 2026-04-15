@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -36,34 +35,37 @@ class FinalReportGenerator:
             logger.warning("AI 요약 파일 없음 — 퀀트 점수만 사용")
 
     @staticmethod
-    def extract_ai_recommendation(summary: dict) -> tuple[float, str]:
-        text = json.dumps(summary, ensure_ascii=False).lower()
-        ai_score = 0
-        recommendation = "HOLD"
+    def extract_ai_recommendation(summary: dict) -> tuple[str, int]:
+        """AI 응답의 recommendation 필드를 직접 파싱."""
+        if not summary or not isinstance(summary, dict):
+            return "HOLD", 5
 
-        # 키워드 매칭
-        if "적극 매수" in text or "strong buy" in text:
-            ai_score += 20
-            recommendation = "적극 매수"
-        elif "매수" in text and "조정" in text:
-            ai_score += 15
-            recommendation = "조정 시 매수"
-        elif "매수" in text or "buy" in text:
-            ai_score += 10
-            recommendation = "매수"
+        rec = summary.get("recommendation", "").upper().strip()
+        confidence = min(max(int(summary.get("confidence", 50)), 0), 100)
 
-        if "과매수" in text or "overbought" in text:
-            ai_score -= 5
-        if "조정 가능성" in text:
-            ai_score -= 3
-        if "상승 추세" in text or "bullish" in text:
-            ai_score += 5
-        if "긍정적" in text:
-            ai_score += 3
-        if "성장" in text:
-            ai_score += 3
+        # 표준화된 recommendation 값 매핑 (긴 키를 먼저 매칭)
+        rec_map = [
+            ("STRONG_BUY", "STRONG_BUY", 20),
+            ("STRONG BUY", "STRONG_BUY", 20),
+            ("STRONG_SELL", "STRONG_SELL", 0),
+            ("STRONG SELL", "STRONG_SELL", 0),
+            ("적극매수", "STRONG_BUY", 20),
+            ("적극 매수", "STRONG_BUY", 20),
+            ("BUY", "BUY", 15),
+            ("HOLD", "HOLD", 5),
+            ("SELL", "SELL", 0),
+            ("매수", "BUY", 15),
+            ("중립", "HOLD", 5),
+            ("매도", "SELL", 0),
+        ]
 
-        return ai_score, recommendation
+        for key, rec_type, base_score in rec_map:
+            if key in rec:
+                # confidence를 반영한 보너스 점수 (최대 5점 추가)
+                bonus = min(5, int(confidence / 20))
+                return rec_type, base_score + bonus
+
+        return "HOLD", 5
 
     def calculate_final_score(self, row: pd.Series, ai_summaries: dict) -> dict:
         ticker_col = "종목" if "종목" in row.index else "ticker"
@@ -78,7 +80,7 @@ class FinalReportGenerator:
         has_ai = ticker in ai_summaries
 
         if has_ai:
-            ai_score, ai_recommendation = self.extract_ai_recommendation(ai_summaries[ticker])
+            ai_recommendation, ai_score = self.extract_ai_recommendation(ai_summaries[ticker])
 
         ai_contribution = min(max(0, ai_score), 10) * 0.5
         final_score = quant_score * 0.9 + ai_contribution

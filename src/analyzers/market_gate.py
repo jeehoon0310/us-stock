@@ -76,18 +76,19 @@ def calculate_macd_signal(series: pd.Series) -> str:
     prev_diff = macd_line.iloc[-2] - signal_line.iloc[-2]
     curr_diff = macd_line.iloc[-1] - signal_line.iloc[-1]
 
-    # 히스토그램 축소 감지
-    curr_hist = abs(histogram.iloc[-1])
-    prev_hist = abs(histogram.iloc[-2])
-    if prev_hist > 0 and curr_hist < prev_hist * 0.5:
-        return "NEUTRAL"
-
+    # 크로스오버 체크 (히스토그램 체크보다 먼저 — 크로스오버가 우선순위 높음)
     # MACD가 시그널 위로 올라옴
     if prev_diff <= 0 and curr_diff > 0:
         return "BULLISH"
     # MACD가 시그널 아래로 내려감
     if prev_diff >= 0 and curr_diff < 0:
         return "BEARISH"
+
+    # 히스토그램 축소 감지 (크로스오버 없는 경우에만 적용)
+    curr_hist = abs(histogram.iloc[-1])
+    prev_hist = abs(histogram.iloc[-2])
+    if prev_hist > 0 and curr_hist < prev_hist * 0.5:
+        return "NEUTRAL"
 
     # 현재 위치 기준
     if curr_diff > 0:
@@ -109,35 +110,37 @@ def calculate_volume_ratio(volume: pd.Series, period: int = 20) -> float:
     return round(float(volume.iloc[-1] / avg), 2)
 
 
-def detect_volume_price_divergence(close: pd.Series, volume: pd.Series, lookback: int = 10) -> str:
-    min_len = max(lookback, 20)
-    if close is None or volume is None or len(close) < min_len or len(volume) < min_len:
-        return "none"
+def detect_volume_price_divergence(df: pd.DataFrame) -> str:
+    """거래량-가격 다이버전스 감지
 
-    price_change = (close.iloc[-1] / close.iloc[-1 - lookback]) - 1
-    vol_change = (volume.iloc[-lookback:].mean() / volume.iloc[-2 * lookback:-lookback].mean()) - 1
+    bearish divergence: 가격↑ + 거래량↓ (상승 신뢰도 낮음)
+    bullish divergence: 가격↓ + 거래량↓ (하락 확신 약함 = 반등 가능)
+    volume_surge: 가격↑ + 거래량↑ (강한 상승)
+    volume_decline_bear: 가격↓ + 거래량↑ (강한 매도 압력)
+    """
+    if len(df) < 5:
+        return "insufficient_data"
 
-    vol_avg20 = volume.rolling(20).mean().iloc[-1]
-    recent_2d_vol = volume.iloc[-2:].mean()
+    try:
+        recent = df.tail(5)
+        price_change = (recent['Close'].iloc[-1] - recent['Close'].iloc[0]) / recent['Close'].iloc[0]
 
-    # 1. Climax 감지 (우선)
-    if recent_2d_vol >= vol_avg20 * 2:
-        if price_change < 0:
-            return "bullish_climax"
-        if price_change > 0:
-            return "bearish_climax"
+        avg_vol = df['Volume'].tail(20).mean() if len(df) >= 20 else df['Volume'].mean()
+        recent_vol = recent['Volume'].mean()
+        vol_ratio = (recent_vol - avg_vol) / avg_vol if avg_vol > 0 else 0
 
-    # 2. 일반 다이버전스
-    if price_change > 0 and vol_change < -0.12:
-        return "bearish_div"
-
-    if price_change < 0 and vol_change > 0.15:
-        return "bearish_div"
-
-    if price_change < 0 and vol_change < -0.12:
-        return "bullish_div"
-
-    return "none"
+        if price_change > 0.02 and vol_ratio < -0.15:
+            return "bearish_div"     # 가격↑ + 거래량↓ = 상승 신뢰도 낮음
+        elif price_change < -0.02 and vol_ratio < -0.15:
+            return "bullish_div"     # 가격↓ + 거래량↓ = 하락 확신 약함 (반등 가능성)
+        elif price_change > 0.02 and vol_ratio > 0.20:
+            return "volume_surge"    # 가격↑ + 거래량↑ = 강한 상승
+        elif price_change < -0.02 and vol_ratio > 0.20:
+            return "volume_decline_bear"  # 가격↓ + 거래량↑ = 강한 매도
+        else:
+            return "normal"
+    except Exception:
+        return "unknown"
 
 
 def _fetch_history(ticker: str, period: str = "6mo", session=None) -> pd.DataFrame:
@@ -219,12 +222,20 @@ def run_market_gate(session=None) -> USMarketGateResult:
     bearish = sum(1 for s in sectors if s.signal == "BEARISH")
     reasons.append(f"강세 {bullish}개 / 약세 {bearish}개 섹터")
 
+    # SPY 거래량-가격 다이버전스 감지
+    divergence = detect_volume_price_divergence(spy_hist) if not spy_hist.empty else "insufficient_data"
+    divergence_warning = divergence in ["bearish_div", "volume_decline_bear"]
+    if divergence_warning:
+        reasons.append(f"SPY 다이버전스 경고: {divergence}")
+
     metrics = {
         "avg_score": avg_score,
         "bullish_sectors": bullish,
         "bearish_sectors": bearish,
         "top_sector": max(sectors, key=lambda s: s.score).name,
         "bottom_sector": min(sectors, key=lambda s: s.score).name,
+        "divergence": divergence,
+        "divergence_warning": divergence_warning,
     }
 
     return USMarketGateResult(gate=gate, score=avg_score, reasons=reasons,

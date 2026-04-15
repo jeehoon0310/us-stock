@@ -1,13 +1,132 @@
+import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import yfinance as yf
 from dotenv import load_dotenv
 
+try:
+    from analyzers.ai_response_parser import parse_ai_response, validate_ai_response
+except ImportError:
+    try:
+        from src.analyzers.ai_response_parser import parse_ai_response, validate_ai_response
+    except ImportError:
+        from .ai_response_parser import parse_ai_response, validate_ai_response
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+
+def _get_fallback_json(ticker: str = "", error_type: str = "unknown") -> dict:
+    """안전한 fallback 응답. 에러 메시지를 절대 노출하지 않는다."""
+    return {
+        "thesis": "AI 분석을 완료하지 못했습니다. 데이터를 확인해주세요.",
+        "catalysts": [],
+        "bear_cases": [],
+        "data_conflicts": [],
+        "key_metrics": {},
+        "recommendation": "HOLD",
+        "confidence": 0,
+    }
+
+
+def build_analysis_prompt(ticker: str, data: dict, news: list,
+                          macro_context: dict = None, lang: str = "ko") -> str:
+    """모든 AI 프로바이더가 공통으로 사용하는 프롬프트 빌더."""
+    if lang == "ko":
+        lang_instruction = "모든 분석 내용을 한국어로 작성하세요."
+    else:
+        lang_instruction = "Write all analysis in English."
+
+    # 매크로 컨텍스트
+    if macro_context:
+        regime = macro_context.get("regime", "N/A")
+        regime_score = macro_context.get("regime_score", 0)
+        vix = macro_context.get("vix", macro_context.get("vix_level", "N/A"))
+        yield_spread = macro_context.get("yield_spread", "N/A")
+        risk_warning = ""
+        if regime in ("risk_off", "crisis"):
+            risk_warning = "\n⚠️ 현재 RISK_OFF/CRISIS 환경: BUY 기준을 높이고, 하락 시나리오 비중을 강화하세요."
+
+        macro_section = f"""
+## 1. 매크로 환경
+- 시장 체제: {regime} (점수: {regime_score:.2f})
+- VIX: {vix}
+- 10Y 금리: {macro_context.get('dgs10', 'N/A')}%
+- 장단기 금리차 (10Y-2Y): {yield_spread}%
+- 수익률 곡선 스프레드 (10Y-13W): {macro_context.get('yield_spread_10y13w', yield_spread)}
+- 시장 Breadth: {macro_context.get('breadth', 'N/A')}
+- 크레딧 리스크: {macro_context.get('credit', 'N/A')}
+- Fear & Greed: {macro_context.get('fear_greed', 'N/A')}
+- 실질금리: {macro_context.get('real_rate', 'N/A')}%
+- 구리/금 신호: {macro_context.get('copper_gold', 'N/A')}
+- 적응형 손절: {macro_context.get('stop_loss', 'N/A')}{risk_warning}
+"""
+    else:
+        macro_section = "\n## 1. 매크로 환경\n매크로 데이터 미제공 (분석 참고)\n"
+
+    # 뉴스
+    news_text = ""
+    for n in news[:5]:
+        news_text += f"- [{n.get('published', '')}] {n.get('title', '')} ({n.get('source', '')})\n"
+
+    return f"""당신은 월가의 시니어 애널리스트입니다. 데이터 기반으로 엄격하게 분석하여 투자 요약을 JSON으로 작성하세요.
+{lang_instruction}
+{macro_section}
+## 2. 종목 정보
+- Ticker: {ticker}
+- 회사명: {data.get('company_name', ticker)}
+- 현재가: ${data.get('current_price', 'N/A')}
+- 등급: {data.get('grade', 'N/A')} ({data.get('grade_label', '')})
+- 종합 점수: {data.get('composite_score', 'N/A')}/100
+
+## 3. 수급/기술적 분석
+- 수급 점수 (SD): {data.get('sd_score', 'N/A')}
+- 기관 보유율: {data.get('inst_pct', 'N/A')}%
+- RSI: {data.get('rsi', 'N/A')}
+- MA Signal: {data.get('ma_signal', 'N/A')}
+- Cross Signal: {data.get('cross_signal', 'N/A')}
+
+## 4. 펀더멘털
+- P/E: {data.get('pe_trailing', 'N/A')}
+- 매출 성장률: {data.get('revenue_growth', 'N/A')}%
+- 목표가 대비: {data.get('upside_pct', 'N/A')}%
+- S&P 500 대비 20일 수익률: {data.get('rs_vs_spy', 'N/A')}%
+
+## 5. 최근 뉴스
+{news_text}
+
+## 응답 규칙
+1. Evidence: 모든 주장에 반드시 [출처, 날짜]를 명시하세요.
+2. Bear Cases: BUY 추천이라도 반드시 3개의 하락 리스크를 제시하세요.
+3. Data Conflicts: 기술적 vs 펀더멘털 vs 뉴스 간 충돌이 있으면 명시하세요.
+4. 반드시 아래 JSON 형식만 출력하세요. 다른 텍스트는 절대 포함하지 마세요.
+
+```json
+{{
+  "thesis": "2-3문장 핵심 투자 논거",
+  "catalysts": [
+    {{"point": "상승 촉매", "evidence": "[출처, 날짜]"}},
+    {{"point": "상승 촉매", "evidence": "[출처, 날짜]"}}
+  ],
+  "bear_cases": [
+    {{"point": "하락 리스크 1", "evidence": "[출처, 날짜]"}},
+    {{"point": "하락 리스크 2", "evidence": "[출처, 날짜]"}},
+    {{"point": "하락 리스크 3", "evidence": "[출처, 날짜]"}}
+  ],
+  "data_conflicts": ["기술적 vs 펀더멘털 충돌 내용"],
+  "key_metrics": {{
+    "pe": {data.get('pe_trailing', 0)},
+    "growth": {data.get('revenue_growth', 0)},
+    "rsi": {data.get('rsi', 50)},
+    "inst_pct": {data.get('inst_pct', 0)}
+  }},
+  "recommendation": "BUY / HOLD / SELL",
+  "confidence": 0
+}}
+```"""
 
 
 class APIUsageTracker:
@@ -104,6 +223,30 @@ class NewsCollector:
         }
         self.finnhub_key = finnhub_key or os.environ.get("FINNHUB_API_KEY")
 
+    def _is_recent(self, published_date, days: int = 7) -> bool:
+        """7일 이내 뉴스만 허용."""
+        if published_date is None:
+            return True  # 날짜 없으면 허용 (삭제보다 포함 우선)
+        try:
+            if isinstance(published_date, str):
+                if not published_date.strip():
+                    return True
+                from email.utils import parsedate_to_datetime as _parse_rfc
+                try:
+                    published_date = _parse_rfc(published_date)
+                except Exception:
+                    published_date = datetime.fromisoformat(
+                        published_date.replace("Z", "+00:00")
+                    )
+            if isinstance(published_date, (int, float)):
+                published_date = datetime.fromtimestamp(published_date, tz=timezone.utc)
+            if published_date.tzinfo is None:
+                published_date = published_date.replace(tzinfo=timezone.utc)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+            return published_date >= cutoff
+        except Exception:
+            return True  # 파싱 실패 시 허용
+
     def get_yahoo_news(self, ticker: str, limit: int = 3) -> list[dict]:
         try:
             stock = yf.Ticker(ticker)
@@ -127,6 +270,8 @@ class NewsCollector:
                     link = canonical.get("url", "")
                 elif isinstance(canonical, str):
                     link = canonical
+                if not self._is_recent(pub_date):
+                    continue
                 results.append({
                     "title": title,
                     "publisher": publisher,
@@ -169,6 +314,8 @@ class NewsCollector:
                     except (ValueError, TypeError):
                         pass
                 source_el = item.find("source")
+                if not self._is_recent(pub_date):
+                    continue
                 results.append({
                     "title": (item.find("title").text or "") if item.find("title") is not None else "",
                     "publisher": source_el.text if source_el is not None else "",
@@ -208,6 +355,8 @@ class NewsCollector:
                         pub_date = datetime.fromtimestamp(item["datetime"]).strftime("%Y-%m-%d")
                     except (ValueError, TypeError, OSError):
                         pass
+                if not self._is_recent(pub_date):
+                    continue
                 summary = item.get("summary", "")
                 if len(summary) > 200:
                     summary = summary[:200] + "..."
@@ -256,113 +405,19 @@ class GeminiSummaryGenerator:
         self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         logger.info("Gemini 초기화: %s", model)
 
-    def _build_prompt(self, ticker: str, data: dict, news: list, lang: str, macro_context: dict = None) -> str:
-        if lang == "ko":
-            lang_instruction = "모든 분석 내용을 한국어로 작성하세요."
-        else:
-            lang_instruction = "Write all analysis in English."
-
-        # 매크로 컨텍스트
-        macro_section = ""
-        if macro_context:
-            regime = macro_context.get("regime", "N/A")
-            risk_warning = ""
-            if regime in ("risk_off", "crisis"):
-                risk_warning = "\n⚠️ 현재 RISK_OFF/CRISIS 환경: BUY 기준을 높이고, 하락 시나리오 비중을 강화하세요."
-
-            macro_section = f"""
-## 1. 매크로 환경
-- 시장 체제: {regime}
-- VIX: {macro_context.get('vix', 'N/A')}
-- 10Y 금리: {macro_context.get('dgs10', 'N/A')}%
-- 장단기 금리차 (10Y-2Y): {macro_context.get('yield_spread', 'N/A')}%
-- 시장 Breadth: {macro_context.get('breadth', 'N/A')}
-- 크레딧 리스크: {macro_context.get('credit', 'N/A')}
-- Fear & Greed: {macro_context.get('fear_greed', 'N/A')}
-- 실질금리: {macro_context.get('real_rate', 'N/A')}%
-- 구리/금 신호: {macro_context.get('copper_gold', 'N/A')}{risk_warning}
-"""
-
-        # 뉴스
-        news_text = ""
-        for n in news[:5]:
-            news_text += f"- [{n.get('published', '')}] {n.get('title', '')} ({n.get('source', '')})\n"
-
-        return f"""당신은 월가의 시니어 애널리스트입니다. 데이터 기반으로 엄격하게 분석하여 투자 요약을 JSON으로 작성하세요.
-{lang_instruction}
-{macro_section}
-## 2. 종목 정보
-- Ticker: {ticker}
-- 회사명: {data.get('company_name', ticker)}
-- 현재가: ${data.get('current_price', 'N/A')}
-- 등급: {data.get('grade', 'N/A')} ({data.get('grade_label', '')})
-- 종합 점수: {data.get('composite_score', 'N/A')}/100
-
-## 3. 수급/기술적 분석
-- 수급 점수 (SD): {data.get('sd_score', 'N/A')}
-- 기관 보유율: {data.get('inst_pct', 'N/A')}%
-- RSI: {data.get('rsi', 'N/A')}
-- MA Signal: {data.get('ma_signal', 'N/A')}
-- Cross Signal: {data.get('cross_signal', 'N/A')}
-
-## 4. 펀더멘털
-- P/E: {data.get('pe_trailing', 'N/A')}
-- 매출 성장률: {data.get('revenue_growth', 'N/A')}%
-- 목표가 대비: {data.get('upside_pct', 'N/A')}%
-- S&P 500 대비 20일 수익률: {data.get('rs_vs_spy', 'N/A')}%
-
-## 5. 최근 뉴스
-{news_text}
-
-## 응답 규칙
-1. Evidence: 모든 주장에 반드시 [출처, 날짜]를 명시하세요.
-2. Bear Cases: BUY 추천이라도 반드시 3개의 하락 리스크를 제시하세요.
-3. Data Conflicts: 기술적 vs 펀더멘털 vs 뉴스 간 충돌이 있으면 명시하세요.
-4. 반드시 아래 JSON 형식만 출력하세요. 다른 텍스트는 절대 포함하지 마세요.
-
-```json
-{{
-  "thesis": "2-3문장 핵심 투자 논거",
-  "catalysts": [
-    {{"point": "상승 촉매", "evidence": "[출처, 날짜]"}},
-    {{"point": "상승 촉매", "evidence": "[출처, 날짜]"}}
-  ],
-  "bear_cases": [
-    {{"point": "하락 리스크 1", "evidence": "[출처, 날짜]"}},
-    {{"point": "하락 리스크 2", "evidence": "[출처, 날짜]"}},
-    {{"point": "하락 리스크 3", "evidence": "[출처, 날짜]"}}
-  ],
-  "data_conflicts": ["기술적 vs 펀더멘털 충돌 내용"],
-  "key_metrics": {{
-    "pe": {data.get('pe_trailing', 0)},
-    "growth": {data.get('revenue_growth', 0)},
-    "rsi": {data.get('rsi', 50)},
-    "inst_pct": {data.get('inst_pct', 0)}
-  }},
-  "recommendation": "BUY / HOLD / SELL",
-  "confidence": 0
-}}
-```"""
-
-    def _get_fallback_json(self, ticker: str, reason: str) -> str:
-        import json
-        return json.dumps({
-            "thesis": f"{ticker} 분석 실패: {reason}",
-            "catalysts": [],
-            "bear_cases": [],
-            "recommendation": "HOLD",
-            "confidence": 0,
-        }, ensure_ascii=False)
-
     def generate_summary(self, ticker: str, data: dict, news: list,
                          lang: str = "ko", macro_context: dict = None) -> str:
         import requests
 
-        prompt = self._build_prompt(ticker, data, news, lang, macro_context)
+        prompt = build_analysis_prompt(ticker, data, news, macro_context, lang)
 
         try:
             resp = requests.post(
-                f"{self.base_url}?key={self.api_key}",
+                self.base_url,
+                headers={
+                    "x-goog-api-key": self.api_key,
+                    "Content-Type": "application/json",
+                },
                 json={
                     "contents": [{"role": "user", "parts": [{"text": prompt}]}],
                     "generationConfig": {
@@ -370,7 +425,7 @@ class GeminiSummaryGenerator:
                         "maxOutputTokens": 4000,
                     },
                 },
-                timeout=120,
+                timeout=60,
             )
             resp.raise_for_status()
             result = resp.json()
@@ -386,23 +441,26 @@ class GeminiSummaryGenerator:
             candidates = result.get("candidates", [])
             if not candidates:
                 logger.warning("%s Gemini 응답 없음 (safety filter?)", ticker)
-                return self._get_fallback_json(ticker, "Safety filter or empty response")
+                return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
             parts = candidates[0].get("content", {}).get("parts", [])
             text_parts = [p["text"] for p in parts if "text" in p and not p.get("thought")]
             text = "\n".join(text_parts).strip()
 
-            # JSON 블록 추출
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0].strip()
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0].strip()
+            # parse_ai_response로 JSON 추출 및 검증
+            parsed = parse_ai_response(text)
+            if parsed:
+                valid, reasons = validate_ai_response(parsed)
+                if not valid:
+                    logger.warning("%s Gemini 응답 검증 실패: %s", ticker, reasons)
+                return json.dumps(parsed, ensure_ascii=False)
 
-            return text
+            logger.warning("%s Gemini JSON 파싱 실패", ticker)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
         except Exception as e:
-            logger.warning("%s Gemini 요청 실패: %s", ticker, e)
-            return self._get_fallback_json(ticker, str(e))
+            logger.warning("%s Gemini 요청 실패: %s", ticker, type(e).__name__)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
 
 class OpenAISummaryGenerator:
@@ -414,25 +472,11 @@ class OpenAISummaryGenerator:
         self.model = "gpt-5-mini"
         logger.info("OpenAI 초기화: %s", self.model)
 
-    @staticmethod
-    def _get_fallback_json(ticker: str, reason: str) -> str:
-        import json
-        return json.dumps({
-            "thesis": f"{ticker} 분석 실패: {reason}",
-            "catalysts": [],
-            "bear_cases": [],
-            "recommendation": "HOLD",
-            "confidence": 0,
-        }, ensure_ascii=False)
-
     def generate_summary(self, ticker: str, data: dict, news: list,
                          lang: str = "ko", macro_context: dict = None) -> str:
         import requests
 
-        # Gemini의 _build_prompt 재사용
-        gemini_gen = GeminiSummaryGenerator.__new__(GeminiSummaryGenerator)
-        gemini_gen.api_key = ""
-        prompt = gemini_gen._build_prompt(ticker, data, news, lang, macro_context)
+        prompt = build_analysis_prompt(ticker, data, news, macro_context, lang)
 
         try:
             resp = requests.post(
@@ -450,7 +494,7 @@ class OpenAISummaryGenerator:
                     "reasoning": {"effort": "medium"},
                     "max_completion_tokens": 8000,
                 },
-                timeout=120,
+                timeout=90,
             )
             resp.raise_for_status()
             result = resp.json()
@@ -465,17 +509,20 @@ class OpenAISummaryGenerator:
 
             text = result["choices"][0]["message"]["content"].strip()
 
-            # JSON 블록 추출
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0].strip()
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0].strip()
+            # parse_ai_response로 JSON 추출 및 검증
+            parsed = parse_ai_response(text)
+            if parsed:
+                valid, reasons = validate_ai_response(parsed)
+                if not valid:
+                    logger.warning("%s OpenAI 응답 검증 실패: %s", ticker, reasons)
+                return json.dumps(parsed, ensure_ascii=False)
 
-            return text
+            logger.warning("%s OpenAI JSON 파싱 실패", ticker)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
         except Exception as e:
-            logger.warning("%s OpenAI 요청 실패: %s", ticker, e)
-            return self._get_fallback_json(ticker, str(e))
+            logger.warning("%s OpenAI 요청 실패: %s", ticker, type(e).__name__)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
 
 class PerplexitySummaryGenerator:
@@ -487,22 +534,11 @@ class PerplexitySummaryGenerator:
         self.model = "sonar"
         logger.info("Perplexity 초기화: %s", self.model)
 
-    @staticmethod
-    def _get_fallback_json(ticker: str, reason: str) -> str:
-        import json
-        return json.dumps({
-            "thesis": f"{ticker} 분석 실패: {reason}",
-            "catalysts": [], "bear_cases": [],
-            "recommendation": "HOLD", "confidence": 0,
-        }, ensure_ascii=False)
-
     def generate_summary(self, ticker: str, data: dict, news: list,
                          lang: str = "ko", macro_context: dict = None) -> str:
         import requests
 
-        gemini_gen = GeminiSummaryGenerator.__new__(GeminiSummaryGenerator)
-        gemini_gen.api_key = ""
-        prompt = gemini_gen._build_prompt(ticker, data, news, lang, macro_context)
+        prompt = build_analysis_prompt(ticker, data, news, macro_context, lang)
 
         try:
             resp = requests.post(
@@ -520,7 +556,7 @@ class PerplexitySummaryGenerator:
                     "temperature": 0.3,
                     "max_tokens": 4000,
                 },
-                timeout=120,
+                timeout=90,
             )
             resp.raise_for_status()
             result = resp.json()
@@ -535,15 +571,20 @@ class PerplexitySummaryGenerator:
 
             text = result["choices"][0]["message"]["content"].strip()
 
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0].strip()
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0].strip()
+            # parse_ai_response로 JSON 추출 및 검증
+            parsed = parse_ai_response(text)
+            if parsed:
+                valid, reasons = validate_ai_response(parsed)
+                if not valid:
+                    logger.warning("%s Perplexity 응답 검증 실패: %s", ticker, reasons)
+                return json.dumps(parsed, ensure_ascii=False)
 
-            return text
+            logger.warning("%s Perplexity JSON 파싱 실패", ticker)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
+
         except Exception as e:
-            logger.warning("%s Perplexity 요청 실패: %s", ticker, e)
-            return self._get_fallback_json(ticker, str(e))
+            logger.warning("%s Perplexity 요청 실패: %s", ticker, type(e).__name__)
+            return json.dumps(_get_fallback_json(ticker), ensure_ascii=False)
 
 
 def get_ai_provider(provider: str = "gemini"):
@@ -557,9 +598,44 @@ def get_ai_provider(provider: str = "gemini"):
     return providers[provider]()
 
 
+def get_ai_summary(ticker: str, data: dict, news: list,
+                   macro_context: dict = None, lang: str = "ko",
+                   preferred_provider: str = "gemini") -> dict:
+    """3-tier fallback: gemini -> openai -> perplexity"""
+    providers = ["gemini", "openai", "perplexity"]
+    # preferred를 첫번째로
+    if preferred_provider in providers:
+        providers.remove(preferred_provider)
+        providers.insert(0, preferred_provider)
+
+    last_error = None
+    fallback = _get_fallback_json(ticker)
+    for provider_name in providers:
+        try:
+            provider = get_ai_provider(provider_name)
+            raw = provider.generate_summary(ticker, data, news,
+                                            lang=lang, macro_context=macro_context)
+            result = json.loads(raw) if isinstance(raw, str) else raw
+            # 유효한 결과인지 확인
+            if (result
+                    and result.get("thesis")
+                    and result["thesis"] != fallback["thesis"]):
+                logging.info("[%s] AI 분석 성공: %s", ticker, provider_name)
+                return result
+            logging.warning("[%s] %s 빈 결과, 다음 provider 시도", ticker, provider_name)
+        except Exception as e:
+            last_error = e
+            logging.warning("[%s] %s 실패: %s, 다음 provider 시도",
+                            ticker, provider_name, type(e).__name__)
+            continue
+
+    logging.error("[%s] 모든 provider 실패. last_error: %s",
+                  ticker, type(last_error).__name__ if last_error else "unknown")
+    return fallback
+
+
 if __name__ == "__main__":
     import argparse
-    import json
     import sys
     from pathlib import Path
 

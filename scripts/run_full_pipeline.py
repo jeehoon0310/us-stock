@@ -1,14 +1,28 @@
 """US Stock Market — 전체 파이프라인 (데이터 수집 → 체제 감지 → 스크리닝 → AI 분석 → 최종 리포트)"""
+import argparse
+import json
 import logging
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+from pipeline.config import PipelineConfig
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="US Stock Full Pipeline")
+    parser.add_argument("--steps", type=str, default=None,
+                        help="실행할 단계 (예: --steps 4,5,6). 미지정 시 전체 실행")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="실제 실행 없이 단계 목록만 출력")
+    return parser.parse_args()
 
 
 def timed(name):
@@ -26,16 +40,23 @@ def timed(name):
             except Exception as e:
                 elapsed = time.time() - t0
                 logger.error("[%s] 실패 (%.1f초): %s", name, elapsed, e)
-                return None
+                raise
         return wrapper
     return decorator
 
 
+def _check_step(name, result):
+    if result is None:
+        logger.error("Step '%s' 실패 — 파이프라인 중단", name)
+        sys.exit(1)
+    return result
+
+
 @timed("1. 데이터 수집")
-def step_data_collection():
+def step_data_collection(cfg: PipelineConfig):
     from pipeline.us_data_pipeline import USDataPipeline
     pipeline = USDataPipeline()
-    return pipeline.run_full_collection(top_n=10, period="1y", output_dir="data")
+    return pipeline.run_full_collection(top_n=cfg.top_n, period=cfg.period, output_dir=cfg.data_dir)
 
 
 @timed("2. 시장 체제 감지")
@@ -88,8 +109,8 @@ def step_screening():
 
 
 @timed("5. AI 분석")
-def step_ai_analysis(top_n=10):
-    import json
+def step_ai_analysis(cfg: PipelineConfig):
+    import re
     import pandas as pd
     from analyzers.ai_summary_generator import NewsCollector, get_ai_provider
 
@@ -100,27 +121,45 @@ def step_ai_analysis(top_n=10):
 
     df = pd.read_csv(csv_path)
     col = "종목" if "종목" in df.columns else "ticker"
-    tickers = df[col].head(top_n).tolist()
+    tickers = df[col].head(cfg.ai_top_n).tolist()
 
     collector = NewsCollector()
-    ai = get_ai_provider("gemini")
-    results = {}
+    ai = get_ai_provider(cfg.ai_provider)
 
-    for i, ticker in enumerate(tickers):
-        news = collector.get_news_for_ticker(ticker)
-        row = df[df[col] == ticker]
-        data = row.iloc[0].to_dict() if not row.empty else {}
-        summary = ai.generate_summary(ticker, data, news)
+    # output/regime_config.json 로드
+    regime_json_path = Path("output/regime_config.json")
+    macro_context = None
+    if regime_json_path.exists():
         try:
-            results[ticker] = json.loads(summary)
+            with open(regime_json_path, encoding="utf-8") as f:
+                macro_context = json.load(f)
+        except Exception as e:
+            logger.warning("regime_config.json 로드 실패: %s", e)
+
+    def analyze_ticker(ticker_data):
+        ticker, row_data = ticker_data
+        news = collector.get_news_for_ticker(ticker)
+        summary_str = ai.generate_summary(ticker, row_data, news, macro_context=macro_context)
+        try:
+            return ticker, json.loads(summary_str)
         except json.JSONDecodeError:
-            # 부분 JSON에서 recommendation 추출 시도
-            import re
-            m = re.search(r'"recommendation"\s*:\s*"([^"]+)"', summary)
+            m = re.search(r'"recommendation"\s*:\s*"([^"]+)"', summary_str)
             rec = m.group(1) if m else "N/A(parse-fail)"
-            results[ticker] = {"raw": summary, "recommendation": rec}
-        logger.info("  [%d/%d] %s: %s", i + 1, len(tickers), ticker,
-                     results[ticker].get("recommendation", "N/A"))
+            return ticker, {"raw": summary_str, "recommendation": rec}
+
+    ticker_data_list = [
+        (t, df[df[col] == t].iloc[0].to_dict() if not df[df[col] == t].empty else {})
+        for t in tickers
+    ]
+
+    results = {}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(analyze_ticker, td): td[0] for td in ticker_data_list}
+        for i, future in enumerate(as_completed(futures)):
+            ticker, result = future.result()
+            results[ticker] = result
+            logger.info("  [%d/%d] %s: %s", i + 1, len(tickers), ticker,
+                        result.get("recommendation", "N/A"))
 
     out_path = Path("output/ai_summaries.json")
     with open(out_path, "w", encoding="utf-8") as f:
@@ -136,11 +175,11 @@ def step_final_report():
 
 
 @timed("7. GBM 예측 (ML)")
-def step_gbm_inference():
-    """LightGBM 기반 cross-sectional Top 20 예측 (ml-team 산출물)."""
+def step_gbm_inference(cfg: PipelineConfig):
+    """LightGBM 기반 cross-sectional Top 예측 (ml-team 산출물)."""
     try:
         from ml.pipeline.predict import predict_top_candidates
-        return predict_top_candidates(top_n=20)
+        return predict_top_candidates(top_n=cfg.ml_top_n)
     except Exception as e:
         logger.warning("GBM 예측 실패 (모델 미학습 가능): %s", e)
         return None
@@ -162,6 +201,20 @@ def step_index_prediction():
 
 
 def main():
+    args = parse_args()
+
+    # PipelineConfig 구성
+    steps_list = None
+    if args.steps:
+        steps_list = [int(s.strip()) for s in args.steps.split(",")]
+    cfg = PipelineConfig(steps=steps_list, dry_run=args.dry_run)
+
+    if cfg.dry_run:
+        all_steps = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        run_steps = [s for s in all_steps if cfg.should_run_step(s)]
+        print(f"[dry-run] 실행 예정 단계: {run_steps}")
+        return
+
     start = datetime.now()
     print()
     print("=" * 65)
@@ -170,31 +223,50 @@ def main():
     print("=" * 65)
 
     # 1. 데이터 수집
-    step_data_collection()
+    if cfg.should_run_step(1):
+        _check_step("1. 데이터 수집", step_data_collection(cfg))
 
     # 2. 시장 체제
-    regime = step_regime_detection()
+    regime = None
+    if cfg.should_run_step(2):
+        regime = _check_step("2. 시장 체제 감지", step_regime_detection())
 
     # 3. 시장 게이트
-    gate = step_market_gate()
+    gate = None
+    if cfg.should_run_step(3):
+        gate = _check_step("3. 시장 게이트", step_market_gate())
 
     # 4. 스크리닝
-    screening = step_screening()
+    screening = None
+    if cfg.should_run_step(4):
+        screening = _check_step("4. 스마트머니 스크리닝", step_screening())
 
     # 5. AI 분석
-    ai_results = step_ai_analysis(top_n=10)
+    ai_results = None
+    if cfg.should_run_step(5):
+        ai_results = _check_step("5. AI 분석", step_ai_analysis(cfg))
 
     # 6. 최종 리포트
-    top10 = step_final_report()
+    top10 = None
+    if cfg.should_run_step(6):
+        top10 = _check_step("6. 최종 리포트", step_final_report())
 
-    # 7. GBM 예측 (ML)
-    gbm_top20 = step_gbm_inference()
+    # 7. GBM 예측 (ML) — 실패해도 계속 진행
+    gbm_top20 = None
+    if cfg.should_run_step(7):
+        gbm_top20 = step_gbm_inference(cfg)
 
-    # 8. 지수 방향 예측 (SPY/QQQ)
-    idx_pred = step_index_prediction()
+    # 8. 지수 방향 예측 (SPY/QQQ) — 실패해도 계속 진행
+    idx_pred = None
+    if cfg.should_run_step(8):
+        idx_pred = step_index_prediction()
 
-    # 9. 대시보드 JSON 내보내기 (sector gate, gbm rankings, company_name 보강)
-    step_export_dashboard(gate=gate, gbm_df=gbm_top20)
+    # 9. 대시보드 JSON 내보내기 — 실패해도 계속 진행
+    if cfg.should_run_step(9):
+        try:
+            step_export_dashboard(gate=gate, gbm_df=gbm_top20)
+        except Exception as e:
+            logger.warning("대시보드 내보내기 실패 (계속 진행): %s", e)
 
     # 종합 요약
     elapsed = (datetime.now() - start).total_seconds()

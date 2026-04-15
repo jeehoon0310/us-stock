@@ -4,6 +4,7 @@ import { C, regimeBadgeCls, regimeBadgeStyle, SIGNAL_NAMES, SIGNAL_WEIGHTS, regi
 import { HelpBtn } from "@/components/HelpBtn";
 import Link from "next/link";
 import { CalendarPicker } from "@/components/CalendarPicker";
+import SectorHeatmap from "@/components/SectorHeatmap";
 
 type SectorItem = {
   name: string;
@@ -420,6 +421,13 @@ export default function RegimePage() {
           20% + RS vs SPY 20%
         </p>
       </div>
+
+      {/* Sector Heatmap */}
+      {sectors.length > 0 && (
+        <div className="bg-surface-container-low rounded-xl p-6 mt-6">
+          <SectorHeatmap sectors={sectors} />
+        </div>
+      )}
     </div>
   );
 }

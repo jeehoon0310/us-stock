@@ -50,7 +50,7 @@ class MacroDataCollector:
                 "api_key": self.api_key,
                 "file_type": "json",
                 "observation_start": start_date,
-            })
+            }, timeout=30)
             resp.raise_for_status()
             data = resp.json()["observations"]
             df = pd.DataFrame(data)[["date", "value"]].copy()

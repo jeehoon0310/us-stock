@@ -124,6 +124,11 @@ class USDataPipeline:
         self._output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
+        # incremental update: 오늘 데이터가 이미 있으면 신선도 확인 후 건너뜀
+        if not self.is_data_stale(output_dir):
+            logger.info("데이터 신선함 — 가격 수집 건너뜀 (incremental mode)")
+            return {"skipped": True, "reason": "data_fresh"}
+
         start = time.time()
         summary = {}
 

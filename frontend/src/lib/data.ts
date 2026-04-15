@@ -1,13 +1,11 @@
-// Build-time JSON imports. Next.js statically analyzes and bakes these into the bundle.
-import regimeConfigRaw from "../../public/data/regime_config.json";
-import regimeResultRaw from "../../public/data/regime_result.json";
-import marketGateRaw from "../../public/data/market_gate.json";
-import finalTop10Raw from "../../public/data/final_top10_report.json";
-import aiSummariesRaw from "../../public/data/ai_summaries.json";
-import gbmPredictionsRaw from "../../public/data/gbm_predictions.json";
-import indexPredictionRaw from "../../public/data/index_prediction.json";
-import predictionHistoryRaw from "../../public/data/prediction_history.json";
-import latestReportRaw from "../../public/data/latest_report.json";
+// CSR fetch helpers — no build-time bundle inclusion.
+// All data is fetched at runtime so Synology static serving always returns fresh JSON.
+
+export async function fetchReportData(filename: string): Promise<unknown> {
+  const res = await fetch(`/data/${filename}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to fetch ${filename}: ${res.status}`);
+  return res.json();
+}
 
 export type Regime = "risk_on" | "neutral" | "risk_off" | "crisis";
 export type SignalState = "risk_on" | "neutral" | "risk_off";
@@ -194,17 +192,6 @@ export interface LatestReport {
   summary?: DailyReportSummary;
 }
 
-export const data = {
-  regime: regimeConfigRaw as unknown as RegimeConfig,
-  regimeResult: regimeResultRaw as unknown as Record<string, unknown>,
-  marketGate: marketGateRaw as unknown as MarketGate,
-  top10: finalTop10Raw as unknown as Top10Report,
-  aiSummaries: aiSummariesRaw as unknown as AISummaries,
-  gbmPredictions: gbmPredictionsRaw as unknown as GbmPredictions,
-  indexPrediction: indexPredictionRaw as unknown as IndexPrediction,
-  predictionHistory: predictionHistoryRaw as unknown as PredictionHistoryEntry[],
-  latestReport: latestReportRaw as unknown as LatestReport,
-};
 
 // Helper to format generated_at as KST-friendly string
 export function formatTimestamp(ts: string | undefined): string {
