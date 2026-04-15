@@ -64,7 +64,7 @@ export default function CostsPage() {
       <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">payments</span>
-          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
             Report Date
           </span>
         </div>

@@ -96,14 +96,14 @@ export function DashboardClient({ initial, regime }: Props) {
       {/* Hero */}
       <div className="bg-surface-container-low p-5 md:p-8 rounded-xl mb-6 relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2 flex flex-wrap items-center gap-2 md:gap-3">
+          <h2 className="text-[clamp(1rem,4.5vw,2.5rem)] font-bold tracking-tight text-on-surface mb-2 flex flex-wrap items-center gap-2 md:gap-3">
             US Stock Market Intelligence <HelpBtn topic="verdict" />
           </h2>
           <div className="flex items-center gap-3">
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
               LIVE
             </span>
-            <p className="text-sm text-on-surface-variant">
+            <p className="text-xs sm:text-sm text-on-surface-variant">
               Real-time regime detection · Smart money screening · AI analysis
             </p>
           </div>
@@ -119,7 +119,7 @@ export function DashboardClient({ initial, regime }: Props) {
       <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
-          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
             Report Date
           </span>
         </div>
