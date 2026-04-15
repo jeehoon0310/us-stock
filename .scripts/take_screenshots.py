@@ -31,6 +31,18 @@ PAGES = [
 ]
 
 
+def wait_for_page(page, url: str, timeout: int = 45000):
+    """페이지 이동 후 컴파일 + 데이터 로딩 완료까지 대기"""
+    page.goto(url, wait_until="load", timeout=timeout)
+    # networkidle 시도: HMR WebSocket은 항상 열려있어 타임아웃됨
+    # 하지만 그 시간 동안 on-demand 컴파일 + 데이터 fetch 완료
+    try:
+        page.wait_for_load_state("networkidle", timeout=12000)
+    except Exception:
+        pass
+    time.sleep(2)
+
+
 def take_screenshots():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -42,15 +54,21 @@ def take_screenshots():
         )
         page = context.new_page()
 
+        # ── 1차 패스: on-demand 컴파일 트리거 ──────────────────────────
+        print("  [준비] 페이지 컴파일 워밍업...")
+        for _, path, _ in PAGES:
+            page.goto(BASE_URL + path, wait_until="load", timeout=45000)
+            time.sleep(1)
+        print("  [준비] 완료. 5초 대기 후 스크린샷 시작\n")
+        time.sleep(5)
+
+        # ── 2차 패스: 실제 스크린샷 ────────────────────────────────────
         for filename, path, label in PAGES:
             url = BASE_URL + path
             out_path = OUT_DIR / filename
             print(f"  [{label}] {url} → {filename}")
 
-            page.goto(url, wait_until="load", timeout=30000)
-            # 데이터 로딩 및 렌더링 완전 대기
-            time.sleep(2.5)
-
+            wait_for_page(page, url)
             page.screenshot(path=str(out_path), full_page=False)
             size = out_path.stat().st_size // 1024
             print(f"    ✓ {out_path.name} ({size} KB)")
