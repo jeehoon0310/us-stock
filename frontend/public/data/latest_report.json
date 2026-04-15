@@ -97,6 +97,10 @@
         "model_trained_at": "2026-04-14T09:22:58.653118",
         "model_accuracy": 0.5031
       }
+    },
+    "adaptive_params": {
+      "stop_loss": "-8%",
+      "max_drawdown_warning": "-10%"
     }
   },
   "verdict": "CAUTION",
