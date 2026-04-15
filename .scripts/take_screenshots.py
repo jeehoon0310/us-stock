@@ -47,11 +47,11 @@ def take_screenshots():
             out_path = OUT_DIR / filename
             print(f"  [{label}] {url} → {filename}")
 
-            page.goto(url, wait_until="networkidle", timeout=30000)
-            # SideNav 완전 렌더링 대기 (데이터 로딩)
-            time.sleep(1.5)
+            page.goto(url, wait_until="load", timeout=30000)
+            # 데이터 로딩 및 렌더링 완전 대기
+            time.sleep(2.5)
 
-            page.screenshot(path=str(out_path), full_page=True)
+            page.screenshot(path=str(out_path), full_page=False)
             size = out_path.stat().st_size // 1024
             print(f"    ✓ {out_path.name} ({size} KB)")
 
