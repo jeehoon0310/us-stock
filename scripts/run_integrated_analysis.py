@@ -277,14 +277,57 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
     return report
 
 
+# ── Phase 4: 리스크 알림 ─────────────────────────────────────────
+
+def phase4_risk_alert(portfolio_value: float = 100_000) -> dict | None:
+    """리스크 알림 생성 — stop-loss, VaR, 포지션 사이징."""
+    logger.info("=" * 60)
+    logger.info("[Phase 4] 리스크 알림")
+    t0 = time.time()
+
+    try:
+        from us_market.risk_alert import RiskAlertSystem
+
+        risk = RiskAlertSystem(data_dir=str(BASE_DIR))
+        result = risk.generate_alerts(portfolio_value=portfolio_value)
+
+        ps = result.get("portfolio_summary", {})
+        alerts = result.get("alerts", [])
+        critical = sum(1 for a in alerts if a["level"] == "CRITICAL")
+        warning = sum(1 for a in alerts if a["level"] == "WARNING")
+
+        print(f"\n  {'━' * 40}")
+        print(f"  Phase 4: Risk Alert")
+        print(f"  {'━' * 40}")
+        print(f"  Regime: {result.get('regime', 'N/A')} | Verdict: {result.get('verdict', 'N/A')}")
+        print(f"  CRITICAL: {critical}건 | WARNING: {warning}건")
+        print(f"  투자 비중: {ps.get('invested_pct', 0):.0f}% | 현금: {ps.get('cash_pct', 100):.0f}%")
+        print(f"  VaR(5일): ${ps.get('total_var_dollar', 0):,.0f} ({ps.get('risk_budget_status', 'N/A')})")
+
+        # 텔레그램 메시지 생성 (전송은 별도)
+        msg = risk.format_telegram_message()
+        logger.debug("텔레그램 메시지:\n%s", msg)
+
+        logger.info("[Phase 4] 완료 (%.1f초)", time.time() - t0)
+        return result
+    except Exception as e:
+        logger.error("[Phase 4] 리스크 알림 실패: %s", e)
+        return None
+
+
 # ── 메인 ──────────────────────────────────────────────────────────
 
-def run_integrated_analysis(target_date: datetime | None = None, skip_ai: bool = False) -> dict:
+def run_integrated_analysis(
+    target_date: datetime | None = None,
+    skip_ai: bool = False,
+    portfolio_value: float = 100_000,
+) -> dict:
     """전체 통합 분석 실행.
 
     Args:
         target_date: 백필 날짜. None이면 오늘 날짜로 실행.
         skip_ai: AI 요약 스킵 여부 (현재 이 스크립트에선 no-op).
+        portfolio_value: 포트폴리오 총 가치 (기본: $100,000).
     """
     setup_dirs()
 
@@ -320,6 +363,18 @@ def run_integrated_analysis(target_date: datetime | None = None, skip_ai: bool =
 
         # Phase 3: 종합 리포트
         report = phase3_report(timing, picks, target_date=target_date)
+
+        # Phase 4: 리스크 알림
+        risk_result = phase4_risk_alert(portfolio_value=portfolio_value)
+        if risk_result:
+            report["risk_alerts_summary"] = {
+                "critical_count": sum(1 for a in risk_result.get("alerts", []) if a["level"] == "CRITICAL"),
+                "warning_count": sum(1 for a in risk_result.get("alerts", []) if a["level"] == "WARNING"),
+                "info_count": sum(1 for a in risk_result.get("alerts", []) if a["level"] == "INFO"),
+                "risk_budget_status": risk_result.get("portfolio_summary", {}).get("risk_budget_status", "N/A"),
+                "invested_pct": risk_result.get("portfolio_summary", {}).get("invested_pct", 0),
+                "cash_pct": risk_result.get("portfolio_summary", {}).get("cash_pct", 100),
+            }
 
         # 종합 요약
         elapsed = (datetime.now() - start).total_seconds()
@@ -368,10 +423,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="US Stock 통합 분석")
     parser.add_argument("--date", help="백필 날짜 YYYYMMDD (미입력 시 오늘 날짜로 실행)")
     parser.add_argument("--skip-ai", action="store_true", help="AI 요약 스킵 (현재 no-op)")
+    parser.add_argument("--portfolio-value", type=float, default=100000,
+                        help="포트폴리오 총 가치 (기본: $100,000)")
     args = parser.parse_args()
 
     _target = None
     if args.date:
         _target = datetime.strptime(args.date, "%Y%m%d")
 
-    run_integrated_analysis(target_date=_target, skip_ai=args.skip_ai)
+    run_integrated_analysis(target_date=_target, skip_ai=args.skip_ai, portfolio_value=args.portfolio_value)

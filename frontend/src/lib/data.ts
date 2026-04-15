@@ -229,3 +229,60 @@ export function gradeColor(g: Grade | string): string {
     default: return "bg-zinc-700 text-white";
   }
 }
+
+// ── Risk Alert Types (Part 6) ──────────────────────────────────
+
+export type RiskLevel = "CRITICAL" | "WARNING" | "INFO";
+
+export interface RiskAlert {
+  level: RiskLevel;
+  category: string;
+  ticker: string;
+  message: string;
+  value: number;
+  threshold: number;
+  action: string;
+  timestamp: string;
+}
+
+export interface PositionSize {
+  ticker: string;
+  company_name: string;
+  grade: string;
+  base_pct: number;
+  final_pct: number;
+  dollar_amount: number;
+}
+
+export interface RiskAlertData {
+  generated_at: string;
+  regime: string;
+  verdict: string;
+  portfolio_summary: {
+    total_value: number;
+    invested_pct: number;
+    cash_pct: number;
+    total_var_dollar: number;
+    risk_budget_status: string;
+  };
+  alerts: RiskAlert[];
+  position_sizes: PositionSize[];
+}
+
+export function riskLevelColor(level: RiskLevel | string): string {
+  switch (level) {
+    case "CRITICAL": return "text-red-500";
+    case "WARNING": return "text-amber-500";
+    case "INFO": return "text-blue-500";
+    default: return "text-zinc-400";
+  }
+}
+
+export async function loadRiskAlerts(): Promise<RiskAlertData | null> {
+  try {
+    const data = await fetchReportData("risk_alerts.json");
+    return data as RiskAlertData;
+  } catch {
+    return null;
+  }
+}
