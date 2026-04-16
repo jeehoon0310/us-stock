@@ -4,6 +4,7 @@ import { SideNav, MobileNav } from "@/components/Navigation";
 import { QuotesTicker } from "@/components/QuotesTicker";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TopNav } from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: "Market Intelligence Terminal",
@@ -38,15 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>
             <QuotesTicker />
             <div className="flex items-center gap-6 flex-shrink-0">
-              <nav className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest">
-                <span className="text-primary font-bold cursor-pointer">Terminal</span>
-                <a href="/board" className="text-on-surface/60 hover:text-on-surface transition-colors">
-                  Board
-                </a>
-                <span className="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">
-                  Reports
-                </span>
-              </nav>
+              <TopNav />
               <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">

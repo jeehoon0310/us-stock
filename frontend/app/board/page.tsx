@@ -43,6 +43,7 @@ function getVoterId(): string {
 }
 
 const CATEGORY_COLORS: Record<string, { dot: string; badge: string }> = {
+  notice:     { dot: "bg-sky-200",    badge: "text-sky-200 bg-sky-200/10" },
   stocks:     { dot: "bg-blue-400",   badge: "text-blue-400 bg-blue-400/10" },
   strategies: { dot: "bg-green-400",  badge: "text-green-400 bg-green-400/10" },
   macro:      { dot: "bg-amber-400",  badge: "text-amber-400 bg-amber-400/10" },

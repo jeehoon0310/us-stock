@@ -162,9 +162,8 @@ export default function ForecastPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   async function loadReport(dateStr: string) {
-    const ymd = dateStr.replace(/-/g, "");
     try {
-      const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+      const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
       if (!r.ok) throw new Error(String(r.status));
       const d = (await r.json()) as DailyReport;
       setPredictor(d.market_timing?.ml_predictor ?? null);
@@ -182,9 +181,8 @@ export default function ForecastPage() {
     for (let attempt = 0; attempt < 7; attempt++) {
       d.setDate(d.getDate() + delta);
       const dateStr = d.toISOString().slice(0, 10);
-      const ymd = dateStr.replace(/-/g, "");
       try {
-        const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+        const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
         if (r.ok) {
           const data = (await r.json()) as DailyReport;
           setPredictor(data.market_timing?.ml_predictor ?? null);
@@ -198,7 +196,7 @@ export default function ForecastPage() {
   }
 
   useEffect(() => {
-    fetch("/data/latest_report.json", { cache: "no-store" })
+    fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: DailyReport) => {
         const dateStr = d.data_date ?? todayStr();
@@ -208,7 +206,7 @@ export default function ForecastPage() {
       })
       .catch(() => setStatus("데이터 없음"));
 
-    fetch("/data/prediction_history.json", { cache: "no-store" })
+    fetch("/api/data/prediction-history", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: HistoryEntry[]) => setHistory(d.slice(-20)))
       .catch(() => {});

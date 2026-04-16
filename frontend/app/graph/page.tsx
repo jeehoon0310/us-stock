@@ -82,7 +82,7 @@ export default function GraphPage() {
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
 
   useEffect(() => {
-    fetch("/data/graph.json", { cache: "no-store" })
+    fetch("/api/data/graph", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: GraphJson) => {
         setData(d);

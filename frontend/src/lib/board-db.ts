@@ -101,6 +101,12 @@ function initSchema(db: Database.Database) {
     });
     insertMany(seed);
   }
+
+  // 마이그레이션: 공지사항 카테고리 추가 (기존 DB에도 반영)
+  db.prepare(`
+    INSERT OR IGNORE INTO categories (id, name, display_name, description, created_at)
+    VALUES ('notice', 'notice', '공지사항', '운영자 공지사항', ?)
+  `).run(now());
 }
 
 // ── Types ──────────────────────────────────────────────────────
@@ -155,7 +161,9 @@ export interface CommentWithReplies {
 // ── Categories ─────────────────────────────────────────────────
 
 export function getCategories(): Category[] {
-  return getDb().prepare("SELECT * FROM categories ORDER BY rowid").all() as Category[];
+  return getDb()
+    .prepare("SELECT * FROM categories ORDER BY CASE WHEN id='notice' THEN 0 ELSE 1 END, rowid")
+    .all() as Category[];
 }
 
 // ── Posts ───────────────────────────────────────────────────────

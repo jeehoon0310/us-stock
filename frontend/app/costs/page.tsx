@@ -16,9 +16,8 @@ export default function CostsPage() {
   const [status, setStatus] = useState<string>("");
 
   async function loadReport(dateStr: string) {
-    const ymd = dateStr.replace(/-/g, "");
     try {
-      const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+      const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
       if (!r.ok) throw new Error(String(r.status));
       const d = (await r.json()) as DailyReport;
       setDate(d.data_date ?? dateStr);
@@ -34,9 +33,8 @@ export default function CostsPage() {
     for (let attempt = 0; attempt < 7; attempt++) {
       d.setDate(d.getDate() + delta);
       const dateStr = d.toISOString().slice(0, 10);
-      const ymd = dateStr.replace(/-/g, "");
       try {
-        const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+        const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
         if (r.ok) {
           const data = (await r.json()) as DailyReport;
           setDate(data.data_date ?? dateStr);
@@ -49,7 +47,7 @@ export default function CostsPage() {
   }
 
   useEffect(() => {
-    fetch("/data/latest_report.json", { cache: "no-store" })
+    fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: DailyReport) => {
         setDate(d.data_date ?? todayStr());
