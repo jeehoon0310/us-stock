@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 const NAV = [
   { href: "/", icon: "dashboard", label: "Overview", key: "dashboard" },
+  { href: "/risk", icon: "security", label: "Risk Monitor", key: "risk" },
   { href: "/regime", icon: "analytics", label: "Market Regime", key: "regime" },
   { href: "/top-picks", icon: "star", label: "Top Picks", key: "top10" },
   { href: "/ai", icon: "psychology", label: "AI Analysis", key: "ai" },
@@ -15,6 +16,7 @@ const NAV = [
 
 const MOBILE_NAV = [
   { href: "/", icon: "dashboard", label: "Overview" },
+  { href: "/risk", icon: "security", label: "Risk" },
   { href: "/regime", icon: "analytics", label: "Regime" },
   { href: "/top-picks", icon: "star", label: "Picks" },
   { href: "/ai", icon: "psychology", label: "AI" },

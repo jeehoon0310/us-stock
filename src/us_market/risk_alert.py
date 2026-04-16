@@ -741,6 +741,214 @@ class RiskAlertSystem:
         }
 
     # ------------------------------------------------------------------
+    # Component VaR — Euler 분해 (Phase B)
+    # ------------------------------------------------------------------
+
+    def calculate_component_var(
+        self,
+        picks: list[dict],
+        position_sizes: list[dict],
+        portfolio_value: float = 100_000,
+        confidence: float = 0.95,
+        horizon_days: int = 5,
+    ) -> list[dict]:
+        """종목별 리스크 기여도 분해 (Component VaR). Euler 분해 사용."""
+        Z_SCORE = {0.90: 1.282, 0.95: 1.645, 0.99: 2.326}
+        z = Z_SCORE.get(confidence, 1.645)
+
+        weight_map = {
+            p["ticker"]: p["final_pct"] / 100
+            for p in position_sizes
+            if p["ticker"] != "CASH" and p["final_pct"] > 0
+        }
+        active = [p["ticker"] for p in picks if p["ticker"] in weight_map]
+        if len(active) < 2:
+            return []
+
+        try:
+            raw = yf.download(active, period="1y", progress=False, session=_yf_session)
+            if raw.empty:
+                return []
+
+            close = raw["Close"]
+            if isinstance(close, pd.Series):
+                return []  # 단일 ticker 는 공분산 불가
+
+            available = [t for t in active if t in close.columns]
+            if len(available) < 2:
+                return []
+            close = close[available].dropna(how="all")
+            active = list(close.columns)
+
+            returns = close.pct_change().dropna()
+            if len(returns) < 20:
+                return []
+
+            cov = returns.cov().values          # (N×N) 일별 공분산
+            w = np.array([weight_map.get(t, 0.0) for t in active])
+
+            port_var = float(w @ cov @ w)
+            port_std = float(np.sqrt(port_var))
+            if port_std == 0:
+                return []
+
+            # Euler 분해: Component VaR_i = w_i * (Σw)_i / σ_p * z * √horizon
+            sigma_w = cov @ w          # (N,)
+            scale = float(np.sqrt(horizon_days))
+            comp_std = w * sigma_w / port_std  # σ 기여 (합 = σ_p)
+
+            results = []
+            for i, ticker in enumerate(active):
+                cvar_pct = float(comp_std[i]) * z * scale * 100
+                cvar_dollar = float(comp_std[i]) * z * scale * portfolio_value
+                contrib_pct = float(comp_std[i] / port_std) * 100
+                marginal = float(sigma_w[i] / port_std) * z * scale * 100
+
+                results.append({
+                    "ticker": ticker,
+                    "weight_pct": round(weight_map.get(ticker, 0.0) * 100, 2),
+                    "component_var_pct": round(cvar_pct, 3),
+                    "component_var_dollar": round(cvar_dollar, 2),
+                    "contribution_pct": round(contrib_pct, 1),
+                    "marginal_var": round(marginal, 3),
+                })
+
+            results.sort(key=lambda x: x["contribution_pct"], reverse=True)
+            return results
+
+        except Exception as e:
+            logger.debug("Component VaR 계산 실패: %s", e)
+            return []
+
+    # ------------------------------------------------------------------
+    # 스트레스 테스트 — 2008 / 2020 / 2022 시나리오 (Phase B)
+    # ------------------------------------------------------------------
+
+    def calculate_stress_scenarios(self, picks: list[dict]) -> list[dict]:
+        """2008 리먼 / 2020 COVID / 2022 금리충격 역사적 시나리오."""
+        SCENARIOS = [
+            {"name": "2008 금융위기", "label": "Lehman",    "start": "2008-09-01", "end": "2009-03-31", "color": "error"},
+            {"name": "2020 COVID 급락", "label": "COVID",   "start": "2020-02-20", "end": "2020-03-23", "color": "secondary"},
+            {"name": "2022 금리충격", "label": "Rate Shock","start": "2022-01-01", "end": "2022-10-31", "color": "warning"},
+        ]
+        tickers = [p["ticker"] for p in picks]
+        if not tickers:
+            return []
+
+        results = []
+        for sc in SCENARIOS:
+            try:
+                raw = yf.download(
+                    tickers, start=sc["start"], end=sc["end"],
+                    progress=False, session=_yf_session,
+                )
+                if raw.empty:
+                    continue
+
+                close = raw["Close"]
+                if isinstance(close, pd.Series):
+                    close = close.to_frame(name=tickers[0])
+
+                ticker_returns: dict[str, float] = {}
+                for t in tickers:
+                    if t not in close.columns:
+                        continue
+                    col = close[t].dropna()
+                    if len(col) >= 2 and float(col.iloc[0]) > 0:
+                        ret = (float(col.iloc[-1]) - float(col.iloc[0])) / float(col.iloc[0]) * 100
+                        ticker_returns[t] = round(ret, 2)
+
+                if not ticker_returns:
+                    continue
+
+                avg_return = sum(ticker_returns.values()) / len(ticker_returns)
+
+                # SPY 벤치마크
+                spy_raw = yf.download("SPY", start=sc["start"], end=sc["end"],
+                                      progress=False, session=_yf_session)
+                spy_return = 0.0
+                if not spy_raw.empty:
+                    spy_close = spy_raw["Close"].dropna()
+                    if len(spy_close) >= 2 and float(spy_close.iloc[0]) > 0:
+                        spy_return = round(
+                            (float(spy_close.iloc[-1]) - float(spy_close.iloc[0]))
+                            / float(spy_close.iloc[0]) * 100, 2
+                        )
+
+                best = max(ticker_returns, key=ticker_returns.__getitem__)
+                worst = min(ticker_returns, key=ticker_returns.__getitem__)
+
+                results.append({
+                    "scenario": sc["name"],
+                    "label": sc["label"],
+                    "period": f"{sc['start']} ~ {sc['end']}",
+                    "color": sc["color"],
+                    "avg_portfolio_return": round(avg_return, 2),
+                    "spy_return": spy_return,
+                    "ticker_returns": ticker_returns,
+                    "best_ticker": best,
+                    "worst_ticker": worst,
+                })
+
+            except Exception as e:
+                logger.debug("스트레스 시나리오 '%s' 실패: %s", sc["name"], e)
+                continue
+
+        return results
+
+    # ------------------------------------------------------------------
+    # CDaR — Conditional Drawdown at Risk (Phase B)
+    # ------------------------------------------------------------------
+
+    def calculate_cdar(
+        self,
+        tickers: list[str],
+        alpha: float = 0.05,
+        period: str = "6mo",
+    ) -> list[dict]:
+        """Conditional Drawdown at Risk — 경로 의존형 테일 리스크."""
+        results = []
+        for ticker in tickers:
+            try:
+                raw = yf.download(ticker, period=period, progress=False, session=_yf_session)
+                if raw.empty:
+                    continue
+
+                close = raw["Close"].squeeze().dropna()
+                if len(close) < 20:
+                    continue
+
+                peak = close.cummax()
+                drawdown = (close - peak) / peak       # 음수값 시리즈
+
+                dd_vals = drawdown.values.astype(float)
+                threshold = float(np.percentile(dd_vals, alpha * 100))
+                tail_dd = dd_vals[dd_vals <= threshold]
+                cdar = float(tail_dd.mean()) * 100 if len(tail_dd) > 0 else 0.0
+
+                # CVaR (일 수익률 기반, 비교용)
+                rets = close.pct_change().dropna().values.astype(float)
+                var_thr = float(np.percentile(rets, alpha * 100))
+                tail_rets = rets[rets <= var_thr]
+                cvar = float(tail_rets.mean()) * 100 if len(tail_rets) > 0 else 0.0
+
+                results.append({
+                    "ticker": ticker,
+                    "cdar_pct": round(cdar, 3),
+                    "cvar_pct": round(cvar, 3),
+                    "max_dd_pct": round(float(dd_vals.min()) * 100, 2),
+                    "current_dd_pct": round(float(dd_vals[-1]) * 100, 2),
+                    "period": period,
+                    "alpha": alpha,
+                })
+
+            except Exception as e:
+                logger.debug("CDaR 계산 실패 (%s): %s", ticker, e)
+                continue
+
+        return results
+
+    # ------------------------------------------------------------------
     # generate_alerts() 오케스트레이터 (프롬프트 #9)
     # ------------------------------------------------------------------
 
@@ -760,6 +968,12 @@ class RiskAlertSystem:
         )
         position_sizes = self.calculate_position_sizes(picks, portfolio_value)
         concentration = self.analyze_concentration_risk(picks)
+
+        # Phase B 고급 분석
+        component_var = self.calculate_component_var(picks, position_sizes, portfolio_value)
+        stress_scenarios = self.calculate_stress_scenarios(picks)
+        cdar_data = self.calculate_cdar(tickers)
+
         budget = self.check_risk_budget(
             picks, portfolio_value,
             var_result=var_result,
@@ -875,6 +1089,31 @@ class RiskAlertSystem:
                     "timestamp": ts,
                 })
 
+        # Stress scenario 경고
+        for sc in stress_scenarios:
+            avg_ret = sc.get("avg_portfolio_return", 0)
+            if avg_ret < -20:
+                level = "CRITICAL"
+                thr = -20
+            elif avg_ret < -10:
+                level = "WARNING"
+                thr = -10
+            else:
+                continue
+            alerts.append({
+                "level": level,
+                "category": "stress_test",
+                "ticker": "PORTFOLIO",
+                "message": (
+                    f"{sc['scenario']} 시나리오: 포트폴리오 {avg_ret:+.1f}%"
+                    f" (SPY {sc.get('spy_return', 0):+.1f}%)"
+                ),
+                "value": avg_ret,
+                "threshold": thr,
+                "action": "REVIEW",
+                "timestamp": ts,
+            })
+
         # INFO
         alerts.append({
             "level": "INFO",
@@ -926,6 +1165,9 @@ class RiskAlertSystem:
             "stop_loss_status": stop_status,
             "drawdowns": drawdowns,
             "concentration": concentration,
+            "component_var": component_var,
+            "stress_scenarios": stress_scenarios,
+            "cdar": cdar_data,
         }
 
         # JSON 저장

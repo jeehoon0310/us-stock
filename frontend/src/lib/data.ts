@@ -250,8 +250,76 @@ export interface PositionSize {
   company_name: string;
   grade: string;
   base_pct: number;
+  grade_multiplier?: number;
+  regime_multiplier?: number;
+  verdict_cap?: string | null;
   final_pct: number;
   dollar_amount: number;
+}
+
+export interface StopLossStatus {
+  ticker: string;
+  company_name: string;
+  entry_price: number;
+  peak_price: number;
+  current_price: number;
+  from_entry_pct: number;
+  from_peak_pct: number;
+  fixed_threshold: number;
+  trailing_threshold: number;
+  fixed_status: "OK" | "WARNING" | "BREACHED";
+  trailing_status: "OK" | "WARNING" | "BREACHED";
+  regime: string;
+  alert_level: "OK" | "WARNING" | "BREACHED";
+}
+
+export interface DrawdownData {
+  current_price: number;
+  peak_price: number;
+  entry_price: number;
+  from_entry_pct: number;
+  from_peak_pct: number;
+  max_dd: number;
+  from_peak_days: number;
+}
+
+export interface ConcentrationData {
+  sector_concentration: Record<string, { count: number; pct: number }>;
+  concentration_warnings: string[];
+  high_correlation_pairs: Array<{ pair: [string, string]; corr: number }>;
+  correlation_exposure: Record<string, number>;
+  correlation_threshold: number;
+}
+
+export interface ComponentVarEntry {
+  ticker: string;
+  weight_pct: number;
+  component_var_pct: number;
+  component_var_dollar: number;
+  contribution_pct: number;
+  marginal_var: number;
+}
+
+export interface StressScenario {
+  scenario: string;
+  label: string;
+  period: string;
+  color: string;
+  avg_portfolio_return: number;
+  spy_return: number;
+  ticker_returns: Record<string, number>;
+  best_ticker: string;
+  worst_ticker: string;
+}
+
+export interface CdarEntry {
+  ticker: string;
+  cdar_pct: number;
+  cvar_pct: number;
+  max_dd_pct: number;
+  current_dd_pct: number;
+  period: string;
+  alpha: number;
 }
 
 export interface RiskAlertData {
@@ -267,6 +335,12 @@ export interface RiskAlertData {
   };
   alerts: RiskAlert[];
   position_sizes: PositionSize[];
+  stop_loss_status?: StopLossStatus[];
+  drawdowns?: Record<string, DrawdownData>;
+  concentration?: ConcentrationData;
+  component_var?: ComponentVarEntry[];
+  stress_scenarios?: StressScenario[];
+  cdar?: CdarEntry[];
 }
 
 export function riskLevelColor(level: RiskLevel | string): string {

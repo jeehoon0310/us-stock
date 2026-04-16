@@ -695,6 +695,13 @@ export function DashboardClient() {
                   </div>
                 </div>
               </div>
+              <div className="flex justify-end">
+                <Link href="/risk" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-xs font-bold text-primary transition-colors">
+                  <span className="material-symbols-outlined text-sm">security</span>
+                  Full Risk Monitor
+                  <span className="material-symbols-outlined text-sm">chevron_right</span>
+                </Link>
+              </div>
             </div>
           )}
         </>
