@@ -14,6 +14,7 @@ const NAV = [
   { href: "/performance", icon: "trending_up", label: "Performance", key: "performance" },
   { href: "/graph", icon: "hub", label: "System Graph", key: "graph" },
   { href: "/ai-builder", icon: "smart_toy", label: "AI Builder", key: "ai-builder" },
+  { href: "/board", icon: "forum", label: "Board", key: "board" },
   { href: "/costs", icon: "payments", label: "API Costs", key: "cost" },
 ];
 
@@ -28,6 +29,7 @@ const MOBILE_NAV = [
   { href: "/performance", icon: "trending_up", label: "Perf" },
   { href: "/graph", icon: "hub", label: "Graph" },
   { href: "/ai-builder", icon: "smart_toy", label: "Builder" },
+  { href: "/board", icon: "forum", label: "Board" },
   { href: "/costs", icon: "payments", label: "Cost" },
 ];
 

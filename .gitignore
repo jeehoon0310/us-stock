@@ -49,3 +49,7 @@ Thumbs.db
 
 # Contains plaintext API keys — never commit
 docs/prompts/prompt_v1.md
+
+# SQLite board DB (dev local file)
+board.db
+frontend/board.db*

@@ -40,9 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="flex items-center gap-6 flex-shrink-0">
               <nav className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest">
                 <span className="text-primary font-bold cursor-pointer">Terminal</span>
-                <span className="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">
-                  Insights
-                </span>
+                <a href="/board" className="text-on-surface/60 hover:text-on-surface transition-colors">
+                  Board
+                </a>
                 <span className="text-on-surface/60 hover:text-on-surface cursor-pointer transition-colors">
                   Reports
                 </span>

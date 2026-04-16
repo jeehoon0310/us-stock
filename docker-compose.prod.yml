@@ -8,6 +8,9 @@ services:
       - PORT=8889
       - TZ=America/New_York
       - NODE_OPTIONS=--dns-result-order=ipv4first --no-network-family-autoselection
+      - BOARD_DB_PATH=/data/board.db
+    volumes:
+      - /volume1/docker/us-stock/board:/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:8889/api/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"]
