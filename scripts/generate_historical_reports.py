@@ -24,12 +24,26 @@ ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_REPORTS = ROOT / "frontend" / "public" / "data" / "reports"
 REPORTS_DIR = ROOT / "output" / "reports"
 
-MARKET_HOLIDAYS_2026 = {
+MARKET_HOLIDAYS = {
+    # 2025
+    date(2025, 1, 1),   # New Year's Day
+    date(2025, 1, 20),  # MLK Day
+    date(2025, 2, 17),  # Presidents Day
+    date(2025, 4, 18),  # Good Friday
+    date(2025, 5, 26),  # Memorial Day
+    date(2025, 6, 19),  # Juneteenth
+    date(2025, 7, 4),   # Independence Day
+    date(2025, 9, 1),   # Labor Day
+    date(2025, 11, 27), # Thanksgiving
+    date(2025, 12, 25), # Christmas
+    # 2026
     date(2026, 1, 1),
     date(2026, 1, 19),
     date(2026, 2, 16),
     date(2026, 4, 3),
 }
+# 하위 호환성 별칭
+MARKET_HOLIDAYS_2026 = MARKET_HOLIDAYS
 
 # Apr 14 기준 Top 20 종목 메타데이터 (stable: company_name, strategy, setup, fundamental/analyst/13f/volume)
 TOP20_BASE = [
@@ -73,7 +87,7 @@ def get_trading_days(start: date, end: date) -> list[date]:
     days = []
     cur = start
     while cur <= end:
-        if cur.weekday() < 5 and cur not in MARKET_HOLIDAYS_2026:
+        if cur.weekday() < 5 and cur not in MARKET_HOLIDAYS:
             days.append(cur)
         cur += timedelta(days=1)
     return days
@@ -511,6 +525,7 @@ def main():
     parser.add_argument("--end", default="20260414", help="종료 날짜 YYYYMMDD")
     parser.add_argument("--dry-run", action="store_true", help="파일 미저장")
     parser.add_argument("--no-copy", action="store_true", help="frontend/ 복사 스킵")
+    parser.add_argument("--skip-existing", action="store_true", help="이미 존재하는 날짜 파일은 skip")
     args = parser.parse_args()
 
     try:
@@ -568,6 +583,11 @@ def main():
 
     generated = []
     for target in trading_days:
+        if args.skip_existing:
+            ymd = target.strftime("%Y%m%d")
+            if (REPORTS_DIR / f"daily_report_{ymd}.json").exists():
+                print(f"  [{target}] SKIP (already exists)")
+                continue
         ts = pd.Timestamp(target)
 
         # 시장 지표
