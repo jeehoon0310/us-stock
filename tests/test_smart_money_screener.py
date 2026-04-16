@@ -51,18 +51,19 @@ class TestCompositeScoreRange:
             "volume_score": 65.0,
             "holdings_score": 50.0,
         }
-        # _calculate_composite_score가 있으면 호출, 없으면 직접 계산
-        if hasattr(screener, "_calculate_composite_score"):
-            result = screener._calculate_composite_score(scores)
-            assert 0 <= result <= 100
+        if not hasattr(screener, "_calculate_composite_score"):
+            pytest.skip("_calculate_composite_score 메서드 없음")
+        result = screener._calculate_composite_score(scores)
+        assert 0 <= result <= 100
 
 
 class TestGradeAssignment:
     def test_grade_a_for_high_score(self, screener):
-        if hasattr(screener, "_assign_grade"):
-            assert screener._assign_grade(90) == "A"
-            assert screener._assign_grade(50) in {"C", "D"}
-            assert screener._assign_grade(10) in {"E", "F"}
+        if not hasattr(screener, "_assign_grade"):
+            pytest.skip("_assign_grade 메서드 없음")
+        assert screener._assign_grade(90) == "A"
+        assert screener._assign_grade(50) in {"C", "D"}
+        assert screener._assign_grade(10) in {"E", "F"}
 
 
 class Test13FLookAheadBias:

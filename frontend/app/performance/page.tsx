@@ -51,38 +51,50 @@ type PerformanceData = {
   date_range: { start: string; end: string };
   spy_cumulative_return: number;
   spy_annualized_return: number;
-  strategies: {
-    strategy_a: Strategy;
-    strategy_b: Strategy;
-    strategy_c: Strategy;
-  };
+  strategies: Record<string, Strategy>;
   spy_curve: EquityPoint[];
   note: string;
 };
 
-type StrategyKey = "strategy_a" | "strategy_b" | "strategy_c";
+type StrategyKey = string;
 
 // ── 기간 필터 ─────────────────────────────────────────────────────
 
-type Period = "1M" | "3M" | "6M" | "ALL";
+type Period = "1M" | "3M" | "6M" | "ALL" | "CUSTOM";
 
-function filterByPeriod(data: PerformanceData, period: Period): PerformanceData {
+function filterByPeriod(
+  data: PerformanceData,
+  period: Period,
+  customRange?: { start: string; end: string }
+): PerformanceData {
   if (period === "ALL") return data;
-  const days = { "1M": 30, "3M": 90, "6M": 180 }[period];
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - days);
-  const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+  let cutoffStr: string;
+  let endStr: string | null = null;
+
+  if (period === "CUSTOM") {
+    if (!customRange?.start) return data;
+    cutoffStr = customRange.start;
+    endStr = customRange.end || null;
+  } else {
+    const days = { "1M": 30, "3M": 90, "6M": 180 }[period as "1M" | "3M" | "6M"];
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    cutoffStr = cutoff.toISOString().slice(0, 10);
+  }
+
+  const inRange = (date: string) =>
+    date >= cutoffStr && (endStr ? date <= endStr : true);
 
   const filtered: PerformanceData = {
     ...data,
-    spy_curve: data.spy_curve.filter((p) => p.date >= cutoffStr),
-    strategies: {} as PerformanceData["strategies"],
+    spy_curve: data.spy_curve.filter((p) => inRange(p.date)),
+    strategies: {},
   };
 
-  (["strategy_a", "strategy_b", "strategy_c"] as StrategyKey[]).forEach((key) => {
-    const s = data.strategies[key];
-    const filteredCurve = s.equity_curve.filter((p) => p.date >= cutoffStr);
-    const filteredLog = s.signal_log.filter((p) => p.date >= cutoffStr);
+  Object.entries(data.strategies).forEach(([key, s]) => {
+    const filteredCurve = s.equity_curve.filter((p) => inRange(p.date));
+    const filteredLog = s.signal_log.filter((p) => inRange(p.date));
     const tradeReturns = filteredLog.filter((e) => e.invested).map((e) => e.daily_return_pct);
     const initial = filteredCurve[0]?.value ?? 10000;
     const final = filteredCurve[filteredCurve.length - 1]?.value ?? initial;
@@ -103,7 +115,6 @@ function filterByPeriod(data: PerformanceData, period: Period): PerformanceData 
       const dd = (p.value - peak) / peak * 100;
       if (dd < mdd) mdd = dd;
     }
-    // SPY 기간 수익률 재계산
     const spyCurve = filtered.spy_curve;
     const spyInitial = spyCurve[0]?.value ?? 10000;
     const spyFinal = spyCurve[spyCurve.length - 1]?.value ?? spyInitial;
@@ -125,28 +136,20 @@ function filterByPeriod(data: PerformanceData, period: Period): PerformanceData 
     };
   });
 
-  return filtered;
-}
+  return filtered;}
 
 // ── 차트 데이터 병합 ──────────────────────────────────────────────
 
 function mergeChartData(data: PerformanceData) {
   const map = new Map<string, Record<string, number>>();
-
-  data.spy_curve.forEach((p) => {
-    map.set(p.date, { spy: p.value });
+  data.spy_curve.forEach((p) => { map.set(p.date, { spy: p.value }); });
+  Object.keys(data.strategies).forEach((key) => {
+    data.strategies[key]?.equity_curve.forEach((p) => {
+      const entry = map.get(p.date) ?? {};
+      entry[key] = p.value;
+      map.set(p.date, entry);
+    });
   });
-
-  (["strategy_a", "strategy_b", "strategy_c"] as StrategyKey[]).forEach(
-    (key) => {
-      data.strategies[key]?.equity_curve.forEach((p) => {
-        const entry = map.get(p.date) ?? {};
-        entry[key] = p.value;
-        map.set(p.date, entry);
-      });
-    }
-  );
-
   return Array.from(map.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, vals]) => ({ date, ...vals }));
@@ -199,11 +202,9 @@ const METRICS = [
   },
 ];
 
-const STRATEGY_LABELS: Record<StrategyKey, string> = {
-  strategy_a: "A",
-  strategy_b: "B",
-  strategy_c: "C",
-};
+// strategy_a → "A", strategy_b → "B", ...  동적 처리
+const stratLabel = (key: StrategyKey) =>
+  key.replace("strategy_", "").toUpperCase();
 
 // ── Verdict 색상 ─────────────────────────────────────────────────
 
@@ -258,6 +259,8 @@ export default function PerformancePage() {
   const [loading, setLoading] = useState(true);
   const [activeStrategy, setActiveStrategy] = useState<StrategyKey>("strategy_a");
   const [period, setPeriod] = useState<Period>("ALL");
+  const [customStart, setCustomStart] = useState("");
+  const [customEnd, setCustomEnd] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -291,11 +294,14 @@ export default function PerformancePage() {
     );
   }
 
-  const filteredData = filterByPeriod(data, period);
-  const strategy = filteredData.strategies[activeStrategy];
+  const customRange =
+    period === "CUSTOM" && customStart
+      ? { start: customStart, end: customEnd || data.date_range.end }
+      : undefined;
+  const filteredData = filterByPeriod(data, period, customRange);
+  const strategyKeys = Object.keys(filteredData.strategies);
+  const strategy = filteredData.strategies[activeStrategy] ?? filteredData.strategies[strategyKeys[0]];
   const chartData = mergeChartData(filteredData);
-
-  const strategyKeys: StrategyKey[] = ["strategy_a", "strategy_b", "strategy_c"];
 
   return (
     <div className="space-y-6">
@@ -322,7 +328,7 @@ export default function PerformancePage() {
       </div>
 
       {/* 기간 필터 */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-on-surface-variant font-bold uppercase tracking-widest mr-1">기간</span>
         {(["1M", "3M", "6M", "ALL"] as Period[]).map((p) => (
           <button
@@ -337,6 +343,38 @@ export default function PerformancePage() {
             {p === "ALL" ? "전체" : p}
           </button>
         ))}
+        <button
+          onClick={() => setPeriod("CUSTOM")}
+          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+            period === "CUSTOM"
+              ? "bg-primary text-on-primary"
+              : "bg-surface-container-high text-on-surface-variant hover:text-on-surface"
+          }`}
+        >
+          <span className="material-symbols-outlined text-sm leading-none">calendar_month</span>
+          직접
+        </button>
+        {period === "CUSTOM" && (
+          <>
+            <input
+              type="date"
+              value={customStart}
+              min={data.date_range.start}
+              max={data.date_range.end}
+              onChange={(e) => setCustomStart(e.target.value)}
+              className="bg-surface-container-high text-on-surface text-xs rounded-lg px-2 py-1.5 border border-outline-variant/20 focus:outline-none focus:border-primary"
+            />
+            <span className="text-on-surface-variant text-xs">~</span>
+            <input
+              type="date"
+              value={customEnd}
+              min={customStart || data.date_range.start}
+              max={data.date_range.end}
+              onChange={(e) => setCustomEnd(e.target.value)}
+              className="bg-surface-container-high text-on-surface text-xs rounded-lg px-2 py-1.5 border border-outline-variant/20 focus:outline-none focus:border-primary"
+            />
+          </>
+        )}
       </div>
 
       {/* 전략 탭 */}
@@ -355,7 +393,7 @@ export default function PerformancePage() {
                   : "border-outline-variant/20 text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high"
               }`}
             >
-              <span className="font-black">{STRATEGY_LABELS[key]}</span>
+              <span className="font-black">{stratLabel(key)}</span>
               <span className="ml-2 hidden sm:inline">{s.label}</span>
               <span
                 className="ml-2 text-xs font-black"
@@ -458,7 +496,7 @@ export default function PerformancePage() {
                       key={key}
                       type="monotone"
                       dataKey={key}
-                      name={`${STRATEGY_LABELS[key]}: ${s.label}`}
+                      name={`${stratLabel(key)}: ${s.label}`}
                       stroke={s.color}
                       strokeWidth={2.5}
                       fill={`url(#grad_${key})`}
@@ -608,7 +646,7 @@ export default function PerformancePage() {
                   style={{ background: s.color }}
                 />
                 <span className="text-xs font-black uppercase tracking-widest">
-                  전략 {STRATEGY_LABELS[key]}
+                  전략 {stratLabel(key)}
                 </span>
               </div>
               <p className="text-sm font-bold text-on-surface mb-1">{s.label}</p>

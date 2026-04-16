@@ -1764,16 +1764,1901 @@
       "trade_count": 35
     },
     "strategy_c": {
-      "label": "중립 이상 + 비STOP",
-      "description": "Regime=risk_on/neutral이고 Verdict≠STOP인 날 투자",
+      "label": "Top 10 분산",
+      "description": "Verdict≠STOP인 날 Top 10 종목 균등 분산. 집중 위험 최소화",
       "color": "#4ade80",
       "metrics": {
-        "cumulative_return": 21.22,
-        "annualized_return": 208.92,
-        "sharpe": 2.368,
-        "max_drawdown": -35.48,
+        "cumulative_return": 14.19,
+        "annualized_return": 117.63,
+        "sharpe": 1.87,
+        "max_drawdown": -28.04,
         "win_rate": 54.3,
-        "alpha_vs_spy": 191.47
+        "alpha_vs_spy": 100.18
+      },
+      "equity_curve": [
+        {
+          "date": "2026-02-17",
+          "value": 10357.56,
+          "invested": true
+        },
+        {
+          "date": "2026-02-18",
+          "value": 10646.06,
+          "invested": true
+        },
+        {
+          "date": "2026-02-19",
+          "value": 10863.26,
+          "invested": true
+        },
+        {
+          "date": "2026-02-20",
+          "value": 11053.67,
+          "invested": true
+        },
+        {
+          "date": "2026-02-23",
+          "value": 11133.39,
+          "invested": true
+        },
+        {
+          "date": "2026-02-24",
+          "value": 11054.38,
+          "invested": true
+        },
+        {
+          "date": "2026-02-25",
+          "value": 11076.33,
+          "invested": true
+        },
+        {
+          "date": "2026-02-26",
+          "value": 10394.02,
+          "invested": true
+        },
+        {
+          "date": "2026-02-27",
+          "value": 10011.92,
+          "invested": true
+        },
+        {
+          "date": "2026-03-02",
+          "value": 9473.52,
+          "invested": true
+        },
+        {
+          "date": "2026-03-03",
+          "value": 9098.23,
+          "invested": true
+        },
+        {
+          "date": "2026-03-04",
+          "value": 8970.52,
+          "invested": true
+        },
+        {
+          "date": "2026-03-05",
+          "value": 8905.55,
+          "invested": true
+        },
+        {
+          "date": "2026-03-06",
+          "value": 8931.69,
+          "invested": true
+        },
+        {
+          "date": "2026-03-09",
+          "value": 8676.24,
+          "invested": true
+        },
+        {
+          "date": "2026-03-10",
+          "value": 8619.19,
+          "invested": true
+        },
+        {
+          "date": "2026-03-11",
+          "value": 8691.79,
+          "invested": true
+        },
+        {
+          "date": "2026-03-12",
+          "value": 8691.79,
+          "invested": false
+        },
+        {
+          "date": "2026-03-13",
+          "value": 8691.79,
+          "invested": false
+        },
+        {
+          "date": "2026-03-16",
+          "value": 9096.91,
+          "invested": true
+        },
+        {
+          "date": "2026-03-17",
+          "value": 8903.77,
+          "invested": true
+        },
+        {
+          "date": "2026-03-18",
+          "value": 8903.77,
+          "invested": false
+        },
+        {
+          "date": "2026-03-19",
+          "value": 8928.29,
+          "invested": true
+        },
+        {
+          "date": "2026-03-20",
+          "value": 8928.29,
+          "invested": false
+        },
+        {
+          "date": "2026-03-23",
+          "value": 8928.29,
+          "invested": false
+        },
+        {
+          "date": "2026-03-24",
+          "value": 8928.29,
+          "invested": false
+        },
+        {
+          "date": "2026-03-25",
+          "value": 8108.83,
+          "invested": true
+        },
+        {
+          "date": "2026-03-26",
+          "value": 8011.06,
+          "invested": true
+        },
+        {
+          "date": "2026-03-27",
+          "value": 8011.06,
+          "invested": false
+        },
+        {
+          "date": "2026-03-30",
+          "value": 8011.06,
+          "invested": false
+        },
+        {
+          "date": "2026-03-31",
+          "value": 8149.85,
+          "invested": true
+        },
+        {
+          "date": "2026-04-01",
+          "value": 8337.59,
+          "invested": true
+        },
+        {
+          "date": "2026-04-02",
+          "value": 8953.32,
+          "invested": true
+        },
+        {
+          "date": "2026-04-06",
+          "value": 9797.27,
+          "invested": true
+        },
+        {
+          "date": "2026-04-07",
+          "value": 10549.29,
+          "invested": true
+        },
+        {
+          "date": "2026-04-08",
+          "value": 11090.43,
+          "invested": true
+        },
+        {
+          "date": "2026-04-09",
+          "value": 11476.13,
+          "invested": true
+        },
+        {
+          "date": "2026-04-10",
+          "value": 11613.65,
+          "invested": true
+        },
+        {
+          "date": "2026-04-12",
+          "value": 11744.7,
+          "invested": true
+        },
+        {
+          "date": "2026-04-13",
+          "value": 11555.65,
+          "invested": true
+        },
+        {
+          "date": "2026-04-14",
+          "value": 11418.97,
+          "invested": true
+        },
+        {
+          "date": "2026-04-15",
+          "value": 11418.97,
+          "invested": true
+        },
+        {
+          "date": "2026-04-16",
+          "value": 11418.97,
+          "invested": true
+        }
+      ],
+      "signal_log": [
+        {
+          "date": "2026-02-17",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.58,
+          "tickers": [
+            "TER",
+            "WDC",
+            "LITE",
+            "ETN",
+            "SNDK",
+            "EIX",
+            "BKR",
+            "LRCX",
+            "LYV",
+            "CCL"
+          ]
+        },
+        {
+          "date": "2026-02-18",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 2.79,
+          "tickers": [
+            "TER",
+            "WDC",
+            "LITE",
+            "SNDK",
+            "BKR",
+            "EIX",
+            "LRCX",
+            "ETN",
+            "SLB",
+            "LYV"
+          ]
+        },
+        {
+          "date": "2026-02-19",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 2.04,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX",
+            "BKR",
+            "SNDK",
+            "WDC",
+            "LYV",
+            "ETN",
+            "LRCX",
+            "SLB"
+          ]
+        },
+        {
+          "date": "2026-02-20",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.75,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX",
+            "SNDK",
+            "LRCX",
+            "LYV",
+            "BKR",
+            "WDC",
+            "ETN",
+            "DELL"
+          ]
+        },
+        {
+          "date": "2026-02-23",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.72,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX",
+            "BKR",
+            "SNDK",
+            "LRCX",
+            "WDC",
+            "SLB",
+            "LYV",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-02-24",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.71,
+          "tickers": [
+            "TER",
+            "LITE",
+            "BKR",
+            "EIX",
+            "SNDK",
+            "LRCX",
+            "SLB",
+            "ETN",
+            "ALB",
+            "WDC"
+          ]
+        },
+        {
+          "date": "2026-02-25",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.2,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX",
+            "BKR",
+            "SNDK",
+            "LRCX",
+            "ALB",
+            "WDC",
+            "DELL",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-02-26",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -6.16,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX",
+            "BKR",
+            "SNDK",
+            "UAL",
+            "CCL",
+            "SLB",
+            "ETN",
+            "DAL"
+          ]
+        },
+        {
+          "date": "2026-02-27",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -3.68,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "TER",
+            "BKR",
+            "EIX",
+            "UNH",
+            "SLB",
+            "ETN",
+            "SNDK",
+            "LYV"
+          ]
+        },
+        {
+          "date": "2026-03-02",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -5.38,
+          "tickers": [
+            "TER",
+            "DELL",
+            "LITE",
+            "BKR",
+            "EIX",
+            "UNH",
+            "ETN",
+            "LYV",
+            "SLB",
+            "FDS"
+          ]
+        },
+        {
+          "date": "2026-03-03",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -3.96,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "EIX",
+            "UNH",
+            "LYV",
+            "TER",
+            "FDS",
+            "BKR",
+            "AMZN",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-03-04",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.4,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "FDS",
+            "EIX",
+            "UNH",
+            "AMZN",
+            "LYV",
+            "BKR",
+            "TER",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-03-05",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.72,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "AMZN",
+            "FDS",
+            "UNH",
+            "LYV",
+            "TER",
+            "EIX",
+            "BKR",
+            "LRCX"
+          ]
+        },
+        {
+          "date": "2026-03-06",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.29,
+          "tickers": [
+            "DELL",
+            "FDS",
+            "UNH",
+            "AMZN",
+            "EIX",
+            "LYV",
+            "BKR",
+            "ETN",
+            "HPE",
+            "SLB"
+          ]
+        },
+        {
+          "date": "2026-03-09",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.86,
+          "tickers": [
+            "DELL",
+            "LYV",
+            "AMZN",
+            "FDS",
+            "UNH",
+            "EIX",
+            "LITE",
+            "BKR",
+            "ALB",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-03-10",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.66,
+          "tickers": [
+            "DELL",
+            "AMZN",
+            "LYV",
+            "LITE",
+            "UNH",
+            "SNDK",
+            "FDS",
+            "EIX",
+            "ETN",
+            "WDC"
+          ]
+        },
+        {
+          "date": "2026-03-11",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.84,
+          "tickers": [
+            "SNDK",
+            "DELL",
+            "LITE",
+            "AMZN",
+            "LYV",
+            "UNH",
+            "WDC",
+            "EIX",
+            "TER",
+            "LRCX"
+          ]
+        },
+        {
+          "date": "2026-03-12",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "AMZN",
+            "SNDK",
+            "UNH",
+            "LYV",
+            "EIX",
+            "FDS",
+            "WDC",
+            "LITE",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-03-13",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "AMZN",
+            "WDC",
+            "LITE",
+            "UNH",
+            "EIX",
+            "LRCX",
+            "HPE",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-03-16",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 4.66,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "AMZN",
+            "WDC",
+            "UNH",
+            "EIX",
+            "LRCX",
+            "ETN",
+            "LITE",
+            "FDS"
+          ]
+        },
+        {
+          "date": "2026-03-17",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.12,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "SNDK",
+            "AMZN",
+            "UNH",
+            "FDS",
+            "LRCX",
+            "EIX",
+            "DAL",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-03-18",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "WDC",
+            "LITE",
+            "AMZN",
+            "UNH",
+            "FDS",
+            "LRCX",
+            "EIX",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-03-19",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.28,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "LITE",
+            "SNDK",
+            "LRCX",
+            "AMZN",
+            "FDS",
+            "DAL",
+            "UNH",
+            "BKR"
+          ]
+        },
+        {
+          "date": "2026-03-20",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "LITE",
+            "WDC",
+            "FDS",
+            "LRCX",
+            "BKR",
+            "AMZN",
+            "ETN",
+            "UNH"
+          ]
+        },
+        {
+          "date": "2026-03-23",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "WDC",
+            "BKR",
+            "AMZN",
+            "LRCX",
+            "HPE",
+            "SLB",
+            "FDS",
+            "SNDK"
+          ]
+        },
+        {
+          "date": "2026-03-24",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "LITE",
+            "LRCX",
+            "WDC",
+            "BKR",
+            "SLB",
+            "ETN",
+            "TER",
+            "SNDK"
+          ]
+        },
+        {
+          "date": "2026-03-25",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -9.18,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "LITE",
+            "SLB",
+            "AMZN",
+            "ETN",
+            "TER",
+            "DAL",
+            "BKR",
+            "LRCX"
+          ]
+        },
+        {
+          "date": "2026-03-26",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.21,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "SLB",
+            "AMZN",
+            "BKR",
+            "DAL",
+            "ETN",
+            "ALB",
+            "UNH",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-03-27",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SLB",
+            "HPE",
+            "ALB",
+            "BKR",
+            "DAL",
+            "AMZN",
+            "ETN",
+            "LITE",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-03-30",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "SLB",
+            "DELL",
+            "HPE",
+            "ALB",
+            "AMZN",
+            "EIX",
+            "DAL",
+            "BKR",
+            "FDS",
+            "UNH"
+          ]
+        },
+        {
+          "date": "2026-03-31",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.73,
+          "tickers": [
+            "SLB",
+            "FDS",
+            "AMZN",
+            "HPE",
+            "DELL",
+            "ALB",
+            "DAL",
+            "ETN",
+            "EIX",
+            "UNH"
+          ]
+        },
+        {
+          "date": "2026-04-01",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 2.3,
+          "tickers": [
+            "FDS",
+            "WDC",
+            "LITE",
+            "SNDK",
+            "DELL",
+            "AMZN",
+            "DAL",
+            "HPE",
+            "ETN",
+            "SLB"
+          ]
+        },
+        {
+          "date": "2026-04-02",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 7.38,
+          "tickers": [
+            "LITE",
+            "SNDK",
+            "FDS",
+            "DELL",
+            "WDC",
+            "HPE",
+            "AMZN",
+            "DAL",
+            "UNH",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-04-06",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 9.43,
+          "tickers": [
+            "WDC",
+            "LITE",
+            "SNDK",
+            "FDS",
+            "TER",
+            "DELL",
+            "HPE",
+            "AMZN",
+            "LRCX",
+            "UNH"
+          ]
+        },
+        {
+          "date": "2026-04-07",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 7.68,
+          "tickers": [
+            "UNH",
+            "WDC",
+            "DELL",
+            "LITE",
+            "SNDK",
+            "TER",
+            "FDS",
+            "HPE",
+            "LRCX",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-04-08",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 5.13,
+          "tickers": [
+            "LRCX",
+            "WDC",
+            "TER",
+            "UNH",
+            "DELL",
+            "LITE",
+            "SNDK",
+            "AMZN",
+            "HPE",
+            "ETN"
+          ]
+        },
+        {
+          "date": "2026-04-09",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.48,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "WDC",
+            "TER",
+            "UNH",
+            "DELL",
+            "LITE",
+            "ETN",
+            "SNDK",
+            "FITB"
+          ]
+        },
+        {
+          "date": "2026-04-10",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.2,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "TER",
+            "WDC",
+            "ETN",
+            "LITE",
+            "UNH",
+            "SNDK",
+            "CCL",
+            "SLB"
+          ]
+        },
+        {
+          "date": "2026-04-12",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.13,
+          "tickers": [
+            "DAL",
+            "WDC",
+            "HPE",
+            "CCL",
+            "SNDK",
+            "UAL",
+            "LYV",
+            "LITE",
+            "Q",
+            "ALL"
+          ]
+        },
+        {
+          "date": "2026-04-13",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.61,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "TER",
+            "WDC",
+            "UNH",
+            "DELL",
+            "LITE",
+            "ETN",
+            "SNDK",
+            "FITB"
+          ]
+        },
+        {
+          "date": "2026-04-14",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.18,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "LRCX",
+            "SLB",
+            "HPE",
+            "BKR",
+            "DAL",
+            "ALB",
+            "LYV",
+            "FDS"
+          ]
+        },
+        {
+          "date": "2026-04-15",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "LRCX",
+            "HPE",
+            "LITE",
+            "DAL",
+            "SLB",
+            "WDC",
+            "LYV",
+            "CCL",
+            "AMZN",
+            "DELL"
+          ]
+        },
+        {
+          "date": "2026-04-16",
+          "regime": "risk_on",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "AVGO",
+            "SNDK",
+            "SLB",
+            "DAL",
+            "HUBB",
+            "GLW",
+            "LITE",
+            "LRCX",
+            "FDS",
+            "AMD"
+          ]
+        }
+      ],
+      "trade_count": 35
+    },
+    "strategy_d": {
+      "label": "Top 3 집중",
+      "description": "상위 3종목만 균등 매수 + Verdict≠STOP. 집중 포트폴리오로 알파 극대화 시도",
+      "color": "#a78bfa",
+      "metrics": {
+        "cumulative_return": 25.6,
+        "annualized_return": 280.37,
+        "sharpe": 2.468,
+        "max_drawdown": -34.06,
+        "win_rate": 54.3,
+        "alpha_vs_spy": 262.92
+      },
+      "equity_curve": [
+        {
+          "date": "2026-02-17",
+          "value": 10601.23,
+          "invested": true
+        },
+        {
+          "date": "2026-02-18",
+          "value": 10928.72,
+          "invested": true
+        },
+        {
+          "date": "2026-02-19",
+          "value": 11511.8,
+          "invested": true
+        },
+        {
+          "date": "2026-02-20",
+          "value": 12119.66,
+          "invested": true
+        },
+        {
+          "date": "2026-02-23",
+          "value": 12298.22,
+          "invested": true
+        },
+        {
+          "date": "2026-02-24",
+          "value": 12294.85,
+          "invested": true
+        },
+        {
+          "date": "2026-02-25",
+          "value": 12388.37,
+          "invested": true
+        },
+        {
+          "date": "2026-02-26",
+          "value": 12112.87,
+          "invested": true
+        },
+        {
+          "date": "2026-02-27",
+          "value": 11783.21,
+          "invested": true
+        },
+        {
+          "date": "2026-03-02",
+          "value": 10695.18,
+          "invested": true
+        },
+        {
+          "date": "2026-03-03",
+          "value": 9927.6,
+          "invested": true
+        },
+        {
+          "date": "2026-03-04",
+          "value": 9655.36,
+          "invested": true
+        },
+        {
+          "date": "2026-03-05",
+          "value": 9632.58,
+          "invested": true
+        },
+        {
+          "date": "2026-03-06",
+          "value": 9374.16,
+          "invested": true
+        },
+        {
+          "date": "2026-03-09",
+          "value": 9285.43,
+          "invested": true
+        },
+        {
+          "date": "2026-03-10",
+          "value": 9141.41,
+          "invested": true
+        },
+        {
+          "date": "2026-03-11",
+          "value": 9341.26,
+          "invested": true
+        },
+        {
+          "date": "2026-03-12",
+          "value": 9341.26,
+          "invested": false
+        },
+        {
+          "date": "2026-03-13",
+          "value": 9341.26,
+          "invested": false
+        },
+        {
+          "date": "2026-03-16",
+          "value": 9604.77,
+          "invested": true
+        },
+        {
+          "date": "2026-03-17",
+          "value": 9444.48,
+          "invested": true
+        },
+        {
+          "date": "2026-03-18",
+          "value": 9444.48,
+          "invested": false
+        },
+        {
+          "date": "2026-03-19",
+          "value": 9813.16,
+          "invested": true
+        },
+        {
+          "date": "2026-03-20",
+          "value": 9813.16,
+          "invested": false
+        },
+        {
+          "date": "2026-03-23",
+          "value": 9813.16,
+          "invested": false
+        },
+        {
+          "date": "2026-03-24",
+          "value": 9813.16,
+          "invested": false
+        },
+        {
+          "date": "2026-03-25",
+          "value": 8551.87,
+          "invested": true
+        },
+        {
+          "date": "2026-03-26",
+          "value": 8168.94,
+          "invested": true
+        },
+        {
+          "date": "2026-03-27",
+          "value": 8168.94,
+          "invested": false
+        },
+        {
+          "date": "2026-03-30",
+          "value": 8168.94,
+          "invested": false
+        },
+        {
+          "date": "2026-03-31",
+          "value": 8317.78,
+          "invested": true
+        },
+        {
+          "date": "2026-04-01",
+          "value": 8669.37,
+          "invested": true
+        },
+        {
+          "date": "2026-04-02",
+          "value": 9177.89,
+          "invested": true
+        },
+        {
+          "date": "2026-04-06",
+          "value": 10535.78,
+          "invested": true
+        },
+        {
+          "date": "2026-04-07",
+          "value": 10853.44,
+          "invested": true
+        },
+        {
+          "date": "2026-04-08",
+          "value": 11400.25,
+          "invested": true
+        },
+        {
+          "date": "2026-04-09",
+          "value": 12169.42,
+          "invested": true
+        },
+        {
+          "date": "2026-04-10",
+          "value": 12331.31,
+          "invested": true
+        },
+        {
+          "date": "2026-04-12",
+          "value": 12797.62,
+          "invested": true
+        },
+        {
+          "date": "2026-04-13",
+          "value": 12856.67,
+          "invested": true
+        },
+        {
+          "date": "2026-04-14",
+          "value": 12560.41,
+          "invested": true
+        },
+        {
+          "date": "2026-04-15",
+          "value": 12560.41,
+          "invested": true
+        },
+        {
+          "date": "2026-04-16",
+          "value": 12560.41,
+          "invested": true
+        }
+      ],
+      "signal_log": [
+        {
+          "date": "2026-02-17",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 6.01,
+          "tickers": [
+            "TER",
+            "WDC",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-02-18",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.09,
+          "tickers": [
+            "TER",
+            "WDC",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-02-19",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 5.34,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-02-20",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 5.28,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-02-23",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.47,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-02-24",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.03,
+          "tickers": [
+            "TER",
+            "LITE",
+            "BKR"
+          ]
+        },
+        {
+          "date": "2026-02-25",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.76,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-02-26",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.22,
+          "tickers": [
+            "TER",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-02-27",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.72,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-03-02",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -9.23,
+          "tickers": [
+            "TER",
+            "DELL",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-03",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -7.18,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "EIX"
+          ]
+        },
+        {
+          "date": "2026-03-04",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.74,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "FDS"
+          ]
+        },
+        {
+          "date": "2026-03-05",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.24,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-03-06",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.68,
+          "tickers": [
+            "DELL",
+            "FDS",
+            "UNH"
+          ]
+        },
+        {
+          "date": "2026-03-09",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -0.95,
+          "tickers": [
+            "DELL",
+            "LYV",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-03-10",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.55,
+          "tickers": [
+            "DELL",
+            "AMZN",
+            "LYV"
+          ]
+        },
+        {
+          "date": "2026-03-11",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 2.19,
+          "tickers": [
+            "SNDK",
+            "DELL",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-12",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "AMZN",
+            "SNDK"
+          ]
+        },
+        {
+          "date": "2026-03-13",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-03-16",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 2.82,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-03-17",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -1.67,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "SNDK"
+          ]
+        },
+        {
+          "date": "2026-03-18",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "WDC"
+          ]
+        },
+        {
+          "date": "2026-03-19",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.9,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-20",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SNDK",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-23",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "LITE",
+            "WDC"
+          ]
+        },
+        {
+          "date": "2026-03-24",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-25",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -12.85,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-03-26",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -4.48,
+          "tickers": [
+            "DELL",
+            "HPE",
+            "SLB"
+          ]
+        },
+        {
+          "date": "2026-03-27",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "DELL",
+            "SLB",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-03-30",
+          "regime": "risk_off",
+          "gate": "CAUTION",
+          "verdict": "STOP",
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "SLB",
+            "DELL",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-03-31",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.82,
+          "tickers": [
+            "SLB",
+            "FDS",
+            "AMZN"
+          ]
+        },
+        {
+          "date": "2026-04-01",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 4.23,
+          "tickers": [
+            "FDS",
+            "WDC",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-04-02",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 5.87,
+          "tickers": [
+            "LITE",
+            "SNDK",
+            "FDS"
+          ]
+        },
+        {
+          "date": "2026-04-06",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 14.8,
+          "tickers": [
+            "WDC",
+            "LITE",
+            "SNDK"
+          ]
+        },
+        {
+          "date": "2026-04-07",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.02,
+          "tickers": [
+            "UNH",
+            "WDC",
+            "DELL"
+          ]
+        },
+        {
+          "date": "2026-04-08",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 5.04,
+          "tickers": [
+            "LRCX",
+            "WDC",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-04-09",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 6.75,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "WDC"
+          ]
+        },
+        {
+          "date": "2026-04-10",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 1.33,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-04-12",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 3.78,
+          "tickers": [
+            "DAL",
+            "WDC",
+            "HPE"
+          ]
+        },
+        {
+          "date": "2026-04-13",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.46,
+          "tickers": [
+            "AMZN",
+            "LRCX",
+            "TER"
+          ]
+        },
+        {
+          "date": "2026-04-14",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": -2.3,
+          "tickers": [
+            "DELL",
+            "WDC",
+            "LRCX"
+          ]
+        },
+        {
+          "date": "2026-04-15",
+          "regime": "neutral",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "LRCX",
+            "HPE",
+            "LITE"
+          ]
+        },
+        {
+          "date": "2026-04-16",
+          "regime": "risk_on",
+          "gate": "CAUTION",
+          "verdict": "CAUTION",
+          "invested": true,
+          "daily_return_pct": 0.0,
+          "tickers": [
+            "AVGO",
+            "SNDK",
+            "SLB"
+          ]
+        }
+      ],
+      "trade_count": 35
+    },
+    "strategy_e": {
+      "label": "Grade A 단독",
+      "description": "당일 Grade A 종목만 편입 + Verdict≠STOP. 최우량 종목 집중 전략",
+      "color": "#f472b6",
+      "metrics": {
+        "cumulative_return": 17.28,
+        "annualized_return": 154.44,
+        "sharpe": 2.135,
+        "max_drawdown": -30.41,
+        "win_rate": 64.3,
+        "alpha_vs_spy": 136.99
       },
       "equity_curve": [
         {
@@ -1788,208 +3673,208 @@
         },
         {
           "date": "2026-02-19",
-          "value": 11454.65,
+          "value": 11551.41,
           "invested": true
         },
         {
           "date": "2026-02-20",
-          "value": 11798.21,
+          "value": 11930.72,
           "invested": true
         },
         {
           "date": "2026-02-23",
-          "value": 11896.43,
+          "value": 12030.04,
           "invested": true
         },
         {
           "date": "2026-02-24",
-          "value": 11866.89,
+          "value": 12000.17,
           "invested": true
         },
         {
           "date": "2026-02-25",
-          "value": 11871.86,
+          "value": 12091.45,
           "invested": true
         },
         {
           "date": "2026-02-26",
-          "value": 11312.1,
+          "value": 11729.57,
           "invested": true
         },
         {
           "date": "2026-02-27",
-          "value": 10949.8,
+          "value": 11293.34,
           "invested": true
         },
         {
           "date": "2026-03-02",
-          "value": 10092.26,
+          "value": 10250.54,
           "invested": true
         },
         {
           "date": "2026-03-03",
-          "value": 9564.63,
+          "value": 9292.75,
           "invested": true
         },
         {
           "date": "2026-03-04",
-          "value": 9295.48,
+          "value": 9000.38,
           "invested": true
         },
         {
           "date": "2026-03-05",
-          "value": 9148.35,
+          "value": 8833.29,
           "invested": true
         },
         {
           "date": "2026-03-06",
-          "value": 8990.43,
+          "value": 8886.96,
           "invested": true
         },
         {
           "date": "2026-03-09",
-          "value": 8746.3,
+          "value": 9093.2,
           "invested": true
         },
         {
           "date": "2026-03-10",
-          "value": 8534.51,
-          "invested": true
+          "value": 9093.2,
+          "invested": false
         },
         {
           "date": "2026-03-11",
-          "value": 8548.88,
+          "value": 9710.47,
           "invested": true
         },
         {
           "date": "2026-03-12",
-          "value": 8548.88,
+          "value": 9710.47,
           "invested": false
         },
         {
           "date": "2026-03-13",
-          "value": 8548.88,
+          "value": 9710.47,
           "invested": false
         },
         {
           "date": "2026-03-16",
-          "value": 8846.84,
+          "value": 10189.68,
           "invested": true
         },
         {
           "date": "2026-03-17",
-          "value": 8603.73,
+          "value": 10019.64,
           "invested": true
         },
         {
           "date": "2026-03-18",
-          "value": 8603.73,
+          "value": 10019.64,
           "invested": false
         },
         {
           "date": "2026-03-19",
-          "value": 8685.77,
+          "value": 10087.14,
           "invested": true
         },
         {
           "date": "2026-03-20",
-          "value": 8685.77,
+          "value": 10087.14,
           "invested": false
         },
         {
           "date": "2026-03-23",
-          "value": 8685.77,
+          "value": 10087.14,
           "invested": false
         },
         {
           "date": "2026-03-24",
-          "value": 8685.77,
+          "value": 10087.14,
           "invested": false
         },
         {
           "date": "2026-03-25",
-          "value": 7915.6,
+          "value": 8936.6,
           "invested": true
         },
         {
           "date": "2026-03-26",
-          "value": 7675.24,
+          "value": 8414.93,
           "invested": true
         },
         {
           "date": "2026-03-27",
-          "value": 7675.24,
+          "value": 8414.93,
           "invested": false
         },
         {
           "date": "2026-03-30",
-          "value": 7675.24,
+          "value": 8414.93,
           "invested": false
         },
         {
           "date": "2026-03-31",
-          "value": 7893.44,
-          "invested": true
+          "value": 8414.93,
+          "invested": false
         },
         {
           "date": "2026-04-01",
-          "value": 8212.26,
-          "invested": true
+          "value": 8414.93,
+          "invested": false
         },
         {
           "date": "2026-04-02",
-          "value": 8849.79,
+          "value": 8908.53,
           "invested": true
         },
         {
           "date": "2026-04-06",
-          "value": 9775.61,
+          "value": 9729.07,
           "invested": true
         },
         {
           "date": "2026-04-07",
-          "value": 10535.65,
+          "value": 10485.49,
           "invested": true
         },
         {
           "date": "2026-04-08",
-          "value": 10951.56,
+          "value": 10899.42,
           "invested": true
         },
         {
           "date": "2026-04-09",
-          "value": 11454.67,
+          "value": 11400.14,
           "invested": true
         },
         {
           "date": "2026-04-10",
-          "value": 11644.85,
+          "value": 11589.41,
           "invested": true
         },
         {
           "date": "2026-04-12",
-          "value": 12088.22,
-          "invested": true
+          "value": 11589.41,
+          "invested": false
         },
         {
           "date": "2026-04-13",
-          "value": 12232.26,
+          "value": 11727.51,
           "invested": true
         },
         {
           "date": "2026-04-14",
-          "value": 12122.32,
-          "invested": true
+          "value": 11727.51,
+          "invested": false
         },
         {
           "date": "2026-04-15",
-          "value": 12122.32,
-          "invested": true
+          "value": 11727.51,
+          "invested": false
         },
         {
           "date": "2026-04-16",
-          "value": 12122.32,
-          "invested": true
+          "value": 11727.51,
+          "invested": false
         }
       ],
       "signal_log": [
@@ -2029,13 +3914,11 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 4.45,
+          "daily_return_pct": 5.34,
           "tickers": [
             "TER",
             "LITE",
-            "EIX",
-            "BKR",
-            "SNDK"
+            "EIX"
           ]
         },
         {
@@ -2044,13 +3927,12 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 3.0,
+          "daily_return_pct": 3.28,
           "tickers": [
             "TER",
             "LITE",
             "EIX",
-            "SNDK",
-            "LRCX"
+            "SNDK"
           ]
         },
         {
@@ -2089,13 +3971,11 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 0.04,
+          "daily_return_pct": 0.76,
           "tickers": [
             "TER",
             "LITE",
-            "EIX",
-            "BKR",
-            "SNDK"
+            "EIX"
           ]
         },
         {
@@ -2104,13 +3984,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -4.71,
+          "daily_return_pct": -2.99,
           "tickers": [
             "TER",
-            "LITE",
-            "EIX",
-            "BKR",
-            "SNDK"
+            "LITE"
           ]
         },
         {
@@ -2119,13 +3996,12 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -3.2,
+          "daily_return_pct": -3.72,
           "tickers": [
             "DELL",
             "LITE",
             "TER",
-            "BKR",
-            "EIX"
+            "BKR"
           ]
         },
         {
@@ -2134,13 +4010,11 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -7.83,
+          "daily_return_pct": -9.23,
           "tickers": [
             "TER",
             "DELL",
-            "LITE",
-            "BKR",
-            "EIX"
+            "LITE"
           ]
         },
         {
@@ -2149,13 +4023,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -5.23,
+          "daily_return_pct": -9.34,
           "tickers": [
             "DELL",
-            "LITE",
-            "EIX",
-            "UNH",
-            "LYV"
+            "LITE"
           ]
         },
         {
@@ -2164,13 +4035,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -2.81,
+          "daily_return_pct": -3.15,
           "tickers": [
             "DELL",
-            "LITE",
-            "FDS",
-            "EIX",
-            "UNH"
+            "LITE"
           ]
         },
         {
@@ -2179,13 +4047,9 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -1.58,
+          "daily_return_pct": -1.86,
           "tickers": [
-            "DELL",
-            "LITE",
-            "AMZN",
-            "FDS",
-            "UNH"
+            "DELL"
           ]
         },
         {
@@ -2194,13 +4058,9 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -1.73,
+          "daily_return_pct": 0.61,
           "tickers": [
-            "DELL",
-            "FDS",
-            "UNH",
-            "AMZN",
-            "EIX"
+            "DELL"
           ]
         },
         {
@@ -2209,13 +4069,9 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -2.72,
+          "daily_return_pct": 2.32,
           "tickers": [
-            "DELL",
-            "LYV",
-            "AMZN",
-            "FDS",
-            "UNH"
+            "DELL"
           ]
         },
         {
@@ -2223,15 +4079,9 @@
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
-          "daily_return_pct": -2.42,
-          "tickers": [
-            "DELL",
-            "AMZN",
-            "LYV",
-            "LITE",
-            "UNH"
-          ]
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": []
         },
         {
           "date": "2026-03-11",
@@ -2239,13 +4089,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 0.17,
+          "daily_return_pct": 6.79,
           "tickers": [
             "SNDK",
-            "DELL",
-            "LITE",
-            "AMZN",
-            "LYV"
+            "DELL"
           ]
         },
         {
@@ -2256,11 +4103,7 @@
           "invested": false,
           "daily_return_pct": 0.0,
           "tickers": [
-            "DELL",
-            "AMZN",
-            "SNDK",
-            "UNH",
-            "LYV"
+            "DELL"
           ]
         },
         {
@@ -2271,11 +4114,7 @@
           "invested": false,
           "daily_return_pct": 0.0,
           "tickers": [
-            "DELL",
-            "SNDK",
-            "AMZN",
-            "WDC",
-            "LITE"
+            "DELL"
           ]
         },
         {
@@ -2284,13 +4123,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 3.49,
+          "daily_return_pct": 4.93,
           "tickers": [
             "DELL",
-            "SNDK",
-            "AMZN",
-            "WDC",
-            "UNH"
+            "SNDK"
           ]
         },
         {
@@ -2299,13 +4135,11 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -2.75,
+          "daily_return_pct": -1.67,
           "tickers": [
             "DELL",
             "WDC",
-            "SNDK",
-            "AMZN",
-            "UNH"
+            "SNDK"
           ]
         },
         {
@@ -2318,9 +4152,7 @@
           "tickers": [
             "DELL",
             "SNDK",
-            "WDC",
-            "LITE",
-            "AMZN"
+            "WDC"
           ]
         },
         {
@@ -2329,13 +4161,12 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 0.95,
+          "daily_return_pct": 0.67,
           "tickers": [
             "DELL",
             "WDC",
             "LITE",
-            "SNDK",
-            "LRCX"
+            "SNDK"
           ]
         },
         {
@@ -2346,11 +4177,7 @@
           "invested": false,
           "daily_return_pct": 0.0,
           "tickers": [
-            "DELL",
-            "SNDK",
-            "LITE",
-            "WDC",
-            "FDS"
+            "DELL"
           ]
         },
         {
@@ -2361,11 +4188,7 @@
           "invested": false,
           "daily_return_pct": 0.0,
           "tickers": [
-            "DELL",
-            "LITE",
-            "WDC",
-            "BKR",
-            "AMZN"
+            "DELL"
           ]
         },
         {
@@ -2378,9 +4201,7 @@
           "tickers": [
             "DELL",
             "HPE",
-            "LITE",
-            "LRCX",
-            "WDC"
+            "LITE"
           ]
         },
         {
@@ -2389,13 +4210,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -8.87,
+          "daily_return_pct": -11.41,
           "tickers": [
             "DELL",
-            "HPE",
-            "LITE",
-            "SLB",
-            "AMZN"
+            "HPE"
           ]
         },
         {
@@ -2404,13 +4222,10 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": -3.04,
+          "daily_return_pct": -5.84,
           "tickers": [
             "DELL",
-            "HPE",
-            "SLB",
-            "AMZN",
-            "BKR"
+            "HPE"
           ]
         },
         {
@@ -2423,9 +4238,7 @@
           "tickers": [
             "DELL",
             "SLB",
-            "HPE",
-            "ALB",
-            "BKR"
+            "HPE"
           ]
         },
         {
@@ -2435,43 +4248,25 @@
           "verdict": "STOP",
           "invested": false,
           "daily_return_pct": 0.0,
-          "tickers": [
-            "SLB",
-            "DELL",
-            "HPE",
-            "ALB",
-            "AMZN"
-          ]
+          "tickers": []
         },
         {
           "date": "2026-03-31",
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
-          "daily_return_pct": 2.84,
-          "tickers": [
-            "SLB",
-            "FDS",
-            "AMZN",
-            "HPE",
-            "DELL"
-          ]
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": []
         },
         {
           "date": "2026-04-01",
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
-          "daily_return_pct": 4.04,
-          "tickers": [
-            "FDS",
-            "WDC",
-            "LITE",
-            "SNDK",
-            "DELL"
-          ]
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": []
         },
         {
           "date": "2026-04-02",
@@ -2479,13 +4274,11 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 7.76,
+          "daily_return_pct": 5.87,
           "tickers": [
             "LITE",
             "SNDK",
-            "FDS",
-            "DELL",
-            "WDC"
+            "FDS"
           ]
         },
         {
@@ -2494,13 +4287,12 @@
           "gate": "CAUTION",
           "verdict": "CAUTION",
           "invested": true,
-          "daily_return_pct": 10.46,
+          "daily_return_pct": 9.21,
           "tickers": [
             "WDC",
             "LITE",
             "SNDK",
-            "FDS",
-            "TER"
+            "FDS"
           ]
         },
         {
@@ -2568,15 +4360,9 @@
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
-          "daily_return_pct": 3.81,
-          "tickers": [
-            "DAL",
-            "WDC",
-            "HPE",
-            "CCL",
-            "SNDK"
-          ]
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": []
         },
         {
           "date": "2026-04-13",
@@ -2598,48 +4384,30 @@
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
-          "daily_return_pct": -0.9,
-          "tickers": [
-            "DELL",
-            "WDC",
-            "LRCX",
-            "SLB",
-            "HPE"
-          ]
+          "invested": false,
+          "daily_return_pct": 0.0,
+          "tickers": []
         },
         {
           "date": "2026-04-15",
           "regime": "neutral",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
+          "invested": false,
           "daily_return_pct": 0.0,
-          "tickers": [
-            "LRCX",
-            "HPE",
-            "LITE",
-            "DAL",
-            "SLB"
-          ]
+          "tickers": []
         },
         {
           "date": "2026-04-16",
           "regime": "risk_on",
           "gate": "CAUTION",
           "verdict": "CAUTION",
-          "invested": true,
+          "invested": false,
           "daily_return_pct": 0.0,
-          "tickers": [
-            "AVGO",
-            "SNDK",
-            "SLB",
-            "DAL",
-            "HUBB"
-          ]
+          "tickers": []
         }
       ],
-      "trade_count": 35
+      "trade_count": 28
     }
   },
   "spy_curve": [

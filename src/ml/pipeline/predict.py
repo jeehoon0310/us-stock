@@ -24,7 +24,11 @@ OUTPUT_DIR = REPO_ROOT / "output"
 def load_latest_model(target: str = "fwd_20d_rank") -> tuple["lgb.Booster", dict]:
     """최신 모델 + metadata 로드."""
     files = sorted(MODELS_DIR.glob(f"lgbm_{target}_*.pkl"))
-    assert files, f"No model for {target} in {MODELS_DIR}"
+    if not files:
+        raise FileNotFoundError(
+            f"모델 파일 없음: {target} in {MODELS_DIR}. 먼저 학습을 실행하세요. "
+            f"(python -m ml.pipeline.train)"
+        )
     model_path = files[-1]
     meta_path = model_path.with_suffix(".json")
 
@@ -37,7 +41,11 @@ def load_latest_model(target: str = "fwd_20d_rank") -> tuple["lgb.Booster", dict
 def load_latest_features() -> pd.DataFrame:
     """최신 equity features parquet 로드."""
     files = sorted(EQUITY_DIR.glob("equity_features_*.parquet"))
-    assert files, f"No features in {EQUITY_DIR}"
+    if not files:
+        raise FileNotFoundError(
+            f"피처 파일 없음: {EQUITY_DIR}. 먼저 피처 빌드를 실행하세요. "
+            f"(python -m ml.features.equity.build_equity_features)"
+        )
     df = pd.read_parquet(files[-1])
     logger.info("피처 로드: %s (%d rows)", files[-1].name, len(df))
     return df

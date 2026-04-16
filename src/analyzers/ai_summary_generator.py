@@ -123,8 +123,8 @@ def build_analysis_prompt(ticker: str, data: dict, news: list,
     "rsi": {data.get('rsi', 50)},
     "inst_pct": {data.get('inst_pct', 0)}
   }},
-  "recommendation": "BUY / HOLD / SELL",
-  "confidence": 0
+  "recommendation": "STRONG_BUY / BUY / HOLD / SELL / STRONG_SELL",
+  "confidence": 50
 }}
 ```"""
 

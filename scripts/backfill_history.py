@@ -128,9 +128,9 @@ def main():
         target = _dt.strptime(args.date, "%Y%m%d").date()
         to_run = [target]
     else:
-        # 2달치: Feb 17 ~ Apr 14 (Presidents Day Feb 16 제외)
-        start = date(2026, 2, 17)
-        end = date(2026, 4, 14)
+        # 기본: 오늘 기준 최근 60 거래일 (--start/--end로 범위 지정 가능)
+        end = date.today() - timedelta(days=1)
+        start = end - timedelta(days=90)  # 60 거래일 확보를 위해 90 캘린더일 소급
         trading = get_trading_days(start, end)
         to_run = missing_dates(trading)
 

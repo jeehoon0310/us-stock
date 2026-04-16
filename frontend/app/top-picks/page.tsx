@@ -94,25 +94,29 @@ export default function TopPicksPage() {
   }, []);
 
   return (
+    <>
+      {/* Report Date bar */}
+      <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary text-lg">star</span>
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Report Date</span>
+        </div>
+        <CalendarPicker
+          value={date}
+          availableDates={availableDates}
+          onChange={(d) => void loadReport(d)}
+          onShift={shiftDate}
+          status={status !== "로딩 중..." ? status : undefined}
+        />
+      </div>
     <section className="bg-surface-container-low rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h3 className="text-xl font-bold tracking-tight">Smart Money Top 10</h3>
-            <p className="text-xs text-on-surface-variant font-medium">
-              Institutional flow &amp; AI scoring · {screened} screened
-            </p>
-          </div>
-
-          {/* Date navigation */}
-          <CalendarPicker
-            value={date}
-            availableDates={availableDates}
-            onChange={(d) => void loadReport(d)}
-            onShift={shiftDate}
-            status={status}
-          />
+        <div>
+          <h3 className="text-xl font-bold tracking-tight">Smart Money Top 10</h3>
+          <p className="text-xs text-on-surface-variant font-medium">
+            Institutional flow &amp; AI scoring · {screened} screened
+          </p>
         </div>
       </div>
 
@@ -268,5 +272,6 @@ export default function TopPicksPage() {
         </div>
       )}
     </section>
+    </>
   );
 }

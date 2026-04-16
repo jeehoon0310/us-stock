@@ -115,7 +115,13 @@ export default function RiskPage() {
   return (
     <div>
       {/* ── 날짜 네비게이터 ── */}
-      <div className="mb-4 flex justify-center">
+      <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+            Report Date
+          </span>
+        </div>
         <CalendarPicker
           value={date}
           availableDates={availableDates}

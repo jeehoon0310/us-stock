@@ -1,4 +1,5 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -114,6 +115,13 @@ class EnhancedSmartMoneyScreener:
         if ticker not in self._info_cache:
             self._info_cache[ticker] = self.fetcher.get_info(ticker)
         return self._info_cache[ticker]
+
+    def _prefetch_ticker_data(self, ticker: str) -> None:
+        """ThreadPoolExecutor에서 호출 — yfinance info 사전 로드."""
+        try:
+            self._get_info_cached(ticker)
+        except Exception:
+            pass
 
     def get_relative_strength(self, ticker: str) -> float:
         """다기간 RS — 20d(0.2) + 60d(0.3) + 120d(0.5) 가중평균 (JP Morgan 권장 중기 모멘텀)."""
@@ -737,6 +745,15 @@ class EnhancedSmartMoneyScreener:
                 logger.error("volume_df 없고 sp500_list.csv도 없음 — 스크리닝 중단")
                 return None
         logger.info("스크리닝 시작: %d개 종목", len(tickers))
+
+        logger.info("종목 데이터 병렬 프리페치 시작 (max_workers=10)...")
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {executor.submit(self._prefetch_ticker_data, t): t for t in tickers}
+            for i, future in enumerate(as_completed(futures), 1):
+                if i % 50 == 0:
+                    logger.info("  프리페치 진행: %d/%d", i, len(tickers))
+        logger.info("프리페치 완료.")
+
         start = time.time()
 
         results = []

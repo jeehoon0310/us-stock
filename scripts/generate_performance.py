@@ -120,6 +120,8 @@ def simulate_strategy(
     close_df,
     trading_days: list,
     filter_fn,
+    picks_count: int = 5,
+    grade_filter: list[str] | None = None,
 ) -> dict:
     capital = 10_000.0
     equity_curve = []
@@ -133,7 +135,9 @@ def simulate_strategy(
         regime = mt.get("regime", "unknown")
         gate = mt.get("gate", "unknown")
         verdict = report.get("verdict", "unknown")
-        picks = report.get("stock_picks", [])[:5]
+        picks = report.get("stock_picks", [])[:picks_count]
+        if grade_filter:
+            picks = [p for p in picks if p.get("grade", "") in grade_filter]
         tickers = [p["ticker"] for p in picks if p.get("ticker")]
 
         invested = filter_fn(report) and bool(tickers)
@@ -287,20 +291,39 @@ def main():
             "filter": lambda r: r.get("verdict", "") != "STOP",
         },
         "strategy_c": {
-            "label": "중립 이상 + 비STOP",
-            "description": "Regime=risk_on/neutral이고 Verdict≠STOP인 날 투자",
+            "label": "Top 10 분산",
+            "description": "Verdict≠STOP인 날 Top 10 종목 균등 분산. 집중 위험 최소화",
             "color": "#4ade80",
-            "filter": lambda r: (
-                r.get("market_timing", {}).get("regime", "") in ("risk_on", "neutral")
-                and r.get("verdict", "") != "STOP"
-            ),
+            "filter": lambda r: r.get("verdict", "") != "STOP",
+            "picks_count": 10,
+            "grade_filter": None,
+        },
+        "strategy_d": {
+            "label": "Top 3 집중",
+            "description": "상위 3종목만 균등 매수 + Verdict≠STOP. 집중 포트폴리오로 알파 극대화 시도",
+            "color": "#a78bfa",
+            "filter": lambda r: r.get("verdict", "") != "STOP",
+            "picks_count": 3,
+            "grade_filter": None,
+        },
+        "strategy_e": {
+            "label": "Grade A 단독",
+            "description": "당일 Grade A 종목만 편입 + Verdict≠STOP. 최우량 종목 집중 전략",
+            "color": "#f472b6",
+            "filter": lambda r: r.get("verdict", "") != "STOP",
+            "picks_count": 5,
+            "grade_filter": ["A"],
         },
     }
 
     result_strategies: dict = {}
     for key, cfg in strategies_cfg.items():
         print(f"\n{key} 시뮬레이션...")
-        sim = simulate_strategy(reports, close_df, trading_days, cfg["filter"])
+        sim = simulate_strategy(
+            reports, close_df, trading_days, cfg["filter"],
+            picks_count=cfg.get("picks_count", 5),
+            grade_filter=cfg.get("grade_filter"),
+        )
         alpha = round(sim["metrics"]["annualized_return"] - spy_ann_ret, 2)
         sim["metrics"]["alpha_vs_spy"] = alpha
         result_strategies[key] = {

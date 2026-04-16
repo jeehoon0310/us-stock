@@ -4,12 +4,12 @@ import { usePathname } from "next/navigation";
 
 const NAV = [
   { href: "/", icon: "dashboard", label: "Overview", key: "dashboard" },
-  { href: "/risk", icon: "security", label: "Risk Monitor", key: "risk" },
   { href: "/regime", icon: "analytics", label: "Market Regime", key: "regime" },
   { href: "/top-picks", icon: "star", label: "Top Picks", key: "top10" },
   { href: "/ai", icon: "psychology", label: "AI Analysis", key: "ai" },
   { href: "/forecast", icon: "insights", label: "Index Forecast", key: "prediction" },
   { href: "/ml", icon: "leaderboard", label: "ML Rankings", key: "gbm" },
+  { href: "/risk", icon: "security", label: "Risk Monitor", key: "risk" },
   { href: "/performance", icon: "trending_up", label: "Performance", key: "performance" },
   { href: "/graph", icon: "hub", label: "System Graph", key: "graph" },
   { href: "/ai-builder", icon: "smart_toy", label: "AI Builder", key: "ai-builder" },
@@ -18,12 +18,12 @@ const NAV = [
 
 const MOBILE_NAV = [
   { href: "/", icon: "dashboard", label: "Overview" },
-  { href: "/risk", icon: "security", label: "Risk" },
   { href: "/regime", icon: "analytics", label: "Regime" },
   { href: "/top-picks", icon: "star", label: "Picks" },
   { href: "/ai", icon: "psychology", label: "AI" },
   { href: "/forecast", icon: "insights", label: "Forecast" },
   { href: "/ml", icon: "leaderboard", label: "ML" },
+  { href: "/risk", icon: "security", label: "Risk" },
   { href: "/performance", icon: "trending_up", label: "Perf" },
   { href: "/graph", icon: "hub", label: "Graph" },
   { href: "/ai-builder", icon: "smart_toy", label: "Builder" },
@@ -84,17 +84,17 @@ export function MobileNav() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-low flex justify-around items-center h-16 z-50 border-t border-outline-variant/10">
+    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-low flex items-center h-16 z-50 border-t border-outline-variant/10 overflow-x-auto scrollbar-none">
       {MOBILE_NAV.map((item) => {
         const active = isActive(item.href);
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-col items-center ${active ? "text-primary" : "text-on-surface-variant"}`}
+            className={`flex flex-col items-center justify-center min-w-[56px] flex-shrink-0 h-full px-1 ${active ? "text-primary" : "text-on-surface-variant"}`}
           >
-            <span className="material-symbols-outlined">{item.icon}</span>
-            <span className="text-[10px] font-bold">{item.label}</span>
+            <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+            <span className="text-[9px] font-bold mt-0.5 leading-none">{item.label}</span>
           </Link>
         );
       })}
