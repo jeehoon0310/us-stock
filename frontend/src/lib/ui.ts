@@ -1,17 +1,18 @@
 // Shared UI helpers ported from dashboard/index.html
 
+// CSS 변수 참조 — 인라인 style로 사용 시 브라우저가 테마에 맞는 값으로 resolve
 export const C: Record<string, string> = {
-  risk_on: "#3fe56c",
-  neutral: "#fdd400",
-  risk_off: "#ffb4ab",
-  crisis: "#93000a",
+  risk_on: "var(--color-regime-risk-on)",
+  neutral: "var(--color-regime-neutral)",
+  risk_off: "var(--color-regime-risk-off)",
+  crisis:  "var(--color-regime-crisis)",
 };
 
 export const CB: Record<string, string> = {
-  risk_on: "rgba(63,229,108,.08)",
-  neutral: "rgba(253,212,0,.08)",
-  risk_off: "rgba(255,180,171,.08)",
-  crisis: "rgba(147,0,10,.08)",
+  risk_on: "var(--color-regime-risk-on-bg)",
+  neutral: "var(--color-regime-neutral-bg)",
+  risk_off: "var(--color-regime-risk-off-bg)",
+  crisis:  "var(--color-regime-crisis-bg)",
 };
 
 export const CG: Record<string, string> = {
@@ -34,7 +35,7 @@ export function gradeClass(g: string | undefined): string {
 }
 
 export function barColor(s: number): string {
-  if (s >= 80) return "bg-primary shadow-[0_0_8px_rgba(63,229,108,.5)]";
+  if (s >= 80) return "bg-primary glow-primary";
   if (s >= 60) return "bg-secondary";
   return "bg-error";
 }

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
   { href: "/", icon: "dashboard", label: "Overview", key: "dashboard" },
@@ -63,6 +64,9 @@ export function SideNav({ syncedAt }: { syncedAt: string }) {
         })}
       </nav>
       <div className="px-6 mt-auto">
+        <div className="flex justify-end mb-3">
+          <ThemeToggle />
+        </div>
         <div className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/10">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-primary animate-glow"></span>
