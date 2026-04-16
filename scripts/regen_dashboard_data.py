@@ -77,7 +77,7 @@ def save_market_gate_json(gate=None, session=None) -> Path:
     if not spy_hist.empty:
         close = spy_hist["Close"]
         volume = spy_hist["Volume"]
-        divergence = detect_volume_price_divergence(close, volume, lookback=10)
+        divergence = detect_volume_price_divergence(spy_hist)
         if len(close) >= 11 and len(volume) >= 20:
             vol_avg20 = float(volume.rolling(20).mean().iloc[-1])
             vol_recent_2d = float(volume.iloc[-2:].mean())

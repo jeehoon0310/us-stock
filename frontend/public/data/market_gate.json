@@ -1,135 +1,138 @@
 {
   "gate": "CAUTION",
-  "score": 56.5,
+  "score": 54.8,
   "reasons": [
-    "섹터 평균 점수 56.5점 — 혼조세",
-    "강세 7개 / 약세 1개 섹터"
+    "섹터 평균 점수 54.8점 — 혼조세",
+    "강세 6개 / 약세 1개 섹터",
+    "SPY 다이버전스 경고: bearish_div"
   ],
   "metrics": {
-    "avg_score": 56.5,
-    "bullish_sectors": 7,
+    "avg_score": 54.8,
+    "bullish_sectors": 6,
     "bearish_sectors": 1,
     "top_sector": "Technology",
-    "bottom_sector": "Energy"
+    "bottom_sector": "Energy",
+    "divergence": "bearish_div",
+    "divergence_warning": true
   },
   "sectors": [
     {
       "name": "Technology",
       "ticker": "XLK",
-      "score": 67.3,
+      "score": 69.4,
       "signal": "BULLISH",
-      "price": 147.94,
+      "price": 150.3,
       "change_1d": 1.6,
-      "rsi": 68.11,
-      "rs_vs_spy": 0.0234
+      "rsi": 70.89,
+      "rs_vs_spy": 0.0297
     },
     {
       "name": "Health Care",
       "ticker": "XLV",
-      "score": 51.2,
+      "score": 47.1,
       "signal": "NEUTRAL",
-      "price": 148.83,
-      "change_1d": 0.58,
-      "rsi": 50.65,
-      "rs_vs_spy": -0.0394
+      "price": 147.77,
+      "change_1d": -0.71,
+      "rsi": 47.37,
+      "rs_vs_spy": -0.0527
     },
     {
       "name": "Financials",
       "ticker": "XLF",
-      "score": 63.8,
+      "score": 64.5,
       "signal": "BULLISH",
-      "price": 51.78,
-      "change_1d": 0.23,
-      "rsi": 63.14,
-      "rs_vs_spy": 0.0121
+      "price": 52.17,
+      "change_1d": 0.75,
+      "rsi": 65.51,
+      "rs_vs_spy": 0.0097
     },
     {
       "name": "Cons Disc",
       "ticker": "XLY",
-      "score": 62.2,
+      "score": 65.5,
       "signal": "BULLISH",
-      "price": 116.44,
-      "change_1d": 2.21,
-      "rsi": 62.29,
-      "rs_vs_spy": -0.0072
+      "price": 118.18,
+      "change_1d": 1.49,
+      "rsi": 65.45,
+      "rs_vs_spy": 0.0099
     },
     {
       "name": "Cons Staples",
       "ticker": "XLP",
-      "score": 45.1,
+      "score": 43.4,
       "signal": "NEUTRAL",
-      "price": 81.47,
-      "change_1d": -0.1,
-      "rsi": 42.45,
-      "rs_vs_spy": -0.0708
+      "price": 81.06,
+      "change_1d": -0.5,
+      "rsi": 40.53,
+      "rs_vs_spy": -0.0747
     },
     {
       "name": "Energy",
       "ticker": "XLE",
-      "score": 28.3,
+      "score": 21.8,
       "signal": "BEARISH",
-      "price": 55.95,
-      "change_1d": -2.03,
-      "rsi": 39.43,
-      "rs_vs_spy": -0.0756
+      "price": 55.76,
+      "change_1d": -0.34,
+      "rsi": 38.66,
+      "rs_vs_spy": -0.1006
     },
     {
       "name": "Industrials",
       "ticker": "XLI",
-      "score": 60.3,
+      "score": 60.9,
       "signal": "BULLISH",
-      "price": 173.35,
-      "change_1d": 0.36,
-      "rsi": 62.76,
-      "rs_vs_spy": 0.006
+      "price": 171.18,
+      "change_1d": -1.25,
+      "rsi": 57.43,
+      "rs_vs_spy": -0.0219
     },
     {
       "name": "Materials",
       "ticker": "XLB",
-      "score": 63.4,
+      "score": 67.1,
       "signal": "BULLISH",
-      "price": 52.01,
-      "change_1d": -0.34,
-      "rsi": 63.82,
-      "rs_vs_spy": 0.0168
+      "price": 51.38,
+      "change_1d": -1.21,
+      "rsi": 57.52,
+      "rs_vs_spy": 0.0034
     },
     {
       "name": "Real Estate",
       "ticker": "XLRE",
-      "score": 62.5,
-      "signal": "BULLISH",
-      "price": 43.43,
-      "change_1d": 0.95,
-      "rsi": 68.95,
-      "rs_vs_spy": -0.0147
+      "score": 59.6,
+      "signal": "NEUTRAL",
+      "price": 43.41,
+      "change_1d": -0.05,
+      "rsi": 68.61,
+      "rs_vs_spy": -0.0211
     },
     {
       "name": "Utilities",
       "ticker": "XLU",
-      "score": 56.9,
+      "score": 41.8,
       "signal": "NEUTRAL",
-      "price": 46.47,
-      "change_1d": 0.17,
-      "rsi": 54.59,
-      "rs_vs_spy": -0.0452
+      "price": 46.02,
+      "change_1d": -0.97,
+      "rsi": 49.14,
+      "rs_vs_spy": -0.0694
     },
     {
       "name": "Communication",
       "ticker": "XLC",
-      "score": 60.5,
+      "score": 61.3,
       "signal": "BULLISH",
-      "price": 116.56,
-      "change_1d": 1.52,
-      "rsi": 62.92,
-      "rs_vs_spy": -0.0246
+      "price": 117.36,
+      "change_1d": 0.69,
+      "rsi": 65.21,
+      "rs_vs_spy": -0.0253
     }
   ],
   "spy_divergence": {
     "signal": "bearish_div",
     "label": "약세 다이버전스 — 가격↑ + 거래량↓. 상승 동력 약화.",
     "severity": "warning",
-    "spy_price": 694.46,
-    "change_10d_pct": 9.89,
-    "vol_ratio_2d_vs_20d_avg": 0.63
+    "spy_price": 699.94,
+    "change_10d_pct": 7.63,
+    "vol_ratio_2d_vs_20d_avg": 0.68
   }
 }
