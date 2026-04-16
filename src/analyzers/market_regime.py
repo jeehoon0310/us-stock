@@ -34,7 +34,7 @@ class MarketRegimeDetector:
         try:
             df = yf.download(ticker, period=period, progress=False, session=self.yf_session)
             if df.empty:
-                logger.warning("데이터 없음: %s", ticker)
+                logger.debug("데이터 없음: %s", ticker)
                 return None
             series = df["Close"].squeeze()
             series.name = ticker

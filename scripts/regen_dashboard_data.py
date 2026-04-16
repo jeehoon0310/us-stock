@@ -40,7 +40,11 @@ def _divergence_label(signal: str) -> str:
         "bearish_climax": "약세 클라이맥스 — 고점에서 거래량 폭발 + 가격↑. 매도 신호.",
         "bullish_div": "강세 다이버전스 — 가격↓ + 거래량↓. 매도 압력 약화.",
         "bearish_div": "약세 다이버전스 — 가격↑ + 거래량↓. 상승 동력 약화.",
+        "volume_surge": "거래량 급증 — 가격↑ + 거래량↑. 강한 상승 추세.",
+        "volume_decline_bear": "강한 매도 — 가격↓ + 거래량↑. 매도 압력 지속.",
+        "normal": "특이 신호 없음",
         "none": "특이 신호 없음",
+        "insufficient_data": "데이터 부족",
     }.get(signal, "unknown")
 
 
@@ -50,7 +54,11 @@ def _divergence_severity(signal: str) -> str:
         "bearish_climax": "warning",
         "bullish_div": "opportunity",
         "bearish_div": "warning",
+        "volume_surge": "opportunity",
+        "volume_decline_bear": "warning",
+        "normal": "neutral",
         "none": "neutral",
+        "insufficient_data": "neutral",
     }.get(signal, "neutral")
 
 

@@ -87,7 +87,11 @@ def prepare_training_data(
     if target.endswith("_rank"):
         n_unique = y.nunique()
         if n_unique > 1:
-            y = (y - y.min()) / (y.max() - y.min())
+            # 날짜별 cross-sectional percentile rank — 미래 정보 누출 없음
+            if hasattr(y.index, "levels"):
+                y = y.groupby(level="date").rank(pct=True)
+            else:
+                y = y.rank(pct=True)
 
     # Group: 각 date의 종목 수
     group = df.groupby(level="date").size().sort_index().values

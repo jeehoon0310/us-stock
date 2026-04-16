@@ -219,6 +219,21 @@ class EnhancedSmartMoneyScreener:
         except Exception:
             return 50.0
 
+    def _get_short_term_reversal_score(self, ticker: str, days: int = 5) -> float:
+        """단기 반전 팩터 (Jegadeesh 1990): 최근 5일 하락종목 매수
+        많이 하락할수록 반전 기대 → 높은 점수
+        """
+        try:
+            hist = self.fetcher.get_history(ticker, period="1mo")
+            if hist.empty or len(hist) < days + 2:
+                return 50.0
+            recent_return = (hist["Close"].iloc[-1] / hist["Close"].iloc[-(days + 1)] - 1)
+            # -10% 하락 → 70점, 0% → 50점, +10% 상승 → 30점
+            score = 50.0 - recent_return * 200.0
+            return round(min(100.0, max(0.0, score)), 1)
+        except Exception:
+            return 50.0
+
     def _get_quality_score(self, ticker_info: dict) -> float:
         """간소화된 퀄리티 점수 (0-100)
 
@@ -636,9 +651,10 @@ class EnhancedSmartMoneyScreener:
             "fundamental": 0.20,
             "analyst": 0.15,
             "relative_strength": 0.15,
-            "volume": 0.10,   # 0.15 → 0.10 (momentum에 5% 양보)
+            "volume": 0.05,   # 0.15 → 0.05 (momentum/reversal에 양보)
             "13f": 0.10,
             "momentum": 0.05,  # Jegadeesh & Titman 12-1 모멘텀
+            "reversal": 0.05,  # Short-Term Reversal (Jegadeesh 1990)
         }
         scores = {
             "technical": tech["technical_score"],
@@ -648,6 +664,7 @@ class EnhancedSmartMoneyScreener:
             "volume": sd_score,
             "13f": f13_score,
             "momentum": momentum_score,
+            "reversal": self._get_short_term_reversal_score(ticker),
         }
         composite = sum(scores[k] * weights[k] for k in weights)
         composite = round(max(0, min(100, composite)), 1)
@@ -782,6 +799,18 @@ class EnhancedSmartMoneyScreener:
                     return grp
 
                 df_temp = df_temp.groupby("sector", group_keys=False).apply(sector_normalize)
+
+                # IT 섹터 hard cap (최대 5종목)
+                IT_SECTORS = {"Information Technology", "Technology"}
+                IT_CAP = 5
+                it_mask = df_temp["sector"].isin(IT_SECTORS)
+                if it_mask.sum() > IT_CAP:
+                    it_top = df_temp[it_mask].nlargest(IT_CAP, "composite_score")
+                    non_it = df_temp[~it_mask]
+                    df_temp = pd.concat([non_it, it_top]).sort_values(
+                        "composite_score", ascending=False
+                    ).reset_index(drop=True)
+
                 # 등급 재계산
                 def regrade(score):
                     if score >= 80: return "A", "Strong Accumulation"

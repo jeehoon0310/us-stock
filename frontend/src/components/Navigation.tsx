@@ -12,6 +12,7 @@ const NAV = [
   { href: "/ml", icon: "leaderboard", label: "ML Rankings", key: "gbm" },
   { href: "/costs", icon: "payments", label: "API Costs", key: "cost" },
   { href: "/performance", icon: "trending_up", label: "Performance", key: "performance" },
+  { href: "/graph", icon: "hub", label: "System Graph", key: "graph" },
 ];
 
 const MOBILE_NAV = [
@@ -24,6 +25,7 @@ const MOBILE_NAV = [
   { href: "/ml", icon: "leaderboard", label: "ML" },
   { href: "/costs", icon: "payments", label: "Cost" },
   { href: "/performance", icon: "trending_up", label: "Perf" },
+  { href: "/graph", icon: "hub", label: "Graph" },
 ];
 
 export function SideNav({ syncedAt }: { syncedAt: string }) {

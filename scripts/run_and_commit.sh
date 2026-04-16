@@ -2,7 +2,7 @@
 # us-stock daily pipeline + deploy via git-scraping
 # Runs on Mac (launchd / weekdays 07:00 KST), pushes JSON to git → GitHub Actions builds & deploys.
 set -euo pipefail
-cd /Users/frindle/workspace/education/us-stock
+cd /Users/frindle/workspace/synology/us-stock
 source .venv/bin/activate
 
 # --- Mac 알림 헬퍼 ---
@@ -70,6 +70,8 @@ mkdir -p logs frontend/public/data/reports
   cp output/latest_report.json "$DATA_DIR/"
   cp output/risk_alerts.json "$DATA_DIR/" 2>/dev/null || true
   cp output/reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
+  mkdir -p output/picks
+  cp result/smart_money_picks_*.csv output/picks/ 2>/dev/null || true
   # risk_dates_manifest.json 갱신 (날짜별 risk_alerts 파일 목록)
   python3 -c "
 import json, pathlib

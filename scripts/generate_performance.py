@@ -1,37 +1,231 @@
 #!/usr/bin/env python3
-"""Smart Money Top 10 수익률 시뮬레이션 생성.
+"""
+Smart Money Strategy Backtester
 
-오늘(Apr 14) 기준 Top 10 종목을 각 거래일에 균등 매입했을 때의
-현재까지 수익률을 yfinance 역사 데이터로 계산.
+43개 daily_report를 읽어 3가지 전략의 백테스트 시뮬레이션을 생성한다.
+각 진입일에 당일 Top10 종목 균등 매수, 5거래일 후 청산.
+SPY 벤치마크와 비교.
+
+전략:
+  A: 항상 투자 (baseline) — 매 리포트일 진입
+  B: STOP 신호 제외 — Verdict=STOP인 날 제외
+  C: Risk-On + 비STOP — Regime=risk_on AND Verdict≠STOP
 
 Usage:
     .venv/bin/python3 scripts/generate_performance.py
 """
 import json
-from datetime import date, timedelta
-from pathlib import Path
+import math
+import statistics
 import sys
+import datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = ROOT / "output" / "reports"
 FRONTEND_DATA = ROOT / "frontend" / "public" / "data"
 
-MARKET_HOLIDAYS_2026 = {
-    date(2026, 1, 1),   # New Year's Day
-    date(2026, 1, 19),  # MLK Day
-    date(2026, 2, 16),  # Presidents Day
-    date(2026, 4, 3),   # Good Friday
-}
+
+def load_all_reports(reports_dir: Path) -> list[dict]:
+    """daily_report_YYYYMMDD.json 전체 로드, 날짜순 정렬"""
+    reports = []
+    for f in sorted(reports_dir.glob("daily_report_2*.json")):
+        if f.name == "latest_report.json":
+            continue
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+            stem = f.stem.replace("daily_report_", "")  # "20260217"
+            date_str = f"{stem[:4]}-{stem[4:6]}-{stem[6:]}"
+            d["_date"] = date_str
+            reports.append(d)
+        except Exception as e:
+            print(f"[WARN] {f.name} 로드 실패: {e}")
+    return sorted(reports, key=lambda x: x["_date"])
 
 
-def get_trading_days(start: date, end: date) -> list[date]:
-    days = []
-    cur = start
-    while cur <= end:
-        if cur.weekday() < 5 and cur not in MARKET_HOLIDAYS_2026:
-            days.append(cur)
-        cur += timedelta(days=1)
-    return days
+def get_all_tickers(reports: list[dict]) -> set[str]:
+    tickers = {"SPY"}
+    for r in reports:
+        for p in r.get("stock_picks", [])[:5]:
+            t = p.get("ticker", "")
+            if t:
+                tickers.add(t)
+    return tickers
+
+
+def find_trading_day_idx(trading_days: list, target_str: str) -> int:
+    """target_str 이전/당일 마지막 유효 거래일 인덱스 반환. 없으면 -1."""
+    import pandas as pd
+    target_ts = pd.Timestamp(target_str)
+    for i in range(len(trading_days) - 1, -1, -1):
+        if trading_days[i] <= target_ts:
+            return i
+    return -1
+
+
+def calc_return(
+    entry_date_str: str,
+    tickers: list[str],
+    close_df,
+    trading_days: list,
+    hold_period: int = 3,
+) -> tuple[float, float]:
+    """
+    entry_date_str에 tickers 균등 매수, hold_period 거래일 후 청산.
+    Returns: (portfolio_return_pct, spy_return_pct)
+    """
+    import pandas as pd
+
+    entry_idx = find_trading_day_idx(trading_days, entry_date_str)
+    if entry_idx < 0:
+        return 0.0, 0.0
+
+    exit_idx = min(entry_idx + hold_period, len(trading_days) - 1)
+    if entry_idx == exit_idx:
+        return 0.0, 0.0
+
+    entry_day = trading_days[entry_idx]
+    exit_day = trading_days[exit_idx]
+
+    # SPY 수익률
+    spy_ret = 0.0
+    if "SPY" in close_df.columns:
+        spy_buy = float(close_df["SPY"].get(entry_day, float("nan")))
+        spy_sell = float(close_df["SPY"].get(exit_day, float("nan")))
+        if not (math.isnan(spy_buy) or math.isnan(spy_sell) or spy_buy == 0):
+            spy_ret = (spy_sell - spy_buy) / spy_buy * 100
+
+    # 포트폴리오 수익률
+    returns = []
+    for ticker in tickers:
+        if ticker not in close_df.columns:
+            continue
+        buy_p = close_df[ticker].get(entry_day, None)
+        sell_p = close_df[ticker].get(exit_day, None)
+        if buy_p is None or sell_p is None:
+            continue
+        buy_p = float(buy_p)
+        sell_p = float(sell_p)
+        if math.isnan(buy_p) or math.isnan(sell_p) or buy_p == 0:
+            continue
+        returns.append((sell_p - buy_p) / buy_p * 100)
+
+    if not returns:
+        return 0.0, round(spy_ret, 4)
+    return round(sum(returns) / len(returns), 4), round(spy_ret, 4)
+
+
+def simulate_strategy(
+    reports: list[dict],
+    close_df,
+    trading_days: list,
+    filter_fn,
+) -> dict:
+    capital = 10_000.0
+    equity_curve = []
+    signal_log = []
+    trade_returns: list[float] = []
+
+    running = capital
+    for report in reports:
+        date_str = report["_date"]
+        mt = report.get("market_timing", {})
+        regime = mt.get("regime", "unknown")
+        gate = mt.get("gate", "unknown")
+        verdict = report.get("verdict", "unknown")
+        picks = report.get("stock_picks", [])[:5]
+        tickers = [p["ticker"] for p in picks if p.get("ticker")]
+
+        invested = filter_fn(report) and bool(tickers)
+        daily_ret = 0.0
+
+        if invested:
+            port_ret, _ = calc_return(date_str, tickers, close_df, trading_days)
+            daily_ret = port_ret
+            running *= (1 + daily_ret / 100)
+            trade_returns.append(daily_ret)
+
+        equity_curve.append({
+            "date": date_str,
+            "value": round(running, 2),
+            "invested": invested,
+        })
+        signal_log.append({
+            "date": date_str,
+            "regime": regime,
+            "gate": gate,
+            "verdict": verdict,
+            "invested": invested,
+            "daily_return_pct": round(daily_ret, 2),
+            "tickers": tickers,
+        })
+
+    metrics = _calc_metrics(trade_returns, running, capital, len(reports))
+    return {
+        "equity_curve": equity_curve,
+        "signal_log": signal_log,
+        "metrics": metrics,
+        "trade_count": len(trade_returns),
+    }
+
+
+def _calc_metrics(
+    trade_returns: list[float],
+    final_capital: float,
+    initial_capital: float,
+    total_days: int,
+) -> dict:
+    cum_ret = (final_capital / initial_capital - 1) * 100
+    n = max(total_days, 1)
+    ann_ret = ((final_capital / initial_capital) ** (252 / n) - 1) * 100
+
+    if len(trade_returns) >= 2:
+        mean_r = statistics.mean(trade_returns)
+        std_r = statistics.stdev(trade_returns)
+        sharpe = (mean_r / std_r * (252 ** 0.5)) if std_r > 0 else 0.0
+    else:
+        sharpe = 0.0
+
+    wins = sum(1 for r in trade_returns if r > 0)
+    win_rate = (wins / len(trade_returns) * 100) if trade_returns else 0.0
+
+    peak = initial_capital
+    running = initial_capital
+    mdd = 0.0
+    for r in trade_returns:
+        running *= (1 + r / 100)
+        if running > peak:
+            peak = running
+        dd = (running - peak) / peak * 100
+        if dd < mdd:
+            mdd = dd
+
+    return {
+        "cumulative_return": round(cum_ret, 2),
+        "annualized_return": round(ann_ret, 2),
+        "sharpe": round(sharpe, 3),
+        "max_drawdown": round(mdd, 2),
+        "win_rate": round(win_rate, 1),
+    }
+
+
+def build_spy_curve(close_df, start_date_str: str) -> list[dict]:
+    import pandas as pd
+    if "SPY" not in close_df.columns:
+        return []
+    spy = close_df["SPY"].dropna()
+    start_ts = pd.Timestamp(start_date_str)
+    spy = spy[spy.index >= start_ts]
+    if spy.empty:
+        return []
+    base = float(spy.iloc[0])
+    if base == 0:
+        return []
+    return [
+        {"date": ts.strftime("%Y-%m-%d"), "value": round(10_000 * float(p) / base, 2)}
+        for ts, p in spy.items()
+        if not math.isnan(float(p))
+    ]
 
 
 def main():
@@ -39,102 +233,110 @@ def main():
         import yfinance as yf
         import pandas as pd
     except ImportError:
-        print("[ERROR] yfinance 또는 pandas 미설치")
+        print("[ERROR] yfinance / pandas 미설치")
         sys.exit(1)
 
-    # 1. 최신 리포트에서 Top 10 종목 추출
-    latest_path = REPORTS_DIR / "daily_report_20260414.json"
-    if not latest_path.exists():
-        # fallback: latest_report.json
-        latest_path = REPORTS_DIR / "latest_report.json"
-    data = json.loads(latest_path.read_text(encoding="utf-8"))
-    picks = data.get("stock_picks", [])[:10]
-    tickers = [p["ticker"] for p in picks]
-    ticker_meta = {p["ticker"]: p for p in picks}
+    print("=== Smart Money Strategy Backtester ===")
 
-    print(f"Top 10 종목: {tickers}")
-    print("yfinance 역사 데이터 다운로드 중 (2개월)...")
+    reports = load_all_reports(REPORTS_DIR)
+    if not reports:
+        print("[ERROR] daily_report 파일 없음")
+        sys.exit(1)
+    print(f"✓ {len(reports)}개 리포트 ({reports[0]['_date']} ~ {reports[-1]['_date']})")
 
-    # 2. 일별 종가 한 번에 다운로드
-    raw = yf.download(tickers, start="2026-02-10", end="2026-04-15",
-                      progress=False, auto_adjust=True)
+    all_tickers = get_all_tickers(reports)
+    print(f"✓ {len(all_tickers)}개 유니크 티커")
+
+    start_dl = (
+        datetime.date.fromisoformat(reports[0]["_date"]) - datetime.timedelta(days=10)
+    ).isoformat()
+    print(f"yfinance 다운로드 중... ({start_dl} ~ today)")
+
+    raw = yf.download(list(all_tickers), start=start_dl, progress=False, auto_adjust=True)
     if raw.empty:
         print("[ERROR] yfinance 데이터 없음")
         sys.exit(1)
 
-    close = raw["Close"] if "Close" in raw.columns else raw
+    close_df = raw["Close"] if "Close" in raw.columns else raw
+    # Flatten MultiIndex columns if present
+    if hasattr(close_df.columns, "levels"):
+        close_df.columns = close_df.columns.get_level_values(0)
 
-    # 3. 거래일 목록 (2달치)
-    trading_days = get_trading_days(date(2026, 2, 17), date(2026, 4, 14))
+    trading_days = list(close_df.index)
+    print(f"✓ {len(trading_days)}개 거래일")
 
-    # 4. 현재가 (최신 거래일)
-    current_row = close.iloc[-1]
-    current_date_str = close.index[-1].strftime("%Y-%m-%d")
+    # SPY 벤치마크
+    spy_curve = build_spy_curve(close_df, reports[0]["_date"])
+    spy_final = spy_curve[-1]["value"] if spy_curve else 10_000
+    spy_cum_ret = round((spy_final / 10_000 - 1) * 100, 2)
+    spy_ann_ret = round(
+        ((spy_final / 10_000) ** (252 / max(len(reports), 1)) - 1) * 100, 2
+    )
 
-    # 5. 각 매입 날짜별 수익률 계산
-    portfolios = []
-    for buy_date in trading_days:
-        buy_ts = pd.Timestamp(buy_date)
-        # 해당 날짜 이전 또는 당일 최근 거래일
-        valid = close.index[close.index <= buy_ts]
-        if len(valid) == 0:
-            continue
-        row = close.loc[valid[-1]]
+    strategies_cfg = {
+        "strategy_a": {
+            "label": "항상 투자 (Baseline)",
+            "description": "신호 무관, 매 리포트일 Top10 진입",
+            "color": "#94a3b8",
+            "filter": lambda r: True,
+        },
+        "strategy_b": {
+            "label": "STOP 신호 제외",
+            "description": "Verdict=STOP인 날 제외하고 투자",
+            "color": "#60a5fa",
+            "filter": lambda r: r.get("verdict", "") != "STOP",
+        },
+        "strategy_c": {
+            "label": "중립 이상 + 비STOP",
+            "description": "Regime=risk_on/neutral이고 Verdict≠STOP인 날 투자",
+            "color": "#4ade80",
+            "filter": lambda r: (
+                r.get("market_timing", {}).get("regime", "") in ("risk_on", "neutral")
+                and r.get("verdict", "") != "STOP"
+            ),
+        },
+    }
 
-        holdings = []
-        returns = []
-        for ticker in tickers:
-            buy_p = float(row.get(ticker, float("nan")))
-            cur_p = float(current_row.get(ticker, float("nan")))
-            import math
-            if math.isnan(buy_p) or math.isnan(cur_p) or buy_p == 0:
-                continue
-            ret_pct = round((cur_p - buy_p) / buy_p * 100, 2)
-            holdings.append({
-                "ticker": ticker,
-                "company_name": ticker_meta[ticker].get("company_name", ""),
-                "buy_price": round(buy_p, 2),
-                "current_price": round(cur_p, 2),
-                "return_pct": ret_pct,
-            })
-            returns.append(ret_pct)
-
-        if not returns:
-            continue
-
-        portfolio_return = round(sum(returns) / len(returns), 2)
-        days_held = (date(2026, 4, 14) - buy_date).days
-
-        best = max(holdings, key=lambda x: x["return_pct"])
-        worst = min(holdings, key=lambda x: x["return_pct"])
-
-        portfolios.append({
-            "buy_date": buy_date.isoformat(),
-            "days_held": days_held,
-            "portfolio_return_pct": portfolio_return,
-            "best_pick": {"ticker": best["ticker"], "return_pct": best["return_pct"]},
-            "worst_pick": {"ticker": worst["ticker"], "return_pct": worst["return_pct"]},
-            "holdings": sorted(holdings, key=lambda x: x["return_pct"], reverse=True),
-        })
+    result_strategies: dict = {}
+    for key, cfg in strategies_cfg.items():
+        print(f"\n{key} 시뮬레이션...")
+        sim = simulate_strategy(reports, close_df, trading_days, cfg["filter"])
+        alpha = round(sim["metrics"]["annualized_return"] - spy_ann_ret, 2)
+        sim["metrics"]["alpha_vs_spy"] = alpha
+        result_strategies[key] = {
+            "label": cfg["label"],
+            "description": cfg["description"],
+            "color": cfg["color"],
+            "metrics": sim["metrics"],
+            "equity_curve": sim["equity_curve"],
+            "signal_log": sim["signal_log"],
+            "trade_count": sim["trade_count"],
+        }
+        m = sim["metrics"]
+        print(
+            f"  투자일 {sim['trade_count']}/{len(reports)} | "
+            f"누적 {m['cumulative_return']:+.1f}% | "
+            f"Sharpe {m['sharpe']:.2f} | "
+            f"Alpha {alpha:+.1f}% | "
+            f"MDD {m['max_drawdown']:.1f}% | "
+            f"Win {m['win_rate']:.0f}%"
+        )
 
     payload = {
-        "generated_at": current_date_str,
-        "current_date": "2026-04-14",
-        "note": "Apr 14 기준 Top 10 종목을 각 날짜에 균등 매입 가정 (10% each)",
-        "tickers": tickers,
-        "portfolios": portfolios,
+        "generated_at": reports[-1]["_date"],
+        "date_range": {"start": reports[0]["_date"], "end": reports[-1]["_date"]},
+        "spy_cumulative_return": spy_cum_ret,
+        "spy_annualized_return": spy_ann_ret,
+        "strategies": result_strategies,
+        "spy_curve": spy_curve,
+        "note": "5거래일 보유 후 청산 가정. 거래비용 미반영. 포지션 중복 허용 단순화 모델.",
     }
 
     FRONTEND_DATA.mkdir(parents=True, exist_ok=True)
     out = FRONTEND_DATA / "performance.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"\n✓ {out} 생성 완료 ({len(portfolios)}개 포트폴리오)")
-
-    if portfolios:
-        best = max(portfolios, key=lambda x: x["portfolio_return_pct"])
-        worst = min(portfolios, key=lambda x: x["portfolio_return_pct"])
-        print(f"  최고 매입일: {best['buy_date']} → {best['portfolio_return_pct']:+.1f}%")
-        print(f"  최악 매입일: {worst['buy_date']} → {worst['portfolio_return_pct']:+.1f}%")
+    print(f"\n✓ {out} 저장 완료")
+    print(f"  SPY 기간 수익률: {spy_cum_ret:+.1f}%")
 
 
 if __name__ == "__main__":

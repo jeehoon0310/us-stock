@@ -1,44 +1,204 @@
 "use client";
 import { useEffect, useState } from "react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { HelpBtn } from "@/components/HelpBtn";
+import { regimeColor, gateColor } from "@/lib/data";
 
-type Holding = {
-  ticker: string;
-  company_name: string;
-  buy_price: number;
-  current_price: number;
-  return_pct: number;
+// ── 타입 ─────────────────────────────────────────────────────────
+
+type Metrics = {
+  cumulative_return: number;
+  annualized_return: number;
+  sharpe: number;
+  alpha_vs_spy: number;
+  max_drawdown: number;
+  win_rate: number;
 };
 
-type Portfolio = {
-  buy_date: string;
-  days_held: number;
-  portfolio_return_pct: number;
-  best_pick: { ticker: string; return_pct: number };
-  worst_pick: { ticker: string; return_pct: number };
-  holdings: Holding[];
+type EquityPoint = { date: string; value: number; invested?: boolean };
+
+type SignalEntry = {
+  date: string;
+  regime: string;
+  gate: string;
+  verdict: string;
+  invested: boolean;
+  daily_return_pct: number;
+  tickers: string[];
+};
+
+type Strategy = {
+  label: string;
+  description: string;
+  color: string;
+  metrics: Metrics;
+  equity_curve: EquityPoint[];
+  signal_log: SignalEntry[];
+  trade_count: number;
 };
 
 type PerformanceData = {
   generated_at: string;
-  current_date: string;
+  date_range: { start: string; end: string };
+  spy_cumulative_return: number;
+  spy_annualized_return: number;
+  strategies: {
+    strategy_a: Strategy;
+    strategy_b: Strategy;
+    strategy_c: Strategy;
+  };
+  spy_curve: EquityPoint[];
   note: string;
-  tickers: string[];
-  portfolios: Portfolio[];
 };
+
+type StrategyKey = "strategy_a" | "strategy_b" | "strategy_c";
+
+// ── 차트 데이터 병합 ──────────────────────────────────────────────
+
+function mergeChartData(data: PerformanceData) {
+  const map = new Map<string, Record<string, number>>();
+
+  data.spy_curve.forEach((p) => {
+    map.set(p.date, { spy: p.value });
+  });
+
+  (["strategy_a", "strategy_b", "strategy_c"] as StrategyKey[]).forEach(
+    (key) => {
+      data.strategies[key]?.equity_curve.forEach((p) => {
+        const entry = map.get(p.date) ?? {};
+        entry[key] = p.value;
+        map.set(p.date, entry);
+      });
+    }
+  );
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, vals]) => ({ date, ...vals }));
+}
+
+// ── 메트릭 정의 ───────────────────────────────────────────────────
+
+const METRICS = [
+  {
+    key: "cumulative_return" as keyof Metrics,
+    label: "Total Return",
+    suffix: "%",
+    icon: "trending_up",
+    fmt: (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`,
+    color: (v: number) => (v >= 0 ? "text-primary" : "text-error"),
+  },
+  {
+    key: "sharpe" as keyof Metrics,
+    label: "Sharpe Ratio",
+    suffix: "",
+    icon: "speed",
+    fmt: (v: number) => v.toFixed(2),
+    color: (v: number) =>
+      v >= 1 ? "text-primary" : v >= 0 ? "text-yellow-400" : "text-error",
+  },
+  {
+    key: "alpha_vs_spy" as keyof Metrics,
+    label: "Alpha vs SPY",
+    suffix: "%",
+    icon: "leaderboard",
+    fmt: (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`,
+    color: (v: number) => (v >= 0 ? "text-primary" : "text-error"),
+  },
+  {
+    key: "max_drawdown" as keyof Metrics,
+    label: "Max Drawdown",
+    suffix: "%",
+    icon: "trending_down",
+    fmt: (v: number) => `${v.toFixed(1)}%`,
+    color: () => "text-error",
+  },
+  {
+    key: "win_rate" as keyof Metrics,
+    label: "Win Rate",
+    suffix: "%",
+    icon: "check_circle",
+    fmt: (v: number) => `${v.toFixed(0)}%`,
+    color: (v: number) =>
+      v >= 60 ? "text-primary" : v >= 50 ? "text-yellow-400" : "text-error",
+  },
+];
+
+const STRATEGY_LABELS: Record<StrategyKey, string> = {
+  strategy_a: "A",
+  strategy_b: "B",
+  strategy_c: "C",
+};
+
+// ── Verdict 색상 ─────────────────────────────────────────────────
+
+function verdictColor(v: string) {
+  switch (v) {
+    case "GO":
+      return "text-primary";
+    case "CAUTION":
+      return "text-yellow-400";
+    case "STOP":
+      return "text-error";
+    default:
+      return "text-on-surface-variant";
+  }
+}
+
+// ── 커스텀 툴팁 ───────────────────────────────────────────────────
+
+function ChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { name: string; value: number; color: string }[];
+  label?: string;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-surface-container-high border border-outline-variant/20 rounded-lg p-3 text-xs shadow-xl">
+      <p className="font-bold text-on-surface mb-2">{label}</p>
+      {payload.map((entry) => (
+        <div key={entry.name} className="flex items-center gap-2 mb-1">
+          <div
+            className="w-2 h-2 rounded-full"
+            style={{ background: entry.color }}
+          />
+          <span className="text-on-surface-variant">{entry.name}:</span>
+          <span className="font-bold" style={{ color: entry.color }}>
+            ${entry.value?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── 페이지 ───────────────────────────────────────────────────────
 
 export default function PerformancePage() {
   const [data, setData] = useState<PerformanceData | null>(null);
-  const [selected, setSelected] = useState<Portfolio | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeStrategy, setActiveStrategy] = useState<StrategyKey>("strategy_a");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     fetch("/data/performance.json", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: PerformanceData) => {
         setData(d);
-        // 최초 선택: Feb 17 (첫 날짜)
-        if (d.portfolios.length > 0) setSelected(d.portfolios[0]);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -47,37 +207,41 @@ export default function PerformancePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <span className="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+        <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+          sync
+        </span>
       </div>
     );
   }
 
-  if (!data || data.portfolios.length === 0) {
+  if (!data) {
     return (
       <div className="bg-surface-container-low rounded-xl p-10 text-center">
-        <p className="text-on-surface-variant">수익률 데이터 없음 — generate_performance.py를 실행하세요</p>
+        <p className="text-on-surface-variant">
+          데이터 없음 — generate_performance.py를 실행하세요
+        </p>
       </div>
     );
   }
 
-  const best = data.portfolios.reduce((a, b) =>
-    a.portfolio_return_pct > b.portfolio_return_pct ? a : b
-  );
-  const worst = data.portfolios.reduce((a, b) =>
-    a.portfolio_return_pct < b.portfolio_return_pct ? a : b
-  );
+  const strategy = data.strategies[activeStrategy];
+  const chartData = mergeChartData(data);
 
-  const maxAbs = Math.max(...data.portfolios.map((p) => Math.abs(p.portfolio_return_pct)));
+  const strategyKeys: StrategyKey[] = ["strategy_a", "strategy_b", "strategy_c"];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">Portfolio Return Simulator <HelpBtn topic="performance" /></h2>
+          <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">
+            Strategy Backtester <HelpBtn topic="performance" />
+          </h2>
           <p className="text-sm text-on-surface-variant">
-            {data.note} · 기준일 {data.current_date}
+            {data.date_range.start} ~ {data.date_range.end} · 5거래일 보유 ·{" "}
+            <span className="text-on-surface">SPY {data.spy_cumulative_return > 0 ? "+" : ""}{data.spy_cumulative_return.toFixed(1)}%</span>
           </p>
+          <p className="text-[11px] text-on-surface-variant mt-1 opacity-60">{data.note}</p>
         </div>
         <div className="absolute top-0 right-0 p-4 opacity-5">
           <span className="material-symbols-outlined" style={{ fontSize: "120px" }}>
@@ -86,174 +250,284 @@ export default function PerformancePage() {
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
-          <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 flex items-center gap-1">
-            Top 10 종목 <HelpBtn topic="picks" />
-          </p>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {data.tickers.map((t) => (
+      {/* 전략 탭 */}
+      <div className="flex gap-2 flex-wrap">
+        {strategyKeys.map((key) => {
+          const s = data.strategies[key];
+          const active = activeStrategy === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setActiveStrategy(key)}
+              style={active ? { borderColor: s.color, color: s.color } : {}}
+              className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all border ${
+                active
+                  ? "bg-surface-container-high"
+                  : "border-outline-variant/20 text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high"
+              }`}
+            >
+              <span className="font-black">{STRATEGY_LABELS[key]}</span>
+              <span className="ml-2 hidden sm:inline">{s.label}</span>
               <span
-                key={t}
-                className="px-2 py-0.5 bg-surface-container-high rounded text-xs font-bold text-primary"
+                className="ml-2 text-xs font-black"
+                style={{ color: s.metrics.cumulative_return >= 0 ? "#4ade80" : "#f87171" }}
               >
-                {t}
+                {s.metrics.cumulative_return > 0 ? "+" : ""}
+                {s.metrics.cumulative_return.toFixed(1)}%
               </span>
-            ))}
-          </div>
-        </div>
-        <div className="bg-primary-container p-6 rounded-xl border-l-4 border-primary">
-          <p className="text-[10px] font-bold text-on-primary-container uppercase tracking-widest mb-1 flex items-center gap-1">
-            최고 매입일 <HelpBtn topic="performance" />
-          </p>
-          <p className="text-2xl font-black text-primary">{best.portfolio_return_pct > 0 ? "+" : ""}{best.portfolio_return_pct.toFixed(1)}%</p>
-          <p className="text-sm font-bold text-on-primary-container mt-1">{best.buy_date}</p>
-          <p className="text-[10px] text-on-surface-variant mt-1">
-            최고: {best.best_pick.ticker} {best.best_pick.return_pct > 0 ? "+" : ""}{best.best_pick.return_pct.toFixed(1)}%
-          </p>
-        </div>
-        <div className="bg-error-container p-6 rounded-xl border-l-4 border-error">
-          <p className="text-[10px] font-bold text-on-error-container uppercase tracking-widest mb-1 flex items-center gap-1">
-            최악 매입일 <HelpBtn topic="performance" />
-          </p>
-          <p className="text-2xl font-black text-error">{worst.portfolio_return_pct > 0 ? "+" : ""}{worst.portfolio_return_pct.toFixed(1)}%</p>
-          <p className="text-sm font-bold text-on-error-container mt-1">{worst.buy_date}</p>
-          <p className="text-[10px] text-on-surface-variant mt-1">
-            최악: {worst.worst_pick.ticker} {worst.worst_pick.return_pct > 0 ? "+" : ""}{worst.worst_pick.return_pct.toFixed(1)}%
-          </p>
+            </button>
+          );
+        })}
+        {/* SPY 뱃지 */}
+        <div className="px-4 py-2.5 rounded-xl text-sm font-bold border border-outline-variant/20 bg-surface-container-low text-on-surface-variant flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#f97316]" />
+          <span>SPY</span>
+          <span
+            className="text-xs font-black"
+            style={{ color: data.spy_cumulative_return >= 0 ? "#4ade80" : "#f87171" }}
+          >
+            {data.spy_cumulative_return > 0 ? "+" : ""}
+            {data.spy_cumulative_return.toFixed(1)}%
+          </span>
         </div>
       </div>
 
-      {/* Return Chart */}
+      {/* Equity Curve */}
       <div className="bg-surface-container-low rounded-xl p-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
-          매입일별 수익률 ({data.portfolios.length}거래일) <HelpBtn topic="performance" />
+          Equity Curve <HelpBtn topic="performance" />
         </h4>
-        <div className="space-y-1.5 max-h-96 overflow-y-auto no-scrollbar">
-          {data.portfolios.map((p) => {
-            const ret = p.portfolio_return_pct;
-            const pct = Math.abs(ret) / maxAbs;
-            const isSelected = selected?.buy_date === p.buy_date;
-            const isPos = ret >= 0;
-            return (
-              <button
-                key={p.buy_date}
-                onClick={() => setSelected(p)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-left ${
-                  isSelected
-                    ? "bg-surface-container-high ring-1 ring-primary/30"
-                    : "hover:bg-surface-container-high/60"
-                }`}
-              >
-                <span className="text-[11px] font-mono text-on-surface-variant w-24 shrink-0">
-                  {p.buy_date}
+        {mounted ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
+              <defs>
+                {strategyKeys.map((key) => (
+                  <linearGradient key={key} id={`grad_${key}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor={data.strategies[key].color}
+                      stopOpacity={activeStrategy === key ? 0.25 : 0.08}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor={data.strategies[key].color}
+                      stopOpacity={0}
+                    />
+                  </linearGradient>
+                ))}
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0c" />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tickFormatter={(d: string) => d.slice(5)}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tickFormatter={(v: number) =>
+                  `$${Math.round(v / 100) * 100 === v ? (v / 1000).toFixed(1) + "k" : v}`
+                }
+                width={48}
+              />
+              <Tooltip content={<ChartTooltip />} />
+              <Legend
+                formatter={(value: string) => (
+                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{value}</span>
+                )}
+              />
+              {/* SPY 벤치마크 (점선) */}
+              <Area
+                type="monotone"
+                dataKey="spy"
+                name="SPY"
+                stroke="#f97316"
+                strokeWidth={1.5}
+                strokeDasharray="5 3"
+                fill="none"
+                dot={false}
+                activeDot={{ r: 4, fill: "#f97316" }}
+              />
+              {/* 선택된 전략만 표시 */}
+              {strategyKeys
+                .filter((key) => key === activeStrategy)
+                .map((key) => {
+                  const s = data.strategies[key];
+                  return (
+                    <Area
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      name={`${STRATEGY_LABELS[key]}: ${s.label}`}
+                      stroke={s.color}
+                      strokeWidth={2.5}
+                      fill={`url(#grad_${key})`}
+                      dot={false}
+                      activeDot={{ r: 5, fill: s.color }}
+                    />
+                  );
+                })}
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-[300px] flex items-center justify-center">
+            <span className="material-symbols-outlined animate-spin text-3xl text-primary">sync</span>
+          </div>
+        )}
+      </div>
+
+      {/* 메트릭 카드 */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {METRICS.map((m) => {
+          const val = strategy.metrics[m.key] ?? 0;
+          return (
+            <div
+              key={m.key}
+              className="bg-surface-container-low rounded-xl p-4 flex flex-col gap-1"
+            >
+              <div className="flex items-center gap-1.5 text-on-surface-variant">
+                <span className="material-symbols-outlined text-base">{m.icon}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">
+                  {m.label}
                 </span>
-                <div className="flex-1 h-5 bg-surface-container-highest rounded-full overflow-hidden relative">
-                  <div
-                    className={`absolute top-0 h-full rounded-full transition-all ${
-                      isPos ? "bg-primary left-1/2" : "bg-error right-1/2"
-                    }`}
-                    style={{ width: `${pct * 50}%` }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`text-[10px] font-bold ${isPos ? "text-primary" : "text-error"}`}>
-                      {ret > 0 ? "+" : ""}{ret.toFixed(1)}%
+              </div>
+              <p className={`text-2xl font-black ${m.color(val)}`}>{m.fmt(val)}</p>
+              <p className="text-[10px] text-on-surface-variant">
+                vs SPY:{" "}
+                {m.key === "alpha_vs_spy"
+                  ? "연간 초과수익"
+                  : m.key === "cumulative_return"
+                  ? `SPY ${data.spy_cumulative_return > 0 ? "+" : ""}${data.spy_cumulative_return.toFixed(1)}%`
+                  : `투자 ${strategy.trade_count}/${Object.values(strategy.signal_log).length}일`}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Signal Timeline */}
+      <div className="bg-surface-container-low rounded-xl overflow-hidden">
+        <div className="px-6 py-5 border-b border-outline-variant/10 flex items-center justify-between">
+          <h4 className="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+            Signal Timeline — {strategy.label} <HelpBtn topic="performance" />
+          </h4>
+          <span className="text-xs text-on-surface-variant">
+            투자 {strategy.trade_count} / {strategy.signal_log.length}일
+          </span>
+        </div>
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-surface-container-high/20">
+                {["날짜", "Regime", "Gate", "Verdict", "투자", "5일 수익"].map((h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest whitespace-nowrap"
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-outline-variant/10">
+              {[...strategy.signal_log].reverse().map((entry) => (
+                <tr
+                  key={entry.date}
+                  className={`hover:bg-surface-bright/10 transition-colors ${
+                    entry.invested ? "" : "opacity-50"
+                  }`}
+                >
+                  <td className="px-4 py-3 text-[11px] font-mono text-on-surface-variant whitespace-nowrap">
+                    {entry.date}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-bold ${regimeColor(entry.regime)}`}>
+                      {entry.regime}
                     </span>
-                  </div>
-                </div>
-                <span className="text-[10px] text-on-surface-variant w-12 shrink-0 text-right">
-                  {p.days_held}일
-                </span>
-              </button>
-            );
-          })}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-bold ${gateColor(entry.gate)}`}>
+                      {entry.gate}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-bold ${verdictColor(entry.verdict)}`}>
+                      {entry.verdict}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {entry.invested ? (
+                      <span className="material-symbols-outlined text-primary text-base">
+                        check_circle
+                      </span>
+                    ) : (
+                      <span className="material-symbols-outlined text-on-surface-variant/30 text-base">
+                        remove_circle
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {entry.invested ? (
+                      <span
+                        className={`text-sm font-black ${
+                          entry.daily_return_pct >= 0 ? "text-primary" : "text-error"
+                        }`}
+                      >
+                        {entry.daily_return_pct > 0 ? "+" : ""}
+                        {entry.daily_return_pct.toFixed(2)}%
+                      </span>
+                    ) : (
+                      <span className="text-xs text-on-surface-variant/30">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* Selected Portfolio Detail */}
-      {selected && (
-        <div className="bg-surface-container-low rounded-xl overflow-hidden">
-          <div className="px-6 py-5 border-b border-outline-variant/10 flex justify-between items-center">
-            <div>
-              <h4 className="text-sm font-bold uppercase tracking-widest">
-                {selected.buy_date} 매입 포트폴리오
-              </h4>
-              <p className="text-xs text-on-surface-variant mt-0.5">
-                {selected.days_held}일 보유 → 평균 수익률{" "}
-                <span
-                  className={`font-bold ${
-                    selected.portfolio_return_pct >= 0 ? "text-primary" : "text-error"
-                  }`}
-                >
-                  {selected.portfolio_return_pct > 0 ? "+" : ""}
-                  {selected.portfolio_return_pct.toFixed(2)}%
+      {/* 전략 설명 카드 */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {strategyKeys.map((key) => {
+          const s = data.strategies[key];
+          const active = activeStrategy === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setActiveStrategy(key)}
+              className={`p-5 rounded-xl text-left transition-all border ${
+                active
+                  ? "bg-surface-container-high border-primary/30"
+                  : "bg-surface-container-low border-outline-variant/10 hover:bg-surface-container-high"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ background: s.color }}
+                />
+                <span className="text-xs font-black uppercase tracking-widest">
+                  전략 {STRATEGY_LABELS[key]}
                 </span>
+              </div>
+              <p className="text-sm font-bold text-on-surface mb-1">{s.label}</p>
+              <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                {s.description}
               </p>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] text-on-surface-variant uppercase">$10,000 투자 시</p>
-              <p
-                className={`text-xl font-black ${
-                  selected.portfolio_return_pct >= 0 ? "text-primary" : "text-error"
-                }`}
-              >
-                ${(10000 * (1 + selected.portfolio_return_pct / 100)).toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-              </p>
-            </div>
-          </div>
-          <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-surface-container-high/20">
-                  {([
-                    { label: "#" },
-                    { label: "종목", topic: "picks" },
-                    { label: "매입가" },
-                    { label: "현재가" },
-                    { label: "수익률", topic: "performance" },
-                  ] as { label: string; topic?: string }[]).map((h) => (
-                    <th
-                      key={h.label}
-                      className="px-6 py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest"
-                    >
-                      <span className="flex items-center gap-1">{h.label}{h.topic && <HelpBtn topic={h.topic} />}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {selected.holdings.map((h, i) => {
-                  const isPos = h.return_pct >= 0;
-                  return (
-                    <tr key={h.ticker} className="hover:bg-surface-bright/20 transition-colors">
-                      <td className="px-6 py-4 text-sm text-on-surface-variant">
-                        {String(i + 1).padStart(2, "0")}
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm font-black">{h.ticker}</p>
-                        <p className="text-[10px] text-on-surface-variant">{h.company_name}</p>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-mono">${h.buy_price.toFixed(2)}</td>
-                      <td className="px-6 py-4 text-sm font-mono">${h.current_price.toFixed(2)}</td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`text-sm font-black ${isPos ? "text-primary" : "text-error"}`}
-                        >
-                          {isPos ? "+" : ""}
-                          {h.return_pct.toFixed(2)}%
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+              <div className="mt-3 flex gap-3 text-xs">
+                <span style={{ color: s.color }} className="font-black">
+                  {s.metrics.cumulative_return > 0 ? "+" : ""}
+                  {s.metrics.cumulative_return.toFixed(1)}%
+                </span>
+                <span className="text-on-surface-variant">
+                  투자 {s.trade_count}일
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

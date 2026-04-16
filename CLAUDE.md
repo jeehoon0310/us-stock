@@ -11,6 +11,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | [.omc/wiki/pipeline-gotchas.md](.omc/wiki/pipeline-gotchas.md) | **맥북=분석, Synology=서빙 전용**, 실행 순서, signals 버그 수정 이력 |
 | [.omc/wiki/frontend-color-rules.md](.omc/wiki/frontend-color-rules.md) | 점수별 색상 임계값, HelpBtn 패턴, 전체 토픽 목록 |
 | [.omc/wiki/deployment.md](.omc/wiki/deployment.md) | GHA 배포 흐름, Synology Tailscale IP, 수동 배포 명령 |
+| [.omc/wiki/dashboard-pages.md](.omc/wiki/dashboard-pages.md) | **8 dashboard pages** — 라우트, 데이터 소스, 표시 내용, 새 페이지 추가 패턴 |
+| [.omc/wiki/claude-code.md](.omc/wiki/claude-code.md) | Claude Code 설정 변경 시 https://code.claude.com/docs/ko/settings 대조 필수 |
+
+> **Wiki 유지 관리 규칙:** `frontend/src/components/Navigation.tsx` NAV 배열 변경 시(페이지 추가/삭제/이름 변경) → `.omc/wiki/dashboard-pages.md` Quick Reference 표 + Per-Page Details 갱신 후 `wiki_ingest` 실행
 
 ## Project Overview
 

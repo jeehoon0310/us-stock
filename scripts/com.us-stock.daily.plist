@@ -8,7 +8,7 @@
     <array>
         <string>/usr/bin/caffeinate</string>
         <string>-i</string>
-        <string>/Users/frindle/workspace/education/us-stock/scripts/run_and_commit.sh</string>
+        <string>/Users/frindle/workspace/synology/us-stock/scripts/run_and_commit.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <array>
@@ -39,9 +39,9 @@
         </dict>
     </array>
     <key>StandardOutPath</key>
-    <string>/Users/frindle/workspace/education/us-stock/logs/launchd.out.log</string>
+    <string>/Users/frindle/workspace/synology/us-stock/logs/launchd.out.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/frindle/workspace/education/us-stock/logs/launchd.err.log</string>
+    <string>/Users/frindle/workspace/synology/us-stock/logs/launchd.err.log</string>
     <key>RunAtLoad</key>
     <false/>
 </dict>

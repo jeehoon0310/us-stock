@@ -32,10 +32,8 @@ def main():
         return
 
     sp500 = pd.read_csv(sp500_path)
-    vol_df = pd.DataFrame({"ticker": sp500["Symbol"], "sd_score": 50})
     Path("output").mkdir(exist_ok=True)
-    vol_df.to_csv("output/us_volume_analysis.csv", index=False)
-    print(f"  {len(vol_df)}개 종목 준비 완료")
+    print(f"  {len(sp500)}개 종목 준비 완료 (Volume은 실시간 계산)")
 
     # 2. 스크리너 초기화 + 실행
     print("\n[2/4] 스크리닝 시작...")

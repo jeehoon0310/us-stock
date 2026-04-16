@@ -91,18 +91,6 @@ def step_export_dashboard(gate=None, gbm_df=None):
 
 @timed("4. 스마트머니 스크리닝")
 def step_screening():
-    import pandas as pd
-
-    # volume 데이터 준비
-    sp500_path = Path("sp500_list.csv")
-    if not sp500_path.exists():
-        sp500_path = Path("data/sp500_list.csv")
-    if sp500_path.exists():
-        sp500 = pd.read_csv(sp500_path)
-        Path("output").mkdir(exist_ok=True)
-        pd.DataFrame({"ticker": sp500["Symbol"], "sd_score": 50}).to_csv(
-            "output/us_volume_analysis.csv", index=False)
-
     from analyzers.smart_money_screener_v2 import EnhancedSmartMoneyScreener
     screener = EnhancedSmartMoneyScreener(data_dir="output")
     return screener.run_screening()
