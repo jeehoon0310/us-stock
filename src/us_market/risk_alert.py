@@ -952,16 +952,32 @@ class RiskAlertSystem:
     # generate_alerts() 오케스트레이터 (프롬프트 #9)
     # ------------------------------------------------------------------
 
-    def generate_alerts(self, portfolio_value: float = 100_000) -> dict:
-        """모든 분석을 조율하고 3단계 알림(CRITICAL/WARNING/INFO)을 생성한다."""
+    def generate_alerts(
+        self,
+        portfolio_value: float = 100_000,
+        picks_override: list[dict] | None = None,
+        output_date: str | None = None,
+    ) -> dict:
+        """모든 분석을 조율하고 3단계 알림(CRITICAL/WARNING/INFO)을 생성한다.
+
+        Args:
+            picks_override: 외부에서 주입하는 picks 목록 (히스토리 재생성용).
+                            제공 시 load_picks() 생략, drawdowns/stop_loss도 스킵.
+            output_date: "YYYYMMDD" 형식. 제공 시 risk_alerts_{date}.json으로 저장.
+        """
         now = datetime.now()
         regime = self.regime_config.get("regime", "neutral")
         verdict = self.verdict_data.get("verdict", "CAUTION")
 
-        # 순서대로 호출
-        picks = self.load_picks()
-        drawdowns = self.calculate_drawdowns(picks)
-        stop_status = self.check_stop_losses(picks, drawdowns)
+        # picks 로드
+        if picks_override is not None:
+            picks = picks_override
+            drawdowns: dict = {}
+            stop_status: list = []
+        else:
+            picks = self.load_picks()
+            drawdowns = self.calculate_drawdowns(picks)
+            stop_status = self.check_stop_losses(picks, drawdowns)
         tickers = [p["ticker"] for p in picks]
         var_result = self.calculate_portfolio_var(
             tickers, portfolio_value=portfolio_value
@@ -1171,15 +1187,26 @@ class RiskAlertSystem:
         }
 
         # JSON 저장
-        with open(self.output_file, "w", encoding="utf-8") as f:
-            json.dump(result, f, ensure_ascii=False, indent=2, default=str)
-        logger.info("리스크 알림 저장: %s", self.output_file)
-
-        # frontend 복사
         fe_data = self.OUTPUT_DIR.parent / "frontend" / "public" / "data"
-        if fe_data.exists():
-            shutil.copy2(self.output_file, fe_data / "risk_alerts.json")
-            logger.info("대시보드 복사: %s", fe_data / "risk_alerts.json")
+        if output_date:
+            # 날짜별 파일 저장 (히스토리 재생성용)
+            dated_file = self.OUTPUT_DIR / f"risk_alerts_{output_date}.json"
+            with open(dated_file, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+            logger.info("날짜별 리스크 알림 저장: %s", dated_file)
+            if fe_data.exists():
+                shutil.copy2(dated_file, fe_data / f"risk_alerts_{output_date}.json")
+                logger.info("대시보드 복사: %s", fe_data / f"risk_alerts_{output_date}.json")
+        else:
+            # 기본: output/risk_alerts.json + 오늘 날짜 파일 동시 저장
+            with open(self.output_file, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+            logger.info("리스크 알림 저장: %s", self.output_file)
+            if fe_data.exists():
+                shutil.copy2(self.output_file, fe_data / "risk_alerts.json")
+                today_str = now.strftime("%Y%m%d")
+                shutil.copy2(self.output_file, fe_data / f"risk_alerts_{today_str}.json")
+                logger.info("대시보드 복사: risk_alerts.json + risk_alerts_%s.json", today_str)
 
         # 요약 로그
         critical = sum(1 for a in alerts if a["level"] == "CRITICAL")

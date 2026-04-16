@@ -103,10 +103,10 @@ export function DashboardClient() {
     verdict === "GO" ? "check_circle" : verdict === "STOP" ? "block" : "warning";
   const gateBg =
     verdict === "GO"
-      ? "bg-primary-container text-on-primary-container border-primary"
+      ? "bg-primary-container text-on-primary-container"
       : verdict === "STOP"
-        ? "bg-error-container text-on-error-container border-error"
-        : "bg-secondary-container text-black border-secondary-container";
+        ? "bg-error-container text-on-error-container"
+        : "bg-secondary-container text-black";
 
   return (
     <div>
@@ -363,7 +363,7 @@ export function DashboardClient() {
             <div className="space-y-6">
               {/* Market Gate card */}
               <div
-                className={`${gateBg} rounded-xl p-8 shadow-2xl border-l-8 flex flex-col items-center text-center`}
+                className={`${gateBg} rounded-xl p-8 shadow-2xl flex flex-col items-center text-center`}
               >
                 <span
                   className="material-symbols-outlined text-5xl mb-4"

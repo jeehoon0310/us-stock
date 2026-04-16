@@ -70,6 +70,17 @@ mkdir -p logs frontend/public/data/reports
   cp output/latest_report.json "$DATA_DIR/"
   cp output/risk_alerts.json "$DATA_DIR/" 2>/dev/null || true
   cp output/reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
+  # risk_dates_manifest.json 갱신 (날짜별 risk_alerts 파일 목록)
+  python3 -c "
+import json, pathlib
+fe = pathlib.Path('$DATA_DIR')
+dates = sorted(set(
+    f.stem.replace('risk_alerts_', '')
+    for f in fe.glob('risk_alerts_????????.json')
+    if f.stem.replace('risk_alerts_', '') >= '20260217'
+))
+(fe / 'risk_dates_manifest.json').write_text(json.dumps({'dates': dates}, indent=2))
+" 2>/dev/null || true
 
   # Git commit & push if there are changes
   if ! git diff --quiet "$DATA_DIR" 2>/dev/null; then

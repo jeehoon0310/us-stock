@@ -778,6 +778,37 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  risk_rank: {
+    title: "리스크 순위 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🏆 심각도 순위예요!</Sec>
+        <p>리스크 알림을 <span className={H.bold}>심각한 순서대로</span> 번호를 매긴 거예요.</p>
+        <Box>
+          <p><span className={H.bold}>1번</span> = 지금 당장 가장 위험한 항목이에요</p>
+          <p><span className={H.bold}>CRITICAL</span> 먼저, 그다음 <span className={H.bold}>WARNING</span>, 마지막에 <span className={H.bold}>INFO</span> 순서예요</p>
+        </Box>
+        <p className="text-[11px]">숫자가 작을수록 더 급한 신호예요!</p>
+      </>
+    ),
+  },
+
+  risk_action: {
+    title: "권장 행동 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🎯 어떻게 해야 하는지 알려줘요!</Sec>
+        <Box>
+          <p><span className={H.bold}>SELL</span> 🔴 = 즉시 매도 고려. 손절 기준을 넘었어요</p>
+          <p><span className={H.bold}>REDUCE</span> 🟠 = 비중 줄이기. 리스크가 한도를 초과했어요</p>
+          <p><span className={H.bold}>REVIEW</span> 🟡 = 스트레스 시나리오 점검 필요해요</p>
+          <p><span className={H.bold}>MONITOR</span> ⚪ = 계속 지켜보기. 아직 행동 불필요해요</p>
+        </Box>
+        <p className="text-[11px]">SELL/REDUCE는 즉각 확인이 필요한 신호예요!</p>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (

@@ -11,20 +11,67 @@ import type {
 } from "@/lib/data";
 import { regimeBadgeCls, regimeBadgeStyle, gradeClass } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
+import { CalendarPicker } from "@/components/CalendarPicker";
+
+// 오늘 날짜 (YYYY-MM-DD)
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+function toCompact(d: string) {
+  return d.replace(/-/g, "");
+}
 
 export default function RiskPage() {
   const [data, setData] = useState<RiskAlertData | null>(null);
   const [status, setStatus] = useState("로딩 중...");
+  const [date, setDate] = useState(todayISO());
+  const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    fetch("/data/risk_alerts.json", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d: RiskAlertData) => {
-        setData(d);
+  // 날짜별 데이터 로드
+  async function loadForDate(d: string) {
+    setStatus("로딩 중...");
+    setData(null);
+    const compact = toCompact(d);
+    // 날짜별 파일 먼저 시도, 없으면 최신 파일
+    let res = await fetch(`/data/risk_alerts_${compact}.json`, { cache: "no-store" });
+    if (!res.ok) res = await fetch("/data/risk_alerts.json", { cache: "no-store" });
+    if (!res.ok) { setStatus("데이터 없음"); return; }
+    const json = await res.json() as RiskAlertData;
+    setData(json);
+    setDate(d);
+    setStatus("");
+  }
+
+  // ◀▶ 인접 날짜 탐색
+  async function shiftDate(delta: number) {
+    const cur = new Date(date);
+    for (let i = 1; i <= 7; i++) {
+      cur.setDate(cur.getDate() + delta);
+      const s = cur.toISOString().slice(0, 10);
+      const res = await fetch(`/data/risk_alerts_${toCompact(s)}.json`, { cache: "no-store" });
+      if (res.ok) {
+        setData(await res.json() as RiskAlertData);
+        setDate(s);
         setStatus("");
+        return;
+      }
+    }
+  }
+
+  // 초기 로드
+  useEffect(() => {
+    // 날짜 매니페스트
+    fetch("/data/risk_dates_manifest.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: { dates: string[] }) => {
+        const converted = d.dates.map((s) => `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`);
+        setAvailableDates(new Set(converted));
       })
-      .catch(() => setStatus("데이터 없음"));
-  }, []);
+      .catch(() => {});
+
+    // 오늘 데이터 로드
+    void loadForDate(todayISO());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!data) {
     return (
@@ -67,6 +114,17 @@ export default function RiskPage() {
 
   return (
     <div>
+      {/* ── 날짜 네비게이터 ── */}
+      <div className="mb-4 flex justify-center">
+        <CalendarPicker
+          value={date}
+          availableDates={availableDates}
+          onChange={(d) => void loadForDate(d)}
+          onShift={(delta) => void shiftDate(delta)}
+          status={status !== "로딩 중..." ? status : undefined}
+        />
+      </div>
+
       {/* ── 섹션 1: 헤더 ── */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 px-6 py-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
         <div className="flex items-center gap-3">
@@ -188,13 +246,14 @@ export default function RiskPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="text-[10px] text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10">
-                  <th className="px-5 py-3 text-left">Level</th>
+                  <th className="px-3 py-3 text-center"># <HelpBtn topic="risk_rank" /></th>
+                  <th className="px-5 py-3 text-left">Level <HelpBtn topic="risk_alert" /></th>
                   <th className="px-4 py-3 text-left">Category</th>
                   <th className="px-4 py-3 text-left">Ticker</th>
                   <th className="px-4 py-3 text-left">Message</th>
-                  <th className="px-4 py-3 text-right">Value</th>
-                  <th className="px-4 py-3 text-right">Threshold</th>
-                  <th className="px-5 py-3 text-right">Action</th>
+                  <th className="px-4 py-3 text-right">Value <HelpBtn topic="var_risk" /></th>
+                  <th className="px-4 py-3 text-right">Threshold <HelpBtn topic="stop_loss" /></th>
+                  <th className="px-5 py-3 text-right">Action <HelpBtn topic="risk_action" /></th>
                 </tr>
               </thead>
               <tbody>
@@ -214,6 +273,9 @@ export default function RiskPage() {
                       key={i}
                       className={`border-b border-outline-variant/5 hover:bg-surface-bright/20 ${rowBg}`}
                     >
+                      <td className="px-3 py-3 text-center">
+                        <span className={`text-[11px] font-black tabular-nums ${levelColor}`}>{i + 1}</span>
+                      </td>
                       <td className="px-5 py-3">
                         <span className={`inline-flex items-center gap-1 text-[9px] font-bold ${levelColor}`}>
                           <span
