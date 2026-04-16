@@ -135,11 +135,14 @@ def phase1_market_timing() -> dict:
     # Verdict 판정
     regime = timing["regime"]
     gate = timing["gate"]
-    spy_dir = timing.get("ml_predictor", {}).get("spy", {}).get("direction", "")
+    spy_pred = timing.get("ml_predictor", {}).get("spy", {})
+    spy_dir = spy_pred.get("direction", "")
+    spy_accuracy = spy_pred.get("model_accuracy", 0.0)
 
     regime_ok = regime in ("risk_on", "neutral")
     gate_go = gate == "GO"
-    ml_bullish = spy_dir == "bullish"
+    # Only trust ML if accuracy >= 55% (random-level = ~52% currently)
+    ml_bullish = spy_dir == "bullish" and spy_accuracy >= 0.55
 
     if regime in ("crisis", "risk_off") or gate == "STOP":
         verdict = "STOP"
@@ -169,8 +172,6 @@ def phase2_stock_selection(target_date: datetime | None = None) -> list[dict]:
     if sp500_path.exists():
         sp500 = pd.read_csv(sp500_path)
         OUTPUT_DIR.mkdir(exist_ok=True)
-        pd.DataFrame({"ticker": sp500["Symbol"], "sd_score": 50}).to_csv(
-            OUTPUT_DIR / "us_volume_analysis.csv", index=False)
 
     from analyzers.smart_money_screener_v2 import EnhancedSmartMoneyScreener
     screener = EnhancedSmartMoneyScreener(data_dir=str(OUTPUT_DIR))

@@ -25,6 +25,7 @@ TARGET_COLUMNS = ["fwd_5d_return", "fwd_20d_return", "fwd_60d_return",
                   "fwd_5d_rank", "fwd_20d_rank"]
 
 DEFAULT_LGBM_PARAMS = {
+    # target is percentile-normalized rank (0.0-1.0) so regression+rmse is appropriate
     "objective": "regression",
     "metric": "rmse",
     "learning_rate": 0.05,
@@ -80,6 +81,13 @@ def prepare_training_data(
 
     X = df[feature_cols]
     y = df[target]
+
+    # Normalize rank to continuous percentile [0, 1] for regression
+    # fwd_20d_rank is 0 (worst) to N-1 (best) integer → convert to 0.0-1.0
+    if target.endswith("_rank"):
+        n_unique = y.nunique()
+        if n_unique > 1:
+            y = (y - y.min()) / (y.max() - y.min())
 
     # Group: 각 date의 종목 수
     group = df.groupby(level="date").size().sort_index().values

@@ -59,6 +59,45 @@ def add_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def calculate_anchored_vwap(df: pd.DataFrame, anchor_lookback: int = 252) -> pd.Series:
+    """앵커드 VWAP — 52주 저점일부터 누적 VWAP 계산.
+
+    Args:
+        df: OHLCV DataFrame with columns Close, High, Low, Volume
+        anchor_lookback: 앵커 탐색 윈도우 (기본 252일 = 1년)
+
+    Returns:
+        pd.Series — 앵커일부터의 AVWAP (앵커일 이전은 NaN)
+    """
+    if df.empty or "Low" not in df.columns or "Volume" not in df.columns:
+        return pd.Series(dtype=float, index=df.index)
+
+    close = df["Close"].dropna()
+    low = df["Low"].dropna()
+    volume = df["Volume"].dropna()
+
+    if len(close) < 20:
+        return pd.Series(dtype=float, index=df.index)
+
+    # 52주 저점일 탐색
+    lookback = min(anchor_lookback, len(low))
+    anchor_idx = low.iloc[-lookback:].idxmin()
+
+    # 앵커일 이후 누적 VWAP = sum(price * volume) / sum(volume)
+    typical_price = (df["High"] + df["Low"] + df["Close"]) / 3
+
+    avwap = pd.Series(index=df.index, dtype=float)
+    mask = df.index >= anchor_idx
+    if mask.sum() < 1:
+        return avwap
+
+    tp_v = (typical_price[mask] * volume[mask]).cumsum()
+    vol_cum = volume[mask].cumsum()
+    avwap[mask] = tp_v / vol_cum
+
+    return avwap.copy()
+
+
 if __name__ == "__main__":
     import sys
     from pathlib import Path

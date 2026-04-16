@@ -244,7 +244,7 @@ class MarketRegimeDetector:
     }
 
     def _put_call_ratio_signal(self) -> dict:
-        """Put/Call Ratio 역발상 센서: 극단적 공포(>1.2) = 바닥 근처(risk_on), 극단 탐욕(<0.7) = 경계(risk_off)."""
+        """Put/Call Ratio 역발상 센서: 극단적 공포(>1.2) = 바닥 근처(risk_on), 극단 탐욕(<0.7) = 과열 경계(risk_off)."""
         fallback = {"pcr_value": None, "pcr_regime": "neutral"}
         try:
             # CBOE Total Put/Call Ratio (^PCALL yfinance에서 제공 안 될 수 있음)
@@ -262,7 +262,7 @@ class MarketRegimeDetector:
                     elif current > 0.7:
                         regime = "risk_off"
                     else:
-                        regime = "risk_on"   # 극단적 탐욕도 역발상(반전 주의)
+                        regime = "risk_off"  # 극단적 탐욕(<0.7) = 과열 경계 신호
                     return {"pcr_value": round(current, 3), "pcr_ma5": round(ma5, 3), "pcr_regime": regime, "pcr_source": ticker}
             logger.debug("PCR 데이터 없음 — neutral 반환")
             return fallback

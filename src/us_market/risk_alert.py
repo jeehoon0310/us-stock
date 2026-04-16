@@ -50,7 +50,7 @@ class RiskAlertSystem:
     RISK_BUDGET = {
         "max_portfolio_var_pct": 5.0,
         "max_single_position_pct": 15.0,
-        "max_sector_pct": 40.0,
+        "max_sector_pct": 35.0,  # 35%로 낮춤 (기존 40%는 실제 포트폴리오에서 거의 미발동)
         "max_correlation_exposure": 3,
     }
 
@@ -196,14 +196,14 @@ class RiskAlertSystem:
             entry_price = perf_prices.get(ticker, 0.0)
             current_price = 0.0
 
-            # current_price는 항상 fetch, entry_price는 없을 때만 설정
+            # current_price는 항상 fetch. entry_price가 없으면 0으로 유지 (stop-loss 스킵)
             try:
                 t = yf.Ticker(ticker, session=_yf_session)
                 hist = t.history(period="5d")
                 if not hist.empty:
                     current_price = float(hist["Close"].iloc[-1])
-                    if entry_price == 0.0:
-                        entry_price = current_price
+                    # entry_price를 current_price로 대체하지 않음:
+                    # entry == current이면 from_entry_pct = 0% → stop-loss 계산이 무의미
             except Exception as e:
                 logger.debug("price fetch 실패 (%s): %s", ticker, e)
 
@@ -543,8 +543,8 @@ class RiskAlertSystem:
             pct = cnt / total * 100
             if pct > max_sector_pct:
                 max_sector_pct = pct
-            if pct > self.RISK_BUDGET["max_sector_pct"]:
-                reasons.append(f"{s} 섹터 {pct:.0f}% > 한도 {self.RISK_BUDGET['max_sector_pct']:.0f}%")
+            if pct >= 35.0:  # Warn when any sector >= 35% (was >40%, never triggered)
+                reasons.append(f"{s} 섹터 {pct:.0f}% >= 한도 {self.RISK_BUDGET['max_sector_pct']:.0f}%")
 
         details["max_sector_pct"] = round(max_sector_pct, 1)
 
@@ -689,9 +689,9 @@ class RiskAlertSystem:
         for s, tickers in sector_counts.items():
             pct = len(tickers) / total * 100 if total > 0 else 0
             sector_concentration[s] = {"count": len(tickers), "pct": round(pct, 1)}
-            if pct > self.RISK_BUDGET["max_sector_pct"]:
+            if pct >= 35.0:  # Warn when any sector >= 35% (was >40%, never triggered)
                 concentration_warnings.append(
-                    f"{s} {pct:.0f}% > 한도 {self.RISK_BUDGET['max_sector_pct']:.0f}%"
+                    f"{s} {pct:.0f}% >= 한도 {self.RISK_BUDGET['max_sector_pct']:.0f}%"
                 )
 
         # 상관관계

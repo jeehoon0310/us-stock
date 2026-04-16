@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from collectors.data_fetcher import USStockDataFetcher
+from analyzers.technical_indicators import calculate_anchored_vwap
 
 logger = logging.getLogger(__name__)
 
@@ -65,14 +66,14 @@ class EnhancedSmartMoneyScreener:
         base = self.output_dir
         data_dir = Path(__file__).resolve().parent.parent / "data"
 
-        # 1. volume_df (필수)
+        # 1. volume_df (선택 — 없으면 개별 계산)
         vol_path = base / "us_volume_analysis.csv"
         if vol_path.exists():
             self.volume_df = pd.read_csv(vol_path)
             logger.info("volume_df 로드: %d행 (%s)", len(self.volume_df), vol_path)
         else:
-            logger.warning("volume_df 파일 없음: %s — 중단", vol_path)
-            return False
+            logger.info("volume_df 파일 없음: %s — 개별 계산으로 폴백", vol_path)
+            self.volume_df = None
 
         # 2. holdings_df (선택)
         holdings_path = base / "us_13f_holdings.csv"
@@ -101,7 +102,7 @@ class EnhancedSmartMoneyScreener:
             logger.info("stocks_df 미제공 (선택): %s — 종목 메타데이터 미반영", stocks_path)
 
         # 5. SPY 데이터
-        self.spy_data = self.fetcher.get_history("SPY", period="3mo")
+        self.spy_data = self.fetcher.get_history("SPY", period="6mo")
         if not self.spy_data.empty:
             logger.info("SPY 데이터 로드: %d일", len(self.spy_data))
         else:
@@ -115,20 +116,44 @@ class EnhancedSmartMoneyScreener:
         return self._info_cache[ticker]
 
     def get_relative_strength(self, ticker: str) -> float:
+        """다기간 RS — 20d(0.2) + 60d(0.3) + 120d(0.5) 가중평균 (JP Morgan 권장 중기 모멘텀)."""
         if self.spy_data is None or self.spy_data.empty:
             return 0.0
 
-        hist = self.fetcher.get_history(ticker, period="3mo")
+        hist = self.fetcher.get_history(ticker, period="6mo")
         if hist.empty or len(hist) < 2:
             return 0.0
 
         spy_close = self.spy_data["Close"]
-        lookback = min(20, len(hist) - 1, len(spy_close) - 1)
+        hist_close = hist["Close"]
 
-        stock_ret = (float(hist["Close"].iloc[-1]) / float(hist["Close"].iloc[-1 - lookback]) - 1) * 100
-        spy_ret = (float(spy_close.iloc[-1]) / float(spy_close.iloc[-1 - lookback]) - 1) * 100
+        def _rs(lookback: int) -> float | None:
+            lb = min(lookback, len(hist_close) - 1, len(spy_close) - 1)
+            if lb < 5:
+                return None
+            stock_ret = (float(hist_close.iloc[-1]) / float(hist_close.iloc[-1 - lb]) - 1) * 100
+            spy_ret = (float(spy_close.iloc[-1]) / float(spy_close.iloc[-1 - lb]) - 1) * 100
+            return stock_ret - spy_ret
 
-        return round(stock_ret - spy_ret, 1)
+        rs_20 = _rs(20)
+        rs_60 = _rs(60)
+        rs_120 = _rs(120)
+
+        # 계산 가능한 기간만 가중 평균
+        vals, weights = [], []
+        if rs_20 is not None:
+            vals.append(rs_20); weights.append(0.2)
+        if rs_60 is not None:
+            vals.append(rs_60); weights.append(0.3)
+        if rs_120 is not None:
+            vals.append(rs_120); weights.append(0.5)
+
+        if not vals:
+            return 0.0
+
+        total_w = sum(weights)
+        rs = sum(v * w for v, w in zip(vals, weights)) / total_w
+        return round(rs, 1)
 
     def _calculate_volume_sd_score(self, ticker: str, lookback: int = 20) -> float:
         """거래량 표준편차 기반 수급 점수 (0-100)
@@ -299,17 +324,17 @@ class EnhancedSmartMoneyScreener:
         # Technical Score (기본 50점)
         tech_score = 50
 
-        # RSI 점수
-        if rsi < 30:
-            tech_score += 10 + int((30 - rsi) / 6)
-        elif rsi < 45:
-            tech_score += 10
-        elif rsi < 60:
-            tech_score += 8
-        elif rsi < 70:
-            tech_score += 2
+        # RSI 점수: 모멘텀 친화적 (높을수록 강세, market_gate와 일치)
+        if rsi >= 60:
+            tech_score += 12      # 강한 모멘텀 구간
+        elif rsi >= 50:
+            tech_score += 8       # 보통 모멘텀
+        elif rsi >= 40:
+            tech_score += 4       # 중립
+        elif rsi >= 30:
+            tech_score += 2       # 약세 구간
         else:
-            tech_score -= 5
+            tech_score += 3       # 과매도 — 단기 역발상 소폭 보너스 (하락 추세 주의)
 
         # MACD 점수
         hist_now = float(histogram.iloc[-1])
@@ -331,6 +356,38 @@ class EnhancedSmartMoneyScreener:
             tech_score += 10
         elif cross_signal == "Death Cross":
             tech_score -= 15
+
+        # BB Width Squeeze 감지 — 변동성 수축 후 확장 시 +5점
+        try:
+            if len(close) >= 20:
+                bb_upper = close.rolling(20).mean() + 2 * close.rolling(20).std()
+                bb_lower = close.rolling(20).mean() - 2 * close.rolling(20).std()
+                bb_width = (bb_upper - bb_lower) / close.rolling(20).mean() * 100
+                bb_width_ma = bb_width.rolling(10).mean()
+                if len(bb_width) >= 11 and not bb_width.iloc[-2:].isna().any() and not bb_width_ma.iloc[-1:].isna().any():
+                    # Squeeze 이후 확장: 이전이 squeeze (낮음), 현재 확장 중
+                    prev_squeeze = float(bb_width.iloc[-5]) < float(bb_width_ma.iloc[-5])
+                    curr_expanding = float(bb_width.iloc[-1]) > float(bb_width.iloc[-3])
+                    if prev_squeeze and curr_expanding:
+                        tech_score += 5  # 스퀴즈 확장 = 모멘텀 발동 신호
+        except Exception:
+            pass
+
+        # Anchored VWAP — 52주 저점 기준 기관 평균 매수단가 대비 위치
+        try:
+            hist_1y = self.fetcher.get_history(ticker, period="1y")
+            if not hist_1y.empty and len(hist_1y) >= 60 and all(c in hist_1y.columns for c in ["High", "Low", "Close", "Volume"]):
+                avwap = calculate_anchored_vwap(hist_1y)
+                if not avwap.empty and not pd.isna(avwap.iloc[-1]):
+                    current_price = float(close.iloc[-1])
+                    avwap_val = float(avwap.iloc[-1])
+                    if avwap_val > 0:
+                        if current_price > avwap_val:
+                            tech_score += 5   # 기관 평균 매수단가 위 = 강세
+                        else:
+                            tech_score -= 3   # 기관 평균 매수단가 아래 = 약세
+        except Exception:
+            pass
 
         tech_score = max(0, min(100, tech_score))
 
@@ -482,6 +539,22 @@ class EnhancedSmartMoneyScreener:
         score = int(score * 0.8 + quality_score * 0.2)
         score = max(0, min(100, score))
 
+        # Earnings Surprise (SUE) — 실제 EPS vs 예상 EPS 괴리
+        try:
+            t_obj = yf.Ticker(ticker)
+            eh = t_obj.earnings_history
+            if eh is not None and not eh.empty:
+                if "epsActual" in eh.columns and "epsEstimated" in eh.columns:
+                    recent = eh.tail(4).dropna(subset=["epsActual", "epsEstimated"])
+                    if len(recent) >= 2:
+                        surprise = recent["epsActual"] - recent["epsEstimated"]
+                        sue = float(surprise.mean())
+                        # 양수(어닝 서프라이즈) 시 최대 +8점, 음수 시 최대 -5점
+                        sue_bonus = max(-5.0, min(8.0, sue * 8.0))
+                        score = max(0, min(100, int(score + sue_bonus)))
+        except Exception:
+            pass
+
         return {
             "pe_trailing": round(pe, 2),
             "pe_forward": round(pe_fwd, 2),
@@ -555,14 +628,17 @@ class EnhancedSmartMoneyScreener:
             if not row.empty and "13f_score" in row.columns:
                 f13_score = float(row.iloc[0]["13f_score"])
 
+        momentum_score = self._get_momentum_score(ticker)
+
         # 가중 합산
         weights = {
             "technical": 0.25,
             "fundamental": 0.20,
             "analyst": 0.15,
             "relative_strength": 0.15,
-            "volume": 0.15,
+            "volume": 0.10,   # 0.15 → 0.10 (momentum에 5% 양보)
             "13f": 0.10,
+            "momentum": 0.05,  # Jegadeesh & Titman 12-1 모멘텀
         }
         scores = {
             "technical": tech["technical_score"],
@@ -571,6 +647,7 @@ class EnhancedSmartMoneyScreener:
             "relative_strength": round(rs_score, 1),
             "volume": sd_score,
             "13f": f13_score,
+            "momentum": momentum_score,
         }
         composite = sum(scores[k] * weights[k] for k in weights)
         composite = round(max(0, min(100, composite)), 1)
@@ -626,7 +703,22 @@ class EnhancedSmartMoneyScreener:
             logger.error("데이터 로드 실패 — 스크리닝 중단")
             return None
 
-        tickers = self.volume_df["ticker"].tolist()
+        if self.volume_df is not None and "ticker" in self.volume_df.columns:
+            tickers = self.volume_df["ticker"].tolist()
+        else:
+            # volume_df 없을 때 sp500_list.csv에서 tickers 로드
+            sp500_csv = Path(__file__).resolve().parent.parent.parent / "data" / "sp500_list.csv"
+            if sp500_csv.exists():
+                sp500_df = pd.read_csv(sp500_csv)
+                ticker_col = "Symbol" if "Symbol" in sp500_df.columns else "symbol" if "symbol" in sp500_df.columns else None
+                if ticker_col:
+                    tickers = sp500_df[ticker_col].str.strip().tolist()
+                else:
+                    logger.error("sp500_list.csv에서 ticker 컬럼을 찾을 수 없음 — 중단")
+                    return None
+            else:
+                logger.error("volume_df 없고 sp500_list.csv도 없음 — 스크리닝 중단")
+                return None
         logger.info("스크리닝 시작: %d개 종목", len(tickers))
         start = time.time()
 
@@ -659,6 +751,49 @@ class EnhancedSmartMoneyScreener:
         if not results:
             logger.warning("스크리닝 결과 없음")
             return None
+
+        # 섹터 중립화: 섹터 내 Z-score → 변별력 향상
+        try:
+            sector_map = {}
+            sp500_csv = Path(__file__).resolve().parent.parent.parent / "data" / "sp500_list.csv"
+            if sp500_csv.exists():
+                sp500_info = pd.read_csv(sp500_csv)
+                # GICS Sector 또는 sector 컬럼
+                sec_col = "GICS Sector" if "GICS Sector" in sp500_info.columns else "sector" if "sector" in sp500_info.columns else None
+                ticker_col = "Symbol" if "Symbol" in sp500_info.columns else "symbol" if "symbol" in sp500_info.columns else None
+                if sec_col and ticker_col:
+                    sector_map = dict(zip(sp500_info[ticker_col].str.strip(), sp500_info[sec_col].str.strip()))
+
+            if sector_map and len(results) > 0:
+                df_temp = pd.DataFrame(results)
+                df_temp["sector"] = df_temp["ticker"].map(sector_map).fillna("Unknown")
+
+                def sector_normalize(grp):
+                    if len(grp) < 3:
+                        return grp
+                    mean = grp["composite_score"].mean()
+                    std = grp["composite_score"].std()
+                    if std < 0.1:
+                        return grp
+                    grp = grp.copy()
+                    z = (grp["composite_score"] - mean) / std
+                    # Z-score → 0-100 scale (z=0 → 50, ±1 → ±10점)
+                    grp["composite_score"] = (50 + z * 10).clip(0, 100).round(1)
+                    return grp
+
+                df_temp = df_temp.groupby("sector", group_keys=False).apply(sector_normalize)
+                # 등급 재계산
+                def regrade(score):
+                    if score >= 80: return "A", "Strong Accumulation"
+                    elif score >= 65: return "B", "Moderate Accumulation"
+                    elif score >= 50: return "C", "Neutral"
+                    elif score >= 35: return "D", "Moderate Distribution"
+                    elif score >= 20: return "E", "Strong Distribution"
+                    else: return "F", "Capitulation"
+                df_temp[["grade", "grade_label"]] = df_temp["composite_score"].apply(lambda s: pd.Series(regrade(s)))
+                results = df_temp.to_dict("records")
+        except Exception as e:
+            logger.warning("섹터 중립화 실패 (원본 점수 유지): %s", e)
 
         df = pd.DataFrame(results).sort_values("composite_score", ascending=False)
         top20 = df.head(20)
