@@ -77,6 +77,12 @@ function initSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
     CREATE INDEX IF NOT EXISTS idx_votes_target ON votes(target_type, target_id);
+
+    CREATE TABLE IF NOT EXISTS page_views (
+      date TEXT NOT NULL,
+      count INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (date)
+    );
   `);
 
   // 카테고리 시드
@@ -107,6 +113,18 @@ function initSchema(db: Database.Database) {
     INSERT OR IGNORE INTO categories (id, name, display_name, description, created_at)
     VALUES ('notice', 'notice', '공지사항', '운영자 공지사항', ?)
   `).run(now());
+
+  // 마이그레이션: 카테고리 이름 변경
+  const renames: [string, string][] = [
+    ["stocks",     "강의자료"],
+    ["strategies", "Prompts"],
+    ["macro",      "News"],
+    ["general",    "질문"],
+    ["question",   "익명게시판"],
+  ];
+  for (const [id, name] of renames) {
+    db.prepare("UPDATE categories SET display_name = ? WHERE id = ?").run(name, id);
+  }
 }
 
 // ── Types ──────────────────────────────────────────────────────
@@ -337,4 +355,25 @@ export function castVote(data: {
   }
 
   return buildVoteScore(db, target_type, target_id, voter_id);
+}
+
+// ── Page Views ──────────────────────────────────────────────────
+
+export function recordVisit(): void {
+  const today = new Date().toISOString().slice(0, 10);
+  getDb().prepare(`
+    INSERT INTO page_views (date, count) VALUES (?, 1)
+    ON CONFLICT(date) DO UPDATE SET count = count + 1
+  `).run(today);
+}
+
+export function getVisitorStats(): { today: number; total: number } {
+  const db = getDb();
+  const today = new Date().toISOString().slice(0, 10);
+  const todayRow = db.prepare("SELECT count FROM page_views WHERE date = ?").get(today) as { count: number } | null;
+  const totalRow = db.prepare("SELECT COALESCE(SUM(count), 0) as total FROM page_views").get() as { total: number };
+  return {
+    today: todayRow?.count ?? 0,
+    total: totalRow.total,
+  };
 }

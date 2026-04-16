@@ -277,6 +277,15 @@ export default function BoardPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [visitorStats, setVisitorStats] = useState<{ today: number; total: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/board/visitors", { method: "POST" }).catch(() => {});
+    fetch("/api/board/visitors")
+      .then((r) => r.json())
+      .then((d: { today: number; total: number }) => setVisitorStats(d))
+      .catch(() => {});
+  }, []);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -324,7 +333,17 @@ export default function BoardPage() {
             <span className="material-symbols-outlined text-primary">forum</span>
             <h1 className="text-2xl font-black text-on-surface tracking-tight">Board</h1>
           </div>
-          <p className="text-xs text-on-surface-variant">종목 · 전략 · 매크로 토론 커뮤니티</p>
+          <div className="flex items-center gap-3 text-[11px] text-on-surface-variant mt-0.5">
+            <span>종목 · 전략 · 매크로 토론 커뮤니티</span>
+            {visitorStats !== null && (
+              <>
+                <span className="opacity-30">|</span>
+                <span>오늘 <span className="text-primary font-bold">{visitorStats.today.toLocaleString()}</span>명</span>
+                <span className="opacity-30">·</span>
+                <span>누적 <span className="text-on-surface font-semibold">{visitorStats.total.toLocaleString()}</span>명</span>
+              </>
+            )}
+          </div>
         </div>
         <button
           onClick={() => setShowForm(true)}
