@@ -730,5 +730,699 @@
         "label": "r=0.89"
       }
     ]
+  },
+  "stock_market_graph": {
+    "nodes": [
+      {
+        "id": "mkt_spy",
+        "name": "SPY BULLISH",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "5일 예측 -0.32% · 신뢰도 58%"
+      },
+      {
+        "id": "mkt_qqq",
+        "name": "QQQ BEARISH",
+        "type": "signal",
+        "color": "#f87171",
+        "description": "5일 예측 -0.35% · 신뢰도 85%"
+      },
+      {
+        "id": "mkt_regime",
+        "name": "REGIME\nRISK_ON",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "신뢰도 98%"
+      },
+      {
+        "id": "mkt_gate",
+        "name": "GATE\nCAUTION",
+        "type": "signal",
+        "color": "#facc15",
+        "description": "시장 진입 게이트"
+      },
+      {
+        "id": "mkt_vix",
+        "name": "VIX",
+        "type": "signal",
+        "color": "#facc15",
+        "description": "neutral"
+      },
+      {
+        "id": "mkt_trend",
+        "name": "TREND",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "risk_on"
+      },
+      {
+        "id": "mkt_breadth",
+        "name": "BREADTH",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "risk_on"
+      },
+      {
+        "id": "mkt_credit",
+        "name": "CREDIT",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "risk_on"
+      },
+      {
+        "id": "mkt_yield_curve",
+        "name": "YIELD CURVE",
+        "type": "signal",
+        "color": "#4ade80",
+        "description": "risk_on"
+      },
+      {
+        "id": "mkt_put_call",
+        "name": "PUT_CALL",
+        "type": "signal",
+        "color": "#facc15",
+        "description": "neutral"
+      },
+      {
+        "id": "page_risk_m",
+        "name": "Risk Monitor",
+        "type": "page",
+        "href": "/risk"
+      },
+      {
+        "id": "page_ai_m",
+        "name": "AI Analysis",
+        "type": "page",
+        "href": "/ai"
+      },
+      {
+        "id": "page_ml_m",
+        "name": "ML Rankings",
+        "type": "page",
+        "href": "/ml"
+      },
+      {
+        "id": "page_forecast_m",
+        "name": "Index Forecast",
+        "type": "page",
+        "href": "/forecast"
+      },
+      {
+        "id": "page_regime_m",
+        "name": "Market Regime",
+        "type": "page",
+        "href": "/regime"
+      },
+      {
+        "id": "ai_builder",
+        "name": "AI Builder",
+        "type": "agent",
+        "color": "#a78bfa",
+        "href": "/ai-builder",
+        "description": "Claude Code 에이전트 실행 포털"
+      },
+      {
+        "id": "t_AVGO",
+        "name": "AVGO",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 69.8"
+      },
+      {
+        "id": "t_SNDK",
+        "name": "SNDK",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 69.6"
+      },
+      {
+        "id": "t_SLB",
+        "name": "SLB",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 68.9"
+      },
+      {
+        "id": "t_DAL",
+        "name": "DAL",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 68.4"
+      },
+      {
+        "id": "t_HUBB",
+        "name": "HUBB",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 68.2"
+      },
+      {
+        "id": "t_GLW",
+        "name": "GLW",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 68.1"
+      },
+      {
+        "id": "t_LITE",
+        "name": "LITE",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 68.0"
+      },
+      {
+        "id": "t_LRCX",
+        "name": "LRCX",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 67.9"
+      },
+      {
+        "id": "t_FDS",
+        "name": "FDS",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 67.8"
+      },
+      {
+        "id": "t_AMD",
+        "name": "AMD",
+        "type": "ticker",
+        "color": "#86efac",
+        "description": "Grade B | WATCH | Score 67.8"
+      }
+    ],
+    "edges": [
+      {
+        "source": "mkt_vix",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_trend",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_breadth",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_credit",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_yield_curve",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_put_call",
+        "target": "mkt_regime",
+        "type": "determines",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "mkt_gate",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "page_forecast_m",
+        "type": "displays",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_qqq",
+        "target": "page_forecast_m",
+        "type": "displays",
+        "color": "#f87171"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "page_regime_m",
+        "type": "displays",
+        "color": "#4ade80"
+      },
+      {
+        "source": "ai_builder",
+        "target": "page_risk_m",
+        "type": "enhances",
+        "color": "#a78bfa"
+      },
+      {
+        "source": "ai_builder",
+        "target": "page_ai_m",
+        "type": "enhances",
+        "color": "#a78bfa"
+      },
+      {
+        "source": "ai_builder",
+        "target": "page_ml_m",
+        "type": "enhances",
+        "color": "#a78bfa"
+      },
+      {
+        "source": "ai_builder",
+        "target": "page_forecast_m",
+        "type": "enhances",
+        "color": "#a78bfa"
+      },
+      {
+        "source": "ai_builder",
+        "target": "page_regime_m",
+        "type": "enhances",
+        "color": "#a78bfa"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_AVGO",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_AVGO",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_AVGO",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_AVGO",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_AVGO",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_AVGO",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_AVGO",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_SNDK",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_SNDK",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_SNDK",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_SNDK",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_SNDK",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_SNDK",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_SNDK",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_SLB",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_SLB",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_SLB",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_SLB",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_SLB",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_SLB",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_SLB",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_DAL",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_DAL",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_DAL",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_DAL",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_DAL",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_DAL",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_DAL",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_HUBB",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_HUBB",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_HUBB",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_HUBB",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_HUBB",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_HUBB",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_HUBB",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_GLW",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_GLW",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_GLW",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_GLW",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_GLW",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_GLW",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_GLW",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_LITE",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_LITE",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_LITE",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_LITE",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_LITE",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_LITE",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_LITE",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_LRCX",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_LRCX",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_LRCX",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_LRCX",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_LRCX",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_LRCX",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_LRCX",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_FDS",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_FDS",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_FDS",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_FDS",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_FDS",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_FDS",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_FDS",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      },
+      {
+        "source": "mkt_regime",
+        "target": "t_AMD",
+        "type": "determines",
+        "color": "#4ade80"
+      },
+      {
+        "source": "mkt_gate",
+        "target": "t_AMD",
+        "type": "gates",
+        "color": "#facc15"
+      },
+      {
+        "source": "mkt_spy",
+        "target": "t_AMD",
+        "type": "correlation",
+        "color": "#4ade80"
+      },
+      {
+        "source": "t_AMD",
+        "target": "page_ai_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_AMD",
+        "target": "page_ml_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "t_AMD",
+        "target": "page_risk_m",
+        "type": "displays",
+        "color": "#86efac"
+      },
+      {
+        "source": "ai_builder",
+        "target": "t_AMD",
+        "type": "enhances",
+        "color": "#a78bfa50"
+      }
+    ]
   }
 }

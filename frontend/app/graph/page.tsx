@@ -9,9 +9,10 @@ type GraphJson = {
   generated_at: string;
   system_graph: GraphData;
   stock_graph: GraphData;
+  stock_market_graph: GraphData;
 };
 
-type TabId = "system" | "stock";
+type TabId = "system" | "stock" | "market";
 
 // ── 노드 타입 레이블 ─────────────────────────────────────────────
 
@@ -24,6 +25,7 @@ const TYPE_LABELS: Record<string, string> = {
   page:        "Dashboard Page",
   ticker:      "Stock Ticker",
   sector:      "Sector",
+  agent:       "AI Agent",
 };
 
 const EDGE_TYPE_LABELS: Record<string, string> = {
@@ -83,7 +85,9 @@ export default function GraphPage() {
   }
 
   const currentGraph =
-    activeTab === "system" ? data.system_graph : data.stock_graph;
+    activeTab === "system" ? data.system_graph :
+    activeTab === "stock"  ? data.stock_graph  :
+    (data.stock_market_graph ?? data.stock_graph);
 
   // 선택된 노드의 연결 엣지 수
   const nodeEdges = selectedNode
@@ -133,8 +137,8 @@ export default function GraphPage() {
 
       {/* 탭 + 범례 */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <div className="flex gap-2">
-          {(["system", "stock"] as TabId[]).map((tab) => (
+        <div className="flex gap-2 flex-wrap">
+          {(["system", "stock", "market"] as TabId[]).map((tab) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
@@ -145,9 +149,9 @@ export default function GraphPage() {
               }`}
             >
               <span className="material-symbols-outlined text-base align-middle mr-1">
-                {tab === "system" ? "account_tree" : "scatter_plot"}
+                {tab === "system" ? "account_tree" : tab === "stock" ? "scatter_plot" : "hub"}
               </span>
-              {tab === "system" ? "시스템 아키텍처" : "종목 네트워크"}
+              {tab === "system" ? "시스템 아키텍처" : tab === "stock" ? "종목 네트워크" : "종목-시장 관계"}
             </button>
           ))}
         </div>
@@ -155,11 +159,11 @@ export default function GraphPage() {
         {/* 범례 */}
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           {Object.entries(TYPE_LABELS)
-            .filter(([type]) =>
-              activeTab === "system"
-                ? !["ticker", "sector"].includes(type)
-                : ["ticker", "sector"].includes(type)
-            )
+            .filter(([type]) => {
+              if (activeTab === "system") return !["ticker", "sector", "agent"].includes(type);
+              if (activeTab === "stock")  return ["ticker", "sector"].includes(type);
+              return ["ticker", "signal", "page", "agent"].includes(type);
+            })
             .map(([type, label]) => (
               <div key={type} className="flex items-center gap-1.5">
                 <div
@@ -318,8 +322,8 @@ export default function GraphPage() {
               </div>
             )}
 
-            {/* 페이지 링크 */}
-            {selectedNode.type === "page" && selectedNode.href && (
+            {/* 페이지/에이전트 링크 */}
+            {(selectedNode.type === "page" || selectedNode.type === "agent") && selectedNode.href && (
               <a
                 href={selectedNode.href}
                 className="flex items-center gap-2 text-sm text-primary hover:underline pt-2 border-t border-outline-variant/10"
@@ -327,7 +331,7 @@ export default function GraphPage() {
                 <span className="material-symbols-outlined text-base">
                   open_in_new
                 </span>
-                페이지 열기
+                {selectedNode.type === "agent" ? "AI Builder 열기" : "페이지 열기"}
               </a>
             )}
           </div>

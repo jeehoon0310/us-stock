@@ -25,7 +25,8 @@ export type GraphNode = {
     | "output"
     | "page"
     | "ticker"
-    | "sector";
+    | "sector"
+    | "agent";
   description?: string;
   href?: string;
   sector?: string;
@@ -46,6 +47,7 @@ export type GraphEdge = {
   type: string;
   value?: number;
   label?: string;
+  color?: string;
 };
 
 export type GraphData = {
@@ -62,6 +64,7 @@ export const TYPE_COLORS: Record<string, string> = {
   page:        "#22d3ee",
   ticker:      "#f472b6",
   sector:      "#86efac",
+  agent:       "#a78bfa",
 };
 
 const TYPE_SIZES: Record<string, number> = {
@@ -73,6 +76,7 @@ const TYPE_SIZES: Record<string, number> = {
   page:        7,
   ticker:      9,
   sector:      11,
+  agent:       13,
 };
 
 interface ForceGraphProps {
@@ -143,6 +147,7 @@ export function ForceGraph({ data, onNodeClick, height = 600 }: ForceGraphProps)
   );
 
   const linkColor = useCallback((link: GraphEdge) => {
+    if (link.color) return link.color;
     const colors: Record<string, string> = {
       feeds:       "#ffffff18",
       produces:    "#4ade8038",

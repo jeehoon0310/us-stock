@@ -256,10 +256,202 @@ def build_stock_graph() -> dict:
     return {"nodes": nodes, "edges": edges}
 
 
+# ── 종목-시장 관계 그래프 ─────────────────────────────────────────
+
+LATEST_REPORT_PATH = ROOT / "output" / "reports" / "latest_report.json"
+
+
+def _signal_color(val: str) -> str:
+    v = str(val).lower()
+    if v in ("risk_on", "bullish", "go", "bull"):
+        return "#4ade80"
+    if v in ("risk_off", "crisis", "bearish", "stop", "bear"):
+        return "#f87171"
+    return "#facc15"  # neutral / caution
+
+
+def _grade_color(grade: str) -> str:
+    return {
+        "A": "#4ade80",
+        "B": "#86efac",
+        "C": "#facc15",
+        "D": "#fb923c",
+        "F": "#f87171",
+    }.get(grade, "#94a3b8")
+
+
+def build_stock_market_graph(report_data: dict) -> dict:
+    """종목-시장 관계 그래프: 시장 신호 + 종목 + 페이지 + AI Builder"""
+    nodes: list[dict] = []
+    edges: list[dict] = []
+
+    mt = report_data.get("market_timing", {})
+    spy_pred = mt.get("ml_predictor", {}).get("spy", {})
+    qqq_pred = mt.get("ml_predictor", {}).get("qqq", {})
+    regime = mt.get("regime", "neutral")
+    gate = mt.get("gate", "CAUTION")
+    signals = mt.get("signals", {})
+
+    regime_color = _signal_color(regime)
+    gate_color = _signal_color(gate)
+
+    spy_dir = spy_pred.get("direction", "neutral")
+    spy_color = _signal_color(spy_dir)
+    qqq_dir = qqq_pred.get("direction", "neutral")
+    qqq_color = _signal_color(qqq_dir)
+
+    # ── 시장 신호 노드 ────────────────────────────────────────────
+    spy_conf_pct = float(spy_pred.get("confidence_pct", 0) or 0)
+    qqq_conf_pct = float(qqq_pred.get("confidence_pct", 0) or 0)
+    spy_ret = float(spy_pred.get("predicted_return", 0) or 0)
+    qqq_ret = float(qqq_pred.get("predicted_return", 0) or 0)
+    regime_conf = float(mt.get("regime_confidence", 0) or 0)
+
+    nodes.append({
+        "id": "mkt_spy",
+        "name": f"SPY {spy_dir.upper()}",
+        "type": "signal",
+        "color": spy_color,
+        "description": f"5일 예측 {spy_ret:+.2f}% · 신뢰도 {spy_conf_pct:.0f}%",
+    })
+    nodes.append({
+        "id": "mkt_qqq",
+        "name": f"QQQ {qqq_dir.upper()}",
+        "type": "signal",
+        "color": qqq_color,
+        "description": f"5일 예측 {qqq_ret:+.2f}% · 신뢰도 {qqq_conf_pct:.0f}%",
+    })
+    nodes.append({
+        "id": "mkt_regime",
+        "name": f"REGIME\n{regime.upper()}",
+        "type": "signal",
+        "color": regime_color,
+        "description": f"신뢰도 {regime_conf:.0f}%",
+    })
+    nodes.append({
+        "id": "mkt_gate",
+        "name": f"GATE\n{gate}",
+        "type": "signal",
+        "color": gate_color,
+        "description": "시장 진입 게이트",
+    })
+
+    # 센서 노드 (VIX, TREND, BREADTH, CREDIT, YIELD_CURVE)
+    sensor_label = {
+        "vix": "VIX",
+        "trend": "TREND",
+        "breadth": "BREADTH",
+        "credit": "CREDIT",
+        "yield_curve": "YIELD CURVE",
+    }
+    for sensor_key, sensor_val in signals.items():
+        sc = _signal_color(sensor_val)
+        nodes.append({
+            "id": f"mkt_{sensor_key}",
+            "name": sensor_label.get(sensor_key, sensor_key.upper()),
+            "type": "signal",
+            "color": sc,
+            "description": sensor_val,
+        })
+        edges.append({
+            "source": f"mkt_{sensor_key}",
+            "target": "mkt_regime",
+            "type": "determines",
+            "color": sc,
+        })
+
+    # REGIME + GATE → Verdict 관계
+    edges.append({
+        "source": "mkt_regime",
+        "target": "mkt_gate",
+        "type": "determines",
+        "color": regime_color,
+    })
+
+    # ── 페이지 노드 ───────────────────────────────────────────────
+    page_defs = [
+        {"id": "page_risk_m",     "name": "Risk Monitor",    "href": "/risk"},
+        {"id": "page_ai_m",       "name": "AI Analysis",     "href": "/ai"},
+        {"id": "page_ml_m",       "name": "ML Rankings",     "href": "/ml"},
+        {"id": "page_forecast_m", "name": "Index Forecast",  "href": "/forecast"},
+        {"id": "page_regime_m",   "name": "Market Regime",   "href": "/regime"},
+    ]
+    for p in page_defs:
+        nodes.append({"id": p["id"], "name": p["name"], "type": "page", "href": p["href"]})
+
+    # SPY/QQQ → Index Forecast 페이지
+    edges.append({"source": "mkt_spy", "target": "page_forecast_m", "type": "displays", "color": spy_color})
+    edges.append({"source": "mkt_qqq", "target": "page_forecast_m", "type": "displays", "color": qqq_color})
+    # REGIME → regime 페이지
+    edges.append({"source": "mkt_regime", "target": "page_regime_m", "type": "displays", "color": regime_color})
+
+    # ── AI Builder 노드 ───────────────────────────────────────────
+    nodes.append({
+        "id": "ai_builder",
+        "name": "AI Builder",
+        "type": "agent",
+        "color": "#a78bfa",
+        "href": "/ai-builder",
+        "description": "Claude Code 에이전트 실행 포털",
+    })
+    for p in page_defs:
+        edges.append({
+            "source": "ai_builder",
+            "target": p["id"],
+            "type": "enhances",
+            "color": "#a78bfa",
+        })
+
+    # ── 종목 노드 ─────────────────────────────────────────────────
+    stock_picks = report_data.get("stock_picks", [])[:10]
+    for pick in stock_picks:
+        ticker = pick.get("ticker", "")
+        if not ticker:
+            continue
+        grade = pick.get("grade", "C")
+        action = pick.get("action", "WATCH")
+        score = float(pick.get("composite_score", 0) or 0)
+        ticker_color = _grade_color(grade)
+
+        nodes.append({
+            "id": f"t_{ticker}",
+            "name": ticker,
+            "type": "ticker",
+            "color": ticker_color,
+            "description": f"Grade {grade} | {action} | Score {score:.1f}",
+        })
+
+        # 시장 신호 → 종목
+        edges.append({"source": "mkt_regime", "target": f"t_{ticker}", "type": "determines", "color": regime_color})
+        edges.append({"source": "mkt_gate",   "target": f"t_{ticker}", "type": "gates",      "color": gate_color})
+        edges.append({"source": "mkt_spy",    "target": f"t_{ticker}", "type": "correlation", "color": spy_color})
+
+        # 종목 → 페이지
+        edges.append({"source": f"t_{ticker}", "target": "page_ai_m",   "type": "displays", "color": ticker_color})
+        edges.append({"source": f"t_{ticker}", "target": "page_ml_m",   "type": "displays", "color": ticker_color})
+        edges.append({"source": f"t_{ticker}", "target": "page_risk_m", "type": "displays", "color": ticker_color})
+
+        # AI Builder → 종목
+        edges.append({"source": "ai_builder", "target": f"t_{ticker}", "type": "enhances", "color": "#a78bfa50"})
+
+    return {"nodes": nodes, "edges": edges}
+
+
 def main():
     print("=== Knowledge Graph Generator ===")
 
     stock_graph = build_stock_graph()
+
+    # latest_report.json 로드 (stock_market_graph용)
+    stock_market_graph: dict = {"nodes": [], "edges": []}
+    if LATEST_REPORT_PATH.exists():
+        try:
+            report_data = json.loads(LATEST_REPORT_PATH.read_text(encoding="utf-8"))
+            stock_market_graph = build_stock_market_graph(report_data)
+        except Exception as e:
+            print(f"[WARN] latest_report.json 파싱 실패: {e}")
+    else:
+        print(f"[WARN] {LATEST_REPORT_PATH} 없음 — stock_market_graph 생략")
 
     payload = {
         "generated_at": date.today().isoformat(),
@@ -268,6 +460,7 @@ def main():
             "edges": SYSTEM_EDGES,
         },
         "stock_graph": stock_graph,
+        "stock_market_graph": stock_market_graph,
     }
 
     FRONTEND_DATA.mkdir(parents=True, exist_ok=True)
@@ -276,6 +469,7 @@ def main():
 
     print(f"✓ system_graph: {len(SYSTEM_NODES)}개 노드, {len(SYSTEM_EDGES)}개 엣지")
     print(f"✓ stock_graph: {len(stock_graph['nodes'])}개 노드, {len(stock_graph['edges'])}개 엣지")
+    print(f"✓ stock_market_graph: {len(stock_market_graph['nodes'])}개 노드, {len(stock_market_graph['edges'])}개 엣지")
     print(f"✓ {out} 저장 완료")
 
 

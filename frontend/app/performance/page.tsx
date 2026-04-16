@@ -62,6 +62,72 @@ type PerformanceData = {
 
 type StrategyKey = "strategy_a" | "strategy_b" | "strategy_c";
 
+// ── 기간 필터 ─────────────────────────────────────────────────────
+
+type Period = "1M" | "3M" | "6M" | "ALL";
+
+function filterByPeriod(data: PerformanceData, period: Period): PerformanceData {
+  if (period === "ALL") return data;
+  const days = { "1M": 30, "3M": 90, "6M": 180 }[period];
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+  const filtered: PerformanceData = {
+    ...data,
+    spy_curve: data.spy_curve.filter((p) => p.date >= cutoffStr),
+    strategies: {} as PerformanceData["strategies"],
+  };
+
+  (["strategy_a", "strategy_b", "strategy_c"] as StrategyKey[]).forEach((key) => {
+    const s = data.strategies[key];
+    const filteredCurve = s.equity_curve.filter((p) => p.date >= cutoffStr);
+    const filteredLog = s.signal_log.filter((p) => p.date >= cutoffStr);
+    const tradeReturns = filteredLog.filter((e) => e.invested).map((e) => e.daily_return_pct);
+    const initial = filteredCurve[0]?.value ?? 10000;
+    const final = filteredCurve[filteredCurve.length - 1]?.value ?? initial;
+    const cumRet = ((final / initial) - 1) * 100;
+    const n = Math.max(filteredLog.length, 1);
+    const annRet = ((final / initial) ** (252 / n) - 1) * 100;
+    const meanR = tradeReturns.length ? tradeReturns.reduce((a, b) => a + b, 0) / tradeReturns.length : 0;
+    const stdR = tradeReturns.length > 1
+      ? Math.sqrt(tradeReturns.reduce((a, b) => a + (b - meanR) ** 2, 0) / (tradeReturns.length - 1))
+      : 0;
+    const sharpe = stdR > 0 ? (meanR / stdR) * Math.sqrt(252) : 0;
+    const winRate = tradeReturns.length
+      ? (tradeReturns.filter((r) => r > 0).length / tradeReturns.length) * 100
+      : 0;
+    let peak = initial, mdd = 0;
+    for (const p of filteredCurve) {
+      if (p.value > peak) peak = p.value;
+      const dd = (p.value - peak) / peak * 100;
+      if (dd < mdd) mdd = dd;
+    }
+    // SPY 기간 수익률 재계산
+    const spyCurve = filtered.spy_curve;
+    const spyInitial = spyCurve[0]?.value ?? 10000;
+    const spyFinal = spyCurve[spyCurve.length - 1]?.value ?? spyInitial;
+    const spyAnn = ((spyFinal / spyInitial) ** (252 / n) - 1) * 100;
+
+    filtered.strategies[key] = {
+      ...s,
+      equity_curve: filteredCurve,
+      signal_log: filteredLog,
+      trade_count: tradeReturns.length,
+      metrics: {
+        cumulative_return: Math.round(cumRet * 100) / 100,
+        annualized_return: Math.round(annRet * 100) / 100,
+        sharpe: Math.round(sharpe * 1000) / 1000,
+        max_drawdown: Math.round(mdd * 100) / 100,
+        win_rate: Math.round(winRate * 10) / 10,
+        alpha_vs_spy: Math.round((annRet - spyAnn) * 100) / 100,
+      },
+    };
+  });
+
+  return filtered;
+}
+
 // ── 차트 데이터 병합 ──────────────────────────────────────────────
 
 function mergeChartData(data: PerformanceData) {
@@ -191,6 +257,7 @@ export default function PerformancePage() {
   const [data, setData] = useState<PerformanceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeStrategy, setActiveStrategy] = useState<StrategyKey>("strategy_a");
+  const [period, setPeriod] = useState<Period>("ALL");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -224,8 +291,9 @@ export default function PerformancePage() {
     );
   }
 
-  const strategy = data.strategies[activeStrategy];
-  const chartData = mergeChartData(data);
+  const filteredData = filterByPeriod(data, period);
+  const strategy = filteredData.strategies[activeStrategy];
+  const chartData = mergeChartData(filteredData);
 
   const strategyKeys: StrategyKey[] = ["strategy_a", "strategy_b", "strategy_c"];
 
@@ -238,7 +306,10 @@ export default function PerformancePage() {
             Strategy Backtester <HelpBtn topic="performance" />
           </h2>
           <p className="text-sm text-on-surface-variant">
-            {data.date_range.start} ~ {data.date_range.end} · 5거래일 보유 ·{" "}
+            {period === "ALL"
+              ? `${data.date_range.start} ~ ${data.date_range.end}`
+              : `최근 ${period} · ${filteredData.spy_curve[0]?.date ?? ""} ~`}{" "}
+            · 3거래일 보유 ·{" "}
             <span className="text-on-surface">SPY {data.spy_cumulative_return > 0 ? "+" : ""}{data.spy_cumulative_return.toFixed(1)}%</span>
           </p>
           <p className="text-[11px] text-on-surface-variant mt-1 opacity-60">{data.note}</p>
@@ -250,10 +321,28 @@ export default function PerformancePage() {
         </div>
       </div>
 
+      {/* 기간 필터 */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-on-surface-variant font-bold uppercase tracking-widest mr-1">기간</span>
+        {(["1M", "3M", "6M", "ALL"] as Period[]).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPeriod(p)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              period === p
+                ? "bg-primary text-on-primary"
+                : "bg-surface-container-high text-on-surface-variant hover:text-on-surface"
+            }`}
+          >
+            {p === "ALL" ? "전체" : p}
+          </button>
+        ))}
+      </div>
+
       {/* 전략 탭 */}
       <div className="flex gap-2 flex-wrap">
         {strategyKeys.map((key) => {
-          const s = data.strategies[key];
+          const s = filteredData.strategies[key];
           const active = activeStrategy === key;
           return (
             <button
@@ -284,10 +373,21 @@ export default function PerformancePage() {
           <span>SPY</span>
           <span
             className="text-xs font-black"
-            style={{ color: data.spy_cumulative_return >= 0 ? "#4ade80" : "#f87171" }}
+            style={{
+              color: (() => {
+                const spyCurve = filteredData.spy_curve;
+                if (spyCurve.length < 2) return "#94a3b8";
+                const ret = (spyCurve[spyCurve.length - 1].value / spyCurve[0].value - 1) * 100;
+                return ret >= 0 ? "#4ade80" : "#f87171";
+              })(),
+            }}
           >
-            {data.spy_cumulative_return > 0 ? "+" : ""}
-            {data.spy_cumulative_return.toFixed(1)}%
+            {(() => {
+              const spyCurve = filteredData.spy_curve;
+              if (spyCurve.length < 2) return "—";
+              const ret = (spyCurve[spyCurve.length - 1].value / spyCurve[0].value - 1) * 100;
+              return `${ret > 0 ? "+" : ""}${ret.toFixed(1)}%`;
+            })()}
           </span>
         </div>
       </div>
@@ -490,7 +590,7 @@ export default function PerformancePage() {
       {/* 전략 설명 카드 */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {strategyKeys.map((key) => {
-          const s = data.strategies[key];
+          const s = filteredData.strategies[key];
           const active = activeStrategy === key;
           return (
             <button

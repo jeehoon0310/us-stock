@@ -10,9 +10,10 @@ const NAV = [
   { href: "/ai", icon: "psychology", label: "AI Analysis", key: "ai" },
   { href: "/forecast", icon: "insights", label: "Index Forecast", key: "prediction" },
   { href: "/ml", icon: "leaderboard", label: "ML Rankings", key: "gbm" },
-  { href: "/costs", icon: "payments", label: "API Costs", key: "cost" },
   { href: "/performance", icon: "trending_up", label: "Performance", key: "performance" },
   { href: "/graph", icon: "hub", label: "System Graph", key: "graph" },
+  { href: "/ai-builder", icon: "smart_toy", label: "AI Builder", key: "ai-builder" },
+  { href: "/costs", icon: "payments", label: "API Costs", key: "cost" },
 ];
 
 const MOBILE_NAV = [
@@ -23,9 +24,10 @@ const MOBILE_NAV = [
   { href: "/ai", icon: "psychology", label: "AI" },
   { href: "/forecast", icon: "insights", label: "Forecast" },
   { href: "/ml", icon: "leaderboard", label: "ML" },
-  { href: "/costs", icon: "payments", label: "Cost" },
   { href: "/performance", icon: "trending_up", label: "Perf" },
   { href: "/graph", icon: "hub", label: "Graph" },
+  { href: "/ai-builder", icon: "smart_toy", label: "Builder" },
+  { href: "/costs", icon: "payments", label: "Cost" },
 ];
 
 export function SideNav({ syncedAt }: { syncedAt: string }) {

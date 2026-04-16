@@ -553,6 +553,60 @@ sudo docker logs us-stock --tail=50    # 앱 로그
 
 ---
 
+## 15. AI Builder 서비스 (2026-04-16 추가)
+
+비개발자가 웹에서 Claude Code 에이전트를 직접 실행하는 포털.  
+상세 문서: [ai-builder.md](./ai-builder.md)
+
+### 15.1 현재 상태 — Phase 1 (Next.js API Routes)
+
+```
+Browser → POST /api/ai-builder/run
+        → Next.js route.ts
+        → spawn("claude", ["-p", "@{agentId} {task}", "--output-format", "stream-json"])
+        → SSE 스트리밍 → Browser
+```
+
+- `claude` CLI는 **Mac에만 설치**됨 — 로컬 dev 환경에서만 동작
+- Synology Docker 컨테이너 내에서는 `claude` CLI 미설치 → **Phase 1은 프로덕션 미지원**
+
+### 15.2 Phase 2 — FastAPI Docker 서비스 (예정)
+
+```
+포트: 5051
+서비스: services/ai-builder/main.py (FastAPI + uvicorn)
+컨테이너: ai-builder (docker-compose.prod.yml에 추가 필요)
+```
+
+Dockerfile에 추가 필요:
+```dockerfile
+RUN npm install -g @anthropic-ai/claude-code
+```
+
+docker-compose.prod.yml에 추가 필요:
+```yaml
+ai-builder:
+  build: ./services/ai-builder
+  ports:
+    - "5051:5051"
+  environment:
+    - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    - US_STOCK_DIR=/app
+  volumes:
+    - .:/app:ro
+```
+
+### 15.3 라우팅 구조 (Phase 2 기준)
+
+```
+edu.frindle.synology.me → nginx(:8080)
+  └─ /ai-builder, /api/ai-builder/* → proxy_pass :8889 (Next.js 갤러리/UI)
+                                      ↓ fetch POST http://localhost:5051/run
+                                      → ai-builder 컨테이너(:5051)
+```
+
+---
+
 ## 14. Rollback Plan
 
 ### 14.1 즉시 롤백 (컨테이너 손상)
