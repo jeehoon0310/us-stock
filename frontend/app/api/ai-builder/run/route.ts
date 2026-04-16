@@ -1,8 +1,45 @@
-import { spawn } from "child_process";
+import { spawn, execFileSync } from "child_process";
 import path from "path";
 
 const US_STOCK_DIR =
   process.env.US_STOCK_DIR ?? path.resolve(process.cwd(), "..");
+
+// Next.js 서버는 셸 PATH가 최소화되어 있어 claude를 찾지 못할 수 있음.
+// 모듈 로드 시 한 번만 실행해 경로를 확정한다.
+const EXTENDED_PATH = [
+  process.env.PATH ?? "",
+  "/usr/local/bin",
+  "/opt/homebrew/bin",
+  `${process.env.HOME ?? ""}/.local/bin`,
+  `${process.env.HOME ?? ""}/.npm-global/bin`,
+  `${process.env.HOME ?? ""}/.nvm/current/bin`,
+].join(":");
+
+const CLAUDE_PATH = (() => {
+  // 1) which 명령으로 탐색
+  try {
+    return execFileSync("which", ["claude"], {
+      encoding: "utf-8",
+      env: { ...process.env, PATH: EXTENDED_PATH },
+    }).trim();
+  } catch { /* continue */ }
+
+  // 2) 공통 경로 직접 시도
+  const candidates = [
+    `${process.env.HOME ?? ""}/.local/bin/claude`,
+    "/usr/local/bin/claude",
+    "/opt/homebrew/bin/claude",
+    `${process.env.HOME ?? ""}/.npm-global/bin/claude`,
+  ];
+  for (const p of candidates) {
+    try {
+      execFileSync(p, ["--version"], { encoding: "utf-8", timeout: 3000 });
+      return p;
+    } catch { /* continue */ }
+  }
+
+  return "claude"; // last resort
+})();
 
 export async function POST(req: Request) {
   let agentId: string;
@@ -38,7 +75,7 @@ export async function POST(req: Request) {
       };
 
       const proc = spawn(
-        "claude",
+        CLAUDE_PATH,
         [
           "-p",
           `@${agentId} ${task}`,
@@ -49,7 +86,7 @@ export async function POST(req: Request) {
         ],
         {
           cwd: US_STOCK_DIR,
-          env: { ...process.env },
+          env: { ...process.env, PATH: EXTENDED_PATH },
         }
       );
 

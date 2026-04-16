@@ -766,35 +766,35 @@
         "name": "VIX",
         "type": "signal",
         "color": "#facc15",
-        "description": "neutral"
+        "description": "VIX 보통 — 경계 수준"
       },
       {
         "id": "mkt_trend",
         "name": "TREND",
         "type": "signal",
         "color": "#4ade80",
-        "description": "risk_on"
+        "description": "SPY 이동평균선 위 — 강한 상승 추세"
       },
       {
         "id": "mkt_breadth",
         "name": "BREADTH",
         "type": "signal",
         "color": "#4ade80",
-        "description": "risk_on"
+        "description": "S&P500 종목 전반 상승 — 건강한 시장"
       },
       {
         "id": "mkt_credit",
         "name": "CREDIT",
         "type": "signal",
         "color": "#4ade80",
-        "description": "risk_on"
+        "description": "하이일드 채권 강세 — 투자자 위험 선호"
       },
       {
         "id": "mkt_yield_curve",
         "name": "YIELD CURVE",
         "type": "signal",
         "color": "#4ade80",
-        "description": "risk_on"
+        "description": "장단기 금리차 정상 — 경기 건강"
       },
       {
         "id": "mkt_put_call",

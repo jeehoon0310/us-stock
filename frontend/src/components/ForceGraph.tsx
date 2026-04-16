@@ -167,11 +167,24 @@ export function ForceGraph({ data, onNodeClick, height = 600 }: ForceGraphProps)
     return 1;
   }, []);
 
+  // data가 바뀔 때마다 charge/link force를 강화해 노드를 넓게 퍼뜨린다.
+  // dynamic import 때문에 짧은 delay 후 fgRef를 접근한다.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const fg = fgRef.current as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (!fg?.d3Force) return;
+      fg.d3Force("charge")?.strength(-450);
+      fg.d3Force("link")?.distance(110).strength(0.4);
+      fg.d3ReheatSimulation?.();
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [data]);
+
   const handleEngineStop = useCallback(() => {
     const fg = fgRef.current as {
       zoomToFit: (duration: number, padding: number) => void;
     } | null;
-    fg?.zoomToFit(500, 60);
+    fg?.zoomToFit(500, 80);
   }, []);
 
   const handleNodeClick = useCallback(

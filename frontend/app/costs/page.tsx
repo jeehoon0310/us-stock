@@ -121,8 +121,8 @@ export default function CostsPage() {
       </div>
 
       <div className="bg-surface-container-low rounded-xl p-6">
-        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6">
-          Estimated Cost (10 stocks · per run)
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+          Estimated Cost (10 stocks · per run) <HelpBtn topic="api_costs" />
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">

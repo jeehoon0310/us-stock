@@ -809,6 +809,37 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  graph: {
+    title: "System Knowledge Graph 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🕸️ 이 시스템이 어떻게 돌아가는지 지도예요!</Sec>
+        <p>주식 분석을 위해 수십 개의 부품이 서로 연결되어 동작해요.<br />
+        이 그래프는 <span className={H.bold}>"어떤 데이터가 어디서 와서 무엇을 만드는지"</span>를 한눈에 보여줘요.</p>
+        <Sec>탭 3가지</Sec>
+        <Box>
+          <p><span className={H.bold}>시스템 아키텍처</span> — 데이터 수집→분석→신호→출력→페이지 흐름</p>
+          <p><span className={H.bold}>종목 네트워크</span> — Top Pick 종목들의 섹터·상관관계</p>
+          <p><span className={H.bold}>종목-시장 관계</span> — 시장 신호가 각 종목 투자 판단에 미치는 영향</p>
+        </Box>
+        <Sec>색상 읽는 법 (종목-시장 관계 탭)</Sec>
+        <Box>
+          <p><span className={H.green}>초록 노드</span> = 시장/종목 상태 좋음 (BULLISH / GO / Grade A)</p>
+          <p><span className={H.yellow}>노란 노드</span> = 중립 또는 주의 (NEUTRAL / CAUTION / Grade C)</p>
+          <p><span className={H.red}>빨간 노드</span> = 위험 신호 (BEARISH / STOP / Grade F)</p>
+          <p><span className="text-[#a78bfa] font-bold">보라 노드 (AI Builder)</span> = 분석 에이전트 실행 포털</p>
+        </Box>
+        <Sec>화살표 읽는 법</Sec>
+        <Box>
+          <p>화살표 방향 = 데이터/영향이 흐르는 방향이에요</p>
+          <p>예) REGIME → NVDA = "시장 체제가 NVDA 투자 판단에 영향을 줘요"</p>
+          <p>예) NVDA → AI Analysis = "NVDA 분석 결과가 AI Analysis 페이지에 표시돼요"</p>
+        </Box>
+        <p className="text-[11px]">노드를 클릭하면 오른쪽에 상세 정보와 연결 관계 설명이 나와요!</p>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (

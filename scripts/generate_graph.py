@@ -344,14 +344,43 @@ def build_stock_market_graph(report_data: dict) -> dict:
         "credit": "CREDIT",
         "yield_curve": "YIELD CURVE",
     }
+    sensor_desc: dict[str, dict[str, str]] = {
+        "vix": {
+            "risk_on":  "VIX 낮음 — 시장 공포 없음, 투자 우호적",
+            "neutral":  "VIX 보통 — 경계 수준",
+            "risk_off": "VIX 높음 — 시장 공포 극심",
+            "crisis":   "VIX 위험 — 시장 위기 상태",
+        },
+        "trend": {
+            "risk_on":  "SPY 이동평균선 위 — 강한 상승 추세",
+            "neutral":  "SPY 추세 중립 — 방향 불명확",
+            "risk_off": "SPY 이동평균선 아래 — 하락 추세",
+        },
+        "breadth": {
+            "risk_on":  "S&P500 종목 전반 상승 — 건강한 시장",
+            "neutral":  "시장 폭 중립 — 혼조세",
+            "risk_off": "대형주만 오르는 중 — 시장 폭 좁음",
+        },
+        "credit": {
+            "risk_on":  "하이일드 채권 강세 — 투자자 위험 선호",
+            "neutral":  "신용 시장 중립",
+            "risk_off": "국채 선호 — 안전 자산으로 이동",
+        },
+        "yield_curve": {
+            "risk_on":  "장단기 금리차 정상 — 경기 건강",
+            "neutral":  "수익률 곡선 평탄화 중",
+            "risk_off": "장단기 금리 역전 — 경기침체 경고",
+        },
+    }
     for sensor_key, sensor_val in signals.items():
         sc = _signal_color(sensor_val)
+        desc = sensor_desc.get(sensor_key, {}).get(str(sensor_val).lower(), sensor_val)
         nodes.append({
             "id": f"mkt_{sensor_key}",
             "name": sensor_label.get(sensor_key, sensor_key.upper()),
             "type": "signal",
             "color": sc,
-            "description": sensor_val,
+            "description": desc,
         })
         edges.append({
             "source": f"mkt_{sensor_key}",

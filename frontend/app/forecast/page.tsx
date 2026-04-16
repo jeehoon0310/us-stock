@@ -305,8 +305,8 @@ export default function ForecastPage() {
           {/* Model Info */}
           <section className="bg-surface-container-low rounded-xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface">
-                Model Info
+              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
+                Model Info <HelpBtn topic="ml" />
               </h4>
               <span className="text-[10px] text-on-surface-variant">SPY/QQQ · 5-day horizon</span>
             </div>
@@ -339,8 +339,8 @@ export default function ForecastPage() {
           {/* Prediction History */}
           {history.length > 0 && (
             <section className="bg-surface-container-low rounded-xl p-6">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4">
-                Prediction History
+              <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
+                Prediction History <HelpBtn topic="performance" />
               </h4>
               <div className="mb-4">
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-20" preserveAspectRatio="none">
