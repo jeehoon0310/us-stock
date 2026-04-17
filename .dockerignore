@@ -21,6 +21,7 @@ dashboard/
 
 # Python pipeline outputs (data goes into dashboard-next/public/data)
 data/
+!frontend/app/api/data/
 output/
 reports/
 result/
