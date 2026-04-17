@@ -12,6 +12,8 @@ import type {
 import { regimeBadgeCls, regimeBadgeStyle, gradeClass } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
+import { useT, mapAction } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 // 오늘 날짜 (YYYY-MM-DD)
 function todayISO() {
@@ -22,18 +24,20 @@ function toCompact(d: string) {
 }
 
 export default function RiskPage() {
+  const t = useT();
+  const { lang } = useLang();
   const [data, setData] = useState<RiskAlertData | null>(null);
-  const [status, setStatus] = useState("로딩 중...");
+  const [status, setStatus] = useState(t("common.loading"));
   const [date, setDate] = useState(todayISO());
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   // 날짜별 데이터 로드
   async function loadForDate(d: string) {
-    setStatus("로딩 중...");
+    setStatus(t("common.loading"));
     setData(null);
     let res = await fetch(`/api/data/risk?date=${d}`, { cache: "no-store" });
     if (!res.ok) res = await fetch("/api/data/risk?date=latest", { cache: "no-store" });
-    if (!res.ok) { setStatus("데이터 없음"); return; }
+    if (!res.ok) { setStatus(t("common.noData")); return; }
     const json = await res.json() as RiskAlertData;
     setData(json);
     setDate(d);
@@ -81,9 +85,11 @@ export default function RiskPage() {
   // 파생 변수
   const critCount = (data.alerts ?? []).filter((a: RiskAlert) => a.level === "CRITICAL").length;
   const warnCount = (data.alerts ?? []).filter((a: RiskAlert) => a.level === "WARNING").length;
-  const overallStatus = critCount > 0 ? "ALERT" : warnCount > 0 ? "WATCH" : "CLEAR";
+  const overallStatus = critCount > 0 ? t("dash.alert") : warnCount > 0 ? t("dash.watch") : t("dash.clear");
   const statusColor =
-    overallStatus === "ALERT" ? "text-error" : overallStatus === "WATCH" ? "text-secondary" : "text-primary";
+    critCount > 0 ? "text-error" : warnCount > 0 ? "text-secondary" : "text-primary";
+  void mapAction;
+  void lang;
 
   const sortedAlerts = [...(data.alerts ?? [])].sort((a, b) => {
     const order: Record<string, number> = { CRITICAL: 0, WARNING: 1, INFO: 2 };
@@ -111,7 +117,7 @@ export default function RiskPage() {
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
           <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-            Report Date
+            {t("common.reportDate")}
           </span>
         </div>
         <CalendarPicker
@@ -119,7 +125,7 @@ export default function RiskPage() {
           availableDates={availableDates}
           onChange={(d) => void loadForDate(d)}
           onShift={(delta) => void shiftDate(delta)}
-          status={status !== "로딩 중..." ? status : undefined}
+          status={status !== t("common.loading") ? status : undefined}
         />
       </div>
 
@@ -134,7 +140,7 @@ export default function RiskPage() {
           </span>
           <div>
             <h1 className="text-lg font-black text-on-surface tracking-tight flex items-center gap-1">
-              Risk Monitor <HelpBtn topic="risk_alert" />
+              {t("risk.title")} <HelpBtn topic="risk_alert" />
             </h1>
             <p className="text-[10px] text-on-surface-variant">{data.generated_at}</p>
           </div>
@@ -201,7 +207,7 @@ export default function RiskPage() {
 
         <div className="bg-surface-container-low p-6 rounded-xl">
           <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
-            Risk Budget <HelpBtn topic="risk_alert" />
+            {t("risk.riskBudget")} <HelpBtn topic="risk_alert" />
           </p>
           <p
             className={`text-3xl font-black tracking-tighter ${
@@ -230,7 +236,7 @@ export default function RiskPage() {
             warning
           </span>
           <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-            Risk Alerts <HelpBtn topic="risk_alert" />
+            {t("dash.riskAlerts")} <HelpBtn topic="risk_alert" />
           </h4>
           <span className="ml-auto text-[10px] text-on-surface-variant">{sortedAlerts.length}건</span>
         </div>
@@ -328,7 +334,7 @@ export default function RiskPage() {
           <div className="p-6 border-b border-outline-variant/10 flex items-center gap-2">
             <span className="material-symbols-outlined text-secondary text-lg">shield</span>
             <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-              Stop-Loss Monitor <HelpBtn topic="stop_loss" />
+              {t("risk.stopLossMonitor")} <HelpBtn topic="stop_loss" />
             </h4>
             <span className="ml-2 text-[10px] text-on-surface-variant">
               {sortedStops.filter((s: StopLossStatus) => s.alert_level === "BREACHED").length} BREACHED ·{" "}
@@ -433,7 +439,7 @@ export default function RiskPage() {
         <div className="flex items-center gap-2 mb-6">
           <span className="material-symbols-outlined text-primary text-lg">account_balance_wallet</span>
           <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-            Position Sizing <HelpBtn topic="position_sizing" />
+            {t("dash.positionSizing")} <HelpBtn topic="position_sizing" />
           </h4>
         </div>
         <div className="relative h-3 w-full bg-surface-container-highest rounded-full overflow-hidden mb-2">
@@ -503,7 +509,7 @@ export default function RiskPage() {
             <div className="flex items-center gap-2 mb-6">
               <span className="material-symbols-outlined text-tertiary text-lg">donut_large</span>
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-                Sector Concentration <HelpBtn topic="concentration" />
+                {t("risk.sectorConc")} <HelpBtn topic="concentration" />
               </h4>
             </div>
             <div className="space-y-3">
@@ -541,7 +547,7 @@ export default function RiskPage() {
             <div className="flex items-center gap-2 mb-6">
               <span className="material-symbols-outlined text-secondary text-lg">hub</span>
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-                Correlation Risk <HelpBtn topic="concentration" />
+                {t("risk.correlationRisk")} <HelpBtn topic="concentration" />
               </h4>
               <span className="text-[10px] text-on-surface-variant ml-auto">
                 threshold: {concentration.correlation_threshold}
@@ -598,7 +604,7 @@ export default function RiskPage() {
           <div className="flex items-center gap-2 mb-6">
             <span className="material-symbols-outlined text-error text-lg">bar_chart</span>
             <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-              Component VaR <HelpBtn topic="var_risk" />
+              {t("risk.componentVar")} <HelpBtn topic="var_risk" />
             </h4>
             <span className="ml-auto text-[10px] text-on-surface-variant">
               종목별 리스크 기여도 (Euler 분해)
@@ -648,7 +654,7 @@ export default function RiskPage() {
               thunderstorm
             </span>
             <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-              Stress Testing <HelpBtn topic="risk_alert" />
+              {t("risk.stressTesting")} <HelpBtn topic="risk_alert" />
             </h4>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -707,7 +713,7 @@ export default function RiskPage() {
           <div className="p-6 border-b border-outline-variant/10 flex items-center gap-2">
             <span className="material-symbols-outlined text-tertiary text-lg">waterfall_chart</span>
             <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-              CDaR / CVaR <HelpBtn topic="var_risk" />
+              {t("risk.cdarCvar")} <HelpBtn topic="var_risk" />
             </h4>
             <span className="ml-auto text-[10px] text-on-surface-variant">
               경로 의존형 테일 리스크 (6mo, α=5%)

@@ -2,19 +2,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { LatestReport, RegimeConfig, StockPick, RiskAlertData, RiskAlert } from "@/lib/data";
-import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass, SIGNAL_NAMES, regimeLabel } from "@/lib/ui";
+import { C, regimeBadgeCls, regimeBadgeStyle, gradeClass } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
+import { useT, mapRegime, mapGate, mapAction, mapSensorKey } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
 export function DashboardClient() {
+  const t = useT();
+  const { lang } = useLang();
   const [date, setDate] = useState<string>(todayStr());
   const [report, setReport] = useState<LatestReport | null>(null);
   const [regime, setRegime] = useState<RegimeConfig>({} as RegimeConfig);
-  const [status, setStatus] = useState<string>("로딩 중...");
+  const [status, setStatus] = useState<string>(t("common.loading"));
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
   const [riskData, setRiskData] = useState<RiskAlertData | null>(null);
 
@@ -29,7 +33,7 @@ export function DashboardClient() {
     } catch {
       setReport(null);
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -40,7 +44,7 @@ export function DashboardClient() {
     if (idx === -1) return;
     const next = sorted[idx + delta];
     if (next) void loadReport(next);
-    else setStatus("데이터 없음");
+    else setStatus(t("common.noData"));
   }
 
   useEffect(() => {
@@ -101,14 +105,14 @@ export function DashboardClient() {
       <div className="bg-surface-container-low p-5 md:p-8 rounded-xl mb-6 relative overflow-hidden">
         <div className="relative z-10">
           <h2 className="text-[clamp(1rem,4.5vw,2.5rem)] font-bold tracking-tight text-on-surface mb-2 flex flex-wrap items-center gap-2 md:gap-3">
-            US Stock Market Intelligence <HelpBtn topic="verdict" />
+            {t("dash.heroTitle")} <HelpBtn topic="verdict" />
           </h2>
           <div className="flex items-center gap-3">
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-              LIVE
+              {t("live")}
             </span>
             <p className="text-xs sm:text-sm text-on-surface-variant">
-              Real-time regime detection · Smart money screening · AI analysis
+              {t("dash.heroSubtitle")}
             </p>
           </div>
         </div>
@@ -124,7 +128,7 @@ export function DashboardClient() {
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
           <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-            Report Date
+            {t("common.reportDate")}
           </span>
         </div>
         <CalendarPicker
@@ -142,9 +146,9 @@ export function DashboardClient() {
             event_busy
           </span>
           <p className="text-lg font-bold text-on-surface-variant mb-2">{date}</p>
-          <p className="text-sm text-on-surface-variant/60">해당 날짜에 리포트가 없습니다</p>
+          <p className="text-sm text-on-surface-variant/60">{t("dash.reportNotFound")}</p>
           <p className="text-xs text-on-surface-variant/40 mt-2">
-            다른 날짜를 선택하거나 파이프라인을 실행해주세요
+            {t("dash.reportNotFoundHint")}
           </p>
         </div>
       ) : (
@@ -153,32 +157,32 @@ export function DashboardClient() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-surface-container-low p-4 md:p-6 rounded-xl relative overflow-hidden">
               <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                Verdict <HelpBtn topic="verdict" />
+                {t("common.verdict")} <HelpBtn topic="verdict" />
               </p>
               <p className="text-3xl font-black tracking-tighter" style={{ color: verdictColor }}>
-                {verdict}
+                {mapGate(lang, verdict)}
               </p>
-              <p className="text-xs text-on-surface-variant mt-1">Regime {r.replace("_", " ")}</p>
+              <p className="text-xs text-on-surface-variant mt-1">{t("common.regime")} {mapRegime(lang, r)}</p>
             </div>
             <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
               <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                Confidence <HelpBtn topic="confidence" value={conf} />
+                {t("common.confidence")} <HelpBtn topic="confidence" value={conf} />
               </p>
               <p className={`text-3xl font-black tracking-tighter ${conf >= 90 ? "text-primary" : conf >= 60 ? "text-secondary" : "text-error"}`}>{conf}%</p>
-              <p className={`text-xs mt-1 ${(score ?? 0) >= 2 ? "text-primary" : (score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>Score {score}</p>
+              <p className={`text-xs mt-1 ${(score ?? 0) >= 2 ? "text-primary" : (score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>{t("common.score")} {score}</p>
             </div>
             <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
               <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                Screened <HelpBtn topic="picks" value={summary.total_screened ?? picks.length} />
+                {t("common.screened")} <HelpBtn topic="picks" value={summary.total_screened ?? picks.length} />
               </p>
               <p className="text-3xl font-black tracking-tighter text-on-surface">
                 {summary.total_screened ?? picks.length}
               </p>
-              <p className="text-xs text-on-surface-variant mt-1">stocks analyzed</p>
+              <p className="text-xs text-on-surface-variant mt-1">{t("common.stocksAnalyzed")}</p>
             </div>
             <div className="bg-surface-container-low p-4 md:p-6 rounded-xl border border-primary/20">
               <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                Market Gate <HelpBtn topic="gate" value={gate} />
+                {t("common.marketGate")} <HelpBtn topic="gate" value={gate} />
               </p>
               <p
                 className="text-3xl font-black tracking-tighter"
@@ -186,9 +190,9 @@ export function DashboardClient() {
                   color: gate === "GO" ? C.risk_on : gate === "STOP" ? C.crisis : C.neutral,
                 }}
               >
-                {gate}
+                {mapGate(lang, gate)}
               </p>
-              <p className="text-xs text-on-surface-variant mt-1">Score {gateScore}</p>
+              <p className="text-xs text-on-surface-variant mt-1">{t("common.score")} {gateScore}</p>
             </div>
           </div>
 
@@ -198,7 +202,7 @@ export function DashboardClient() {
               {/* Signals */}
               <div className="bg-surface-container-low rounded-xl p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-                  Core Regime Indicators <HelpBtn topic="regime" value={score} />
+                  {t("dash.coreIndicators")} <HelpBtn topic="regime" value={score} />
                 </h4>
                 <div className="flex flex-wrap gap-4">
                   {spy?.direction && (
@@ -210,12 +214,12 @@ export function DashboardClient() {
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(spy.direction)}`}
                         style={regimeBadgeStyle(spy.direction)}
                       >
-                        {spy.direction.toUpperCase()}{" "}
+                        {mapRegime(lang, spy.direction)}{" "}
                         {spy.predicted_return > 0 ? "+" : ""}
                         {spy.predicted_return}%
                       </span>
                       <p className={`text-[9px] font-bold mt-1 ${(spy.confidence_pct ?? 0) >= 70 ? "text-primary" : (spy.confidence_pct ?? 0) >= 50 ? "text-secondary" : "text-error"}`}>
-                        신뢰도 {spy.confidence_pct ?? 0}% · {(spy.confidence_pct ?? 0) >= 70 ? "높음" : (spy.confidence_pct ?? 0) >= 50 ? "보통" : "낮음"}
+                        {t("status.confidence")} {spy.confidence_pct ?? 0}% · {(spy.confidence_pct ?? 0) >= 70 ? t("status.high") : (spy.confidence_pct ?? 0) >= 50 ? t("status.medium") : t("status.low")}
                       </p>
                     </div>
                   )}
@@ -228,35 +232,35 @@ export function DashboardClient() {
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(qqq.direction)}`}
                         style={regimeBadgeStyle(qqq.direction)}
                       >
-                        {qqq.direction.toUpperCase()}{" "}
+                        {mapRegime(lang, qqq.direction)}{" "}
                         {qqq.predicted_return > 0 ? "+" : ""}
                         {qqq.predicted_return}%
                       </span>
                       <p className={`text-[9px] font-bold mt-1 ${(qqq.confidence_pct ?? 0) >= 70 ? "text-primary" : (qqq.confidence_pct ?? 0) >= 50 ? "text-secondary" : "text-error"}`}>
-                        신뢰도 {qqq.confidence_pct ?? 0}% · {(qqq.confidence_pct ?? 0) >= 70 ? "높음" : (qqq.confidence_pct ?? 0) >= 50 ? "보통" : "낮음"}
+                        {t("status.confidence")} {qqq.confidence_pct ?? 0}% · {(qqq.confidence_pct ?? 0) >= 70 ? t("status.high") : (qqq.confidence_pct ?? 0) >= 50 ? t("status.medium") : t("status.low")}
                       </p>
                     </div>
                   )}
                   <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                     <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                      Regime <HelpBtn topic="regime" />
+                      {t("sensor.regime")} <HelpBtn topic="regime" />
                     </p>
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(r)}`}
                       style={regimeBadgeStyle(r)}
                     >
-                      {regimeLabel(r)}
+                      {mapRegime(lang, r)}
                     </span>
                   </div>
                   <div className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5">
                     <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                      Gate <HelpBtn topic="gate" />
+                      {t("sensor.gate")} <HelpBtn topic="gate" />
                     </p>
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(gate)}`}
                       style={regimeBadgeStyle(gate)}
                     >
-                      {gate}
+                      {mapGate(lang, gate)}
                     </span>
                   </div>
                   {/* Sensor fallback */}
@@ -266,13 +270,13 @@ export function DashboardClient() {
                       className="bg-surface-container-lowest p-4 rounded-lg flex-1 min-w-[calc(50%-8px)] md:min-w-[140px] border border-outline-variant/5"
                     >
                       <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-2 flex items-center gap-1">
-                        {SIGNAL_NAMES[k] ?? k} <HelpBtn topic="regime" />
+                        {mapSensorKey(k)} <HelpBtn topic="regime" />
                       </p>
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold ${regimeBadgeCls(v as string)}`}
                         style={regimeBadgeStyle(v as string)}
                       >
-                        {regimeLabel(String(v))}
+                        {mapRegime(lang, String(v))}
                       </span>
                     </div>
                   ))}
@@ -283,13 +287,13 @@ export function DashboardClient() {
               <div className="bg-surface-container-low rounded-xl overflow-hidden">
                 <div className="p-6 border-b border-outline-variant/10 flex justify-between items-center">
                   <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-                    Top 5 Alpha Picks <HelpBtn topic="picks" />
+                    {t("dash.topAlphaPicks")} <HelpBtn topic="picks" />
                   </h4>
                   <Link
                     href="/top-picks"
                     className="text-xs font-bold text-primary flex items-center gap-1"
                   >
-                    Full Terminal View{" "}
+                    {t("dash.fullTerminal")}{" "}
                     <span className="material-symbols-outlined text-sm">chevron_right</span>
                   </Link>
                 </div>
@@ -319,7 +323,7 @@ export function DashboardClient() {
                         <span
                           className={`inline-flex items-center justify-center px-2 py-0.5 rounded text-[10px] font-bold mr-3 ${actBg}`}
                         >
-                          {action}
+                          {mapAction(lang, action)}
                         </span>
                         <span
                           className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border text-sm font-bold mr-4 ${gradeClass(stock.grade)}`}
@@ -358,20 +362,20 @@ export function DashboardClient() {
                 >
                   {gateIcon}
                 </span>
-                <h5 className="text-3xl font-black tracking-tighter mb-2">{verdict}</h5>
+                <h5 className="text-3xl font-black tracking-tighter mb-2">{mapGate(lang, verdict)}</h5>
                 <p className="text-sm font-bold uppercase tracking-widest opacity-80 mb-6 flex items-center justify-center gap-2">
-                  Integrated Verdict <HelpBtn topic="verdict" />
+                  {t("dash.integratedVerdict")} <HelpBtn topic="verdict" />
                 </p>
                 <div className="w-full bg-black/10 p-4 rounded-lg mb-4">
-                  <p className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1">Gate Score <HelpBtn topic="gate" /></p>
+                  <p className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1">{t("dash.gateScore")} <HelpBtn topic="gate" /></p>
                   <p className="text-4xl font-black">{gateScore}</p>
                 </div>
                 <div className="flex gap-4 text-sm">
-                  <span>Regime: {r.replace("_", " ")}</span>
-                  <span>Conf: {conf}%</span>
+                  <span>{t("common.regime")}: {mapRegime(lang, r)}</span>
+                  <span>{t("common.confidence")}: {conf}%</span>
                 </div>
                 <div className="flex gap-4 text-[10px] mt-2 opacity-80">
-                  <span>Stop: {adaptive.stop_loss}</span>
+                  <span>{t("regime.stopLoss")}: {adaptive.stop_loss}</span>
                   <span>MDD: {adaptive.max_drawdown_warning}</span>
                 </div>
               </div>
@@ -379,7 +383,7 @@ export function DashboardClient() {
               {/* Breadth Gauge */}
               <div className="bg-surface-container-low rounded-xl p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-                  Breadth Gauge <HelpBtn topic="regime" />
+                  {t("dash.breadthGauge")} <HelpBtn topic="regime" />
                 </h4>
                 {(() => {
                   const breadthAbove = (report?.market_timing as Record<string, unknown> | undefined)
@@ -401,9 +405,9 @@ export function DashboardClient() {
                         />
                       </div>
                       <div className="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
-                        <span>Bearish</span>
-                        <span>Neutral</span>
-                        <span>Bullish</span>
+                        <span>{t("dash.bearish")}</span>
+                        <span>{t("dash.neutral")}</span>
+                        <span>{t("dash.bullish")}</span>
                       </div>
                     </>
                   );
@@ -413,7 +417,7 @@ export function DashboardClient() {
               {/* AI Feed */}
               <div className="bg-surface-container-low rounded-xl p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-                  AI Feed <HelpBtn topic="ai_thesis" />
+                  {t("dash.aiFeed")} <HelpBtn topic="ai_thesis" />
                 </h4>
                 <div className="space-y-4">
                   {picks.slice(0, 3).map((stock) => {
@@ -425,10 +429,10 @@ export function DashboardClient() {
                         ></div>
                         <div>
                           <p className="text-xs text-on-surface font-bold">
-                            {stock.action ?? "WATCH"}: {stock.ticker}
+                            {mapAction(lang, stock.action ?? "WATCH")}: {stock.ticker}
                           </p>
                           <p className="text-[10px] text-on-surface-variant">
-                            Grade {stock.grade} · Score {stock.composite_score ?? 0} · RS{" "}
+                            {t("top.colGrade")} {stock.grade} · {t("common.score")} {stock.composite_score ?? 0} · RS{" "}
                             {(stock.rs_vs_spy ?? 0) > 0 ? "+" : ""}
                             {stock.rs_vs_spy ?? 0}%
                           </p>
@@ -448,7 +452,7 @@ export function DashboardClient() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                    Risk Status <HelpBtn topic="risk_alert" />
+                    {t("dash.riskStatus")} <HelpBtn topic="risk_alert" />
                   </p>
                   <p className={`text-3xl font-black tracking-tighter ${
                     (riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0) > 0
@@ -458,32 +462,32 @@ export function DashboardClient() {
                         : "text-primary"
                   }`}>
                     {(riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0) > 0
-                      ? "ALERT"
+                      ? t("dash.alert")
                       : (riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0) > 0
-                        ? "WATCH"
-                        : "CLEAR"}
+                        ? t("dash.watch")
+                        : t("dash.clear")}
                   </p>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0} critical ·{" "}
-                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0} warning
+                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "CRITICAL").length ?? 0} {t("common.critical")} ·{" "}
+                    {riskData.alerts?.filter((a: RiskAlert) => a.level === "WARNING").length ?? 0} {t("common.warning")}
                   </p>
                 </div>
 
                 <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                    Allocation <HelpBtn topic="position_sizing" />
+                    {t("dash.allocation")} <HelpBtn topic="position_sizing" />
                   </p>
                   <p className="text-3xl font-black tracking-tighter text-on-surface">
                     {riskData.portfolio_summary?.invested_pct ?? 0}%
                   </p>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    투자 {riskData.portfolio_summary?.invested_pct ?? 0}% · 현금 {riskData.portfolio_summary?.cash_pct ?? 100}%
+                    {t("dash.invested")} {riskData.portfolio_summary?.invested_pct ?? 0}% · {t("dash.cash")} {riskData.portfolio_summary?.cash_pct ?? 100}%
                   </p>
                 </div>
 
                 <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                    VaR (5D) <HelpBtn topic="var_risk" />
+                    {t("dash.var5d")} <HelpBtn topic="var_risk" />
                   </p>
                   <p className={`text-3xl font-black tracking-tighter ${
                     riskData.portfolio_summary?.risk_budget_status === "EXCEEDED"
@@ -495,19 +499,19 @@ export function DashboardClient() {
                     ${(riskData.portfolio_summary?.total_var_dollar ?? 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}
                   </p>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    Budget: {riskData.portfolio_summary?.risk_budget_status ?? "N/A"}
+                    {t("dash.budget")}: {riskData.portfolio_summary?.risk_budget_status ?? "N/A"}
                   </p>
                 </div>
 
                 <div className="bg-surface-container-low p-4 md:p-6 rounded-xl">
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wide md:tracking-widest mb-2 md:mb-3 flex items-center gap-1">
-                    Portfolio <HelpBtn topic="concentration" />
+                    {t("dash.portfolio")} <HelpBtn topic="concentration" />
                   </p>
                   <p className="text-3xl font-black tracking-tighter text-on-surface">
                     ${((riskData.portfolio_summary?.total_value ?? 100000) / 1000).toFixed(0)}K
                   </p>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    Total value
+                    {t("dash.totalValue")}
                   </p>
                 </div>
               </div>
@@ -517,7 +521,7 @@ export function DashboardClient() {
                 <div className="lg:col-span-2 bg-surface-container-low rounded-xl overflow-hidden">
                   <div className="p-6 border-b border-outline-variant/10">
                     <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-                      Risk Alerts <HelpBtn topic="risk_alert" />
+                      {t("dash.riskAlerts")} <HelpBtn topic="risk_alert" />
                     </h4>
                   </div>
                   <div>
@@ -526,7 +530,7 @@ export function DashboardClient() {
                       .length === 0 ? (
                       <div className="px-6 py-8 text-center">
                         <span className="material-symbols-outlined text-3xl text-primary/40 mb-2">verified</span>
-                        <p className="text-sm text-on-surface-variant">All Clear — 리스크 항목 없음</p>
+                        <p className="text-sm text-on-surface-variant">{t("dash.allClear")}</p>
                       </div>
                     ) : (
                       (riskData.alerts ?? [])
@@ -572,7 +576,7 @@ export function DashboardClient() {
                                     : "bg-primary/10 text-on-surface-variant"
                               }`}
                             >
-                              {alert.action}
+                              {mapAction(lang, alert.action)}
                             </span>
                           </div>
                         ))
@@ -583,7 +587,7 @@ export function DashboardClient() {
                 {/* Position Sizing */}
                 <div className="bg-surface-container-low rounded-xl p-6">
                   <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-                    Position Sizing <HelpBtn topic="position_sizing" />
+                    {t("dash.positionSizing")} <HelpBtn topic="position_sizing" />
                   </h4>
 
                   {/* Allocation Bar */}
@@ -595,8 +599,8 @@ export function DashboardClient() {
                       />
                     </div>
                     <div className="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
-                      <span>투자 {riskData.portfolio_summary?.invested_pct ?? 0}%</span>
-                      <span>현금 {riskData.portfolio_summary?.cash_pct ?? 100}%</span>
+                      <span>{t("dash.invested")} {riskData.portfolio_summary?.invested_pct ?? 0}%</span>
+                      <span>{t("dash.cash")} {riskData.portfolio_summary?.cash_pct ?? 100}%</span>
                     </div>
                   </div>
 
@@ -647,7 +651,7 @@ export function DashboardClient() {
                   {/* Stop-Loss Summary */}
                   <div className="mt-6 pt-4 border-t border-outline-variant/10">
                     <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-1">
-                      Stop-Loss Status <HelpBtn topic="trailing_stop" />
+                      {t("dash.stopLossStatus")} <HelpBtn topic="trailing_stop" />
                     </p>
                     <div className="flex gap-3">
                       {(() => {
@@ -660,19 +664,19 @@ export function DashboardClient() {
                             {breached > 0 && (
                               <span className="inline-flex items-center gap-1 text-[10px] font-bold text-error">
                                 <span className="w-2 h-2 rounded-full bg-error" />
-                                {breached} BREACHED
+                                {breached} {t("dash.breached")}
                               </span>
                             )}
                             {warned > 0 && (
                               <span className="inline-flex items-center gap-1 text-[10px] font-bold text-secondary">
                                 <span className="w-2 h-2 rounded-full bg-secondary" />
-                                {warned} WARNING
+                                {warned} {t("dash.warningCount")}
                               </span>
                             )}
                             {ok > 0 && (
                               <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary">
                                 <span className="w-2 h-2 rounded-full bg-primary" />
-                                {ok > 0 ? ok : 0} OK
+                                {ok > 0 ? ok : 0} {t("dash.ok")}
                               </span>
                             )}
                           </>
@@ -685,7 +689,7 @@ export function DashboardClient() {
               <div className="flex justify-end">
                 <Link href="/risk" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-xs font-bold text-primary transition-colors">
                   <span className="material-symbols-outlined text-sm">security</span>
-                  Full Risk Monitor
+                  {t("dash.fullRiskMonitor")}
                   <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </Link>
               </div>

@@ -1,8 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { gradeClass, barColor } from "@/lib/ui";
+import Link from "next/link";
+import { gradeClass, barColor, scoreColor } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
+import { useT, mapAction, mapStrategy, mapSetup, translate } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 type StockPick = {
   ticker: string;
@@ -32,10 +35,12 @@ function todayStr() {
 }
 
 export default function TopPicksPage() {
+  const t = useT();
+  const { lang } = useLang();
   const [date, setDate] = useState<string>(todayStr());
   const [picks, setPicks] = useState<StockPick[]>([]);
   const [screened, setScreened] = useState<number>(0);
-  const [status, setStatus] = useState<string>("로딩 중...");
+  const [status, setStatus] = useState<string>(t("common.loading"));
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
@@ -50,7 +55,7 @@ export default function TopPicksPage() {
     } catch {
       setPicks([]);
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -88,23 +93,23 @@ export default function TopPicksPage() {
       <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">star</span>
-          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Report Date</span>
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">{t("common.reportDate")}</span>
         </div>
         <CalendarPicker
           value={date}
           availableDates={availableDates}
           onChange={(d) => void loadReport(d)}
           onShift={shiftDate}
-          status={status !== "로딩 중..." ? status : undefined}
+          status={status !== t("common.loading") ? status : undefined}
         />
       </div>
     <section className="bg-surface-container-low rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50">
         <div>
-          <h3 className="text-xl font-bold tracking-tight">Smart Money Top 10</h3>
+          <h3 className="text-xl font-bold tracking-tight flex items-center gap-2">{t("top.heroTitle")} <HelpBtn topic="smart_money_screening" /></h3>
           <p className="text-xs text-on-surface-variant font-medium">
-            Institutional flow &amp; AI scoring · {screened} screened
+            {translate(lang, "top.heroSubtitle", { n: screened })}
           </p>
         </div>
       </div>
@@ -116,26 +121,26 @@ export default function TopPicksPage() {
             event_busy
           </span>
           <p className="text-sm text-on-surface-variant/60">
-            {status === "로딩 중..." ? "로딩 중..." : "해당 날짜에 리포트가 없습니다"}
+            {status === t("common.loading") ? t("common.loading") : t("dash.reportNotFound")}
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto no-scrollbar">
+        <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
                 {([
                   { label: "#" },
-                  { label: "Ticker" },
-                  { label: "Grade", topic: "grade" },
-                  { label: "Composite Score", topic: "composite_score" },
-                  { label: "Strategy", topic: "strategy" },
-                  { label: "Setup", topic: "setup" },
-                  { label: "Tech", topic: "technical_score" },
-                  { label: "Fund", topic: "fundamental_score" },
-                  { label: "Analyst", topic: "analyst_score" },
-                  { label: "RS vs SPY", topic: "rs_vs_spy" },
-                  { label: "Action", topic: "action" },
+                  { label: t("top.colTicker") },
+                  { label: t("top.colGrade"), topic: "grade" },
+                  { label: t("top.colComposite"), topic: "composite_score" },
+                  { label: t("top.colStrategy"), topic: "strategy" },
+                  { label: t("top.colSetup"), topic: "setup" },
+                  { label: t("top.colTech"), topic: "technical_score" },
+                  { label: t("top.colFund"), topic: "fundamental_score" },
+                  { label: t("top.colAnalyst"), topic: "analyst_score" },
+                  { label: t("top.colRs"), topic: "rs_vs_spy" },
+                  { label: t("top.colAction"), topic: "action" },
                 ] as { label: string; topic?: string }[]).map((h) => (
                   <th
                     key={h.label}
@@ -172,14 +177,13 @@ export default function TopPicksPage() {
 
                     <td className="px-6 py-5">
                       <div className="flex flex-col">
-                        <a
-                          href={`https://kr.tradingview.com/chart/?symbol=${s.ticker}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-black tracking-tight group-hover:text-primary transition-colors"
+                        <Link
+                          href={`/stock/${s.ticker}?date=${date}`}
+                          className="text-sm font-black tracking-tight group-hover:text-primary transition-colors hover:underline"
+                          title={`${s.ticker} 상세 분석`}
                         >
                           {s.ticker}
-                        </a>
+                        </Link>
                         <span className="text-[10px] text-on-surface-variant">
                           {s.company_name ?? ""}
                         </span>
@@ -211,10 +215,10 @@ export default function TopPicksPage() {
                     </td>
 
                     <td className="px-6 py-5 text-sm text-on-surface-variant">
-                      {s.strategy ?? "—"}
+                      {mapStrategy(lang, s.strategy) || "—"}
                     </td>
                     <td className="px-6 py-5 text-sm text-on-surface-variant">
-                      {s.setup ?? "—"}
+                      {mapSetup(lang, s.setup) || "—"}
                     </td>
                     <td className="px-6 py-5 text-center text-sm font-medium">
                       {s.technical_score ?? "—"}
@@ -238,7 +242,7 @@ export default function TopPicksPage() {
                         <span
                           className={`px-3 py-1 rounded-full text-[11px] uppercase tracking-tighter font-bold ${actionBg}`}
                         >
-                          {action}
+                          {mapAction(lang, action)}
                         </span>
                         <a
                           href={`https://kr.tradingview.com/chart/?symbol=${s.ticker}`}

@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { HelpBtn } from "@/components/HelpBtn";
+import { FeatureInfoBtn } from "@/components/FeatureInfoBtn";
+import { formatFeatureLabel } from "@/lib/featureLabels";
+import { useT, mapRegime, mapConfLevel } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 type KeyDriver = {
   feature: string;
@@ -42,10 +46,12 @@ function todayStr() {
 }
 
 function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
+  const t = useT();
+  const { lang } = useLang();
   if (!p) {
     return (
       <div className="bg-surface-container-low rounded-xl p-8 text-center text-on-surface-variant">
-        {tk}: 데이터 없음
+        {tk}: {t("common.noData")}
       </div>
     );
   }
@@ -72,12 +78,12 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
           </div>
           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold ${dc}`}>
             <span className="material-symbols-outlined text-sm">{arrow}</span>
-            {p.direction.toUpperCase()}
+            {mapRegime(lang, p.direction)}
           </span>
         </div>
         <div className="flex items-center gap-1">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${cf}`}>
-            {p.confidence} {p.confidence_pct}%
+            {mapConfLevel(lang, p.confidence)} {p.confidence_pct}%
           </span>
           <HelpBtn topic="ml" value={`${p.direction}:${p.confidence_pct}`} />
         </div>
@@ -86,7 +92,7 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
           <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-1">
-            Probability (UP) <HelpBtn topic="probability" />
+            {t("forecast.probUp")} <HelpBtn topic="probability" />
           </p>
           <p className={`text-xs font-bold ${dc}`}>{prob}%</p>
         </div>
@@ -97,14 +103,14 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
 
       <div className="grid grid-cols-2 gap-3 mt-4">
         <div className="bg-surface-container-lowest p-3 rounded-lg">
-          <p className="text-[10px] font-bold text-on-surface-variant uppercase">Predicted Return</p>
+          <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.predReturn")}</p>
           <p className={`text-xl font-black ${rc}`}>
             {p.predicted_return > 0 ? "+" : ""}
             {p.predicted_return}%
           </p>
         </div>
         <div className="bg-surface-container-lowest p-3 rounded-lg">
-          <p className="text-[10px] font-bold text-on-surface-variant uppercase">Model Acc</p>
+          <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.modelAcc")}</p>
           <p className="text-xl font-black text-on-surface">
             {p.model_accuracy != null ? (p.model_accuracy * 100).toFixed(1) + "%" : "—"}
           </p>
@@ -115,8 +121,9 @@ function DirectionCard({ tk, p }: { tk: string; p?: DirectionalPrediction }) {
 }
 
 function Drivers({ drivers }: { drivers?: KeyDriver[] }) {
+  const { lang } = useLang();
   if (!drivers?.length)
-    return <div className="text-xs text-on-surface-variant">No drivers</div>;
+    return <div className="text-xs text-on-surface-variant">—</div>;
   const mx = Math.max(...drivers.map((d) => d.importance), 0.0001);
   return (
     <div className="space-y-3">
@@ -134,13 +141,15 @@ function Drivers({ drivers }: { drivers?: KeyDriver[] }) {
             : d.direction === "bearish"
               ? "bg-error"
               : "bg-tertiary";
+        const meta = formatFeatureLabel(d.feature);
         return (
           <div key={i}>
             <div className="flex items-center justify-between mb-1 gap-2">
-              <span className="text-xs font-medium text-on-surface truncate flex-1">
-                {d.feature}
+              <span className="text-xs font-bold text-on-surface truncate flex-1 flex items-center gap-1.5 uppercase tracking-wide">
+                {meta.label}
+                <FeatureInfoBtn description={meta.desc} />
               </span>
-              <span className={`text-[10px] font-bold ${dcl} uppercase`}>{d.direction}</span>
+              <span className={`text-[10px] font-bold ${dcl} uppercase`}>{mapRegime(lang, d.direction)}</span>
               <span className="text-xs font-mono text-on-surface-variant w-14 text-right">
                 {d.value}
               </span>
@@ -156,9 +165,10 @@ function Drivers({ drivers }: { drivers?: KeyDriver[] }) {
 }
 
 export default function ForecastPage() {
+  const t = useT();
   const [date, setDate] = useState<string>(todayStr());
   const [predictor, setPredictor] = useState<MLPredictor | null>(null);
-  const [status, setStatus] = useState<string>("로딩 중...");
+  const [status, setStatus] = useState<string>(t("common.loading"));
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   async function loadReport(dateStr: string) {
@@ -172,7 +182,7 @@ export default function ForecastPage() {
     } catch {
       setPredictor(null);
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -235,9 +245,9 @@ export default function ForecastPage() {
       <header className="mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h3 className="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">Index Forecast <HelpBtn topic="ml" value={spy ? `${spy.direction}:${spy.confidence_pct}` : undefined} /></h3>
+            <h3 className="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">{t("forecast.title")} <HelpBtn topic="ml" value={spy ? `${spy.direction}:${spy.confidence_pct}` : undefined} /></h3>
             <p className="text-xs text-on-surface-variant font-medium uppercase tracking-widest">
-              다음 5 거래일 방향 예측 · GradientBoosting + TimeSeriesSplit CV
+              {t("forecast.modelMeta")}
             </p>
           </div>
           {/* Date Navigation */}
@@ -272,7 +282,7 @@ export default function ForecastPage() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {noData ? (
           <div className="md:col-span-2 bg-surface-container-low rounded-xl p-16 text-center text-on-surface-variant">
-            {status === "로딩 중..." ? "로딩 중..." : "해당 날짜에 예측 데이터가 없습니다"}
+            {status === t("common.loading") ? t("common.loading") : t("dash.reportNotFound")}
           </div>
         ) : (
           <>
@@ -288,13 +298,13 @@ export default function ForecastPage() {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="bg-surface-container-low rounded-xl p-6">
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
-                Key Drivers (SPY) <HelpBtn topic="drivers" />
+                {t("forecast.keyDriversSpy")} <HelpBtn topic="drivers" />
               </h4>
               <Drivers drivers={spy?.key_drivers} />
             </div>
             <div className="bg-surface-container-low rounded-xl p-6">
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
-                Key Drivers (QQQ) <HelpBtn topic="drivers" />
+                {t("forecast.keyDriversQqq")} <HelpBtn topic="drivers" />
               </h4>
               <Drivers drivers={qqq?.key_drivers} />
             </div>
@@ -304,31 +314,31 @@ export default function ForecastPage() {
           <section className="bg-surface-container-low rounded-xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-                Model Info <HelpBtn topic="ml" />
+                {t("forecast.modelInfo")} <HelpBtn topic="ml" />
               </h4>
-              <span className="text-[10px] text-on-surface-variant">SPY/QQQ · 5-day horizon</span>
+              <span className="text-[10px] text-on-surface-variant">{t("forecast.modelMeta")}</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-surface-container-lowest p-4 rounded-lg">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase">SPY CV Acc</p>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.spyCvAcc")}</p>
                 <p className="text-2xl font-black text-primary">
                   {spy?.model_accuracy != null ? (spy.model_accuracy * 100).toFixed(1) + "%" : "—"}
                 </p>
               </div>
               <div className="bg-surface-container-lowest p-4 rounded-lg">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase">QQQ CV Acc</p>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.qqqCvAcc")}</p>
                 <p className="text-2xl font-black text-primary">
                   {qqq?.model_accuracy != null ? (qqq.model_accuracy * 100).toFixed(1) + "%" : "—"}
                 </p>
               </div>
               <div className="bg-surface-container-lowest p-4 rounded-lg">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase">Trained</p>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.trained")}</p>
                 <p className="text-lg font-bold text-on-surface">
                   {spy?.model_trained_at?.substring(0, 10) ?? "—"}
                 </p>
               </div>
               <div className="bg-surface-container-lowest p-4 rounded-lg">
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase">Features</p>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase">{t("forecast.features")}</p>
                 <p className="text-2xl font-black text-on-surface">27</p>
               </div>
             </div>
@@ -338,7 +348,7 @@ export default function ForecastPage() {
           {history.length > 0 && (
             <section className="bg-surface-container-low rounded-xl p-6">
               <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
-                Prediction History <HelpBtn topic="performance" />
+                {t("forecast.history")} <HelpBtn topic="performance" />
               </h4>
               <div className="mb-4">
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-20" preserveAspectRatio="none">
@@ -381,12 +391,12 @@ export default function ForecastPage() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10">
-                      <th className="px-4 py-2">Date</th>
-                      <th className="px-4 py-2">SPY</th>
-                      <th className="px-4 py-2">SPY Prob</th>
-                      <th className="px-4 py-2">QQQ</th>
-                      <th className="px-4 py-2">QQQ Prob</th>
-                      <th className="px-4 py-2 text-right">Model Acc</th>
+                      <th className="px-4 py-2">{t("forecast.colDate")}</th>
+                      <th className="px-4 py-2">{t("forecast.colSpy")}</th>
+                      <th className="px-4 py-2">{t("forecast.colSpyProb")}</th>
+                      <th className="px-4 py-2">{t("forecast.colQqq")}</th>
+                      <th className="px-4 py-2">{t("forecast.colQqqProb")}</th>
+                      <th className="px-4 py-2 text-right">{t("forecast.modelAcc")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-outline-variant/10">

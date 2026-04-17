@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { ForceGraph, GraphData, GraphNode, TYPE_COLORS } from "@/components/ForceGraph";
 import { HelpBtn } from "@/components/HelpBtn";
+import { useT } from "@/lib/i18n";
 
 // ── 타입 ─────────────────────────────────────────────────────────
 
@@ -16,16 +17,16 @@ type TabId = "system" | "stock" | "market";
 
 // ── 노드 타입 레이블 ─────────────────────────────────────────────
 
-const TYPE_LABELS: Record<string, string> = {
-  data_source: "Data Source",
-  collector:   "Collector",
-  analyzer:    "Analyzer",
-  signal:      "Signal",
-  output:      "Output",
-  page:        "Dashboard Page",
-  ticker:      "Stock Ticker",
-  sector:      "Sector",
-  agent:       "AI Agent",
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  data_source: "graph.typeDataSource",
+  collector:   "graph.typeCollector",
+  analyzer:    "graph.typeAnalyzer",
+  signal:      "graph.typeSignal",
+  output:      "graph.typeOutput",
+  page:        "graph.typeDashboardPage",
+  ticker:      "graph.typeStockTicker",
+  sector:      "graph.typeSector",
+  agent:       "graph.typeAiAgent",
 };
 
 const EDGE_TYPE_LABELS: Record<string, string> = {
@@ -76,6 +77,7 @@ function getEdgeContext(
 // ── 페이지 ───────────────────────────────────────────────────────
 
 export default function GraphPage() {
+  const t = useT();
   const [data, setData] = useState<GraphJson | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("system");
@@ -112,7 +114,7 @@ export default function GraphPage() {
     return (
       <div className="bg-surface-container-low rounded-xl p-10 text-center">
         <p className="text-on-surface-variant">
-          데이터 없음 — generate_graph.py를 실행하세요
+          {t("common.noData")}
         </p>
       </div>
     );
@@ -152,7 +154,7 @@ export default function GraphPage() {
       <div className="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
         <div className="relative z-10">
           <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">
-            System Knowledge Graph <HelpBtn topic="graph" />
+            {t("graph.title")} <HelpBtn topic="graph" />
           </h2>
           <p className="text-sm text-on-surface-variant">
             데이터 흐름 아키텍처 + 종목 상관관계 네트워크 · 생성일{" "}
@@ -192,19 +194,19 @@ export default function GraphPage() {
 
         {/* 범례 */}
         <div className="flex flex-wrap gap-x-4 gap-y-1">
-          {Object.entries(TYPE_LABELS)
+          {Object.entries(TYPE_LABEL_KEYS)
             .filter(([type]) => {
               if (activeTab === "system") return !["ticker", "sector", "agent"].includes(type);
               if (activeTab === "stock")  return ["ticker", "sector"].includes(type);
               return ["ticker", "signal", "page", "agent"].includes(type);
             })
-            .map(([type, label]) => (
+            .map(([type, key]) => (
               <div key={type} className="flex items-center gap-1.5">
                 <div
                   className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                   style={{ backgroundColor: TYPE_COLORS[type] }}
                 />
-                <span className="text-[10px] text-on-surface-variant">{label}</span>
+                <span className="text-[10px] text-on-surface-variant">{t(key)}</span>
               </div>
             ))}
         </div>
@@ -283,7 +285,7 @@ export default function GraphPage() {
                     "#888",
                 }}
               >
-                {TYPE_LABELS[selectedNode.type] ?? selectedNode.type}
+                {TYPE_LABEL_KEYS[selectedNode.type] ? t(TYPE_LABEL_KEYS[selectedNode.type]) : selectedNode.type}
               </span>
             </div>
 

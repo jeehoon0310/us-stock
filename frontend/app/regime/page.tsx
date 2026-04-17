@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { C, regimeBadgeCls, regimeBadgeStyle, SIGNAL_NAMES, SIGNAL_WEIGHTS, regimeLabel, strategyLabel } from "@/lib/ui";
+import { C, regimeBadgeCls, regimeBadgeStyle, SIGNAL_WEIGHTS } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import Link from "next/link";
 import { CalendarPicker } from "@/components/CalendarPicker";
 import SectorHeatmap from "@/components/SectorHeatmap";
+import { useT, mapRegime, mapGate, translate, mapSensorKey } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 type SectorItem = {
   name: string;
@@ -53,9 +55,11 @@ function todayStr() {
 }
 
 export default function RegimePage() {
+  const t = useT();
+  const { lang } = useLang();
   const [date, setDate] = useState<string>(todayStr());
   const [mt, setMt] = useState<MarketTiming>({});
-  const [status, setStatus] = useState<string>("로딩 중...");
+  const [status, setStatus] = useState<string>(t("common.loading"));
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
@@ -69,7 +73,7 @@ export default function RegimePage() {
     } catch {
       setMt({});
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -80,7 +84,7 @@ export default function RegimePage() {
     if (idx === -1) return;
     const next = sorted[idx + delta];
     if (next) void loadReport(next);
-    else setStatus("데이터 없음");
+    else setStatus(t("common.noData"));
   }
 
   useEffect(() => {
@@ -97,14 +101,15 @@ export default function RegimePage() {
         setDate(dateStr);
         setStatus("");
       })
-      .catch(() => setStatus("데이터 없음"));
-  }, []);
+      .catch(() => setStatus(t("common.noData")));
+  }, [t]);
 
   // 변수 바인딩 (기존 UI 변수명 유지)
   const r = mt.regime ?? "neutral";
   const p = mt.adaptive_params ?? { stop_loss: "N/A", max_drawdown_warning: "N/A" };
   const signals = mt.signals ?? {};
-  const stratLabel = strategyLabel(r);
+  const stratKey = r === "risk_on" ? "strategy.aggressive" : r === "neutral" ? "strategy.balanced" : "strategy.defensive";
+  const stratLabel = t(stratKey);
   const sectors = (mt.sectors ?? []).slice().sort((a, b) => b.score - a.score);
   const m = mt.gate_metrics ?? {};
   const g = mt.gate ?? "CAUTION";
@@ -133,7 +138,7 @@ export default function RegimePage() {
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">analytics</span>
           <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-            Report Date
+            {t("common.reportDate")}
           </span>
         </div>
         <CalendarPicker
@@ -155,11 +160,11 @@ export default function RegimePage() {
           </div>
           <div className="flex flex-col gap-1 z-10">
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-1">
-              Global Status <HelpBtn topic="regime" />
+              {t("regime.globalStatus")} <HelpBtn topic="regime" />
             </span>
             <div className="flex items-baseline gap-4 mt-2">
               <h1 className="text-5xl md:text-6xl font-black text-on-surface tracking-tighter leading-none">
-                {regimeLabel(r)}
+                {mapRegime(lang, r)}
               </h1>
               <div
                 className="w-4 h-4 rounded-full"
@@ -169,15 +174,15 @@ export default function RegimePage() {
           </div>
           <div className="mt-10 flex gap-8 md:gap-12 z-10">
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Regime Score <HelpBtn topic="regime_score" /></p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">{t("regime.regimeScore")} <HelpBtn topic="regime_score" /></p>
               <p className={`text-3xl font-bold ${(mt.regime_score ?? 0) >= 2 ? "text-primary" : (mt.regime_score ?? 0) >= 1 ? "text-secondary" : "text-error"}`}>{mt.regime_score ?? 0}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Stop Loss <HelpBtn topic="stop_loss" /></p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">{t("regime.stopLoss")} <HelpBtn topic="stop_loss" /></p>
               <p className="text-3xl font-bold text-error">{p.stop_loss ?? "N/A"}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">MDD Warning <HelpBtn topic="mdd_warning" /></p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">{t("regime.mddWarning")} <HelpBtn topic="mdd_warning" /></p>
               <p className="text-3xl font-bold text-error/80">
                 {p.max_drawdown_warning ?? "N/A"}
               </p>
@@ -188,14 +193,14 @@ export default function RegimePage() {
           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
             <span className="material-symbols-outlined text-primary text-3xl">trending_up</span>
             <div className="mt-4">
-              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Confidence <HelpBtn topic="confidence" /></p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">{t("common.confidence")} <HelpBtn topic="confidence" /></p>
               <p className="text-xl font-bold text-on-surface">{mt.regime_confidence ?? 0}%</p>
             </div>
           </div>
           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
             <span className="material-symbols-outlined text-tertiary text-3xl">hub</span>
             <div className="mt-4">
-              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">Strategy <HelpBtn topic="strategy" /></p>
+              <p className="text-xs font-medium text-on-surface-variant uppercase flex items-center gap-1">{t("regime.strategy")} <HelpBtn topic="strategy" /></p>
               <p className="text-xl font-bold text-on-surface">{stratLabel}</p>
             </div>
           </div>
@@ -208,11 +213,9 @@ export default function RegimePage() {
                 <span className="material-symbols-outlined text-primary">auto_awesome</span>
               </div>
               <div>
-                <p className="text-sm font-bold flex items-center gap-1">AI Insight <HelpBtn topic="ai_insight" /></p>
+                <p className="text-sm font-bold flex items-center gap-1">{t("regime.aiInsight")} <HelpBtn topic="ai_insight" /></p>
                 <p className="text-xs text-on-surface-variant">
-                  {r === "risk_on"
-                    ? "Market expansion — momentum active"
-                    : "Market consolidating before expansion"}
+                  {r === "risk_on" ? t("regime.insightRiskOn") : t("regime.insightOther")}
                 </p>
               </div>
             </div>
@@ -224,10 +227,10 @@ export default function RegimePage() {
       {/* 5 Sensors */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-          5 Sensor Status <HelpBtn topic="regime" />
+          {t("regime.sensorStatus")} <HelpBtn topic="regime" />
         </h4>
         {Object.keys(signals).length === 0 ? (
-          <p className="text-xs text-on-surface-variant/60">센서 데이터 없음</p>
+          <p className="text-xs text-on-surface-variant/60">{t("regime.noSensors")}</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {Object.entries(signals).map(([k, v]) => {
@@ -239,11 +242,11 @@ export default function RegimePage() {
                   style={{ borderTop: `3px solid ${C[v as string] ?? "#888"}` }}
                 >
                   <p className="text-[10px] font-bold text-on-surface-variant uppercase mb-1 flex items-center gap-1">
-                    {SIGNAL_NAMES[k] ?? k} · {SIGNAL_WEIGHTS[k] ?? ""}
+                    {mapSensorKey(k)} · {SIGNAL_WEIGHTS[k] ?? ""}
                     {sensorTopic && <HelpBtn topic={sensorTopic} />}
                   </p>
                   <p className="text-base font-bold mt-2" style={{ color: C[v as string] ?? "#888" }}>
-                    {regimeLabel(String(v))}
+                    {mapRegime(lang, String(v))}
                   </p>
                 </div>
               );
@@ -255,24 +258,24 @@ export default function RegimePage() {
       {/* Adaptive Params */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-          Adaptive Parameters <HelpBtn topic="stop_loss" />
+          {t("regime.adaptiveParams")} <HelpBtn topic="stop_loss" />
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
             <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
-              Stop Loss <HelpBtn topic="stop_loss" />
+              {t("regime.stopLoss")} <HelpBtn topic="stop_loss" />
             </p>
             <p className="text-2xl font-bold text-error">{p.stop_loss ?? "N/A"}</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
             <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
-              MDD Warning <HelpBtn topic="mdd_warning" />
+              {t("regime.mddWarning")} <HelpBtn topic="mdd_warning" />
             </p>
             <p className="text-2xl font-bold text-tertiary">{p.max_drawdown_warning ?? "N/A"}</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">
             <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2 flex items-center gap-1">
-              Strategy <HelpBtn topic="strategy" />
+              {t("regime.strategy")} <HelpBtn topic="strategy" />
             </p>
             <p className="text-2xl font-bold text-on-surface">{stratLabel}</p>
           </div>
@@ -283,10 +286,10 @@ export default function RegimePage() {
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-            Volume-Price Divergence (SPY) <HelpBtn topic="spy_divergence" />
+            {t("regime.volumeDivergence")} <HelpBtn topic="spy_divergence" />
           </h4>
           <span className="text-[10px] text-on-surface-variant">
-            거래량-가격 불일치 / Climax 경보
+            {t("regime.divergenceSub")}
           </span>
         </div>
         {divSig === "none" ? (
@@ -295,9 +298,9 @@ export default function RegimePage() {
               check_circle
             </span>
             <div>
-              <p className="text-sm font-bold text-on-surface">특이 신호 없음</p>
+              <p className="text-sm font-bold text-on-surface">{t("regime.noSignal")}</p>
               <p className="text-[10px] text-on-surface-variant mt-1">
-                SPY 거래량-가격 다이버전스 탐지되지 않음 (lookback 10일)
+                {t("regime.noDivergence")}
               </p>
             </div>
           </div>
@@ -341,11 +344,16 @@ export default function RegimePage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface flex items-center gap-2">
-              Sector Gate · 11 SPDR ETFs <HelpBtn topic="gate" />
+              {t("regime.sectorGate")} <HelpBtn topic="gate" />
             </h4>
             <p className="text-[10px] text-on-surface-variant mt-1">
-              평균 {m.avg_score ?? mt.gate_score ?? 0}점 · 강세 {m.bullish_sectors ?? 0} / 약세{" "}
-              {m.bearish_sectors ?? 0} · Top: {m.top_sector ?? "-"} · Bottom: {m.bottom_sector ?? "-"}
+              {translate(lang, "regime.sectorStats", {
+                avg: m.avg_score ?? mt.gate_score ?? 0,
+                bull: m.bullish_sectors ?? 0,
+                bear: m.bearish_sectors ?? 0,
+                top: m.top_sector ?? "-",
+                bottom: m.bottom_sector ?? "-",
+              })}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -353,7 +361,7 @@ export default function RegimePage() {
               className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded ${gateBadgeCls}`}
               style={gateBadgeSty}
             >
-              {g}
+              {mapGate(lang, g)}
             </span>
             <HelpBtn topic="gate" />
           </div>
@@ -361,7 +369,7 @@ export default function RegimePage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {sectors.length === 0 ? (
             <p className="text-xs text-on-surface-variant col-span-full">
-              섹터 게이트 데이터 없음
+              {t("regime.noSectorGate")}
             </p>
           ) : (
             sectors.map((s) => {
@@ -389,7 +397,7 @@ export default function RegimePage() {
                     </span>
                   </div>
                   <p className={`text-2xl font-black ${sigCls} leading-none mb-2`}>{s.score}</p>
-                  <p className={`text-[10px] font-bold ${sigCls} mb-2`}>{sig}</p>
+                  <p className={`text-[10px] font-bold ${sigCls} mb-2`}>{mapRegime(lang, sig)}</p>
                   <div className="flex items-center justify-between text-[10px] text-on-surface-variant">
                     <span>RSI {s.rsi}</span>
                     <span className={rsCls}>
@@ -407,8 +415,7 @@ export default function RegimePage() {
           )}
         </div>
         <p className="text-[9px] text-on-surface-variant mt-4">
-          점수 ≥60 BULLISH · 40~60 NEUTRAL · &lt;40 BEARISH · 공식: RSI 30% + MACD 30% + Volume
-          20% + RS vs SPY 20%
+          {t("regime.sectorFormula")}
         </p>
       </div>
 

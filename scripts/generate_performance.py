@@ -63,15 +63,19 @@ def find_trading_day_idx(trading_days: list, target_str: str) -> int:
     return -1
 
 
+SLIPPAGE_PCT = 0.10  # 왕복 슬리피지 10bps (진입 5bps + 청산 5bps)
+HOLD_PERIOD = 5      # 보유 거래일 수
+
+
 def calc_return(
     entry_date_str: str,
     tickers: list[str],
     close_df,
     trading_days: list,
-    hold_period: int = 3,
+    hold_period: int = 5,
 ) -> tuple[float, float]:
     """
-    entry_date_str에 tickers 균등 매수, hold_period 거래일 후 청산.
+    entry_date_str 스크리닝 신호 → T+1 Close 매수, hold_period 거래일 후 청산.
     Returns: (portfolio_return_pct, spy_return_pct)
     """
     import pandas as pd
@@ -80,11 +84,12 @@ def calc_return(
     if entry_idx < 0:
         return 0.0, 0.0
 
-    exit_idx = min(entry_idx + hold_period, len(trading_days) - 1)
-    if entry_idx == exit_idx:
+    t1_idx = min(entry_idx + 1, len(trading_days) - 1)  # T+1: 실제 매수 가능일
+    exit_idx = min(t1_idx + hold_period, len(trading_days) - 1)
+    if t1_idx == exit_idx:
         return 0.0, 0.0
 
-    entry_day = trading_days[entry_idx]
+    entry_day = trading_days[t1_idx]
     exit_day = trading_days[exit_idx]
 
     # SPY 수익률
@@ -108,7 +113,7 @@ def calc_return(
         sell_p = float(sell_p)
         if math.isnan(buy_p) or math.isnan(sell_p) or buy_p == 0:
             continue
-        returns.append((sell_p - buy_p) / buy_p * 100)
+        returns.append((sell_p - buy_p) / buy_p * 100 - SLIPPAGE_PCT)
 
     if not returns:
         return 0.0, round(spy_ret, 4)
@@ -127,6 +132,7 @@ def simulate_strategy(
     equity_curve = []
     signal_log = []
     trade_returns: list[float] = []
+    last_exit_idx = -1  # 마지막 청산 거래일 인덱스 (포지션 겹침 방지)
 
     running = capital
     for report in reports:
@@ -140,7 +146,12 @@ def simulate_strategy(
             picks = [p for p in picks if p.get("grade", "") in grade_filter]
         tickers = [p["ticker"] for p in picks if p.get("ticker")]
 
-        invested = filter_fn(report) and bool(tickers)
+        # T+1 진입일이 이전 포지션 청산일 이후여야만 진입 가능 (비겹침 원칙)
+        entry_idx = find_trading_day_idx(trading_days, date_str)
+        t1_idx = min(entry_idx + 1, len(trading_days) - 1) if entry_idx >= 0 else -1
+        in_position = t1_idx >= 0 and t1_idx <= last_exit_idx
+
+        invested = filter_fn(report) and bool(tickers) and not in_position
         daily_ret = 0.0
 
         if invested:
@@ -148,6 +159,8 @@ def simulate_strategy(
             daily_ret = port_ret
             running *= (1 + daily_ret / 100)
             trade_returns.append(daily_ret)
+            if t1_idx >= 0:
+                last_exit_idx = min(t1_idx + HOLD_PERIOD, len(trading_days) - 1)
 
         equity_curve.append({
             "date": date_str,
@@ -352,7 +365,7 @@ def main():
         "spy_annualized_return": spy_ann_ret,
         "strategies": result_strategies,
         "spy_curve": spy_curve,
-        "note": "5거래일 보유 후 청산 가정. 거래비용 미반영. 포지션 중복 허용 단순화 모델.",
+        "note": "T+1 Close 진입 · 5거래일 보유 후 청산 · 왕복 슬리피지 10bps 적용. 포지션 중복 허용 단순화 모델.",
     }
 
     FRONTEND_DATA.mkdir(parents=True, exist_ok=True)

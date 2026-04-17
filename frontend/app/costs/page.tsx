@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { HelpBtn } from "@/components/HelpBtn";
+import { useT } from "@/lib/i18n";
 
 type DailyReport = {
   data_date?: string;
@@ -12,6 +13,7 @@ function todayStr() {
 }
 
 export default function CostsPage() {
+  const t = useT();
   const [date, setDate] = useState<string>(todayStr());
   const [status, setStatus] = useState<string>("");
 
@@ -24,7 +26,7 @@ export default function CostsPage() {
       setStatus("");
     } catch {
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -63,7 +65,7 @@ export default function CostsPage() {
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">payments</span>
           <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-            Report Date
+            {t("common.reportDate")}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -95,32 +97,32 @@ export default function CostsPage() {
       {/* Pricing (static) */}
       <div className="bg-surface-container-low rounded-xl p-6 mb-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-2 flex items-center gap-2">
-          API Pricing <HelpBtn topic="api_costs" />
+          {t("costs.apiPricing")} <HelpBtn topic="api_costs" />
         </h4>
-        <p className="text-[10px] text-on-surface-variant mb-6">As of {date}</p>
+        <p className="text-[10px] text-on-surface-variant mb-6">{date}</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
             <h4 className="text-base font-bold text-primary mb-3">Gemini Flash</h4>
-            <p className="text-xs text-on-surface-variant mb-1">Input: $0.10 / 1M tokens</p>
-            <p className="text-xs text-on-surface-variant mb-1">Output: $0.40 / 1M tokens</p>
-            <p className="text-xs text-primary font-medium mt-2">Free tier available</p>
+            <p className="text-xs text-on-surface-variant mb-1">{t("costs.input")}: $0.10 / 1M tokens</p>
+            <p className="text-xs text-on-surface-variant mb-1">{t("costs.output")}: $0.40 / 1M tokens</p>
+            <p className="text-xs text-primary font-medium mt-2">{t("costs.freeTier")}</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
             <h4 className="text-base font-bold text-secondary mb-3">GPT-5-mini</h4>
-            <p className="text-xs text-on-surface-variant mb-1">Input: $0.15 / 1M tokens</p>
-            <p className="text-xs text-on-surface-variant">Output: $0.60 / 1M tokens</p>
+            <p className="text-xs text-on-surface-variant mb-1">{t("costs.input")}: $0.15 / 1M tokens</p>
+            <p className="text-xs text-on-surface-variant">{t("costs.output")}: $0.60 / 1M tokens</p>
           </div>
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10 text-center">
             <h4 className="text-base font-bold text-tertiary mb-3">Perplexity Sonar</h4>
             <p className="text-xs text-on-surface-variant mb-1">$3 / 1,000 requests</p>
-            <p className="text-xs text-on-surface-variant">Per-request pricing</p>
+            <p className="text-xs text-on-surface-variant">{t("costs.perRequest")}</p>
           </div>
         </div>
       </div>
 
       <div className="bg-surface-container-low rounded-xl p-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
-          Estimated Cost (10 stocks · per run) <HelpBtn topic="api_costs" />
+          {t("costs.estCost")} <HelpBtn topic="api_costs" />
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-surface-container-high/40 p-6 rounded-xl border border-outline-variant/10">

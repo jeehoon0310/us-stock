@@ -26,6 +26,9 @@ reports/
 result/
 logs/
 
+# Course zips — delivered to Synology via GHA scp, not via Docker image
+/downloads/
+
 # Secrets
 .env
 .env.production

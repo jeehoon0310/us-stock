@@ -12,6 +12,8 @@ import {
 } from "recharts";
 import { HelpBtn } from "@/components/HelpBtn";
 import { regimeColor, gateColor } from "@/lib/data";
+import { useT, mapRegime, mapGate } from "@/lib/i18n";
+import { useLang } from "@/components/LangProvider";
 
 // ── 타입 ─────────────────────────────────────────────────────────
 
@@ -160,7 +162,7 @@ function mergeChartData(data: PerformanceData) {
 const METRICS = [
   {
     key: "cumulative_return" as keyof Metrics,
-    label: "Total Return",
+    labelKey: "perf.totalReturn",
     suffix: "%",
     icon: "trending_up",
     fmt: (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`,
@@ -168,7 +170,7 @@ const METRICS = [
   },
   {
     key: "sharpe" as keyof Metrics,
-    label: "Sharpe Ratio",
+    labelKey: "perf.sharpe",
     suffix: "",
     icon: "speed",
     fmt: (v: number) => v.toFixed(2),
@@ -177,7 +179,7 @@ const METRICS = [
   },
   {
     key: "alpha_vs_spy" as keyof Metrics,
-    label: "Alpha vs SPY",
+    labelKey: "perf.alpha",
     suffix: "%",
     icon: "leaderboard",
     fmt: (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`,
@@ -185,7 +187,7 @@ const METRICS = [
   },
   {
     key: "max_drawdown" as keyof Metrics,
-    label: "Max Drawdown",
+    labelKey: "perf.maxDd",
     suffix: "%",
     icon: "trending_down",
     fmt: (v: number) => `${v.toFixed(1)}%`,
@@ -193,7 +195,7 @@ const METRICS = [
   },
   {
     key: "win_rate" as keyof Metrics,
-    label: "Win Rate",
+    labelKey: "perf.winRate",
     suffix: "%",
     icon: "check_circle",
     fmt: (v: number) => `${v.toFixed(0)}%`,
@@ -255,6 +257,8 @@ function ChartTooltip({
 // ── 페이지 ───────────────────────────────────────────────────────
 
 export default function PerformancePage() {
+  const t = useT();
+  const { lang } = useLang();
   const [data, setData] = useState<PerformanceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeStrategy, setActiveStrategy] = useState<StrategyKey>("strategy_a");
@@ -288,7 +292,7 @@ export default function PerformancePage() {
     return (
       <div className="bg-surface-container-low rounded-xl p-10 text-center">
         <p className="text-on-surface-variant">
-          데이터 없음 — generate_performance.py를 실행하세요
+          {t("common.noData")}
         </p>
       </div>
     );
@@ -309,7 +313,7 @@ export default function PerformancePage() {
       <div className="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
         <div className="relative z-10">
           <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">
-            Strategy Backtester <HelpBtn topic="performance" />
+            {t("perf.backtester")} <HelpBtn topic="performance" />
           </h2>
           <p className="text-sm text-on-surface-variant">
             {period === "ALL"
@@ -433,7 +437,7 @@ export default function PerformancePage() {
       {/* Equity Curve */}
       <div className="bg-surface-container-low rounded-xl p-6">
         <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-4 flex items-center gap-2">
-          Equity Curve <HelpBtn topic="performance" />
+          {t("perf.equityCurve")} <HelpBtn topic="performance" />
         </h4>
         {mounted ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -526,7 +530,7 @@ export default function PerformancePage() {
               <div className="flex items-center gap-1.5 text-on-surface-variant">
                 <span className="material-symbols-outlined text-base">{m.icon}</span>
                 <span className="text-[10px] font-bold uppercase tracking-widest">
-                  {m.label}
+                  {t(m.labelKey)}
                 </span>
               </div>
               <p className={`text-2xl font-black ${m.color(val)}`}>{m.fmt(val)}</p>
@@ -547,7 +551,7 @@ export default function PerformancePage() {
       <div className="bg-surface-container-low rounded-xl overflow-hidden">
         <div className="px-6 py-5 border-b border-outline-variant/10 flex items-center justify-between">
           <h4 className="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-            Signal Timeline — {strategy.label} <HelpBtn topic="performance" />
+            {t("perf.signalTimeline")} — {strategy.label} <HelpBtn topic="performance" />
           </h4>
           <span className="text-xs text-on-surface-variant">
             투자 {strategy.trade_count} / {strategy.signal_log.length}일
@@ -557,7 +561,7 @@ export default function PerformancePage() {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-surface-container-high/20">
-                {["날짜", "Regime", "Gate", "Verdict", "투자", "5일 수익"].map((h) => (
+                {[t("forecast.colDate"), t("common.regime"), t("common.gate"), t("common.verdict"), t("perf.colInvest"), t("perf.col5dReturn")].map((h) => (
                   <th
                     key={h}
                     className="px-4 py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest whitespace-nowrap"
@@ -580,17 +584,17 @@ export default function PerformancePage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-bold ${regimeColor(entry.regime)}`}>
-                      {entry.regime}
+                      {mapRegime(lang, entry.regime)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-bold ${gateColor(entry.gate)}`}>
-                      {entry.gate}
+                      {mapGate(lang, entry.gate)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-bold ${verdictColor(entry.verdict)}`}>
-                      {entry.verdict}
+                      {mapGate(lang, entry.verdict)}
                     </span>
                   </td>
                   <td className="px-4 py-3">

@@ -10,6 +10,9 @@ services:
       - NODE_OPTIONS=--dns-result-order=ipv4first --no-network-family-autoselection
       - BOARD_DB_PATH=/data/board.db
       - DATA_DB_PATH=/data/data.db
+      - DOWNLOAD_DIR=/data/downloads
+      - DOWNLOAD_PASSWORD=${DOWNLOAD_PASSWORD:?set in /volume1/docker/us-stock/.env}
+      - DOWNLOAD_SESSION_SECRET=${DOWNLOAD_SESSION_SECRET:?set in /volume1/docker/us-stock/.env}
     volumes:
       - /volume1/docker/us-stock/board:/data
     restart: unless-stopped

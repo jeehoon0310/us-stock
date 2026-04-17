@@ -66,7 +66,9 @@ jobs:
           script: |
             sudo mkdir -p /volume1/docker/us-stock/dashboard/pages
             sudo mkdir -p /volume1/docker/us-stock/dashboard/images
+            sudo mkdir -p /volume1/docker/us-stock/board/downloads
             sudo chown -R jeehoon /volume1/docker/us-stock/dashboard
+            sudo chown -R jeehoon /volume1/docker/us-stock/board/downloads
 
       - name: Sync dashboard files to Synology
         uses: appleboy/scp-action@v0.1.7
@@ -78,6 +80,27 @@ jobs:
           source: "archive/legacy-dashboard/pages/notice.html,archive/legacy-dashboard/pages/terminal.html,archive/legacy-dashboard/pages/reports.html,archive/legacy-dashboard/nginx.conf,archive/legacy-dashboard/images"
           target: /volume1/docker/us-stock/dashboard
           strip_components: 2
+
+      - name: Check for course download zips
+        id: check_downloads
+        run: |
+          if ls downloads/*.zip >/dev/null 2>&1; then
+            echo "has_zips=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_zips=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sync course downloads to Synology
+        if: steps.check_downloads.outputs.has_zips == 'true'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SYNOLOGY_HOST }}
+          username: ${{ secrets.SYNOLOGY_USERNAME }}
+          key: ${{ secrets.SYNOLOGY_SSH_KEY }}
+          port: ${{ secrets.SYNOLOGY_PORT }}
+          source: "downloads/*.zip"
+          target: /volume1/docker/us-stock/board/downloads
+          strip_components: 1
 
       - name: Deploy to Synology
         uses: appleboy/ssh-action@v1

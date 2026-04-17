@@ -12,7 +12,7 @@ const H = {
 };
 
 const Box = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-surface-container-high p-3 rounded-lg text-xs space-y-1 my-3 border border-outline-variant/10">
+  <div className="bg-surface-container-high p-3 rounded-lg text-sm space-y-1 my-3 border border-outline-variant/10 whitespace-normal sm:whitespace-nowrap sm:overflow-x-auto">
     {children}
   </div>
 );
@@ -259,15 +259,19 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
         <Sec>🏅 6가지 점수를 합친 최종 성적이에요!</Sec>
         <p>주식을 6가지 방법으로 평가해서 하나의 점수로 합쳐요. 점수가 높을수록 지금 사기 좋은 주식이에요.</p>
         <Box>
-          <p><span className={H.bold}>기술 분석 35%</span> + <span className={H.bold}>기업 가치 20%</span></p>
+          <p><span className={H.bold}>기술 분석 25%</span> + <span className={H.bold}>기업 가치 20%</span></p>
           <p><span className={H.bold}>전문가 의견 15%</span> + <span className={H.bold}>상대 강도 15%</span></p>
-          <p><span className={H.bold}>거래량 10%</span> + <span className={H.bold}>기관 투자 5%</span></p>
+          <p><span className={H.bold}>기관 매집 10%</span> + <span className={H.bold}>모멘텀 5%</span> + <span className={H.bold}>거래량 5%</span> + <span className={H.bold}>단기 반전 5%</span></p>
         </Box>
+        <Sec>색상 기준 (Grade 경계와 정렬)</Sec>
         <Box>
-          <p><span className={H.green}>75점 이상</span> = A등급 (매우 좋음)</p>
-          <p><span className={H.yellow}>50~74점</span> = B/C등급 (보통)</p>
-          <p><span className={H.red}>50점 미만</span> = D/F등급 (주의)</p>
+          <p><span className={H.green}>75점 이상</span> = A등급 · 강한 매수 후보 🟢</p>
+          <p><span className={H.green}>62~74점</span> = B등급 · 양호한 매수 후보 🟢</p>
+          <p><span className={H.yellow}>48~61점</span> = C등급 · 중립 / 관망 🟡</p>
+          <p><span className={H.red}>35~47점</span> = D등급 · 주의 🔴</p>
+          <p><span className={H.red}>35점 미만</span> = F등급 · 회피 🔴</p>
         </Box>
+        <p className="text-[11px]">A·B = 녹색(매수 후보), C = 노란색(관망), D·F = 빨간색(회피). 전 페이지에서 동일 기준을 사용해요.</p>
       </>
     ),
   },
@@ -284,10 +288,11 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.bold}>모멘텀</span> — 요즘 빠르게 오르고 있는지 확인</p>
         </Box>
         <Box>
-          <p><span className={H.green}>75점 이상</span> = 그래프 매우 좋아요 🚀 강한 매수 신호</p>
-          <p><span className={H.yellow}>50~74점</span> = 보통이에요 — 참고용으로 봐요</p>
-          <p><span className={H.red}>50점 미만</span> = 그래프가 약해요 ⚠️ 지금은 조심</p>
+          <p><span className={H.green}>62점 이상</span> = 그래프 강세 🚀 매수 유리</p>
+          <p><span className={H.yellow}>48~61점</span> = 중립 — 참고용으로 봐요</p>
+          <p><span className={H.red}>48점 미만</span> = 그래프가 약해요 ⚠️ 지금은 조심</p>
         </Box>
+        <p className="text-[11px]">전 페이지 공통 색상 기준: A·B(녹) / C(노랑) / D·F(빨강)</p>
       </>
     ),
   },
@@ -304,10 +309,11 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
           <p><span className={H.bold}>재무 건전성</span> — 빚이 너무 많지 않나요?</p>
         </Box>
         <Box>
-          <p><span className={H.green}>75점 이상</span> = 재무 아주 우량해요 💪 믿을 수 있는 회사</p>
-          <p><span className={H.yellow}>50~74점</span> = 보통 수준 — 특별히 좋지도 나쁘지도 않아요</p>
-          <p><span className={H.red}>50점 미만</span> = 재무가 약해요 ⚠️ 리스크 주의</p>
+          <p><span className={H.green}>62점 이상</span> = 재무 우량 💪 A·B 등급에 기여</p>
+          <p><span className={H.yellow}>48~61점</span> = 보통 — 특별히 좋지도 나쁘지도 않아요</p>
+          <p><span className={H.red}>48점 미만</span> = 재무 약함 ⚠️ 리스크 주의</p>
         </Box>
+        <p className="text-[11px]">전 페이지 공통 색상 기준: A·B(녹) / C(노랑) / D·F(빨강)</p>
       </>
     ),
   },
@@ -325,10 +331,11 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
         </Box>
         <Sec>점수 기준</Sec>
         <Box>
-          <p><span className={H.green}>75점 이상</span> = BUY 추천 전문가 대다수 🎯 강한 매수 의견</p>
-          <p><span className={H.yellow}>50~74점</span> = BUY/HOLD 혼재 — 긍정적이지만 만장일치 아님</p>
-          <p><span className={H.red}>50점 미만</span> = HOLD/SELL 의견 많음 ⚠️ 전문가 신뢰도 낮음</p>
+          <p><span className={H.green}>62점 이상</span> = BUY 의견 다수 🎯 긍정</p>
+          <p><span className={H.yellow}>48~61점</span> = BUY/HOLD 혼재 — 만장일치 아님</p>
+          <p><span className={H.red}>48점 미만</span> = HOLD/SELL 많음 ⚠️ 신뢰도 낮음</p>
         </Box>
+        <p className="text-[11px]">전 페이지 공통 색상 기준: A·B(녹) / C(노랑) / D·F(빨강)</p>
       </>
     ),
   },
@@ -840,6 +847,45 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  smart_money_screening: {
+    title: "Smart Money Top 10 — 어떻게 선정했어?",
+    body: (
+      <>
+        <Sec>🏦 503개 종목 중 기관도 탐내는 10종목만 골라요!</Sec>
+        <p>S&P 500 전종목(503개)을 <span className={H.bold}>8가지 팩터</span>로 평가해 복합 점수를 계산한 뒤, 업종 편중을 막고 상위 10개를 선정해요.</p>
+        <Sec>8가지 팩터 (실제 가중치)</Sec>
+        <Box>
+          <p><span className={H.bold}>기술 분석 25%</span> — RSI·MACD·이동평균·골든크로스</p>
+          <p><span className={H.bold}>기업 가치 20%</span> — P/E·성장률·ROE·Piotroski</p>
+          <p><span className={H.bold}>전문가 의견 15%</span> — 월가 컨센서스·목표가 괴리율</p>
+          <p><span className={H.bold}>상대 강도 15%</span> — SPY 대비 20/60/120일 수익률</p>
+          <p><span className={H.bold}>기관 매집 10%</span> — 13F 공시 기반 기관 순매수</p>
+          <p><span className={H.bold}>모멘텀 5%</span> — Jegadeesh-Titman 12-1개월 수익률</p>
+          <p><span className={H.bold}>거래량 5%</span> — 비정상 거래량 Z-score</p>
+          <p><span className={H.bold}>단기 반전 5%</span> — 과매도 반등 포착</p>
+        </Box>
+        <Sec>업종 중립화 — 쏠림 방지</Sec>
+        <Box>
+          <p>IT 종목이 많아 편향되지 않도록 <span className={H.bold}>업종별 Z-score 정규화</span> 적용</p>
+          <p>IT 업종은 최대 5개로 제한 (나머지 업종도 공정하게 경쟁)</p>
+        </Box>
+        <Sec>등급 기준</Sec>
+        <Box>
+          <p><span className={H.green}>A (80점+)</span> = 강력 매집 신호 — 기관이 적극 매수 중</p>
+          <p><span className={H.yellow}>B (65~79점)</span> = 매집 초기 — 관심 가져볼 만해요</p>
+          <p><span className={H.yellow}>C (50~64점)</span> = 중립 — 추가 확인 필요해요</p>
+          <p><span className={H.red}>D/F (50점 미만)</span> = 주의 — 지금은 진입 자제</p>
+        </Box>
+        <Sec>왜 Smart Money 전략인가?</Sec>
+        <Box>
+          <p>기관 매집 신호 + 기술적 타이밍 + AI 분석을 결합해</p>
+          <p>개인 투자자가 혼자 복제하기 어려운 <span className={H.bold}>멀티팩터 필터링</span>이에요</p>
+          <p>뉴스나 유튜브 추천과 달리 <span className={H.green}>데이터 기반 객관적 스크리닝</span>이에요</p>
+        </Box>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (
@@ -960,7 +1006,7 @@ export function HelpBtn({ topic, value }: { topic: Topic; value?: number | strin
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-surface-container-low border border-outline-variant/20 rounded-2xl w-full max-w-sm max-h-[80vh] overflow-y-auto shadow-2xl"
+            className="bg-surface-container-low border border-outline-variant/20 rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -975,7 +1021,7 @@ export function HelpBtn({ topic, value }: { topic: Topic; value?: number | strin
               </button>
             </div>
             {/* Body */}
-            <div className="px-5 py-4 text-[13px] text-on-surface-variant leading-relaxed">
+            <div className="px-5 py-4 text-sm text-on-surface-variant leading-relaxed">
               <ValueInterpretation topic={topic} value={value} />
               {data.body}
             </div>

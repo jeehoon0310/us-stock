@@ -22,30 +22,50 @@ export const CG: Record<string, string> = {
   crisis: "glow-error",
 };
 
+// ── Score 색상 기준 (Grade 경계에 정렬) ────────────────────────────────
+// A (75+)   → 강조 primary (녹색 + glow)
+// B (62-74) → primary (녹색)
+// C (48-61) → secondary (노란색 — 중립)
+// D (35-47) → error (빨강 — 주의)
+// F (<35)   → error (빨강 강조)
+// 의미: A·B = 매수 후보(녹) / C = 관망(노랑) / D·F = 회피(빨강)
 export function gradeClass(g: string | undefined): string {
   const m: Record<string, string> = {
-    A: "bg-primary/10 border-primary/20 text-primary",
-    B: "bg-secondary/10 border-secondary/20 text-secondary",
-    C: "bg-tertiary/10 border-tertiary/20 text-tertiary",
-    D: "bg-error/10 border-error/20 text-error",
-    F: "bg-error/10 border-error/20 text-error",
+    A: "bg-primary/20 border-primary/40 text-primary",
+    B: "bg-primary/10 border-primary/25 text-primary",
+    C: "bg-secondary/10 border-secondary/25 text-secondary",
+    D: "bg-error/10 border-error/25 text-error",
+    F: "bg-error/20 border-error/40 text-error",
   };
-  const k = (g ?? "B").charAt(0).toUpperCase();
-  return m[k] ?? m.B;
+  const k = (g ?? "C").charAt(0).toUpperCase();
+  return m[k] ?? m.C;
 }
 
+// Bar (막대) 색상 — 75/62/48 기준. Grade 경계와 정렬.
 export function barColor(s: number): string {
-  if (s >= 80) return "bg-primary glow-primary";
-  if (s >= 60) return "bg-secondary";
-  return "bg-error";
+  if (s >= 75) return "bg-primary glow-primary"; // A
+  if (s >= 62) return "bg-primary";              // B
+  if (s >= 48) return "bg-secondary";            // C
+  return "bg-error";                             // D, F
+}
+
+// Score 텍스트 색상 — 3색(녹/노/빨) 통합 유틸. 62/48 기준으로 Grade와 정렬.
+export function scoreColor(s: number | null | undefined): string {
+  if (s == null || Number.isNaN(s)) return "text-on-surface-variant";
+  if (s >= 62) return "text-primary";   // A, B
+  if (s >= 48) return "text-secondary"; // C
+  return "text-error";                  // D, F
 }
 
 export const SIGNAL_NAMES: Record<string, string> = {
   vix: "VIX",
-  trend: "Trend",
-  breadth: "Breadth",
-  credit: "Credit",
-  yield_curve: "Yield Curve",
+  trend: "TREND",
+  breadth: "BREADTH",
+  credit: "CREDIT",
+  yield_curve: "YIELD CURVE",
+  put_call: "PUT/CALL",
+  regime: "REGIME",
+  gate: "GATE",
 };
 
 export const SIGNAL_WEIGHTS: Record<string, string> = {
@@ -56,8 +76,12 @@ export const SIGNAL_WEIGHTS: Record<string, string> = {
   yield_curve: "12%",
 };
 
+export function sensorLabel(key: string): string {
+  return SIGNAL_NAMES[key] ?? key.replace(/_/g, " ").toUpperCase();
+}
+
 export function regimeLabel(r: string): string {
-  return r.replace("_", " ").toUpperCase();
+  return r.replace(/_/g, " ").toUpperCase();
 }
 
 export function strategyLabel(r: string): string {

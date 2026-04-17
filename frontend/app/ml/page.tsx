@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { gradeClass, barColor } from "@/lib/ui";
+import Link from "next/link";
+import { gradeClass, barColor, scoreColor } from "@/lib/ui";
 import { HelpBtn } from "@/components/HelpBtn";
 import { CalendarPicker } from "@/components/CalendarPicker";
+import { useT } from "@/lib/i18n";
 
 type StockPick = {
   ticker: string;
@@ -34,11 +36,12 @@ function todayStr() {
 }
 
 export default function MLPage() {
+  const t = useT();
   const [date, setDate] = useState<string>(todayStr());
   const [picks, setPicks] = useState<StockPick[]>([]);
   const [screened, setScreened] = useState<number>(0);
   const [generatedAt, setGeneratedAt] = useState<string>("");
-  const [status, setStatus] = useState<string>("로딩 중...");
+  const [status, setStatus] = useState<string>(t("common.loading"));
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
@@ -54,7 +57,7 @@ export default function MLPage() {
     } catch {
       setPicks([]);
       setDate(dateStr);
-      setStatus("데이터 없음");
+      setStatus(t("common.noData"));
     }
   }
 
@@ -95,31 +98,30 @@ export default function MLPage() {
       <div className="flex items-center justify-between mb-6 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-lg">leaderboard</span>
-          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Report Date</span>
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">{t("common.reportDate")}</span>
         </div>
         <CalendarPicker
           value={date}
           availableDates={availableDates}
           onChange={(d) => void loadReport(d)}
           onShift={shiftDate}
-          status={status !== "로딩 중..." ? status : undefined}
+          status={status !== t("common.loading") ? status : undefined}
         />
       </div>
     <section className="bg-surface-container-low rounded-xl overflow-hidden mb-6">
       {/* Header */}
       <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50">
         <div>
-          <h3 className="text-xl font-bold tracking-tight">Quantitative Score Breakdown</h3>
+          <h3 className="text-xl font-bold tracking-tight">{t("ml.breakdownTitle")}</h3>
           <p className="text-xs text-on-surface-variant font-medium">
-            Multi-factor scoring · {screened} screened · {generatedAt}
+            {t("common.screened")} {screened} · {generatedAt}
           </p>
         </div>
       </div>
 
       {/* Score legend */}
       <div className="p-4 bg-surface-container-high/20 text-[10px] text-on-surface-variant border-b border-outline-variant/10">
-        <b className="text-on-surface">Composite Score</b> — 6개 팩터 가중 합산 (Technical +
-        Fundamental + Analyst + RS + Volume + 13F). 높을수록 당일 스크리닝 상위권.
+        <b className="text-on-surface">{t("top.colComposite")}</b> — 6 factor weighted sum (Technical + Fundamental + Analyst + RS + Volume + 13F)
       </div>
 
       {picks.length === 0 ? (
@@ -128,27 +130,27 @@ export default function MLPage() {
             event_busy
           </span>
           <p className="text-sm text-on-surface-variant/60">
-            {status === "로딩 중..." ? "로딩 중..." : "해당 날짜에 리포트가 없습니다"}
+            {status === t("common.loading") ? t("common.loading") : t("dash.reportNotFound")}
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto no-scrollbar">
+        <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
                 {([
-                  { label: "#" },
-                  { label: "Ticker" },
-                  { label: "Grade", topic: "grade" },
-                  { label: "Composite", topic: "composite_score" },
-                  { label: "Tech", topic: "technical_score" },
-                  { label: "Fund", topic: "fundamental_score" },
-                  { label: "Analyst", topic: "analyst_score" },
-                  { label: "RS Score", topic: "rs_score" },
-                  { label: "Volume", topic: "volume_score" },
-                  { label: "13F", topic: "score_13f" },
-                  { label: "RS vs SPY", topic: "rs_vs_spy" },
-                  { label: "Strength" },
+                  { label: t("ml.colNumber") },
+                  { label: t("top.colTicker") },
+                  { label: t("top.colGrade"), topic: "grade" },
+                  { label: t("ml.colComposite"), topic: "composite_score" },
+                  { label: t("ml.colTech"), topic: "technical_score" },
+                  { label: t("ml.colFund"), topic: "fundamental_score" },
+                  { label: t("ml.colAnalyst"), topic: "analyst_score" },
+                  { label: t("ml.colRsScore"), topic: "rs_score" },
+                  { label: t("ml.colVolume"), topic: "volume_score" },
+                  { label: t("ml.col13f"), topic: "score_13f" },
+                  { label: t("ml.colRsVsSpy"), topic: "rs_vs_spy" },
+                  { label: t("ml.colStrength") },
                 ] as { label: string; topic?: string }[]).map((h) => (
                   <th
                     key={h.label}
@@ -176,14 +178,13 @@ export default function MLPage() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex flex-col">
-                        <a
-                          href={`https://kr.tradingview.com/chart/?symbol=${s.ticker}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-bold text-on-surface hover:text-primary transition-colors"
+                        <Link
+                          href={`/stock/${s.ticker}?date=${date}`}
+                          className="text-sm font-bold text-on-surface hover:text-primary hover:underline transition-colors"
+                          title={`${s.ticker} 상세 분석`}
                         >
                           {s.ticker}
-                        </a>
+                        </Link>
                         <span className="text-[10px] text-on-surface-variant">
                           {s.company_name ?? ""}
                         </span>
