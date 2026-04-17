@@ -57,23 +57,23 @@ class USDataPipeline:
         return result
 
     def is_data_stale(self, output_dir: str = ".") -> bool:
-        """us_daily_prices.csv가 오늘 날짜인지 확인. 오늘이 아니면 stale."""
+        """us_daily_prices.parquet가 오늘 날짜인지 확인. 오늘이 아니면 stale."""
         from datetime import datetime
-        csv_path = os.path.join(output_dir, "us_daily_prices.csv")
-        if not os.path.exists(csv_path):
+        parquet_path = os.path.join(output_dir, "us_daily_prices.parquet")
+        if not os.path.exists(parquet_path):
             return True
-        mtime = os.path.getmtime(csv_path)
+        mtime = os.path.getmtime(parquet_path)
         file_date = datetime.fromtimestamp(mtime).date()
         return file_date < datetime.now().date()
 
     def incremental_update(self, top_n: int = 50, output_dir: str = ".") -> dict | None:
-        """기존 CSV의 마지막 날짜부터 오늘까지만 다운로드하여 append."""
-        csv_path = os.path.join(output_dir, "us_daily_prices.csv")
-        if not os.path.exists(csv_path):
-            logger.info("CSV 파일 없음 — 전체 수집으로 전환")
+        """기존 Parquet의 마지막 날짜부터 오늘까지만 다운로드하여 append."""
+        parquet_path = os.path.join(output_dir, "us_daily_prices.parquet")
+        if not os.path.exists(parquet_path):
+            logger.info("Parquet 파일 없음 — 전체 수집으로 전환")
             return None
 
-        existing = pd.read_csv(csv_path, index_col=["Symbol", "Date"])
+        existing = pd.read_parquet(parquet_path)
         last_date = existing.index.get_level_values("Date").max()
         logger.info("기존 데이터 마지막 날짜: %s — 증분 업데이트 시작", last_date)
 
@@ -116,7 +116,7 @@ class USDataPipeline:
 
         combined = pd.concat([existing, new_df])
         combined = combined[~combined.index.duplicated(keep="last")]
-        combined.to_csv(csv_path, encoding="utf-8-sig")
+        combined.to_parquet(parquet_path)
         logger.info("증분 업데이트 완료: %d종목, %d행 추가", success, len(new_df))
         return {"updated": success, "new_rows": len(new_df)}
 
@@ -173,8 +173,8 @@ class USDataPipeline:
         summary["validation"] = validation
 
         # 저장
-        prices_df.to_csv(os.path.join(output_dir, "us_daily_prices.csv"), encoding="utf-8-sig")
-        logger.info("가격 데이터: %d종목, %d행 → us_daily_prices.csv", success, len(prices_df))
+        prices_df.to_parquet(os.path.join(output_dir, "us_daily_prices.parquet"))
+        logger.info("가격 데이터: %d종목, %d행 → us_daily_prices.parquet", success, len(prices_df))
         summary["price_rows"] = len(prices_df)
         summary["price_success"] = success
 
@@ -211,7 +211,7 @@ class USDataPipeline:
         logger.info("  가격 수집: %d/%d 성공, %d행", success, len(symbols), len(prices_df))
         logger.info("  매크로: VIX=%.2f (%s)", macro.get("VIX", {}).get("value", 0), macro.get("regime", "N/A"))
         logger.info("  섹터 로테이션: %s", rotation.get("signal", "N/A"))
-        logger.info("  출력 파일: sp500_list.csv, us_daily_prices.csv, us_macro.csv, us_sectors.csv")
+        logger.info("  출력 파일: sp500_list.csv, us_daily_prices.parquet, us_macro.csv, us_sectors.csv")
 
         return summary
 

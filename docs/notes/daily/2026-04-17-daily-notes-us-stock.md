@@ -7,7 +7,7 @@ tags:
   - us-stock
   - dev-log
   - "2026-04"
-git_commits: 10
+git_commits: 10+
 session_count: 1
 session_tokens_out: 0
 gha_runs: 0
@@ -83,6 +83,81 @@ last_sync: "10:55"
 > - [ ] Playwright 정식 도입 여부 — 인터랙티브 컴포넌트(클릭 토글, 모달, 드롭다운) 누적 중. wiki 하네스에 임시 대안 명시했으나 자동화 권장
 > - [ ] `FeatureInfoBtn` description 다국어 — i18n(`useT`/`useLang`)이 forecast/page.tsx에 추가됨. 현재는 한국어 고정. lang별 desc 매핑으로 확장 필요 시점
 > - [ ] `daily-note-us-stock` 스킬의 REPO 경로가 `workspace/education/us-stock` (오답)이었던 원인 — 초기 생성 시점의 잘못된 경로? 다른 us-stock 인스턴스 존재 여부 확인
+
+---
+
+### 세션 2 작업 상세 (디렉토리 구조 정리)
+
+#### 1. 디렉토리 혼동 분석
+
+`docs/research/` vs `.claude/agents/research/` 두 경로의 역할이 다름을 분석.
+
+| 경로 | 역할 |
+|------|------|
+| `docs/research/` | 에이전트가 생성·저장하는 **데이터 디렉토리** (분석 결과, 리포트 등) |
+| `.claude/agents/research/` | 에이전트 **정의 파일** (프롬프트, 역할 명세) |
+
+`docs/notes/research/` 내 `claude-terminal-03.md` 기존 분석도 참조하여 결론 확정.
+
+---
+
+#### 2. docs/research → docs/research-agent-data 이름 변경
+
+경로 의미를 명확히 하기 위해 `docs/research/` → `docs/research-agent-data/` 로 변경.
+
+```bash
+git mv docs/research docs/research-agent-data
+```
+
+변경에 따른 에이전트 정의 파일 내 경로 참조 일괄 수정:
+
+| 파일 | 수정 건수 |
+|------|----------|
+| `.claude/agents/research/research-lead.md` | 4개 경로 참조 |
+| `.claude/agents/research/paper-researcher.md` | 3개 경로 참조 |
+| `.claude/agents/research/factor-discoverer.md` | 1개 경로 참조 |
+| `.claude/agents/research/market-researcher.md` | 1개 경로 참조 |
+
+---
+
+#### 3. docs/agents → .claude/agents 통합
+
+에이전트 관련 파일을 `.claude/agents/` 하위로 일원화.
+
+| 이전 경로 | 이후 경로 |
+|-----------|-----------|
+| `docs/agents/_archive/` | `.claude/agents/_archive/` |
+| `docs/agents/PERFORMANCE-GUIDE.md` | `.claude/agents/guides/` |
+| `docs/agents/daily-performance-prompts.md` | `.claude/agents/guides/` |
+| `docs/agents/daily-evolution-prompts.md` | `.claude/agents/guides/` |
+| `docs/agents/SETUP.md` | `.claude/agents/guides/` |
+
+이후 `docs/agents/` 폴더 완전 제거.
+
+---
+
+#### 4. .claude/agents/guides → .claude/agents/daily 이름 변경
+
+가이드 문서 디렉토리 명칭을 실제 용도에 맞게 변경.
+
+```bash
+git mv .claude/agents/guides .claude/agents/daily
+```
+
+---
+
+#### 5. Antigravity IDE 설정 변경
+
+파일 탐색기 정렬 방식을 확장자(종류)별 정렬로 변경.
+
+- 대상: `~/Library/Application Support/Antigravity/User/settings.json`
+- 추가 설정: `"explorer.sortOrder": "type"`
+- 효과: 파일 탐색기에서 파일을 종류별로 그룹화하여 표시
+
+> [!tip] 세션 2 정리 원칙
+> - **에이전트 데이터** (`docs/research-agent-data/`) vs **에이전트 정의** (`.claude/agents/research/`) 명확히 분리
+> - 에이전트 관련 모든 정의·가이드·아카이브는 `.claude/agents/` 하위로 일원화
+> - 디렉토리명은 실제 용도를 직접 반영할 것 (research → research-agent-data, guides → daily)
 
 <!-- AUTO-END -->
 

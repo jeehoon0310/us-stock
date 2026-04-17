@@ -13,7 +13,7 @@ FILE_SPECS = {
         "numeric_cols": [],
         "string_cols": ["Symbol", "Security", "GICS Sector", "GICS Sub-Industry"],
     },
-    "us_daily_prices.csv": {
+    "us_daily_prices.parquet": {
         "min_rows": 1000,
         "date_col": "Date",
         "core_cols": ["Open", "High", "Low", "Close", "Volume"],
@@ -77,7 +77,7 @@ class DataQualityReporter:
             checks += [("행 수", False, 0), ("결측치", False, 0), ("데이터 타입", False, 0), ("날짜 범위", False, 0)]
             return {"file": filename, "score": 0, "checks": checks}
 
-        df = pd.read_csv(filepath)
+        df = pd.read_parquet(filepath) if filepath.endswith(".parquet") else pd.read_csv(filepath)
         rows, cols = df.shape
 
         # 2. 행 수 충분 (20점)

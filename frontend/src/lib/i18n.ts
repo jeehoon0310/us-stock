@@ -266,6 +266,7 @@ const EN: Dict = {
   "graph.typeStockTicker": "Stock Ticker",
   "graph.typeSector": "Sector",
   "graph.typeAiAgent": "AI Agent",
+  "graph.typeSubIndicator": "Sub Indicator",
   // Sensor names
   "sensor.vix": "VIX",
   "sensor.trend": "Trend",
@@ -543,6 +544,7 @@ const KO: Dict = {
   "graph.typeStockTicker": "종목 티커",
   "graph.typeSector": "섹터",
   "graph.typeAiAgent": "AI 에이전트",
+  "graph.typeSubIndicator": "세부 항목",
   // Sensor names (공유명사 — 유지)
   "sensor.vix": "VIX",
   "sensor.trend": "TREND",

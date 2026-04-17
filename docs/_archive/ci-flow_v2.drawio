@@ -45,11 +45,11 @@
         <mxCell id="e_script_pipeline" value="runs" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_script" target="dev_pipeline">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_pipeline_json" value="writes" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_pipeline" target="dev_json">
+        <mxCell id="e_pipeline_json" value="writes (SQLite)" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_pipeline" target="dev_json">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <!-- JSON output feeds into Working Area -->
-        <mxCell id="e_json_working" value="updates" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_json" target="dev_working">
+        <mxCell id="e_json_working" value="rsync → Synology" style="endArrow=classic;html=1;rounded=0;strokeColor=#d6b656;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=11;fontStyle=1;fontColor=#7a6520;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="dev_json" target="dev_working">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -218,13 +218,13 @@
         <mxCell id="dev_pipeline" value="Python pipeline&#10;run_integrated_analysis.py&#10;+ regen_dashboard_data.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
           <mxGeometry x="660" y="105" width="220" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="dev_json" value="JSON output files&#10;dashboard-next/&#10;public/data/*.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
+        <mxCell id="dev_json" value="output/data.db&#10;(SQLite — 11개 테이블)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=10" vertex="1" parent="1">
           <mxGeometry x="930" y="110" width="200" height="55" as="geometry" />
         </mxCell>
 
         <!-- DEV ZONE — Row 2: Git 4-area model (NO ellipse step labels — git commands are edge labels) -->
         <!-- ① Working Area -->
-        <mxCell id="dev_working" value="① Working Area&#10;dashboard-next/&#10;public/data/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=20" vertex="1" parent="1">
+        <mxCell id="dev_working" value="① Working Area&#10;(소스 코드 변경사항)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=9;arcSize=20" vertex="1" parent="1">
           <mxGeometry x="220" y="195" width="160" height="65" as="geometry" />
         </mxCell>
         <!-- ③ Staging Area -->

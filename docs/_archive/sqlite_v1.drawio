@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="claude-code" version="21.0.0">
+  <diagram id="sqlite_v1" name="SQLite &amp; Data Files">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="US Stock — 데이터 저장소 전체 구조 (2026-04-17)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="15" width="1100" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════
+             SQLite Zone
+        ════════════════════════════════════════════════════════ -->
+        <mxCell id="sqlite_zone" value="output/data.db — SQLite WAL mode, 11 tables — Mac 파이프라인 생성 → rsync → Synology → Next.js /api/data/* 서빙" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#1565c0;fontSize=13;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="55" width="1460" height="480" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Time Series Group ── -->
+        <mxCell id="ts_group" value="⏱ Time Series (date PK — 날짜별 누적)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="38" y="95" width="455" height="425" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_daily" value="&lt;b&gt;data_daily_reports&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;date TEXT PK&#xa;generated_at TEXT&#xa;verdict TEXT  (GO / CAUTION / STOP)&#xa;regime TEXT&#xa;gate TEXT&#xa;data_json TEXT  (전체 리포트 JSON)&#xa;created_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565c0;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="53" y="138" width="215" height="148" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_risk_alert" value="&lt;b&gt;data_risk_alerts&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;date TEXT PK&#xa;generated_at TEXT&#xa;verdict TEXT&#xa;data_json TEXT&#xa;created_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565c0;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="278" y="138" width="200" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_pred_hist" value="&lt;b&gt;data_prediction_history&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;date TEXT PK&#xa;spy_direction TEXT&#xa;spy_probability REAL&#xa;spy_predicted_return REAL&#xa;qqq_direction TEXT&#xa;qqq_probability REAL&#xa;qqq_predicted_return REAL&#xa;model_accuracy REAL&#xa;created_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1565c0;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="53" y="300" width="215" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Snapshot Group ── -->
+        <mxCell id="snap_group" value="📌 Singleton Snapshots (id=1 단일 행 — 항상 최신값 덮어쓰기)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="503" y="95" width="490" height="425" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_regime" value="&lt;b&gt;data_regime_snapshot&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;date TEXT&#xa;regime TEXT&#xa;  (risk_on / neutral / risk_off / crisis)&#xa;data_json TEXT  (5-sensor 상세)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="518" y="138" width="220" height="138" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_gate" value="&lt;b&gt;data_market_gate_snapshot&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;date TEXT&#xa;gate TEXT  (GO / CAUTION / STOP)&#xa;data_json TEXT  (11-sector 상세)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="748" y="138" width="230" height="128" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_gbm" value="&lt;b&gt;data_gbm_predictions&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;total INTEGER&#xa;data_json TEXT  (GBM 예측 전종목)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="518" y="290" width="220" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_idx_pred" value="&lt;b&gt;data_index_prediction&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;date TEXT&#xa;data_json TEXT  (SPY+QQQ 예측)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="748" y="280" width="230" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_risk_snap" value="&lt;b&gt;data_risk_snapshot&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;date TEXT&#xa;verdict TEXT&#xa;data_json TEXT&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="518" y="415" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Analysis Result Group ── -->
+        <mxCell id="ana_group" value="📊 분석 결과 Singletons" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontSize=11;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1003" y="95" width="462" height="425" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_ai" value="&lt;b&gt;data_ai_summaries&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;ticker TEXT PK  (종목별 1행)&#xa;recommendation TEXT&#xa;confidence INTEGER (0–100)&#xa;data_json TEXT  (AI 분석 전문)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e65100;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1018" y="138" width="215" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_perf" value="&lt;b&gt;data_performance&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;generated_at TEXT&#xa;data_json TEXT  (종목 성과 추적)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e65100;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1243" y="138" width="207" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t_graph" value="&lt;b&gt;data_graph&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;id INTEGER PK CHECK(id=1)&#xa;generated_at TEXT&#xa;data_json TEXT  (종목 그래프 데이터)&#xa;updated_at TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e65100;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1018" y="285" width="215" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════
+             Bottom Row
+        ════════════════════════════════════════════════════════ -->
+
+        <!-- ── Parquet Zone ── -->
+        <mxCell id="parquet_zone" value="ML 파이프라인 — Parquet (pandas/PyArrow)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="548" width="700" height="305" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p_sp500hist" value="&lt;b&gt;data/sp500_history/&lt;/b&gt;&#xa;batch_0_100.parquet&#xa;batch_100_200.parquet&#xa;batch_200_300.parquet&#xa;batch_300_400.parquet&#xa;batch_400_503.parquet&#xa;sp500_history.parquet  (통합본)&#xa;━━━━━━━━━━━━━━━━&#xa;fetch_sp500_history.py 생성&#xa;503종목 역사 OHLCV&#xa;ML 학습 input" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7b1fa2;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="35" y="590" width="205" height="248" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p_equity" value="&lt;b&gt;src/ml/features/equity/&lt;/b&gt;&#xa;equity_features_YYYYMMDD.parquet&#xa;━━━━━━━━━━━━━━━━&#xa;build_equity_features.py 생성&#xa;cross-sectional 팩터 60+&#xa;(momentum, z-score, rank, slope)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7b1fa2;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="590" width="215" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p_macro" value="&lt;b&gt;src/ml/features/macro/&lt;/b&gt;&#xa;macro_features_YYYYMMDD.parquet&#xa;━━━━━━━━━━━━━━━━&#xa;build_macro_features.py 생성&#xa;FRED/VIX/거시 피처&#xa;Z-score, lag, regime dummy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7b1fa2;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="730" width="215" height="108" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="p_gbm_out" value="&lt;b&gt;output/gbm_predictions.parquet&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━&#xa;predict.py 생성&#xa;GBM 예측 결과 전종목&#xa;→ data_gbm_predictions 동시 기록" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7b1fa2;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="475" y="590" width="230" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- ── CSV Zone ── -->
+        <mxCell id="csv_zone" value="파이프라인 중간 CSV (data/ — 파이프라인 내부 전용, 대시보드 미사용)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eaf6;strokeColor=#3949ab;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="730" y="548" width="390" height="305" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_sp500" value="&lt;b&gt;data/sp500_list.csv&lt;/b&gt;&#xa;503개 종목+섹터 목록&#xa;fetch_sp500_list.py → 생성&#xa;smart_money_screener 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3949ab;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="745" y="590" width="175" height="88" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_prices" value="&lt;b&gt;data/us_daily_prices.csv&lt;/b&gt;&#xa;503종목 OHLCV+기술지표&#xa;us_data_pipeline.py → 생성&#xa;분석기들이 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3949ab;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="590" width="175" height="88" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_macro" value="&lt;b&gt;data/us_macro.csv&lt;/b&gt;&#xa;VIX / FRED / Fear&amp;Greed&#xa;macro_collector.py → 생성&#xa;regime detector가 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3949ab;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="745" y="690" width="175" height="88" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_sectors" value="&lt;b&gt;data/us_sectors.csv&lt;/b&gt;&#xa;11개 섹터 ETF 수익률&#xa;sector_analyzer.py → 생성&#xa;market_gate가 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3949ab;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="690" width="175" height="88" as="geometry"/>
+        </mxCell>
+
+        <!-- ── JSON Zone ── -->
+        <mxCell id="json_zone" value="JSON (파이프라인이 쓰고 읽는 파일 — 대시보드 미사용)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c62828;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="548" width="360" height="305" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="j_regime_cfg" value="&lt;b&gt;output/regime_config.json&lt;/b&gt;&#xa;market_regime.py → 생성&#xa;index_predictor.py + risk_alert.py&#xa;가 ML 파라미터 로드용으로 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c62828;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1145" y="590" width="328" height="88" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="j_regime_res" value="&lt;b&gt;output/regime_result.json&lt;/b&gt;&#xa;market_regime.py → 생성&#xa;→ data_regime_snapshot 에도 미러" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c62828;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1145" y="688" width="328" height="78" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="j_ai_sum" value="&lt;b&gt;output/ai_summaries.json&lt;/b&gt;&#xa;ai_summary_generator.py → 생성&#xa;final_report_generator.py 가 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c62828;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1145" y="776" width="160" height="68" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="j_top10" value="&lt;b&gt;output/final_top10_report.json&lt;/b&gt;&#xa;final_report_generator.py → 생성&#xa;generate_graph.py 가 읽음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c62828;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1315" y="776" width="158" height="68" as="geometry"/>
+        </mxCell>
+
+        <!-- Models (inside sqlite zone, right side) -->
+        <mxCell id="model_note" value="&lt;b&gt;ML 모델 (output/models/)&lt;/b&gt;&#xa;━━━━━━━━━━━━━━━━━━&#xa;predictor_model_spy.joblib&#xa;  └ SPY 5일 방향 예측&#xa;predictor_model_qqq.joblib&#xa;  └ QQQ 5일 방향 예측&#xa;━━━━━━━━━━━━━━━━━━&#xa;index_predictor.py 로드&#xa;Optuna HPO · 재학습 7d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#00695c;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1243" y="285" width="222" height="175" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="🔵 SQLite output/data.db (대시보드 서빙)  |  🟣 Parquet (ML 학습 input/output)  |  🔷 CSV data/ (파이프라인 중간 파일, 삭제 불가)  |  🔴 JSON output/ (파이프라인 내부, 레거시)  |  🟢 Joblib (ML 모델)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="862" width="1460" height="30" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

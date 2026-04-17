@@ -1,7 +1,9 @@
 import json
 import logging
 import os
+import sys
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import yfinance as yf
 from dotenv import load_dotenv
@@ -699,6 +701,17 @@ if __name__ == "__main__":
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     logger.info("저장 완료: %s (%d종목)", out_path, len(results))
+
+    # SQLite 쓰기
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from db.data_store import get_db, upsert_ai_summaries
+        _conn = get_db()
+        upsert_ai_summaries(_conn, results)
+        _conn.close()
+        logger.info("SQLite data_ai_summaries 갱신 완료 (%d종목)", len(results))
+    except Exception as _e:
+        logger.warning("SQLite 쓰기 실패: %s", _e)
 
     # 요약 출력
     print(f"\n{'=' * 60}")

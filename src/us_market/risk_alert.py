@@ -7,6 +7,7 @@ market_regime(체제) + market_gate(신호) + verdict(판정)를 읽어서
 
 import glob
 import json
+import sqlite3
 import logging
 import shutil
 from datetime import datetime
@@ -86,11 +87,14 @@ class RiskAlertSystem:
         self.output_file = self.OUTPUT_DIR / "risk_alerts.json"
         self.regime_config = self._load_regime_config()
         self.verdict_data = self._load_verdict()
+        self.ai_summaries = self._load_ai_summaries()
+        self.index_prediction = self._load_index_prediction()
         self._sector_cache: dict[str, str] = {}
         logger.info(
-            "RiskAlertSystem initialized: regime=%s, verdict=%s",
+            "RiskAlertSystem initialized: regime=%s, verdict=%s, ai_summaries=%d종목",
             self.regime_config.get("regime"),
             self.verdict_data.get("verdict"),
+            len(self.ai_summaries),
         )
 
     # ------------------------------------------------------------------
@@ -98,7 +102,9 @@ class RiskAlertSystem:
     # ------------------------------------------------------------------
 
     def _load_regime_config(self) -> dict:
-        """output/regime_config.json 로드. adaptive_params.stop_loss 문자열→float 파싱."""
+        """data_regime_snapshot SQLite 우선 → regime_config.json fallback.
+        adaptive_params.stop_loss 문자열("-8%") → float(-0.08) 파싱.
+        """
         defaults = {
             "regime": "neutral",
             "adaptive_params": {
@@ -106,14 +112,8 @@ class RiskAlertSystem:
                 "max_drawdown_warning": -0.10,
             },
         }
-        config_file = self.OUTPUT_DIR / "regime_config.json"
-        if not config_file.exists():
-            logger.debug("regime_config.json 없음 — 기본값 사용")
-            return defaults
-        try:
-            with open(config_file) as f:
-                data = json.load(f)
-            # adaptive_params의 문자열 → float 변환 (e.g. "-8%" → -0.08)
+
+        def _parse_ap(data: dict) -> dict:
             ap = data.get("adaptive_params", {})
             for key in ("stop_loss", "max_drawdown_warning"):
                 val = ap.get(key)
@@ -121,13 +121,57 @@ class RiskAlertSystem:
                     ap[key] = float(val.replace("%", "")) / 100.0
             data["adaptive_params"] = ap
             return data
+
+        # 1) SQLite: data_regime_snapshot id=1
+        conn = self._get_db_connection()
+        if conn is not None:
+            try:
+                row = conn.execute(
+                    "SELECT data_json FROM data_regime_snapshot WHERE id=1"
+                ).fetchone()
+                if row:
+                    return _parse_ap(json.loads(row["data_json"]))
+            except Exception as e:
+                logger.debug("regime_config SQLite 로드 실패: %s", e)
+            finally:
+                conn.close()
+
+        # 2) JSON fallback
+        config_file = self.OUTPUT_DIR / "regime_config.json"
+        if not config_file.exists():
+            logger.debug("regime_config.json 없음 — 기본값 사용")
+            return defaults
+        try:
+            with open(config_file) as f:
+                return _parse_ap(json.load(f))
         except Exception as e:
             logger.warning("regime_config 로드 실패: %s — 기본값 사용", e)
             return defaults
 
     def _load_verdict(self) -> dict:
-        """output/reports/latest_report.json에서 verdict + market_timing 추출."""
+        """data_daily_reports SQLite 우선 (최신 행) → latest_report.json fallback."""
         defaults = {"verdict": "CAUTION", "market_timing": {}}
+
+        # 1) SQLite: data_daily_reports 최신 행
+        conn = self._get_db_connection()
+        if conn is not None:
+            try:
+                row = conn.execute(
+                    "SELECT verdict, data_json FROM data_daily_reports "
+                    "ORDER BY date DESC LIMIT 1"
+                ).fetchone()
+                if row:
+                    data = json.loads(row["data_json"])
+                    return {
+                        "verdict": data.get("verdict", row["verdict"] or "CAUTION"),
+                        "market_timing": data.get("market_timing", {}),
+                    }
+            except Exception as e:
+                logger.debug("verdict SQLite 로드 실패: %s", e)
+            finally:
+                conn.close()
+
+        # 2) JSON fallback
         latest = self.OUTPUT_DIR / "reports" / "latest_report.json"
         if not latest.exists():
             logger.debug("latest_report.json 없음 — 기본값 사용")
@@ -144,7 +188,21 @@ class RiskAlertSystem:
             return defaults
 
     def _load_index_prediction(self) -> dict:
-        """output/index_prediction.json 로드."""
+        """data_index_prediction SQLite 우선 (id=1) → index_prediction.json fallback."""
+        # 1) SQLite
+        conn = self._get_db_connection()
+        if conn is not None:
+            try:
+                row = conn.execute(
+                    "SELECT data_json FROM data_index_prediction WHERE id=1"
+                ).fetchone()
+                if row:
+                    return json.loads(row["data_json"])
+            except Exception as e:
+                logger.debug("index_prediction SQLite 로드 실패: %s", e)
+            finally:
+                conn.close()
+        # 2) JSON fallback
         pred_file = self.OUTPUT_DIR / "index_prediction.json"
         if not pred_file.exists():
             return {}
@@ -154,6 +212,49 @@ class RiskAlertSystem:
         except Exception as e:
             logger.warning("index_prediction 로드 실패: %s", e)
             return {}
+
+    def _get_db_connection(self):
+        """output/data.db SQLite 연결 반환. 파일 없으면 None."""
+        db_path = self.OUTPUT_DIR / "data.db"
+        if not db_path.exists():
+            return None
+        try:
+            conn = sqlite3.connect(str(db_path), check_same_thread=False)
+            conn.row_factory = sqlite3.Row
+            return conn
+        except Exception as e:
+            logger.debug("DB 연결 실패: %s", e)
+            return None
+
+    def _load_ai_summaries(self) -> dict:
+        """data_ai_summaries SQLite 전체 로드 → {ticker: data_dict}.
+        Part 4(ai_summary_generator)가 저장한 데이터를 ai_sell 알림에 활용.
+        Part 4 미실행 시 빈 dict 반환 (정상).
+        """
+        conn = self._get_db_connection()
+        if conn is None:
+            return {}
+        try:
+            rows = conn.execute(
+                "SELECT ticker, recommendation, confidence, data_json "
+                "FROM data_ai_summaries"
+            ).fetchall()
+            result: dict = {}
+            for row in rows:
+                try:
+                    d = json.loads(row["data_json"])
+                except Exception:
+                    d = {}
+                # scalar 컬럼 우선 (data_json에 누락 시 fallback)
+                d.setdefault("recommendation", row["recommendation"] or "")
+                d.setdefault("confidence", row["confidence"] or 0)
+                result[row["ticker"]] = d
+            return result
+        except Exception as e:
+            logger.debug("ai_summaries SQLite 로드 실패: %s", e)
+            return {}
+        finally:
+            conn.close()
 
     # ------------------------------------------------------------------
     # 종목 로드 (프롬프트 #2)
@@ -1105,6 +1206,79 @@ class RiskAlertSystem:
                     "timestamp": ts,
                 })
 
+        # ------ ai_sell 알림 #6 (Part 4 — data_ai_summaries SQLite) ------
+        ai_sell_tickers: set = set()
+        for p in picks:
+            ticker = p["ticker"]
+            ai = self.ai_summaries.get(ticker, {})
+            rec = (ai.get("recommendation") or "").upper()
+            if rec != "SELL":
+                continue
+            confidence_val = float(ai.get("confidence") or 0)
+            # drawdown_warning 동시 발생 여부: -20% < from_entry ≤ -10%
+            dd = drawdowns.get(ticker, {})
+            from_entry = dd.get("from_entry_pct")
+            has_dd_warning = from_entry is not None and -20.0 < from_entry <= -10.0
+            ai_level = "CRITICAL" if has_dd_warning else "WARNING"
+            alerts.append({
+                "level": ai_level,
+                "category": "ai_sell",
+                "ticker": ticker,
+                "message": (
+                    f"AI 분석: {ticker} SELL 추천 (신뢰도 {confidence_val:.0f}%)"
+                    + (" + 낙폭 경고 → CRITICAL 상향" if has_dd_warning else "")
+                ),
+                "value": confidence_val,
+                "threshold": 0.0,
+                "action": "REDUCE",
+                "timestamp": ts,
+            })
+            ai_sell_tickers.add(ticker)
+
+        # ------ prediction 알림 #7 (Part 5 — data_index_prediction SQLite) ------
+        preds = self.index_prediction.get("predictions", {})
+        spy_info = preds.get("spy", {})
+        qqq_info = preds.get("qqq", {})
+        spy_dir = (spy_info.get("direction") or "").lower()
+        spy_prob = float(spy_info.get("probability_up") or 0)
+        qqq_dir = (qqq_info.get("direction") or "").lower()
+        qqq_prob = float(qqq_info.get("probability_up") or 0)
+        prediction_warning_active = spy_dir == "bearish" and spy_prob >= 0.60
+        ap = self.regime_config.get("adaptive_params", {})
+        tight_threshold_pct = ap.get("stop_loss", -0.08) * 100 * 0.75  # e.g. neutral: -6.0
+        if prediction_warning_active:
+            pred_level = "CRITICAL" if regime in ("crisis", "risk_off") else "WARNING"
+            alerts.append({
+                "level": pred_level,
+                "category": "prediction",
+                "ticker": "PORTFOLIO",
+                "message": (
+                    f"SPY 하락 예측 (확신도 {spy_prob * 100:.1f}%)"
+                    f" — stop 기준 {tight_threshold_pct:.1f}%로 타이트 적용"
+                    + (" → CRITICAL (crisis/risk_off)" if pred_level == "CRITICAL" else "")
+                ),
+                "value": round(spy_prob * 100, 1),
+                "threshold": 60.0,
+                "action": "MONITOR",
+                "timestamp": ts,
+            })
+            # 에스컬레이션: prediction 활성 시 WARNING 수준 stop-loss → CRITICAL 상향
+            for s in stop_status:
+                if s["alert_level"] == "WARNING":
+                    alerts.append({
+                        "level": "CRITICAL",
+                        "category": "stop_loss",
+                        "ticker": s["ticker"],
+                        "message": (
+                            f"{s['ticker']} stop WARNING + SPY 하락 예측 → CRITICAL 상향 "
+                            f"(진입가 대비 {s['from_entry_pct']}%, 타이트 기준 {tight_threshold_pct:.1f}%)"
+                        ),
+                        "value": s.get("from_entry_pct", 0),
+                        "threshold": tight_threshold_pct,
+                        "action": "SELL",
+                        "timestamp": ts,
+                    })
+
         # Stress scenario 경고
         for sc in stress_scenarios:
             avg_ret = sc.get("avg_portfolio_return", 0)
@@ -1169,6 +1343,18 @@ class RiskAlertSystem:
             "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
             "regime": regime,
             "verdict": verdict,
+            "market_context": {
+                "regime": regime,
+                "verdict": verdict,
+                "index_prediction": {
+                    "spy_direction": spy_dir,
+                    "spy_probability": round(spy_prob, 3),
+                    "qqq_direction": qqq_dir,
+                    "qqq_probability": round(qqq_prob, 3),
+                },
+                "ai_sell_count": len(ai_sell_tickers),
+                "prediction_warning_active": prediction_warning_active,
+            },
             "portfolio_summary": {
                 "total_value": portfolio_value,
                 "invested_pct": round(invested_pct, 1),
@@ -1189,29 +1375,23 @@ class RiskAlertSystem:
         # JSON 저장
         fe_data = self.OUTPUT_DIR.parent / "frontend" / "public" / "data"
         if output_date:
-            # 날짜별 파일 저장 (히스토리 재생성용)
-            dated_file = self.OUTPUT_DIR / f"risk_alerts_{output_date}.json"
-            with open(dated_file, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2, default=str)
-            logger.info("날짜별 리스크 알림 저장: %s", dated_file)
+            # 히스토리 재생성 — SQLite에만 저장 (JSON 파일 미생성)
             try:
-                from db import data_store as _ds
+                from src.db import data_store as _ds
                 _conn = _ds.get_db()
                 _date_iso = f"{output_date[:4]}-{output_date[4:6]}-{output_date[6:]}"
                 _ds.upsert_risk_alert(_conn, _date_iso, result, update_snapshot=False)
                 _conn.close()
+                logger.info("날짜별 리스크 알림 SQLite 저장: %s", _date_iso)
             except Exception as _e:
                 logger.warning("SQLite risk_alert 쓰기 실패: %s", _e)
-            if fe_data.exists():
-                shutil.copy2(dated_file, fe_data / f"risk_alerts_{output_date}.json")
-                logger.info("대시보드 복사: %s", fe_data / f"risk_alerts_{output_date}.json")
         else:
-            # 기본: output/risk_alerts.json + 오늘 날짜 파일 동시 저장
+            # 기본: risk_alerts.json (generate_graph.py가 읽음) + SQLite
             with open(self.output_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2, default=str)
             logger.info("리스크 알림 저장: %s", self.output_file)
             try:
-                from db import data_store as _ds
+                from src.db import data_store as _ds
                 _conn = _ds.get_db()
                 _ds.upsert_risk_alert(_conn, now.strftime("%Y-%m-%d"), result, update_snapshot=True)
                 _conn.close()
@@ -1219,9 +1399,7 @@ class RiskAlertSystem:
                 logger.warning("SQLite risk_alert 쓰기 실패: %s", _e)
             if fe_data.exists():
                 shutil.copy2(self.output_file, fe_data / "risk_alerts.json")
-                today_str = now.strftime("%Y%m%d")
-                shutil.copy2(self.output_file, fe_data / f"risk_alerts_{today_str}.json")
-                logger.info("대시보드 복사: risk_alerts.json + risk_alerts_%s.json", today_str)
+                logger.info("대시보드 복사: risk_alerts.json")
 
         # 요약 로그
         critical = sum(1 for a in alerts if a["level"] == "CRITICAL")

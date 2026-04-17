@@ -26,7 +26,8 @@ export type GraphNode = {
     | "page"
     | "ticker"
     | "sector"
-    | "agent";
+    | "agent"
+    | "sub_indicator";
   description?: string;
   href?: string;
   sector?: string;
@@ -63,8 +64,9 @@ export const TYPE_COLORS: Record<string, string> = {
   output:      "#4ade80",
   page:        "#22d3ee",
   ticker:      "#f472b6",
-  sector:      "#86efac",
-  agent:       "#a78bfa",
+  sector:        "#86efac",
+  agent:         "#a78bfa",
+  sub_indicator: "#64748b",
 };
 
 const TYPE_SIZES: Record<string, number> = {
@@ -75,8 +77,9 @@ const TYPE_SIZES: Record<string, number> = {
   output:      9,
   page:        7,
   ticker:      9,
-  sector:      11,
-  agent:       13,
+  sector:        11,
+  agent:         13,
+  sub_indicator: 5,
 };
 
 interface ForceGraphProps {

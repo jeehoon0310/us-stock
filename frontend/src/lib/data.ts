@@ -326,6 +326,18 @@ export interface RiskAlertData {
   generated_at: string;
   regime: string;
   verdict: string;
+  market_context?: {
+    regime: string;
+    verdict: string;
+    index_prediction: {
+      spy_direction: string;
+      spy_probability: number;
+      qqq_direction: string;
+      qqq_probability: number;
+    };
+    ai_sell_count: number;
+    prediction_warning_active: boolean;
+  };
   portfolio_summary: {
     total_value: number;
     invested_pct: number;

@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="claude-code" version="21.0.0">
+  <diagram id="operations_v2" name="Operations v2">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        
+        <mxCell id="2" value="US Stock — 일일 운영 워크플로우 v2 (2026-04-17)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="20" width="800" height="30" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="mz" value="☀️ Morning (06:00~09:00 KST, 뉴욕 장 마감 후)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="265" height="490" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m1" value="① 파이프라인 실행&#10;python scripts/run_integrated_analysis.py&#10;(또는 cron 자동 실행 확인)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="108" width="235" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="② Verdict 확인&#10;output/data.db → data_daily_reports&#10;verdict 필드: GO / CAUTION / STOP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="170" width="235" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="③ 체제 변경 확인&#10;output/data.db → data_regime_snapshot&#10;neutral→risk_off 전환 주목" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="232" width="235" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="④ 예측 확인&#10;output/data.db → data_index_prediction&#10;HIGH confidence + 방향 반전 시 주의" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="294" width="235" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" value="⑤ 로그 확인&#10;logs/daily_run_YYYYMMDD.log&#10;grep ERROR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="356" width="235" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" value="⑥ 스케줄러 상태 (cron 설정 시)&#10;python run_daily_scheduler.py --status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="411" width="235" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="me1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="m1" target="m2" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="m2" target="m3" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="m3" target="m4" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="m4" target="m5" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="m5" target="m6" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        
+        <mxCell id="az" value="🌤 Afternoon (선택, 1일 1회) — service-evolver 7-Phase 진화 사이클" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="305" y="60" width="470" height="490" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev0" value="@service-evolver 오늘의 evolution cycle 실행해줘" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph1" value="Phase 1 (10분) 현황 파악&#10;README · architecture · memory.md 읽기" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="150" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph2" value="Phase 2 (15분) 트렌드 리서치&#10;WebSearch — 24시간 내 퀀트·논문 스캔" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="198" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph3" value="Phase 3 (10분) Gap Analysis&#10;현재 시스템 vs 트렌드 갭 식별" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="246" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph4" value="Phase 4 (5분) 개선 선정&#10;Impact/Effort/Risk → 오늘 1건 선정" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="294" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph5" value="Phase 5 (30~60분) 코드 수정&#10;Edit/Write 실제 구현 (100줄 이하 권장, 외부 근거 필수)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="342" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph6" value="Phase 6 (10분) 검증&#10;syntax + import + unit 3-layer 검증" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="390" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph7" value="Phase 7 (5분) 문서 갱신&#10;memory.md + backlog.md + 사이클 로그 생성" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="438" width="440" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ph8" value="사용자 리뷰 결정:  ✅ Impact=High+Risk=Low+검증통과+롤백명시 → 승인  /  ⚠️ Medium → critic-reviewer  /  ❌ 근거 없음 → 거부" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="320" y="486" width="440" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pe0" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ev0" target="ph1" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph1" target="ph2" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph2" target="ph3" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph3" target="ph4" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph4" target="ph5" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph5" target="ph6" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe6" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph6" target="ph7" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="pe7" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ph7" target="ph8" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        
+        <mxCell id="ez" value="🌙 Evening (종료 전, 2분)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="795" y="60" width="265" height="490" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev1" value="⑦ daily_report 확인&#10;output/data.db → data_daily_reports&#10;오늘 날짜 행이 생성됐는지" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="108" width="235" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2" value="⑧ picks 생성 확인&#10;output/data.db → data_daily_reports&#10;stock_picks 필드 오늘 날짜 확인" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="173" width="235" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3" value="⑨ prediction_history 누적 확인&#10;output/data.db → data_prediction_history&#10;어제보다 +1 행인지" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="810" y="238" width="235" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ev4" value="(주 1회) 대시보드 스크린샷&#10;http://localhost:3000&#10;TradingView 링크 동작 확인" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#9673a6;fontSize=10;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="303" width="235" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eve1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ev1" target="ev2" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eve2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ev2" target="ev3" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="eve3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ev3" target="ev4" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        
+        <mxCell id="flow1" value="Morning 완료" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#6c8ebf;fontColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="mz" target="az" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow2" value="Afternoon 완료" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#d6b656;fontColor=#d6b656;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="az" target="ez" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="wm" value="주간: IndexPredictor 재학습 / backlog P0 리뷰 / API 비용 점검  |  월간: SP500 full refresh / walk-forward 재검증 / memory.md 위생" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="575" width="880" height="35" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

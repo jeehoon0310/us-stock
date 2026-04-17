@@ -145,19 +145,61 @@ export default function RiskPage() {
             <p className="text-[10px] text-on-surface-variant">{data.generated_at}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span
-            className={`text-[10px] font-bold px-3 py-1 rounded uppercase ${regimeBadgeCls(data.regime)}`}
-            style={regimeBadgeStyle(data.regime)}
-          >
-            {data.regime.replace("_", " ")}
-          </span>
-          <span
-            className={`text-[10px] font-bold px-3 py-1 rounded ${regimeBadgeCls(data.verdict)}`}
-            style={regimeBadgeStyle(data.verdict)}
-          >
-            {data.verdict}
-          </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1">
+            <span
+              className={`text-[10px] font-bold px-3 py-1 rounded uppercase ${regimeBadgeCls(data.regime)}`}
+              style={regimeBadgeStyle(data.regime)}
+            >
+              Regime: {data.regime.replace("_", " ")}
+            </span>
+            <HelpBtn topic="regime" />
+          </div>
+          <div className="flex items-center gap-1">
+            <span
+              className={`text-[10px] font-bold px-3 py-1 rounded ${regimeBadgeCls(data.verdict)}`}
+              style={regimeBadgeStyle(data.verdict)}
+            >
+              VERDICT: {data.verdict}
+            </span>
+            <HelpBtn topic="verdict" />
+          </div>
+          {data.market_context?.index_prediction?.spy_direction && (() => {
+            const d = data.market_context!.index_prediction;
+            const spyBull = d.spy_direction === "bullish";
+            const spyBear = d.spy_direction === "bearish";
+            const qqqBull = d.qqq_direction === "bullish";
+            const qqqBear = d.qqq_direction === "bearish";
+            return (
+              <>
+                <div className="flex items-center gap-1">
+                  <span
+                    className={`text-[9px] font-bold px-2 py-1 rounded uppercase ${spyBull ? "bg-emerald-500/15 text-emerald-400" : spyBear ? "bg-red-500/15 text-red-400" : "bg-zinc-500/15 text-zinc-400"}`}
+                    title={`SPY 5일 방향 예측 (ML) — 상승 확률 ${(d.spy_probability * 100).toFixed(1)}%`}
+                  >
+                    SPY{spyBull ? "↑" : spyBear ? "↓" : "→"} {(d.spy_probability * 100).toFixed(0)}%
+                  </span>
+                  <HelpBtn topic="ml" value={`${d.spy_direction}:${(d.spy_probability * 100).toFixed(0)}`} />
+                </div>
+                {d.qqq_direction && (
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`text-[9px] font-bold px-2 py-1 rounded uppercase ${qqqBull ? "bg-emerald-500/15 text-emerald-400" : qqqBear ? "bg-red-500/15 text-red-400" : "bg-zinc-500/15 text-zinc-400"}`}
+                      title={`QQQ 5일 방향 예측 (ML) — 상승 확률 ${(d.qqq_probability * 100).toFixed(1)}%`}
+                    >
+                      QQQ{qqqBull ? "↑" : qqqBear ? "↓" : "→"} {(d.qqq_probability * 100).toFixed(0)}%
+                    </span>
+                    <HelpBtn topic="ml" value={`${d.qqq_direction}:${(d.qqq_probability * 100).toFixed(0)}`} />
+                  </div>
+                )}
+              </>
+            );
+          })()}
+          {(data.market_context?.ai_sell_count ?? 0) > 0 && (
+            <span className="text-[9px] font-bold px-2 py-1 rounded bg-amber-500/15 text-amber-400 uppercase" title="AI 분석에서 SELL 권고 종목 수">
+              AI SELL ×{data.market_context!.ai_sell_count}
+            </span>
+          )}
         </div>
       </div>
 
@@ -291,8 +333,16 @@ export default function RiskPage() {
                           {alert.level}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-on-surface-variant uppercase text-[10px]">
-                        {alert.category}
+                      <td className="px-4 py-3 uppercase text-[10px]">
+                        <span className={
+                          alert.category === "ai_sell"
+                            ? "text-amber-400 font-bold"
+                            : alert.category === "prediction"
+                              ? "text-violet-400 font-bold"
+                              : "text-on-surface-variant"
+                        }>
+                          {alert.category}
+                        </span>
                       </td>
                       <td className="px-4 py-3 font-bold text-on-surface">{alert.ticker}</td>
                       <td className="px-4 py-3 text-on-surface-variant max-w-xs truncate">{alert.message}</td>

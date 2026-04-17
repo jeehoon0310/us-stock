@@ -56,9 +56,9 @@
                     <mxGeometry x="30" y="2080" width="1540" height="360" as="geometry" />
                 </mxCell>
         
-        <!-- ============================================================ -->
-        <!-- LAYER 2: All edges (rendered BELOW nodes) -->
-        <!-- ============================================================ -->
+        
+        
+        
         <mxCell id="e_sched_integ" style="endArrow=classic;html=1;rounded=0;strokeColor=#7b1fa2;" edge="1" parent="1" source="orch_scheduler" target="orch_integrated">
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
@@ -66,9 +66,6 @@
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="mod_price" target="pipeline" edge="1">
-                    <mxGeometry relative="1" as="geometry" />
-                </mxCell>
-                <mxCell id="a9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="pipeline" target="csv_prices" edge="1">
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="b1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2e7d32;" parent="1" source="sens_vix" target="regime_file" edge="1">
@@ -86,9 +83,6 @@
                 <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_fetcher" target="p3_screener" edge="1">
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
-                <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_screener" target="csv_picks" edge="1">
-                    <mxGeometry relative="1" as="geometry" />
-                </mxCell>
                 <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_news" target="p3_ai" edge="1">
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
@@ -99,9 +93,6 @@
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef6c00;" parent="1" source="p3_ai" target="p3_final" edge="1">
-                    <mxGeometry relative="1" as="geometry" />
-                </mxCell>
-                <mxCell id="layer12" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666;strokeWidth=2;dashed=1;" parent="1" source="csv_macro" target="sens_vix" edge="1">
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
                 <mxCell id="layer23" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666;strokeWidth=2;dashed=1;" parent="1" source="json_regime" target="p3_screener" edge="1">
@@ -177,25 +168,25 @@
                     <mxGeometry relative="1" as="geometry" />
                 </mxCell>
         
-        <!-- ============================================================ -->
-        <!-- LAYER 3: All nodes (rendered ABOVE edges) -->
-        <!-- ============================================================ -->
-        <mxCell id="orch_integrated" value="run_integrated_analysis.py&#10;Phase 0/1/2/3 통합 파이프라인&#10;Verdict: GO/CAUTION/STOP → BUY/WATCH/HOLD" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+        
+        
+        
+        <mxCell id="orch_integrated" value="run_integrated_analysis.py&#10;Phase 0/1/2/3 통합 파이프라인&#10;Verdict: GO/CAUTION/STOP → BUY/WATCH/HOLD" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="170" y="15" width="260" height="55" as="geometry" />
                 </mxCell>
-                <mxCell id="orch" value="run_full_pipeline.py&#10;전체 9단계 오케스트레이터" style="rounded=1;whiteSpace=wrap;fillColor=#6a1b9a;fontColor=#fff;strokeColor=none;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+                <mxCell id="orch" value="run_full_pipeline.py&#10;전체 9단계 오케스트레이터" style="rounded=1;whiteSpace=wrap;fillColor=#6a1b9a;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="450" y="15" width="280" height="45" as="geometry" />
                 </mxCell>
-                <mxCell id="orch_scheduler" value="run_daily_scheduler.py&#10;Cron 스케줄러 (--install-cron)" style="rounded=1;whiteSpace=wrap;fillColor=#7b1fa2;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                <mxCell id="orch_scheduler" value="run_daily_scheduler.py&#10;Cron 스케줄러 (--install-cron)" style="rounded=1;whiteSpace=wrap;fillColor=#7b1fa2;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="40" y="15" width="120" height="55" as="geometry" />
                 </mxCell>
-                <mxCell id="orch_screening" value="run_screening.py&#10;S&amp;P 500 스크리닝 전용" style="rounded=1;whiteSpace=wrap;fillColor=#9c27b0;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                <mxCell id="orch_screening" value="run_screening.py&#10;S&amp;P 500 스크리닝 전용" style="rounded=1;whiteSpace=wrap;fillColor=#9c27b0;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="750" y="15" width="220" height="45" as="geometry" />
                 </mxCell>
-                <mxCell id="orch_all" value="run_all.py&#10;레거시 (Part 1+2+3)" style="rounded=1;whiteSpace=wrap;fillColor=#ab47bc;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
+                <mxCell id="orch_all" value="run_all.py&#10;레거시 (Part 1+2+3)" style="rounded=1;whiteSpace=wrap;fillColor=#ab47bc;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="990" y="15" width="180" height="45" as="geometry" />
                 </mxCell>
-                <mxCell id="reports_store" value="reports/&#10;daily_report_YYYYMMDD.json&#10;latest_report.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=9;" vertex="1" parent="1">
+                <mxCell id="reports_store" value="data_daily_reports&#10;(SQLite)" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=9;" vertex="1" parent="1">
                     <mxGeometry x="1200" y="15" width="150" height="55" as="geometry" />
                 </mxCell>
                 <mxCell id="logs_store" value="logs/&#10;daily_run_YYYYMMDD.log" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#f3e5f5;strokeColor=#9c27b0;fontSize=9;" vertex="1" parent="1">
@@ -213,9 +204,6 @@
                 <mxCell id="src_cnn" value="CNN F&amp;G" style="rounded=1;whiteSpace=wrap;fillColor=#2196F3;fontColor=#fff;strokeColor=none;fontSize=11;" parent="1" vertex="1">
                     <mxGeometry x="400" y="130" width="90" height="30" as="geometry" />
                 </mxCell>
-                <mxCell id="mod_sp500" value="fetch_sp500_list.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="190" width="130" height="35" as="geometry" />
-                </mxCell>
                 <mxCell id="mod_price" value="us_price_fetcher.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
                     <mxGeometry x="200" y="190" width="130" height="35" as="geometry" />
                 </mxCell>
@@ -230,18 +218,6 @@
                 </mxCell>
                 <mxCell id="pipeline" value="us_data_pipeline.py + run_pipeline.py" style="rounded=1;whiteSpace=wrap;fillColor=#1565c0;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="200" y="260" width="280" height="40" as="geometry" />
-                </mxCell>
-                <mxCell id="csv_sp500" value="sp500_list.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="330" width="110" height="40" as="geometry" />
-                </mxCell>
-                <mxCell id="csv_prices" value="us_daily_prices.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="185" y="330" width="120" height="40" as="geometry" />
-                </mxCell>
-                <mxCell id="csv_macro" value="us_macro.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="320" y="330" width="110" height="40" as="geometry" />
-                </mxCell>
-                <mxCell id="csv_sectors" value="us_sectors.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="445" y="330" width="110" height="40" as="geometry" />
                 </mxCell>
                 <mxCell id="mod_fetch_prices" value="fetch_sp500_prices.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
                     <mxGeometry x="770" y="190" width="140" height="35" as="geometry" />
@@ -282,13 +258,13 @@
                 <mxCell id="adaptive" value="적응형 파라미터&#10;stop_loss / max_drawdown" style="rounded=1;whiteSpace=wrap;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
                     <mxGeometry x="400" y="610" width="200" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="json_regime" value="regime_config.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="json_regime" value="data_regime_snapshot" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="650" y="540" width="130" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="json_result2" value="regime_result.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="json_result2" value="data_regime_snapshot" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="650" y="600" width="130" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="p4_parser" value="ai_response_parser.py&#10;JSON 파싱 + 검증" style="rounded=1;whiteSpace=wrap;fillColor=#f8bbd0;strokeColor=#c62828;fontSize=10;" parent="1" vertex="1">
+                <mxCell id="p4_parser" value="ai_response_parser.py&#10;AI 응답 파싱 + 검증" style="rounded=1;whiteSpace=wrap;fillColor=#f8bbd0;strokeColor=#c62828;fontSize=10;" parent="1" vertex="1">
                     <mxGeometry x="400" y="1020" width="140" height="35" as="geometry" />
                 </mxCell>
                 <mxCell id="p3_fetcher" value="data_fetcher.py&#10;yfinance → Finnhub → AV → FMP" style="rounded=1;whiteSpace=wrap;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=10;" parent="1" vertex="1">
@@ -327,13 +303,10 @@
                 <mxCell id="p3_final" value="final_report_generator.py&#10;퀀트(90%) + AI(10%) → Top 10" style="rounded=1;whiteSpace=wrap;fillColor=#c62828;fontColor=#fff;strokeColor=none;fontSize=11;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="270" y="1075" width="250" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="csv_picks" value="result/&#10;smart_money_picks&#10;_YYYYMMDD.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fff3e0;strokeColor=#ef6c00;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="580" y="800" width="130" height="55" as="geometry" />
-                </mxCell>
-                <mxCell id="json_ai" value="ai_summaries.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="json_ai" value="data_ai_summaries" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="580" y="970" width="130" height="40" as="geometry" />
                 </mxCell>
-                <mxCell id="json_final" value="final_top10&#10;_report.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="json_final" value="data_daily_reports" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#fce4ec;strokeColor=#c62828;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="580" y="1075" width="130" height="45" as="geometry" />
                 </mxCell>
                 <mxCell id="dash_web" value="pages/terminal.html&#10;Yahoo Finance Purple SPA" style="rounded=1;whiteSpace=wrap;fillColor=#7c3aed;fontColor=#fff;strokeColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
@@ -390,13 +363,13 @@
                 <mxCell id="p5_f_mom" value="모멘텀 3&#10;ROC_10d&#10;50ma%/RSI slope" style="rounded=1;fillColor=#b2ebf2;strokeColor=#00838f;fontSize=8;" parent="1" vertex="1">
                     <mxGeometry x="690" y="1610" width="85" height="42" as="geometry" />
                 </mxCell>
-                <mxCell id="p5_cfg" value="regime_config.json['predictor']&#10;horizon=5 / cv_splits=5 / retrain=7d / confidence 70/60" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;strokeDasharray=3;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="p5_cfg" value="ML 학습 파라미터&#10;horizon=5 / cv_splits=5 / retrain=7d / confidence 70/60" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;strokeDasharray=3;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="60" y="1680" width="490" height="32" as="geometry" />
                 </mxCell>
                 <mxCell id="p5_confidence" value="Confidence&#10;high ≥ 70% / moderate ≥ 60% / low" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="560" y="1680" width="280" height="32" as="geometry" />
                 </mxCell>
-                <mxCell id="p5_out_pred" value="index_prediction&#10;.json" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="p5_out_pred" value="data_index_prediction" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="870" y="1510" width="130" height="45" as="geometry" />
                 </mxCell>
                 <mxCell id="p5_out_model_spy" value="predictor_model&#10;_spy.joblib" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
@@ -405,7 +378,7 @@
                 <mxCell id="p5_out_model_qqq" value="predictor_model&#10;_qqq.joblib" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="870" y="1565" width="130" height="45" as="geometry" />
                 </mxCell>
-                <mxCell id="p5_out_history" value="prediction_history&#10;.json (max 100)" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
+                <mxCell id="p5_out_history" value="data_prediction_history" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;size=8;fillColor=#e0f7fa;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="1010" y="1565" width="130" height="45" as="geometry" />
                 </mxCell>
                 <mxCell id="p5_cli" value="python us_market/index_predictor.py&#10;→ fetch_all_data → build_feature_matrix&#10;→ train(spy/qqq) → predict_next_week" style="rounded=1;whiteSpace=wrap;fillColor=#fff;strokeColor=#00838f;fontSize=9;" parent="1" vertex="1">
@@ -441,7 +414,7 @@
                 <mxCell id="p4_mac_actor" value="Mac (M-series)&#10;launchd 평일 06:00 KST" style="rounded=1;whiteSpace=wrap;fillColor=#1565c0;fontColor=#fff;strokeColor=none;fontSize=10;fontStyle=1;" parent="1" vertex="1">
                     <mxGeometry x="60" y="2130" width="180" height="55" as="geometry" />
                 </mxCell>
-                <mxCell id="p4_wrapper" value="scripts/run_and_commit.sh&#10;source .venv → pipeline → regen → 검증 → cp JSON → dashboard-next/public/data/" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=9;align=left;spacingLeft=6;" parent="1" vertex="1">
+                <mxCell id="p4_wrapper" value="scripts/run_and_commit.sh&#10;source .venv → pipeline → regen → 검증 → rsync data.db → Synology" style="rounded=1;whiteSpace=wrap;fillColor=#4a148c;fontColor=#fff;strokeColor=none;fontSize=9;align=left;spacingLeft=6;" parent="1" vertex="1">
                     <mxGeometry x="60" y="2200" width="480" height="60" as="geometry" />
                 </mxCell>
                 <mxCell id="p4_git" value="git add dashboard-next/public/data&#10;git commit -m &quot;chore(data): daily update&quot;&#10;git push origin main" style="rounded=1;whiteSpace=wrap;fillColor=#2e7d32;fontColor=#fff;strokeColor=none;fontSize=10;align=left;spacingLeft=8;fontStyle=1;" parent="1" vertex="1">
@@ -475,9 +448,9 @@
                     <mxGeometry x="1300" y="2315" width="260" height="55" as="geometry" />
                 </mxCell>
         
-        <!-- ============================================================ -->
-        <!-- LAYER 4: Labels, notes, text (highest z-order) -->
-        <!-- ============================================================ -->
+        
+        
+        
         <mxCell id="p1_title" value="Part 1: 데이터 수집 (collectors/ + pipeline/)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1a5276;" parent="1" vertex="1">
                     <mxGeometry x="50" y="90" width="400" height="25" as="geometry" />
                 </mxCell>
@@ -754,7 +727,7 @@
                 <mxCell id="p7_summary2_ref" value="📚 Summary2.md 22 이미지 분석 → backlog 6건 추가: P0 Brier Score+Platt Scaling(-28%) · P1 Rule↔ML 상충 · P1 Fold별 Accuracy · P2 Feature viz/Sample Weight/Isotonic (2026-04-05)" style="text;fontSize=9;fontStyle=2;fillColor=#fff3e0;strokeColor=#ef6c00;fontColor=#e65100;align=center;" vertex="1" parent="1">
                     <mxGeometry x="60" y="1990" width="1490" height="28" as="geometry" />
                 </mxCell>
-                <mxCell id="p6_note" value="run_integrated_analysis.py — Phase 0(데이터) → Phase 1(Regime+Gate+ML→Verdict) → Phase 2(Screening+Strategy) → Phase 3(Action 매핑→daily_report.json) | run_daily_scheduler.py --install-cron 자동화" style="text;fontSize=10;fontStyle=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#bf360c;align=center;" vertex="1" parent="1">
+                <mxCell id="p6_note" value="run_integrated_analysis.py — Phase 0(데이터) → Phase 1(Regime+Gate+ML→Verdict) → Phase 2(Screening+Strategy) → Phase 3(Action 매핑→data_daily_reports (SQLite)) | run_daily_scheduler.py --install-cron 자동화" style="text;fontSize=10;fontStyle=1;fillColor=#fff3e0;strokeColor=#e65100;fontColor=#bf360c;align=center;" vertex="1" parent="1">
                     <mxGeometry x="60" y="1960" width="1490" height="24" as="geometry" />
                 </mxCell>
                 <mxCell id="p4_deploy_title" value="Part 4: 배포 파이프라인 (Next.js + git-scraping, book-finder 패턴)" style="text;html=1;fontSize=16;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1b5e20;" parent="1" vertex="1">
@@ -772,7 +745,7 @@
                 <mxCell id="p4_browser_flow" value="Browser → HTTPS 443 → ASUS WAN → Port Forward → DSM Reverse Proxy → Next.js :3000" style="rounded=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontSize=9;fontStyle=2;fontColor=#01579b;" parent="1" vertex="1">
                     <mxGeometry x="1300" y="2260" width="260" height="40" as="geometry" />
                 </mxCell>
-            </root>
+            <mxCell id="mod_sp500" value="fetch_sp500_list.py" style="rounded=1;whiteSpace=wrap;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1"><mxGeometry x="60" y="190" width="130" height="35" as="geometry" /></mxCell><mxCell id="csv_sp500" value="sp500_list.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1"><mxGeometry x="50" y="320" width="130" height="50" as="geometry" /></mxCell><mxCell id="csv_prices" value="us_daily_prices.parquet" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontSize=10;" parent="1" vertex="1"><mxGeometry x="200" y="320" width="150" height="50" as="geometry" /></mxCell><mxCell id="csv_macro" value="us_macro.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1"><mxGeometry x="370" y="320" width="130" height="50" as="geometry" /></mxCell><mxCell id="csv_sectors" value="us_sectors.csv" style="shape=cylinder3;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1"><mxGeometry x="520" y="320" width="130" height="50" as="geometry" /></mxCell><mxCell id="a9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565c0;" parent="1" source="pipeline" target="csv_prices" edge="1"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="layer12" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2e7d32;" parent="1" source="csv_macro" target="sens_vix" edge="1"><mxGeometry relative="1" as="geometry" /></mxCell></root>
         </mxGraphModel>
     </diagram>
 </mxfile>

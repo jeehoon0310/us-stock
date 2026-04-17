@@ -21,16 +21,29 @@ type StockPick = {
   rs_score?: number; volume_score?: number; "13f_score"?: number;
   rs_vs_spy?: number;
 };
+type KeyDriver = { feature: string; direction: "bullish" | "bearish"; value: number };
 type MarketTiming = {
   regime: string; regime_confidence?: number; gate?: string;
   signals?: Record<string, string>;
-  ml_predictor?: { spy?: { direction: string; confidence_pct?: number; predicted_return?: number }; qqq?: { direction: string; confidence_pct?: number } };
+  ml_predictor?: {
+    spy?: { direction: string; confidence_pct?: number; predicted_return?: number; key_drivers?: KeyDriver[] };
+    qqq?: { direction: string; confidence_pct?: number; key_drivers?: KeyDriver[] };
+  };
 };
 type DailyReport = {
   data_date?: string;
   verdict?: string;
   stock_picks?: StockPick[];
   market_timing?: MarketTiming;
+};
+type RiskSummary = {
+  portfolio_summary?: {
+    invested_pct?: number;
+    cash_pct?: number;
+    total_var_dollar?: number;
+    risk_budget_status?: string;
+  };
+  alerts?: Array<{ level: string }>;
 };
 
 // ── 타입 ─────────────────────────────────────────────────────────
@@ -54,8 +67,9 @@ const TYPE_LABEL_KEYS: Record<string, string> = {
   output:      "graph.typeOutput",
   page:        "graph.typeDashboardPage",
   ticker:      "graph.typeStockTicker",
-  sector:      "graph.typeSector",
-  agent:       "graph.typeAiAgent",
+  sector:        "graph.typeSector",
+  agent:         "graph.typeAiAgent",
+  sub_indicator: "graph.typeSubIndicator",
 };
 
 const EDGE_TYPE_LABELS: Record<string, string> = {
@@ -105,9 +119,18 @@ function getEdgeContext(
 
 // ── 종목 중심 그래프 빌더 ─────────────────────────────────────────
 
-function buildTickerGraph(ticker: string, report: DailyReport): GraphData {
+const FEATURE_LABELS: Record<string, string> = {
+  spy_vol_trend_5d:      "SPY 5D VOL",
+  yield_spread_proxy:    "YIELD SPREAD",
+  spy_price_vs_50ma_pct: "SPY VS 50MA",
+  xlu_relative_1m:       "XLU 1M RS",
+  spy_return_1m:         "SPY 1M RET",
+};
+
+function buildTickerGraph(ticker: string, report: DailyReport, risk?: RiskSummary | null): GraphData {
   const pick = report.stock_picks?.find((p) => p.ticker === ticker);
   const mt = report.market_timing;
+  const sigs = mt?.signals ?? {};
 
   const regimeColor = (r?: string) =>
     r === "risk_on" ? "#4ade80" : r === "risk_off" ? "#f87171" : "#facc15";
@@ -115,14 +138,33 @@ function buildTickerGraph(ticker: string, report: DailyReport): GraphData {
     d === "bullish" ? "#4ade80" : d === "bearish" ? "#f87171" : "#facc15";
   const gradeColor = (g?: string) =>
     g === "A" ? "#4ade80" : g === "B" ? "#86efac" : g === "C" ? "#facc15" : "#f87171";
+  const scoreColor = (v?: number) =>
+    v === undefined ? "#64748b" : v >= 75 ? "#4ade80" : v >= 50 ? "#facc15" : "#f87171";
+  const gateColor = (g?: string) =>
+    g === "GO" ? "#4ade80" : g === "STOP" ? "#f87171" : "#facc15";
+  const riskBudgetColor = (s?: string) =>
+    s === "EXCEEDED" ? "#f87171" : s === "WARNING" ? "#facc15" : "#4ade80";
+
+  const crit = risk?.alerts?.filter((a) => a.level === "CRITICAL").length ?? 0;
+  const warn = risk?.alerts?.filter((a) => a.level === "WARNING").length ?? 0;
+  const riskStatusColor = crit > 0 ? "#f87171" : warn > 0 ? "#facc15" : "#4ade80";
+  const budgetStatus = risk?.portfolio_summary?.risk_budget_status;
+
+  const sub = (id: string, name: string, color: string, desc?: string): GraphNode => ({
+    id, name, type: "sub_indicator", color, description: desc,
+  });
+
+  const spyKd = mt?.ml_predictor?.spy?.key_drivers?.slice(0, 5) ?? [];
 
   const nodes: GraphNode[] = [
+    // ── Level 1: ticker ──────────────────────────────────────────────
     {
       id: ticker, name: ticker, type: "ticker",
       description: `${pick?.company_name ?? ""} · Grade ${pick?.grade ?? "?"} · Score ${pick?.composite_score?.toFixed(1) ?? "?"}`,
       color: gradeColor(pick?.grade),
       weight: 14,
     },
+    // ── Level 2: 6 indicator nodes ───────────────────────────────────
     {
       id: "ind_regime", name: "Market Regime", type: "signal",
       description: `${mt?.regime?.toUpperCase() ?? "—"} · 신뢰도 ${mt?.regime_confidence?.toFixed(0) ?? "?"}% · Gate ${mt?.gate ?? "?"}`,
@@ -153,15 +195,89 @@ function buildTickerGraph(ticker: string, report: DailyReport): GraphData {
       description: `vs SPY ${pick?.rs_vs_spy !== undefined ? (pick.rs_vs_spy >= 0 ? "+" : "") + pick.rs_vs_spy.toFixed(1) + "%" : "—"} · ${pick?.strategy ?? "?"} / ${pick?.setup ?? "?"}`,
       color: (pick?.rs_vs_spy ?? 0) >= 0 ? "#4ade80" : "#f87171",
     },
+    // ── Level 3: Market Regime 서브 9개 ─────────────────────────────
+    sub("sub_r_spy5d", "SPY 5D",      dirColor(mt?.ml_predictor?.spy?.direction)),
+    sub("sub_r_qqq5d", "QQQ 5D",      dirColor(mt?.ml_predictor?.qqq?.direction)),
+    sub("sub_r_gate",  "GATE",        gateColor(mt?.gate)),
+    sub("sub_r_vix",   "VIX",         regimeColor(sigs.vix)),
+    sub("sub_r_trend", "TREND",       regimeColor(sigs.trend)),
+    sub("sub_r_bread", "BREADTH",     regimeColor(sigs.breadth)),
+    sub("sub_r_cred",  "CREDIT",      regimeColor(sigs.credit)),
+    sub("sub_r_yield", "YIELD CURVE", regimeColor(sigs.yield_curve)),
+    sub("sub_r_pc",    "PUT/CALL",    regimeColor(sigs.put_call)),
+    // ── Level 3: AI Analysis 서브 5개 ───────────────────────────────
+    sub("sub_ai_comp", "COMPOSITE",   scoreColor(pick?.composite_score)),
+    sub("sub_ai_tech", "TECHNICAL",   scoreColor(pick?.technical_score)),
+    sub("sub_ai_fund", "FUNDAMENTAL", scoreColor(pick?.fundamental_score)),
+    sub("sub_ai_anl",  "ANALYST",     scoreColor(pick?.analyst_score)),
+    sub("sub_ai_rs",   "RS VS SPY",   (pick?.rs_vs_spy ?? 0) >= 0 ? "#4ade80" : "#f87171"),
+    // ── Level 3: Index Forecast 서브 SPY + QQQ ──────────────────────
+    sub("sub_fc_spy", "SPY", dirColor(mt?.ml_predictor?.spy?.direction)),
+    sub("sub_fc_qqq", "QQQ", dirColor(mt?.ml_predictor?.qqq?.direction)),
+    // ── Level 4: SPY Key Drivers 5개 ────────────────────────────────
+    ...spyKd.map((kd, i) =>
+      sub(`sub_fc_kd_${i}`, FEATURE_LABELS[kd.feature] ?? kd.feature, dirColor(kd.direction))
+    ),
+    // ── Level 3: ML Rankings 서브 9개 ───────────────────────────────
+    sub("sub_ml_comp", "COMPOSITE", scoreColor(pick?.composite_score)),
+    sub("sub_ml_tech", "TECH",      scoreColor(pick?.technical_score)),
+    sub("sub_ml_fund", "FUND",      scoreColor(pick?.fundamental_score)),
+    sub("sub_ml_anl",  "ANALYST",   scoreColor(pick?.analyst_score)),
+    sub("sub_ml_rs",   "RS SCORE",  scoreColor(pick?.rs_score)),
+    sub("sub_ml_vol",  "VOLUME",    scoreColor(pick?.volume_score)),
+    sub("sub_ml_13f",  "13F",       scoreColor(pick?.["13f_score"])),
+    sub("sub_ml_spy",  "RS VS SPY", (pick?.rs_vs_spy ?? 0) >= 0 ? "#4ade80" : "#f87171"),
+    sub("sub_ml_str",  "STREND",    scoreColor(pick?.composite_score)),
+    // ── Level 3: Risk Monitor 서브 4개 ──────────────────────────────
+    sub("sub_rk_stat",  "RISK STATUS", riskStatusColor),
+    sub("sub_rk_alloc", "ALLOCATION",  "#22d3ee"),
+    sub("sub_rk_var",   "VAR(5D)",     riskBudgetColor(budgetStatus)),
+    sub("sub_rk_budg",  "RISK BUDGET", riskBudgetColor(budgetStatus)),
   ];
 
   const edges = [
+    // ── Level 1→2 ────────────────────────────────────────────────────
     { source: "ind_regime",   target: ticker, type: "determines" },
     { source: "ind_ai",       target: ticker, type: "enhances" },
     { source: "ind_forecast", target: ticker, type: "determines" },
     { source: "ind_ml",       target: ticker, type: "produces" },
     { source: "ind_risk",     target: ticker, type: "gates" },
     { source: "ind_perf",     target: ticker, type: "displays" },
+    // ── Market Regime 서브 ───────────────────────────────────────────
+    { source: "ind_regime", target: "sub_r_spy5d", type: "feeds" },
+    { source: "ind_regime", target: "sub_r_qqq5d", type: "feeds" },
+    { source: "ind_regime", target: "sub_r_gate",  type: "feeds" },
+    { source: "ind_regime", target: "sub_r_vix",   type: "feeds" },
+    { source: "ind_regime", target: "sub_r_trend", type: "feeds" },
+    { source: "ind_regime", target: "sub_r_bread", type: "feeds" },
+    { source: "ind_regime", target: "sub_r_cred",  type: "feeds" },
+    { source: "ind_regime", target: "sub_r_yield", type: "feeds" },
+    { source: "ind_regime", target: "sub_r_pc",    type: "feeds" },
+    // ── AI Analysis 서브 ─────────────────────────────────────────────
+    { source: "ind_ai", target: "sub_ai_comp", type: "feeds" },
+    { source: "ind_ai", target: "sub_ai_tech", type: "feeds" },
+    { source: "ind_ai", target: "sub_ai_fund", type: "feeds" },
+    { source: "ind_ai", target: "sub_ai_anl",  type: "feeds" },
+    { source: "ind_ai", target: "sub_ai_rs",   type: "feeds" },
+    // ── Index Forecast 서브 ──────────────────────────────────────────
+    { source: "ind_forecast", target: "sub_fc_spy", type: "feeds" },
+    { source: "ind_forecast", target: "sub_fc_qqq", type: "feeds" },
+    ...spyKd.map((_, i) => ({ source: "sub_fc_spy", target: `sub_fc_kd_${i}`, type: "feeds" })),
+    // ── ML Rankings 서브 ─────────────────────────────────────────────
+    { source: "ind_ml", target: "sub_ml_comp", type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_tech", type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_fund", type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_anl",  type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_rs",   type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_vol",  type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_13f",  type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_spy",  type: "feeds" },
+    { source: "ind_ml", target: "sub_ml_str",  type: "feeds" },
+    // ── Risk Monitor 서브 ────────────────────────────────────────────
+    { source: "ind_risk", target: "sub_rk_stat",  type: "feeds" },
+    { source: "ind_risk", target: "sub_rk_alloc", type: "feeds" },
+    { source: "ind_risk", target: "sub_rk_var",   type: "feeds" },
+    { source: "ind_risk", target: "sub_rk_budg",  type: "feeds" },
   ];
 
   return { nodes, edges };
@@ -184,6 +300,8 @@ export default function GraphPage() {
   const [dateStatus, setDateStatus] = useState<string>("");
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
   const [fullReport, setFullReport] = useState<DailyReport | null>(null);
+  const [riskSummary, setRiskSummary] = useState<RiskSummary | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   async function loadTickersForDate(dateStr: string) {
     setDateStatus("");
@@ -240,6 +358,19 @@ export default function GraphPage() {
         setFullReport(d);
       })
       .catch(() => {});
+
+    fetch("/api/data/risk?date=latest", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: RiskSummary | null) => { if (d) setRiskSummary(d); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsFullscreen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, []);
 
   const handleNodeClick = useCallback((node: GraphNode) => {
@@ -272,7 +403,7 @@ export default function GraphPage() {
 
   const currentGraph =
     selectedTicker && fullReport
-      ? buildTickerGraph(selectedTicker, fullReport)
+      ? buildTickerGraph(selectedTicker, fullReport, riskSummary)
       : activeTab === "system" ? data.system_graph
       : activeTab === "stock"  ? data.stock_graph
       : (data.stock_market_graph ?? data.stock_graph);
@@ -414,7 +545,7 @@ export default function GraphPage() {
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           {Object.entries(TYPE_LABEL_KEYS)
             .filter(([type]) => {
-              if (selectedTicker) return ["ticker", "signal", "agent", "analyzer", "output"].includes(type);
+              if (selectedTicker) return ["ticker", "signal", "agent", "analyzer", "output", "sub_indicator"].includes(type);
               if (activeTab === "system") return !["ticker", "sector", "agent"].includes(type);
               if (activeTab === "stock")  return ["ticker", "sector"].includes(type);
               return ["ticker", "signal", "page", "agent"].includes(type);
@@ -437,7 +568,7 @@ export default function GraphPage() {
           <span className="material-symbols-outlined text-primary text-xl flex-shrink-0 mt-0.5">hub</span>
           <div className="flex-1 space-y-1">
             <p className="text-sm font-bold text-on-surface">
-              {selectedTicker} · 6개 인디케이터 연관 그래프
+              {selectedTicker} · 6개 인디케이터 · 34개 세부 항목
             </p>
             <p className="text-xs text-on-surface-variant leading-relaxed">
               Market Regime · AI Analysis · Index Forecast · ML Rankings · Risk Monitor · Performance가{" "}
@@ -477,7 +608,14 @@ export default function GraphPage() {
       {/* 메인: 그래프 + 상세 패널 */}
       <div className="flex gap-4">
         {/* 그래프 */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative">
+          <button
+            onClick={() => setIsFullscreen(true)}
+            className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 rounded-lg bg-surface-container-high/80 backdrop-blur-sm text-on-surface-variant hover:text-on-surface text-xs font-medium transition-colors"
+            title="전체화면"
+          >
+            <span className="material-symbols-outlined text-base">fullscreen</span>
+          </button>
           <ForceGraph
             data={currentGraph}
             onNodeClick={handleNodeClick}
@@ -488,9 +626,32 @@ export default function GraphPage() {
           </p>
         </div>
 
+        {/* 전체화면 오버레이 */}
+        {isFullscreen && (
+          <div className="fixed inset-0 z-50 bg-background flex flex-col p-4 gap-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-on-surface">Graph — 전체화면</p>
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface text-xs transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">fullscreen_exit</span>
+                닫기 (ESC)
+              </button>
+            </div>
+            <div className="flex-1 min-h-0">
+              <ForceGraph
+                data={currentGraph}
+                onNodeClick={(node) => { handleNodeClick(node); setIsFullscreen(false); }}
+                height={typeof window !== "undefined" ? window.innerHeight - 100 : 800}
+              />
+            </div>
+          </div>
+        )}
+
         {/* 상세 패널 */}
         {selectedNode && (
-          <div className="w-72 flex-shrink-0 bg-surface-container-low rounded-xl p-5 space-y-4">
+          <div className="w-72 flex-shrink-0 bg-surface-container-low rounded-xl p-5 space-y-4 overflow-y-auto max-h-[calc(100vh-120px)] sticky top-4">
             {/* 헤더 */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
@@ -576,7 +737,7 @@ export default function GraphPage() {
 
             {/* 연결된 엣지 목록 */}
             {nodeEdges.length > 0 && (
-              <div className="space-y-0 max-h-64 overflow-y-auto no-scrollbar">
+              <div className="space-y-0 max-h-64 overflow-y-auto">
                 {nodeEdges.slice(0, 12).map((e, i) => {
                   const src =
                     typeof e.source === "string"

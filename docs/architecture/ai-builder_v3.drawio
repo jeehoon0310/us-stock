@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="claude-code" version="21.0.0">
+  <diagram id="ai_builder_v2" name="AI Builder v2">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        
+        <mxCell id="2" value="AI Builder — 아키텍처 v3 (2026-04-17)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="20" width="760" height="30" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="3" value="Phase 1 — Mac / Next.js API Route (현재 구현)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="500" height="480" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="4" value="Browser&#10;(웹 UI: /ai-builder/{agentId})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="170" y="120" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="5" value="Next.js API Route&#10;app/api/ai-builder/run/route.ts&#10;POST { agentId, task }" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="120" y="235" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="6" value="Claude Code CLI (로컬 Mac)&#10;spawn(&quot;claude&quot;, [&quot;-p&quot;, &quot;@{agentId} {task}&quot;,&#10;&quot;--output-format&quot;, &quot;stream-json&quot;])" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="100" y="360" width="340" height="60" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="7" value=".claude/agents/{team}/{agentId}.md&#10;(역할 · 도구 · 지시사항 정의)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=11;fillColor=#fff2cc;strokeColor=#d6b656;size=12;" vertex="1" parent="1">
+          <mxGeometry x="120" y="480" width="300" height="45" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="8" value="POST /api/ai-builder/run&#10;{ agentId, task }" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="4" target="5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="spawn()" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="5" target="6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="에이전트 파일 로드" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="6" target="7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="11" value="SSE stream (text/event-stream)&#10;{ type, text/tool_use, exitCode }" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#007700;fontColor=#007700;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="5" target="4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="265" />
+              <mxPoint x="470" y="145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        
+        <mxCell id="12" value="Phase 2 — Synology / FastAPI Docker (별도 배포)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="500" height="480" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="13" value="Browser&#10;(웹 UI: /ai-builder/{agentId})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="710" y="120" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="14" value="FastAPI (services/ai-builder/main.py)&#10;POST /run { agentId, task }&#10;port 5051 — Synology Docker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="660" y="235" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="15" value="Claude Code CLI (Docker 컨테이너)&#10;asyncio.create_subprocess_exec(&quot;claude&quot;, ...)&#10;ANTHROPIC_API_KEY 필수" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="640" y="360" width="340" height="60" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="16" value="GET /agents → agent_discovery.py&#10;.claude/agents/ 디렉토리 스캔·파싱" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=11;fillColor=#f8cecc;strokeColor=#b85450;size=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="480" width="300" height="45" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="17" value="POST http://synology:5051/run&#10;{ agentId, task }" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="13" target="14" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="asyncio.create_subprocess_exec()" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="14" target="15" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="15" target="16" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        
+        <mxCell id="20" value="SSE stream (text/event-stream)" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#007700;fontColor=#007700;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="14" target="13" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="265" />
+              <mxPoint x="610" y="145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        
+        <mxCell id="21" value="🔒 보안: agentId → /^[a-z0-9-]+$/ 검증 (injection 방지)  |  --allowedTools Read,Bash,Glob,Grep (파일 쓰기 불가)  |  Phase 2: CORS allow_origins 운영 환경 제한 필요" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="560" width="880" height="35" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

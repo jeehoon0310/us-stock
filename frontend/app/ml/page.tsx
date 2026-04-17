@@ -134,8 +134,8 @@ export default function MLPage() {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-320px)] min-h-[400px]">
+          <table className="w-full min-w-[1050px] text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
                 {([

@@ -258,28 +258,25 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
         },
     }
 
-    # 저장: reports/daily_report_YYYYMMDD.json
     today = now.strftime("%Y%m%d")
-    daily_path = REPORTS_DIR / f"daily_report_{today}.json"
-    with open(daily_path, "w", encoding="utf-8") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
-    logger.info("  리포트 저장: %s", daily_path)
+
+    # SQLite 저장 (primary — 프론트엔드는 /api/data/reports 통해 읽음)
     try:
         from db import data_store as _ds
         _conn = _ds.get_db()
         _ds.upsert_daily_report(_conn, now.strftime("%Y-%m-%d"), report)
         _conn.close()
+        logger.info("  SQLite daily_report 저장: %s", now.strftime("%Y-%m-%d"))
     except Exception as _e:
         logger.warning("SQLite daily_report 쓰기 실패: %s", _e)
 
-    # latest_report.json 업데이트 (복사)
+    # latest_report.json (risk_alert.py가 verdict 로드용으로 읽음)
     latest_path = REPORTS_DIR / "latest_report.json"
-    shutil.copy2(daily_path, latest_path)
+    with open(latest_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
     logger.info("  최신 리포트: %s", latest_path)
-
-    # output/에도 대시보드용 복사
     out_latest = OUTPUT_DIR / "latest_report.json"
-    shutil.copy2(daily_path, out_latest)
+    shutil.copy2(latest_path, out_latest)
 
     logger.info("[Phase 3] 완료 (%.1f초)", time.time() - t0)
     return report
@@ -413,7 +410,7 @@ def run_integrated_analysis(
                       f"{p.get('composite_score', 0):.1f}점 [{p.get('grade', '?')}] "
                       f"{p.get('strategy', '')}/{p.get('setup', '')} → {p.get('action', '?')}")
 
-        print(f"\n  리포트: {REPORTS_DIR / f'daily_report_{today}.json'}")
+        print(f"\n  리포트: SQLite data_daily_reports ({now.strftime('%Y-%m-%d')})")
         print(f"  로그: {log_path}")
         print(f"  총 소요 시간: {elapsed:.1f}초")
         print(f"{'=' * 65}")

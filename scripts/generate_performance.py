@@ -25,6 +25,9 @@ ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = ROOT / "output" / "reports"
 FRONTEND_DATA = ROOT / "frontend" / "public" / "data"
 
+sys.path.insert(0, str(ROOT / "src"))
+from db.data_store import get_db, upsert_performance
+
 
 def load_all_reports(reports_dir: Path) -> list[dict]:
     """daily_report_YYYYMMDD.json 전체 로드, 날짜순 정렬"""
@@ -373,6 +376,14 @@ def main():
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\n✓ {out} 저장 완료")
     print(f"  SPY 기간 수익률: {spy_cum_ret:+.1f}%")
+
+    try:
+        conn = get_db()
+        upsert_performance(conn, payload)
+        conn.close()
+        print("✓ SQLite data_performance 갱신 완료")
+    except Exception as e:
+        print(f"[WARN] SQLite 쓰기 실패: {e}")
 
 
 if __name__ == "__main__":

@@ -545,7 +545,7 @@ AI가 "70% 확률로 오른다"고 했을 때, 정말 70%만큼 정확한 걸까
 ### 1단계: 대시보드 열기
 
 ```bash
-cd /Users/frindle/workspace/education/us-stock/dashboard
+cd /Users/frindle/workspace/synology/us-stock/archive/legacy-dashboard
 python3 -m http.server 8889
 ```
 

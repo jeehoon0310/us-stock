@@ -10,11 +10,15 @@ Usage:
     .venv/bin/python3 scripts/generate_graph.py
 """
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_DATA = ROOT / "frontend" / "public" / "data"
+
+sys.path.insert(0, str(ROOT / "src"))
+from db.data_store import get_db, upsert_graph
 
 RISK_ALERTS_PATH = FRONTEND_DATA / "risk_alerts.json"
 TOP10_PATH = ROOT / "output" / "final_top10_report.json"
@@ -500,6 +504,14 @@ def main():
     print(f"✓ stock_graph: {len(stock_graph['nodes'])}개 노드, {len(stock_graph['edges'])}개 엣지")
     print(f"✓ stock_market_graph: {len(stock_market_graph['nodes'])}개 노드, {len(stock_market_graph['edges'])}개 엣지")
     print(f"✓ {out} 저장 완료")
+
+    try:
+        conn = get_db()
+        upsert_graph(conn, payload)
+        conn.close()
+        print("✓ SQLite data_graph 갱신 완료")
+    except Exception as e:
+        print(f"[WARN] SQLite 쓰기 실패: {e}")
 
 
 if __name__ == "__main__":

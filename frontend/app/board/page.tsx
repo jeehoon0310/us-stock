@@ -289,15 +289,20 @@ export default function BoardPage() {
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (selectedCategory !== "all") params.set("category", selectedCategory);
-    params.set("sort", sort);
-    if (search) params.set("q", search);
-    const res = await fetch(`/api/board/posts?${params}`);
-    const data = await res.json();
-    setPosts(data.posts ?? []);
-    setCategories(data.categories ?? []);
-    setLoading(false);
+    try {
+      const params = new URLSearchParams();
+      if (selectedCategory !== "all") params.set("category", selectedCategory);
+      params.set("sort", sort);
+      if (search) params.set("q", search);
+      const res = await fetch(`/api/board/posts?${params}`);
+      const data = await res.json();
+      setPosts(data.posts ?? []);
+      setCategories(data.categories ?? []);
+    } catch {
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
   }, [selectedCategory, sort, search]);
 
   useEffect(() => {

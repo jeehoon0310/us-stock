@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI시대의 미국주식 투자 — 강의 스크립트 전체</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', 'Noto Sans KR', sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  h1.page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+  .page-subtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  /* 탭 바 */
+  .tab-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 36px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .tab-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .tab-btn.s1 { background: #ffe4e6; color: #be123c; }
+  .tab-btn.s2 { background: #ede9fe; color: #6d28d9; }
+  .tab-btn.s3 { background: #cffafe; color: #0e7490; }
+  .tab-btn.s4 { background: #d1fae5; color: #065f46; }
+  .tab-btn.s5 { background: #dbeafe; color: #1d4ed8; }
+  .tab-btn.s6 { background: #e0e7ff; color: #3730a3; }
+  .tab-btn.s7 { background: #f1f5f9; color: #475569; }
+
+  /* 섹션 블록 */
+  .section-block {
+    margin-bottom: 56px;
+  }
+  .section-header {
+    border-left: 5px solid;
+    padding: 18px 20px;
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 24px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .section-header .sec-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .section-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .section-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.83rem;
+    color: #64748b;
+    flex-wrap: wrap;
+  }
+  .section-meta span { display: flex; align-items: center; gap: 4px; }
+
+  .sec1 .section-header { border-left-color: #e11d48; }
+  .sec2 .section-header { border-left-color: #7c3aed; }
+  .sec3 .section-header { border-left-color: #0891b2; }
+  .sec4 .section-header { border-left-color: #059669; }
+  .sec5 .section-header { border-left-color: #2563eb; }
+  .sec6 .section-header { border-left-color: #4f46e5; }
+  .sec7 .section-header { border-left-color: #64748b; }
+
+  /* 슬라이드 카드 */
+  .slide-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.18s;
+  }
+  .slide-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .slide-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+  }
+  .slide-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .slide-script {
+    color: #334155;
+    line-height: 1.85;
+    font-size: 0.93rem;
+  }
+  .slide-script p { margin-bottom: 8px; }
+  .slide-script strong { color: #0f172a; font-weight: 700; }
+
+  /* 청중 참여 박스 */
+  .engage-box {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 0.875rem;
+    color: #713f12;
+    line-height: 1.7;
+  }
+  .engage-box .engage-label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    color: #92400e;
+  }
+
+  /* 전환 멘트 박스 */
+  .transition-box {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-left: 4px solid #22c55e;
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 0.875rem;
+    color: #166534;
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .transition-box::before {
+    content: "→ ";
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* 인쇄 버튼 */
+  .print-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: #0f172a;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 22px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    font-family: inherit;
+    transition: all 0.18s;
+    z-index: 200;
+  }
+  .print-btn:hover { background: #1e293b; transform: translateY(-2px); }
+
+  /* 인쇄 스타일 */
+  @media print {
+    .tab-bar, .print-btn { display: none !important; }
+    .section-block { page-break-inside: avoid; }
+    .slide-card { page-break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+    body { padding: 20px; font-size: 12px; }
+    .section-header { box-shadow: none; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI시대의 미국주식 투자 — 강의 스크립트</h1>
+<p class="page-subtitle">총 180분 (3시간) · 7개 섹션 · 강사: 프린들 (Frindle)</p>
+
+<!-- 탭 바 -->
+<div class="tab-bar">
+  <button class="tab-btn s1" onclick="jump('sec1')">SECTION 1 · Opening Hook (15분)</button>
+  <button class="tab-btn s2" onclick="jump('sec2')">SECTION 2 · Claude Code + Obsidian (20분)</button>
+  <button class="tab-btn s3" onclick="jump('sec3')">SECTION 3 · IT + AI 투자 (35분)</button>
+  <button class="tab-btn s4" onclick="jump('sec4')">SECTION 4 · 주식 기초 (40분)</button>
+  <button class="tab-btn s5" onclick="jump('sec5')">SECTION 5 · us-stock 구성 (30분)</button>
+  <button class="tab-btn s6" onclick="jump('sec6')">SECTION 6 · Claude Code 활용법 (30분)</button>
+  <button class="tab-btn s7" onclick="jump('sec7')">SECTION 7 · 참고 자료</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1 -->
+<!-- ============================================================ -->
+<div class="section-block sec1" id="sec1">
+  <div class="section-header">
+    <div class="sec-label">Section 1</div>
+    <h2>Opening Hook</h2>
+    <div class="section-meta">
+      <span>⏱ 15분</span>
+      <span>💡 기대감 + 궁금증 유발</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 1-1</div>
+    <div class="slide-title">충격 질문 — 여러분, 오늘 얼마나 버셨습니까?</div>
+    <div class="slide-script">
+      <p>안녕하십니까, 여러분. 잠깐 솔직하게 여쭤보겠습니다. 지난 1년 동안 주식으로 수익을 내신 분, 손을 한번 들어보시겠습니까?</p>
+      <p>그 중에서 S&P 500, 즉 미국 시장 평균 수익률을 <strong>이기신 분</strong>은요? … 많지 않으시죠. 사실 전문 펀드매니저의 85%도 장기적으로는 시장 평균을 이기지 못합니다.</p>
+      <p>오늘 이 자리에서 저는 그 이유를 설명드리고, 여러분이 그 85%가 아닌 나머지 15%에 들어갈 수 있는 방법을 알려드리겠습니다. 단, 방법은 여러분이 생각하는 것과 조금 다를 수 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      손 들기 유도 후 잠시 침묵 — "보이십니까? 대부분이 손을 안 드셨죠. 이게 현실입니다." 로 연결
+    </div>
+    <div class="transition-box">잠깐, 제가 누구인지 먼저 말씀드리겠습니다. 그래야 오늘 이 강의를 신뢰하실 수 있을 테니까요.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 1-2</div>
+    <div class="slide-title">강사 소개 — 프린들, 20년의 실패와 성공</div>
+    <div class="slide-script">
+      <p>저는 프린들이라고 합니다. 미국주식 투자 경력 20년차이고, 금융 데이터 엔지니어로 직접 시스템을 만들어 운영하고 있습니다.</p>
+      <p>유튜브 프린들tv를 운영하고 있는데, 현재 112개 강의 영상이 올라가 있고 구독자가 4만 명을 넘었습니다. 솔직히 처음 10년은 계속 손실이었습니다. 그러다가 '감정으로 투자하지 말자, 데이터로 투자하자'고 결심한 뒤부터 달라졌습니다.</p>
+      <p>지금은 S&P 500 503개 전 종목을 매일 새벽에 자동으로 분석하는 AI 시스템을 직접 만들어서 운영하고 있습니다. 오늘은 그 시스템의 원리와, 여러분도 똑같이 활용할 수 있는 방법을 알려드리겠습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "혹시 프린들tv 아시는 분 계십니까? — 아신다면 반갑습니다. 오늘 처음 오신 분들도 오늘 이후에 검색해 보시면 무료 강의가 쭉 나옵니다."
+    </div>
+    <div class="transition-box">그럼 오늘 2시간 30분을 어떻게 쓸지, 전체 지도를 한번 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 1-3</div>
+    <div class="slide-title">오늘 강의 로드맵 — 2시간 30분 안에 할 수 있는 것</div>
+    <div class="slide-script">
+      <p>오늘 강의는 크게 6개 파트로 나뉩니다. 지금 보시는 화면에 전체 지도가 있습니다.</p>
+      <p>1부에서는 제가 왜 이 강의를 만들었는지, 2부에서는 Claude Code와 Obsidian이라는 AI 도구를 소개합니다. 3부는 2026년 지금 시점에서 주목해야 할 투자 테마를 다루고, 4부가 오늘의 핵심 — 주식 투자 기초를 40분 동안 다룹니다.</p>
+      <p>그리고 5부와 6부에서는 제가 직접 만든 <strong>us-stock 자동 분석 시스템</strong>을 실제로 보여드리고, Claude Code로 여러분도 직접 실행해 보실 수 있도록 안내드리겠습니다.</p>
+      <p>강의 끝나고 집에 가시면 오늘 바로 써먹을 수 있는 내용입니다. 각 파트마다 "<strong>이것만 기억하세요</strong>" 한 문장이 있습니다. 그것만 가져가셔도 오늘 강의는 성공입니다.</p>
+    </div>
+    <div class="transition-box">자, 그럼 본론으로 들어가기 전에 한 가지 질문을 드리겠습니다. 여러분은 지금 503개의 종목을 어떻게 보고 계십니까?</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 1-4</div>
+    <div class="slide-title">문제 정의 — 503개 종목을 혼자 보는 것의 한계</div>
+    <div class="slide-script">
+      <p>S&P 500에는 현재 503개 종목이 있습니다. 하루에 각 종목을 1분씩만 보아도 8시간이 넘습니다. 직장인이라면 불가능한 일이죠.</p>
+      <p>그래서 대부분의 개인 투자자는 뉴스에서 들은 종목, 유튜브에서 추천한 종목을 삽니다. 문제는 그 뉴스와 유튜브가 이미 '늦은 정보'라는 겁니다. 기관 투자자들은 우리가 뉴스를 보기 전에 이미 매집을 끝냈습니다.</p>
+      <p>그렇다면 개인 투자자가 기관을 이기는 방법은 무엇일까요? 저는 그 답이 <strong>자동화</strong>라고 생각합니다. 인간의 감정과 편향을 수식과 코드로 대체하는 것입니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "여러분은 보통 종목을 어떻게 고르십니까? 뉴스? 유튜브? 카카오 리딩방? — 솔직하게 말씀해 주셔도 됩니다. 저도 처음에는 그랬습니다."
+    </div>
+    <div class="transition-box">그 해답이 오늘 강의에 있습니다. 하루 5분으로 503개 종목을 전부 볼 수 있는 방법입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 1-5</div>
+    <div class="slide-title">기대 효과 — 오늘 강의 후 여러분이 할 수 있는 것</div>
+    <div class="slide-script">
+      <p>오늘 강의가 끝나면 여러분은 세 가지를 하실 수 있습니다.</p>
+      <p>첫째, 시장이 지금 어느 국면인지 — <strong>강세장인지, 위기 국면인지</strong> — 5가지 지표로 5분 안에 판단할 수 있습니다. 둘째, 503개 종목 중에서 오늘 가장 주목해야 할 종목이 어디인지, AI가 뽑아놓은 리스트를 확인할 수 있습니다. 셋째, Claude Code에게 한국어로 말하면 코드를 모르셔도 분석 결과를 원하는 방식으로 바꾸실 수 있습니다.</p>
+      <p>단, 한 가지 약속을 드립니다. 이 시스템은 <strong>투자 조언이 아닙니다</strong>. 데이터 기반의 참고 도구입니다. 최종 판단은 반드시 여러분 스스로 하셔야 합니다. 그 점을 오늘 강의 내내 기억해 주십시오.</p>
+    </div>
+    <div class="transition-box">그러면 이 시스템을 만든 핵심 도구인 Claude Code가 무엇인지부터 알아보겠습니다.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2 -->
+<!-- ============================================================ -->
+<div class="section-block sec2" id="sec2">
+  <div class="section-header">
+    <div class="sec-label">Section 2</div>
+    <h2>Claude Code + Obsidian</h2>
+    <div class="section-meta">
+      <span>⏱ 20분</span>
+      <span>💡 도구 소개 + 가능성 각인</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-1</div>
+    <div class="slide-title">Claude Code란 무엇인가</div>
+    <div class="slide-script">
+      <p>Claude Code는 Anthropic이 만든 AI 코딩 도구입니다. ChatGPT와 비슷하지 않냐고 하시는 분들이 있는데, 결정적인 차이가 있습니다. ChatGPT는 대화창에서 코드를 보여줍니다. Claude Code는 <strong>실제로 파일을 열고, 수정하고, 저장하고, 실행</strong>합니다.</p>
+      <p>쉽게 말씀드리면, ChatGPT는 레시피를 알려주는 요리책이고, Claude Code는 실제로 주방에서 요리를 해주는 셰프입니다. 여러분은 "오늘 저녁 뭘 먹을까요?"라고 말씀만 하시면 됩니다.</p>
+      <p>월 $20, 한화 약 3만원입니다. 이 금액으로 전문 소프트웨어 엔지니어를 24시간 고용하는 것과 비슷한 효과를 얻을 수 있습니다. 오늘 강의에서 제가 보여드릴 us-stock 시스템도 100% Claude Code로 만들었습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "혹시 Claude Code 써보신 분 계십니까? — 안 써보셨다면 오늘 이 강의가 첫 번째 경험이 될 겁니다. 써보셨다면 오늘 좀 더 깊은 활용법을 가져가시면 됩니다."
+    </div>
+    <div class="transition-box">그렇다면 기존 방식과 비교해서 뭐가 달라지는지 구체적으로 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-2</div>
+    <div class="slide-title">기존 개발 방식 vs Claude Code</div>
+    <div class="slide-script">
+      <p>예전에는 주식 분석 프로그램을 하나 만들려면 Python을 배워야 했고, 라이브러리 문서를 읽어야 했고, Stack Overflow를 뒤지면서 에러와 씨름해야 했습니다. 보통 사람에게는 진입장벽이 너무 높았죠.</p>
+      <p>Claude Code를 쓰면 이렇게 합니다. "S&P 500 500개 종목의 지난 1년 주가 데이터를 가져와서 RSI가 30 이하인 종목만 뽑아줘" — 이렇게 한국어로 말합니다. 그러면 Claude Code가 Python 코드를 짜고, 실행하고, 결과를 보여줍니다. 에러가 나면 스스로 고칩니다.</p>
+      <p>실제로 저는 이 시스템의 핵심 분석 엔진을 사흘 만에 만들었습니다. 혼자 코딩했다면 몇 달이 걸렸을 내용입니다. 코딩 실력이 없어도 됩니다. <strong>무엇을 원하는지 명확히 말할 수 있으면 됩니다.</strong></p>
+    </div>
+    <div class="transition-box">그런데 Claude Code만 가지고는 뭔가 빠집니다. 지식을 쌓고 정리하는 도구도 필요합니다. 그게 바로 Obsidian입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-3</div>
+    <div class="slide-title">Obsidian — 나만의 두 번째 뇌</div>
+    <div class="slide-script">
+      <p>Obsidian은 노트 앱입니다. 그런데 일반 메모장이나 노션과 다른 점이 있습니다. 메모와 메모 사이의 <strong>연결 관계</strong>를 시각화해줍니다. 마치 뇌의 신경망처럼요.</p>
+      <p>저는 투자 관련 공부를 하면서 나오는 모든 내용을 Obsidian에 기록합니다. "금리가 오르면 채권 가격이 내린다"는 내용을 기록하면, 그 노트가 "연방준비제도", "채권 ETF", "포트폴리오 전략"과 자동으로 연결됩니다. 나중에 비슷한 주제를 공부할 때 그 연결이 빛을 발합니다.</p>
+      <p>오늘 이 강의 자료도 Obsidian으로 관리하고 있습니다. 그리고 이 강의 스크립트 자체도 Claude Code가 Obsidian에 있는 내용을 읽어서 만들었습니다. AI와 지식관리 도구가 결합되는 순간, 개인의 생산성이 기하급수적으로 올라갑니다.</p>
+    </div>
+    <div class="transition-box">두 도구를 어떻게 실제로 연결해서 쓰는지, 제 실제 작업 흐름을 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-4</div>
+    <div class="slide-title">실제 작업 플로우 — 강의 준비부터 분석까지</div>
+    <div class="slide-script">
+      <p>제가 이 강의를 준비한 과정을 말씀드리겠습니다. 먼저 Obsidian에 강의에서 다룰 주제들을 노트로 정리했습니다. 거시경제, 밸류에이션, 기술적 분석, 시스템 구조 — 각각 노트로 만들어서 연결했습니다.</p>
+      <p>그 다음 Claude Code에게 말했습니다. "이 노트들을 읽어서 150분짜리 강의 스크립트를 작성해줘. 합쇼체로, 청중 참여 포인트도 넣어줘." Claude Code가 파일을 읽고, 내용을 분석하고, 지금 여러분이 보고 계신 이 스크립트를 만들었습니다.</p>
+      <p>강의 준비 시간이 보통 2주 걸리던 것이 <strong>2~3일로 줄었습니다</strong>. 그리고 내용은 훨씬 더 체계적이 되었습니다. 이것이 AI를 활용한 지식 노동의 미래입니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "여러분은 공부한 내용을 어디에 기록하십니까? 노트앱? 엑셀? 아니면 머릿속에만 저장하십니까? — 머릿속에 저장하신 분은 오늘부터 Obsidian을 시작해보시기 바랍니다."
+    </div>
+    <div class="transition-box">그럼 Claude Code를 어떻게 시작하면 되는지, 실제 설치와 비용을 말씀드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-5</div>
+    <div class="slide-title">설치 및 시작 방법 — 오늘 바로 시작할 수 있습니다</div>
+    <div class="slide-script">
+      <p>Claude Code 설치는 터미널 한 줄이면 됩니다. npm install -g @anthropic-ai/claude-code — 이 명령어 하나입니다. Anthropic 홈페이지에서 API 키를 발급받고 연결하면 바로 쓸 수 있습니다.</p>
+      <p>비용 구조를 말씀드리면, Claude Code 구독료는 월 $20입니다. 한화로 약 3만원이죠. 여기에 API 사용료가 추가됩니다. 오늘 보여드릴 주식 분석 시스템을 하루 한 번 돌리면 하루 API 비용이 <strong>약 7원에서 42원</strong>입니다. 한 달에 1,000~1,300원 수준입니다.</p>
+      <p>Obsidian은 무료입니다. 기본 기능만으로도 충분합니다. 오늘 강의 마치시고 두 개 다 설치해 보시기를 강력 추천드립니다.</p>
+    </div>
+    <div class="transition-box">좋습니다. 도구를 알았으니 이제 '무엇에 쓸 것인가'로 넘어갑니다. 2026년 지금, 어떤 곳에 투자해야 할까요?</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 2-6</div>
+    <div class="slide-title">에이전트 팀 — 7+1명의 AI 동료</div>
+    <div class="slide-script">
+      <p>제가 운영하는 us-stock 시스템에는 Claude Code 에이전트 7명이 팀으로 일하고 있습니다. 각자 역할이 다릅니다.</p>
+      <p>팀장 격인 lead 에이전트가 전체 일정을 조율하고, quant-analyst는 수치 분석 로직을 담당합니다. data-engineer는 데이터 수집 파이프라인을 안정적으로 유지하고, ai-strategist는 AI 분석의 품질과 환각 방지를 담당합니다. dashboard-dev는 여러분이 보실 대시보드 화면을 만들고, qa는 품질 검증을 합니다. 마지막으로 service-evolver라는 에이전트는 <strong>매일 시스템을 스스로 1가지씩 개선</strong>합니다.</p>
+      <p>이 에이전트들이 매일 새벽 4~5시간 동안 일하고, 아침 7시에 결과를 내놓습니다. 저는 아침에 일어나서 5분 동안 결과만 확인하면 됩니다. 이것이 AI 시대의 개인 투자자의 모습입니다.</p>
+    </div>
+    <div class="transition-box">이제 투자 환경 자체를 봐야 할 시간입니다. 2026년 지금, 시장은 어떤 상황입니까?</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3 -->
+<!-- ============================================================ -->
+<div class="section-block sec3" id="sec3">
+  <div class="section-header">
+    <div class="sec-label">Section 3</div>
+    <h2>IT + AI 투자 테마</h2>
+    <div class="section-meta">
+      <span>⏱ 35분</span>
+      <span>💡 IT 핵심 개념 + AI 투자 흐름 이해</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-1</div>
+    <div class="slide-title">IT 개념 5분 정리 — 왜 알아야 하는가</div>
+    <div class="slide-script">
+      <p>여러분, 잠깐 저한테 5분만 주십시오. 이 5분 동안 IT 개발자들이 매일 쓰는 핵심 개념들을 설명해 드리겠습니다. 코딩을 모르셔도 됩니다. 개념만 알면 충분합니다.</p>
+      <p>왜 IT 개념을 주식 투자 강의에서 다루느냐고 하시겠죠. 이유는 간단합니다. 2026년 현재 가장 돈이 몰리는 곳이 AI 인프라입니다. 엔비디아, AMD, TSMC, AWS, Azure — 이 기업들이 무슨 사업을 하는지 구조적으로 이해하면 투자 판단이 달라집니다.</p>
+      <p>지금부터 설명드릴 내용은 OS, CPU, 메모리, 웹, 클라우드, 컨테이너입니다. 어렵지 않습니다. 오히려 이걸 알고 나면 '아, 그래서 엔비디아가 그렇게 비싸구나'가 이해됩니다.</p>
+    </div>
+    <div class="transition-box">가장 기본부터 시작합니다. 컴퓨터를 켜면 제일 먼저 실행되는 것, OS입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-2</div>
+    <div class="slide-title">OS 커널 구조 — 하드웨어의 문지기</div>
+    <div class="slide-script">
+      <p>컴퓨터를 켜면 가장 먼저 실행되는 것이 운영체제, 즉 OS입니다. OS는 두 부분으로 나뉩니다. 커널과 사용자 공간입니다.</p>
+      <p>커널은 운영체제의 핵심입니다. CPU, 메모리, 디스크에 직접 접근합니다. 우리가 쓰는 앱들은 커널 위에서 실행됩니다. 앱이 파일을 읽거나 네트워크에 연결할 때는 커널에게 요청합니다. 이 요청을 시스템 콜이라고 합니다.</p>
+      <p>비유하자면 커널은 건물 관리자입니다. 우리는 각 층에 살고 있고, 전기를 쓰거나 물을 쓰려면 관리자에게 요청해야 합니다. 직접 전기실에 들어갈 수 없는 것처럼, 앱이 직접 하드웨어를 만질 수 없습니다. 커널이 그 역할을 대신합니다.</p>
+    </div>
+    <div class="transition-box">그러면 그 하드웨어 중 핵심인 CPU와 메모리를 보겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-3</div>
+    <div class="slide-title">CPU + 메모리 구조 — AI 시대에 GPU가 왜 비싼가</div>
+    <div class="slide-script">
+      <p>CPU는 연산을 담당합니다. 제어장치는 '무엇을 할지' 결정하고, 연산장치는 실제 계산을 합니다. CPU 안에는 레지스터라는 초고속 임시 저장소가 있습니다.</p>
+      <p>메모리는 계층 구조입니다. CPU 레지스터가 가장 빠릅니다. 그 다음 캐시 메모리, RAM, SSD/HDD 순입니다. 빠를수록 용량이 작고 비쌉니다. 느릴수록 대용량이고 저렴합니다.</p>
+      <p>이게 왜 투자에 중요합니까? AI 학습은 엄청난 양의 행렬 연산을 합니다. CPU는 직렬 처리, GPU는 병렬 처리에 특화되어 있습니다. GPU 코어 수가 CPU보다 수십 배 많습니다. 이 차이가 AI 시대에 엔비디아가 독주하는 이유입니다. H100 하나가 3만 달러인 이유입니다.</p>
+    </div>
+    <div class="transition-box">이제 컴퓨터가 여러 프로그램을 동시에 실행하는 원리를 볼 차례입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-4 ⭐</div>
+    <div class="slide-title">Context Switching — 멀티태스킹의 비밀</div>
+    <div class="slide-script">
+      <p>컴퓨터는 여러 프로그램을 '동시에' 실행합니다. 지금 이 강의를 들으시면서 음악도 틀고 메모도 하시는 분 계십니까? 이게 어떻게 가능할까요?</p>
+      <p>비밀은 Context Switching입니다. CPU는 사실 한 번에 하나만 처리합니다. 그런데 너무 빠르게 전환하기 때문에 동시에 하는 것처럼 보입니다. 1초에 수천 번씩 '지금은 크롬 처리, 지금은 카카오톡 처리, 지금은 음악 앱 처리'를 반복합니다.</p>
+      <p>이때 PCB가 중요합니다. PCB는 프로세스의 현재 상태를 저장해 두는 서류철입니다. '어디까지 했는지, 레지스터 값이 뭔지' 저장해 두고, 나중에 돌아올 때 그걸 보고 이어서 실행합니다. Context Switching은 멀티태스킹의 핵심 원리입니다. 이 개념이 뒤에 나올 프로세스, 스레드 개념의 기반입니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "지금 이 순간 여러분 스마트폰에 몇 개의 앱이 실행 중입니까? 한번 확인해 보십시오. 10개? 20개? — 이 모든 것을 CPU 하나가 처리합니다. Context Switching 덕분입니다."
+    </div>
+    <div class="transition-box">프로세스가 어떤 상태들을 거치는지, 상태 머신으로 이해해 보겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-5</div>
+    <div class="slide-title">프로세스 상태 머신 — NEW에서 TERMINATED까지</div>
+    <div class="slide-script">
+      <p>프로세스가 거치는 상태는 총 다섯 가지입니다. 프로그램을 실행하면 NEW 상태로 생성됩니다. 그 다음 READY 상태가 됩니다. CPU를 받을 준비가 된 상태입니다. CPU 스케줄러가 선택하면 RUNNING 상태가 됩니다. 실제로 CPU에서 실행 중인 상태입니다.</p>
+      <p>실행 중에 파일을 읽거나 네트워크 응답을 기다려야 한다면 WAITING 상태로 전환됩니다. I/O 작업이 완료되면 다시 READY로 돌아옵니다. 프로그램이 종료되면 TERMINATED 상태가 됩니다.</p>
+      <p>왜 WAITING 상태가 따로 필요할까요? CPU는 나노초 단위로 작동하지만 I/O 디스크는 밀리초 단위입니다. 10만 배 차이입니다. 기다리는 동안 CPU를 붙잡고 있으면 낭비입니다. WAITING으로 빼고 다른 프로세스에게 CPU를 넘겨주는 것이 훨씬 효율적입니다. 이것이 멀티태스킹의 실제 작동 방식입니다.</p>
+    </div>
+    <div class="transition-box">프로세스 안에서 더 작은 실행 단위인 Thread를 살펴보겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-6</div>
+    <div class="slide-title">Thread vs Process — 메모리 공유가 핵심 차이</div>
+    <div class="slide-script">
+      <p>Process는 독립적인 실행 단위입니다. 각자 자신만의 메모리 공간을 가집니다. Thread는 Process 안에서 실행되는 더 작은 단위입니다. 차이는 메모리 공유 여부입니다.</p>
+      <p>같은 Process 안의 Thread들은 CODE, DATA, HEAP 메모리를 함께 씁니다. 단, STACK은 Thread마다 개별적으로 가집니다. 이 공유 덕분에 Thread 간 통신이 빠릅니다. 반면 별개의 Process들은 메모리를 공유하지 않아 완전히 독립됩니다.</p>
+      <p>실제 예를 들면, Chrome은 탭마다 독립 Process를 씁니다. 탭 하나가 멈춰도 다른 탭은 살아있습니다. Firefox는 4개 Process와 다수 Thread를 씁니다. 메모리를 더 효율적으로 씁니다. 두 방식 모두 장단점이 있고, 설계 상황에 따라 선택합니다.</p>
+    </div>
+    <div class="transition-box">이제 웹 통신의 기초로 넘어가겠습니다. URL과 HTTP입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-7</div>
+    <div class="slide-title">WEB 기초 — URL · HTTP · 상태코드</div>
+    <div class="slide-script">
+      <p>웹의 기초를 설명드리겠습니다. URL은 '어디에 있는 자원인지'를 표시합니다. https://example.com/path 에서 https는 프로토콜, example.com은 서버 주소, /path는 자원의 위치입니다.</p>
+      <p>HTTP는 요청과 응답의 규약입니다. 요청할 때 Method가 있습니다. GET은 데이터 조회, POST는 데이터 전송, PUT은 수정, DELETE는 삭제입니다. 응답에는 상태 코드가 있습니다. 200은 성공, 404는 '없음', 500은 서버 오류입니다.</p>
+      <p>여러분이 유튜브에서 영상을 클릭하는 것, 쇼핑몰에서 주문하는 것, 뱅킹 앱을 쓰는 것 — 모두 이 HTTP 요청/응답으로 작동합니다. 눈에 보이지 않지만 초당 수백만 번씩 일어나고 있습니다.</p>
+    </div>
+    <div class="transition-box">이 웹 요청을 받아서 처리하는 서버 구조, 3-Tier를 보겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-8</div>
+    <div class="slide-title">웹서비스 3-Tier 아키텍처 — 프론트·백엔드·DB</div>
+    <div class="slide-script">
+      <p>웹 서비스는 크게 세 층으로 나뉩니다. 첫 번째 층은 프론트엔드입니다. 여러분의 브라우저에서 실행됩니다. 화면을 그리고 버튼 클릭을 처리합니다. HTML, CSS, JavaScript로 만들어집니다.</p>
+      <p>두 번째 층은 백엔드입니다. 서버에서 실행됩니다. 프론트엔드의 요청을 받아서 비즈니스 로직을 처리합니다. '이 사용자가 로그인됐는지', '이 주문이 유효한지'를 판단합니다.</p>
+      <p>세 번째 층은 데이터베이스입니다. 데이터를 영구적으로 저장합니다. 여러분의 계정 정보, 주문 내역, 게시물이 모두 여기에 있습니다. us-stock 시스템도 이 구조입니다. Next.js 대시보드가 프론트엔드, Python 분석 서버가 백엔드, SQLite가 데이터베이스입니다.</p>
+    </div>
+    <div class="transition-box">이 층들 사이에서 데이터를 주고받는 규칙이 API입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-9</div>
+    <div class="slide-title">API &amp; REST API — 두 프로그램이 대화하는 방법</div>
+    <div class="slide-script">
+      <p>API는 Application Programming Interface의 약자입니다. 두 프로그램이 서로 대화하는 방법입니다. 비유하면 식당의 메뉴판입니다. '이 메뉴를 이 방법으로 주문하면 이렇게 가져다 드립니다'라는 약속입니다.</p>
+      <p>REST API는 웹에서 가장 널리 쓰이는 API 설계 방식입니다. URI로 자원을 표현하고, HTTP Method로 행위를 표현합니다. GET /stocks/AAPL 은 'AAPL 종목 정보를 조회해줘'라는 뜻입니다. 응답은 JSON 형식으로 옵니다.</p>
+      <p>us-stock 시스템에서는 API가 세 곳에 씁니다. 프론트엔드가 백엔드에게 데이터를 요청할 때, Yahoo Finance에서 주가를 받아올 때, Gemini에게 AI 분석을 요청할 때입니다. 여러분이 Claude Code에게 '데이터 가져와줘'라고 하면 이 API들이 뒤에서 작동합니다.</p>
+    </div>
+    <div class="transition-box">마지막 IT 개념입니다. 클라우드 시대의 핵심 기술, Docker입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3 · IT-10</div>
+    <div class="slide-title">Docker &amp; Container — 밀키트로 이해하는 컨테이너</div>
+    <div class="slide-script">
+      <p>Docker는 애플리케이션을 컨테이너에 담아서 실행하는 기술입니다. Image는 불변의 설계도입니다. 한 번 만들면 바뀌지 않습니다. Container는 그 Image를 실행한 인스턴스입니다. 같은 Image에서 Container를 수십 개 만들 수 있습니다.</p>
+      <p>VM, 즉 가상머신과 비교하면 Docker가 훨씬 가볍습니다. VM은 OS 전체를 가상화해서 수 GB가 넘습니다. Docker Container는 프로세스 수준 격리로 수십 MB입니다. 시작 시간도 수 분 대 수 초입니다. 그래서 AWS, Azure, GCP의 모든 클라우드 서비스가 Docker 기반으로 돌아갑니다.</p>
+      <p>우리의 us-stock 대시보드가 Synology NAS에서 Docker Container로 실행됩니다. 그래서 어떤 환경에서도 동일하게 작동합니다. 나중에 5부에서 직접 보여드리겠습니다.</p>
+    </div>
+    <div class="transition-box">IT 개념 10분 완료입니다. 이제 이 개념들이 AI 투자 흐름과 어떻게 연결되는지 보겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3-1</div>
+    <div class="slide-title">2026년 투자 환경 — 삼고시대의 현실</div>
+    <div class="slide-script">
+      <p>지금 우리는 '삼고시대'에 살고 있습니다. 고물가, 고금리, 고환율. 이 세 가지가 동시에 높은 상태입니다.</p>
+      <p>구체적으로 말씀드리면, 현재 미국 기준금리는 3.50~3.75%입니다. 원달러 환율은 1,508원으로 달러 강세가 이어지고 있습니다. 유가는 배럴당 93~113달러로 변동이 큽니다. 그리고 4월 말 FOMC에서 금리 인하가 0~1회에 그칠 것으로 전망되고 있습니다.</p>
+      <p>이 환경에서 전통적인 투자 방식은 통하지 않습니다. 그러나 이 환경에서도 <strong>돈을 버는 사람들은 있습니다</strong>. 그 사람들이 어디를 보고 있는지, 지금 말씀드리겠습니다.</p>
+    </div>
+    <div class="transition-box">2026년 지금, 다섯 가지 테마가 가장 주목받고 있습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3-2</div>
+    <div class="slide-title">5대 투자 테마 — 2026년 주목할 곳</div>
+    <div class="slide-script">
+      <p>첫 번째는 <strong>AI 인프라</strong>입니다. 반도체, 전력, 데이터센터입니다. 엔비디아의 Forward PER은 20.2배인데, 매출 성장률이 71%로 전망됩니다. 월가 애널리스트 38명이 Strong Buy를 제시하고 있습니다. 글로벌 반도체 매출 전망은 9,750억 달러, 성장률 26%입니다.</p>
+      <p>두 번째는 <strong>스테이블코인</strong>입니다. 미국 GENIUS Act 통과로 제도권이 열렸고, 시장 규모가 3,000억 달러를 향해 가고 있습니다. 메타도 다시 코인 시장에 진입했습니다.</p>
+      <p>세 번째는 <strong>방산·조선</strong>입니다. 지정학적 리스크 수혜 섹터입니다. 한국 무기의 가성비가 세계적으로 인정받으면서 수주가 급증하고 있습니다. 네 번째는 <strong>금</strong>입니다. 현재 온스당 4,672달러이며 2030년까지 상승 추세가 이어질 것으로 전망됩니다. 다섯 번째는 <strong>배당·인컴</strong>으로, 단기 국채 연 4% 이상 수익에 ISA 비과세를 활용하면 안정적인 수익을 낼 수 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "이 다섯 가지 중에서 여러분이 이미 투자하고 계신 테마가 있습니까? — 어느 테마가 가장 끌리십니까? 잠깐 생각해 보시겠습니까?"
+    </div>
+    <div class="transition-box">AI 인프라에 대해 좀 더 구체적인 수치를 말씀드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3-3</div>
+    <div class="slide-title">AI 관련 핵심 수치 — 숫자로 보는 기회</div>
+    <div class="slide-script">
+      <p>숫자를 몇 개 보여드리겠습니다. 엔비디아 Forward PER 20.2배 — 이 숫자가 왜 중요할까요? 성장률이 71%인 회사가 PER 20배에 거래되고 있다는 것은, 사실 저평가에 가깝습니다. PEG 비율로 계산하면 1배 미만입니다.</p>
+      <p>메타는 2031년까지 시총을 6배로 키우겠다는 로드맵을 공개했습니다. AI 설비 투자와 함께 실적이 동반 상승하고 있습니다. 반도체 기준으로는 삼성전자, SK하이닉스의 PER이 5~7배 수준인데, EPS가 2개월 만에 두 배 상향 조정됐습니다.</p>
+      <p>이런 수치들이 왜 중요한가 하면, 오늘 4부에서 배우실 <strong>Forward EPS와 PER 조합</strong>이 바로 이 수치들을 읽는 방법이기 때문입니다. 이 개념을 이해하면 이 숫자들이 다르게 보이기 시작합니다.</p>
+    </div>
+    <div class="transition-box">자, 그러면 이제 본격적으로 주식 투자의 기초로 들어가겠습니다. 이 기초를 모르면 아무리 좋은 시스템도 쓸 수 없습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 3-4</div>
+    <div class="slide-title">개인 투자자의 무기 — AI 도구로 기울어진 운동장 극복</div>
+    <div class="slide-script">
+      <p>솔직하게 말씀드리겠습니다. 개인 투자자는 기관 투자자에 비해 정보 접근성, 자금력, 분석 인력 모든 면에서 불리합니다. 이건 현실입니다.</p>
+      <p>그런데 AI가 이 운동장을 조금씩 평평하게 만들고 있습니다. 예전에는 기관 투자자만 가질 수 있었던 503개 종목 전체 스크리닝 기능을, 이제 개인도 월 $20짜리 Claude Code로 만들 수 있습니다. 예전에는 금융 데이터 분석에 전문가가 필요했지만, 이제는 한국어로 말하면 됩니다.</p>
+      <p>물론 AI가 모든 것을 해결해주지는 않습니다. AI는 도구입니다. 도구를 잘 쓰려면 <strong>기초 지식</strong>이 있어야 합니다. 기초 없이 AI를 쓰면 잘못된 결과를 맞다고 믿게 됩니다. 그래서 지금부터 40분이 가장 중요합니다.</p>
+    </div>
+    <div class="transition-box">주식 기초 파트로 넘어가겠습니다. 쉬면서 자리를 편하게 잡으십시오. 이 40분이 오늘 강의의 핵심입니다.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4 -->
+<!-- ============================================================ -->
+<div class="section-block sec4" id="sec4">
+  <div class="section-header">
+    <div class="sec-label">Section 4</div>
+    <h2>주식 기초 — A1~A5</h2>
+    <div class="section-meta">
+      <span>⏱ 40분</span>
+      <span>💡 핵심 개념 정착 + 실전 연결</span>
+    </div>
+  </div>
+
+  <!-- A1: 왜 미국주식인가 -->
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-1 · A1 왜 미국주식인가</div>
+    <div class="slide-title">S&P 500 vs 코스피 — 숫자가 말해줍니다</div>
+    <div class="slide-script">
+      <p>왜 한국 주식이 아니라 미국 주식입니까? 이 질문에 가장 단순한 답은 수익률입니다. 지난 3년, 5년, 10년을 놓고 봤을 때 S&P 500과 코스피의 수익률 차이는 구조적입니다.</p>
+      <p>미국 주식 시장이 전 세계 시가총액의 약 45%를 차지합니다. 애플, 마이크로소프트, 엔비디아, 알파벳 — 이 기업들은 미국 기업이지만 전 세계에서 돈을 법니다. 한국 시장은 아무리 좋아도 전 세계 2~3% 수준입니다.</p>
+      <p>두 번째 이유는 달러입니다. 원화는 경제 위기가 오면 약세가 됩니다. 그러나 달러는 반대입니다. 위기가 오면 안전자산으로 달러가 강세가 됩니다. 그러니까 미국 주식은 주가 상승 효과와 함께 <strong>달러 자산이라는 헤지 효과</strong>를 동시에 누릴 수 있습니다. 지금 환율이 1,508원이라는 것, 기억해 두십시오.</p>
+    </div>
+    <div class="transition-box">그런데 수익률이 좋다는 걸 알아도, 실제로 투자하다 보면 감정이 개입됩니다. 이게 문제의 핵심입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-2 · A1 투자자 심리</div>
+    <div class="slide-title">투자자 심리 사이클 — "왜 이제야?" 의 반복</div>
+    <div class="slide-script">
+      <p>Jean-Paul Rodrigue라는 경제학자가 만든 투자자 심리 사이클 그래프가 있습니다. 주가가 오르면서 투자자의 감정이 어떻게 변하는지 보여줍니다.</p>
+      <p>처음에는 기관만 알고 사는 Stealth 구간이 있습니다. 그 다음 일반인들이 알아채기 시작하는 Awareness 구간, 그리고 뉴스마다 나오고 주변 사람 모두가 사는 Mania 구간. 이 Mania 구간이 바로 개인 투자자들이 가장 많이 사는 시점입니다. 그리고 직후에 급락이 옵니다.</p>
+      <p>여러분도 경험해 보셨을 겁니다. 주변에서 모두가 "이 주식 사야 해" 할 때 들어갔다가 손해 본 경험. 그때가 바로 Mania 구간이었습니다. 해결책은 하나입니다. <strong>감정이 아닌 규칙으로 투자하는 것</strong>입니다. 손절 기준, 매수 기준을 미리 정하고 그것만 따르는 겁니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "주변 사람이 추천해줘서 산 주식이 손실 난 경험 있으신 분? — 보통 그 시점이 Mania 구간이었을 겁니다. 경험을 공유해 주실 분 계십니까?"
+    </div>
+    <div class="transition-box">규칙으로 투자하려면 시장의 환경을 읽을 줄 알아야 합니다. 가장 중요한 게 금리입니다.</div>
+  </div>
+
+  <!-- A2: 거시경제 -->
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-3 · A2 거시경제</div>
+    <div class="slide-title">금리와 물가 — 이 관계 하나로 시장의 방향이 바뀝니다</div>
+    <div class="slide-script">
+      <p>금리와 물가, 헷갈리는 분들이 많으십니다. 간단하게 말씀드리겠습니다. 물가는 물건의 가치이고, 금리는 돈의 가치입니다. 물가가 오르면 돈의 가치가 내려가기 때문에, 연준은 금리를 올려서 돈의 가치를 회복시킵니다.</p>
+      <p>미국 연준(FED)의 목표 물가는 2%입니다. PCE 지수 기준으로요. 지금 물가가 2%를 넘어가 있기 때문에 금리를 내리기 어려운 상황입니다. 이걸 모르면 왜 주식 시장이 요즘 이러는지 이해가 안 됩니다.</p>
+      <p>핵심 메커니즘 하나만 기억하십시오. 연준이 기준금리를 내리면 → 시중 금리가 내리고 → 기업과 개인이 대출을 늘리고 → 경제가 활성화되고 → 주식 가격이 올라갑니다. 반대로 금리를 올리면 반대 방향입니다. <strong>금리 방향이 주식 시장 방향과 역의 관계</strong>라는 것을 기억해 두십시오.</p>
+    </div>
+    <div class="transition-box">그 금리 관계를 한눈에 볼 수 있는 게 바로 수익률 곡선, Yield Curve입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-4 · A2 Yield Curve</div>
+    <div class="slide-title">수익률 곡선 — 경기침체를 12~18개월 전에 예고합니다</div>
+    <div class="slide-script">
+      <p>Yield Curve, 수익률 곡선이라고 합니다. X축은 채권 만기, Y축은 금리입니다. 정상적인 상황에서는 오래 빌려줄수록 금리가 높습니다. 오른쪽으로 올라가는 모양이 정상입니다.</p>
+      <p>그런데 가끔 이 곡선이 뒤집힙니다. 단기 금리가 장기 금리보다 높아지는 역전 현상이 생깁니다. 역사적으로 이 역전 현상이 생기고 나서 평균 12~18개월 후에 경기 침체가 왔습니다. 예외 없이요. 그래서 이 지표를 가장 신뢰할 수 있는 선행지표 중 하나로 봅니다.</p>
+      <p>FRED 사이트, fred.stlouisfed.org에 들어가시면 무료로 이 데이터를 실시간으로 볼 수 있습니다. "yield curve" 검색하시면 바로 나옵니다. 현재는 역전이 해소되면서 정상화 진행 중입니다. 좋은 신호입니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "FRED 사이트 들어가 보신 분 계십니까? — 오늘 집에 가셔서 꼭 한번 들어가 보십시오. 투자자에게 가장 강력한 무료 데이터 창고입니다."
+    </div>
+    <div class="transition-box">수익률 곡선 외에 제가 치트키라고 부르는 지표가 하나 더 있습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-5 · A2 High Yield Spread</div>
+    <div class="slide-title">High Yield Spread — 시장 체온계 두 가지면 충분합니다</div>
+    <div class="slide-script">
+      <p>High Yield Spread, 하이일드 스프레드는 회사채 금리에서 국채 금리를 뺀 값입니다. 쉽게 말하면 '기업이 추가로 내야 하는 이자'입니다. 이 값이 올라가면 시장이 기업의 부도 가능성을 높게 보고 있다는 뜻입니다. 위험 신호죠.</p>
+      <p>저는 학생들에게 두 가지만 기억하라고 합니다. 첫 번째는 High Yield Spread — 부도 위험. 두 번째는 Forward 12개월 EPS — 기업 이익 전망. 이 두 가지 방향을 보면 시장이 어디로 갈지 80%는 판단됩니다.</p>
+      <p>HYG는 하이일드 채권 ETF이고, IEF는 중기 국채 ETF입니다. HYG/IEF 비율이 올라가면 위험 자산 선호, 내려가면 안전 자산 선호입니다. 이 비율 하나로도 시장 분위기를 파악할 수 있습니다.</p>
+    </div>
+    <div class="transition-box">거시경제를 이해했다면 이제 개별 기업을 볼 차례입니다. 재무제표로 넘어가겠습니다.</div>
+  </div>
+
+  <!-- A3: 재무제표 -->
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-6 · A3 재무제표</div>
+    <div class="slide-title">재무제표 3종 세트 — 기업의 건강검진서</div>
+    <div class="slide-script">
+      <p>재무제표 어렵다고 하시는 분 많습니다. 사실 기본 개념만 알면 됩니다. 재무제표는 세 가지입니다.</p>
+      <p>첫 번째, <strong>대차대조표(Balance Sheet)</strong>. 이 회사가 지금 이 시점에 무엇을 가지고 있고, 무엇을 빚지고 있는지 사진처럼 찍어놓은 것입니다. 자산 = 부채 + 자본, 이 등식 하나입니다. 두 번째, <strong>손익계산서(Income Statement)</strong>. 1년 또는 분기 동안 얼마를 벌고 얼마를 썼는지 영상처럼 보여주는 것입니다. 매출에서 원가를 빼면 매출총이익, 거기서 판관비를 빼면 영업이익, 마지막으로 세금을 빼면 순이익입니다.</p>
+      <p>세 번째, <strong>현금흐름표(Cash Flow)</strong>. 실제 현금이 어떻게 들어오고 나갔는지입니다. 영업 현금흐름이 + 면 실제로 돈을 버는 기업입니다. 순이익이 좋아 보여도 현금흐름이 나쁜 기업은 위험할 수 있습니다.</p>
+    </div>
+    <div class="transition-box">이 재무제표 숫자들을 가지고 주식이 비싼지 싼지 판단하는 게 밸류에이션입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-7 · A3 밸류에이션</div>
+    <div class="slide-title">PER과 Forward EPS — 5분 가치평가의 핵심</div>
+    <div class="slide-script">
+      <p>주식의 가격이 합리적인지 판단하는 가장 기본 도구는 PER입니다. Price to Earnings Ratio, 주가를 주당순이익으로 나눈 값입니다. PER이 20이라면 현재 이익 기준으로 20년치 이익을 미리 사고 있다는 뜻입니다.</p>
+      <p>중요한 구분이 있습니다. Trailing PER은 과거 이익 기준, Forward PER은 미래 이익 전망 기준입니다. 투자는 미래에 하는 것이니 <strong>Forward PER</strong>이 더 중요합니다. 현재 S&P 500 전체 Forward PER은 약 19.8배입니다. 역사적 평균이 16~17배이니 약간 비싸 보이지만, 성장률을 감안하면 합리적인 수준입니다.</p>
+      <p>두 번째로 볼 것은 ROE, 자기자본이익률입니다. 회사가 주주 자본을 얼마나 효율적으로 썼는지입니다. 15% 이상이면 우수한 기업입니다. stockrow.com에 가시면 AAPL, MSFT, GOOGL 등의 이 수치를 무료로 비교해 볼 수 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 퀴즈</div>
+      "엔비디아 Forward PER이 20.2배, 매출 성장률이 71%입니다. 이 주식은 비싼 것일까요, 싼 것일까요? — 잠깐 생각해 보십시오. PEG 비율로 계산하면 어떻게 될까요?"
+    </div>
+    <div class="transition-box">재무제표는 기업의 과거입니다. 앞으로의 방향은 차트를 보면 됩니다.</div>
+  </div>
+
+  <!-- A4: 기술적 분석 -->
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-8 · A4 이동평균선</div>
+    <div class="slide-title">이동평균선 — 추세를 읽는 가장 단순한 도구</div>
+    <div class="slide-script">
+      <p>기술적 분석의 기본은 이동평균선입니다. 5일, 20일, 60일, 120일, 200일 평균 주가를 선으로 연결한 것입니다. 이 선들의 배열을 보면 추세를 알 수 있습니다.</p>
+      <p>5일 평균이 20일 평균 위에 있고, 20일이 60일 위에 있고, 이렇게 단기선이 장기선 위에 있으면 <strong>정배열</strong>이라고 합니다. 강한 상승 추세를 의미합니다. 반대면 역배열이고 하락 추세입니다.</p>
+      <p>그리고 <strong>골든크로스</strong>라는 게 있습니다. 단기 이동평균선이 장기 이동평균선을 아래에서 위로 돌파하는 순간입니다. 대표적으로 50일 평균선이 200일 평균선을 위로 넘는 것이 골든크로스입니다. 이 순간이 많은 시스템의 매수 신호가 됩니다. 반대로 위에서 아래로 내려오면 데드크로스, 매도 신호입니다.</p>
+    </div>
+    <div class="transition-box">이동평균선으로 추세를 봤다면, 지금 과열인지 과냉인지는 RSI로 봅니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-9 · A4 보조지표</div>
+    <div class="slide-title">RSI · MACD · 볼린저밴드 — 입문자 3종 도구</div>
+    <div class="slide-script">
+      <p><strong>RSI</strong>는 Relative Strength Index, 상대강도지수입니다. 0에서 100 사이 숫자인데, 70 이상이면 과매수, 30 이하면 과매도입니다. 과매수는 조정 가능성이 높고, 과매도는 반등 가능성이 높다고 봅니다. 단, 강한 추세에서는 70을 넘어서도 계속 오를 수 있으니 단독으로 쓰면 안 됩니다.</p>
+      <p><strong>MACD</strong>는 두 이동평균의 차이를 이용해서 추세 전환을 감지합니다. MACD 선이 Signal 선을 위로 돌파하면 매수 신호, 아래로 내려오면 매도 신호입니다.</p>
+      <p><strong>볼린저밴드</strong>는 이동평균선 위아래에 표준편차 2배 구간을 표시합니다. 주가가 상단 밴드에 닿으면 고평가 가능성, 하단 밴드에 닿으면 저평가 가능성입니다. 세 가지를 조합해서 쓸 때 신뢰도가 올라갑니다.</p>
+    </div>
+    <div class="transition-box">개별 종목을 고르는 대신 ETF로 투자하는 방법도 있습니다. 특히 입문자에게 강력히 권장합니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-10 · A4 ETF 비교</div>
+    <div class="slide-title">SPY · QQQ · TQQQ — 내게 맞는 ETF는?</div>
+    <div class="slide-script">
+      <p>ETF 세 개를 비교해 드리겠습니다. <strong>SPY</strong>는 S&P 500 500개 종목을 그대로 따라갑니다. 지난 10년 수익률이 약 250%입니다. 안정적이고 배당도 있습니다. 워런 버핏도 유산의 90%를 SPY에 투자하라고 했습니다.</p>
+      <p><strong>QQQ</strong>는 나스닥 100 기술주를 따라갑니다. 지난 10년 수익률이 약 450%로 SPY보다 높습니다. 성장주 중심이라 변동성이 조금 더 있습니다. 저는 SPY와 QQQ를 적립식으로 같이 가져가는 것을 권장합니다.</p>
+      <p><strong>TQQQ</strong>는 QQQ의 3배 레버리지 ETF입니다. 수익률이 엄청나 보이지만, 하락할 때도 3배로 하락합니다. 2022년 나스닥 하락장에서 TQQQ는 80% 이상 빠졌습니다. 강제청산 사례도 급증했습니다. 입문자에게는 절대 권장하지 않습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "여러분 중에 TQQQ 보유하고 계신 분 계십니까? — 오늘 강의 들으시고 꼭 리스크를 다시 한번 점검해 보시기 바랍니다."
+    </div>
+    <div class="transition-box">아무리 좋은 종목을 골라도, 위험 관리를 못 하면 결국 손실입니다. 가장 중요한 파트입니다.</div>
+  </div>
+
+  <!-- A5: 위험관리 -->
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-11 · A5 MDD</div>
+    <div class="slide-title">MDD — 낙폭이 클수록 회복이 기하급수로 어렵습니다</div>
+    <div class="slide-script">
+      <p>MDD, Maximum Drawdown, 최대 낙폭입니다. 투자에서 가장 중요한 개념 중 하나인데, 의외로 잘 모르시는 분들이 많습니다.</p>
+      <p>계산해 드리겠습니다. 주식이 10% 떨어지면 원금 회복에 11.1% 상승이 필요합니다. 20% 떨어지면 25% 상승이 필요합니다. 50%가 떨어지면 <strong>100% 상승</strong>, 즉 두 배가 올라야 원금 회복입니다. 비대칭 구조입니다. 손실이 클수록 회복이 기하급수적으로 어려워집니다.</p>
+      <p>그래서 위험 관리의 핵심은 처음부터 낙폭을 제한하는 것입니다. -10% 손실은 회복 가능하지만, -50% 손실은 심리적으로도 물리적으로도 회복이 매우 어렵습니다. 이 비대칭성을 항상 머릿속에 가지고 계셔야 합니다.</p>
+    </div>
+    <div class="transition-box">그래서 손절 기준을 사전에 설정해야 합니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-12 · A5 Stop Loss</div>
+    <div class="slide-title">Stop Loss 3단계 — 수익을 지키는 시스템</div>
+    <div class="slide-script">
+      <p>손절과 익절을 미리 정해놓지 않으면 감정이 개입됩니다. 주식이 빠지면 "조금만 더 기다리면 오르겠지" 하다가 손실이 커지고, 오르면 "더 오를 것 같아서" 팔지 못합니다. 이 패턴이 대부분의 개인 투자자의 패턴입니다.</p>
+      <p>Stop Loss는 세 단계로 설정하시기 바랍니다. 첫 번째, <strong>손실제한 Stop Loss</strong>. 매수 가격에서 -5% 내려가면 자동 매도입니다. 이것만 지켜도 큰 손실은 막을 수 있습니다. 두 번째, <strong>이익실현</strong>. 목표 수익률 +10~15% 달성 시 일부를 매도합니다. 세 번째, <strong>Trailing Stop</strong>. 최고가에서 일정 비율 하락 시 자동 매도입니다. 수익을 지키는 가장 좋은 도구입니다.</p>
+      <p>레전드 원칙 하나 알려드립니다. "첫 손절이 제일 손실이 작다." 처음에 -5%에 잘랐으면 될 것을, 참다참다 -30%가 되어서야 파는 경우가 너무 많습니다. 오늘 이 문장 하나만 가져가셔도 됩니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "손절을 원칙대로 하신 분, 잘하셨습니다. 손절 못 하고 계속 들고 가다가 더 손해 본 경험 있으신 분? — 그 경험이 가장 좋은 선생님입니다. 그래서 규칙이 필요합니다."
+    </div>
+    <div class="transition-box">마지막으로, 얼마를 한 종목에 넣어야 할지 포지션 사이징입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 4-13 · A5 포지션 사이징</div>
+    <div class="slide-title">1% Rule + 분산투자 — 한 방에 모든 것을 잃지 않는 법</div>
+    <div class="slide-script">
+      <p>포지션 사이징은 단순합니다. <strong>1% Rule</strong>입니다. 1번 거래에서 잃을 수 있는 최대 금액을 총 자산의 1%로 제한합니다. 총 자산이 1,000만원이라면 한 번의 거래로 최대 10만원 이상 잃지 않도록 포지션을 잡습니다.</p>
+      <p>그리고 <strong>7:3 법칙</strong>이 있습니다. 수익의 70%는 상위 30% 종목에서 나옵니다. 많은 종목에 소액씩 투자하는 것보다, 확신이 있는 몇 가지에 집중하는 것이 더 효과적입니다. 단, 한 종목 최대 비중은 10~20%를 넘지 않도록 하고, 섹터별로도 분산하시기 바랍니다.</p>
+      <p>삼고시대 대응 포트폴리오로 권장드리는 것은 주식 50%, 채권 25%, 원자재 25%, 현금 15%입니다. 현금 15%는 낭비가 아닙니다. 시장이 급락할 때 살 수 있는 <strong>기회의 탄약</strong>입니다.</p>
+    </div>
+    <div class="transition-box">자, 주식 기초 4개 파트를 모두 끝냈습니다. 잠깐 쉬면서 정리하겠습니다. 이제부터는 실제 시스템을 봅니다.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5 -->
+<!-- ============================================================ -->
+<div class="section-block sec5" id="sec5">
+  <div class="section-header">
+    <div class="sec-label">Section 5</div>
+    <h2>us-stock 시스템 구성</h2>
+    <div class="section-meta">
+      <span>⏱ 30분</span>
+      <span>💡 시스템 원리 이해 + 대시보드 해석</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-1</div>
+    <div class="slide-title">왜 이 시스템이 필요한가 — 503개 종목 문제</div>
+    <div class="slide-script">
+      <p>S&P 500에는 현재 503개 종목이 있습니다. 각 종목을 분석하려면 주가, 재무제표, 거시경제 데이터, AI 뉴스까지 봐야 합니다. 사람이 하루에 처리할 수 있는 한계를 훨씬 넘어섭니다.</p>
+      <p>더 큰 문제는 <strong>편향</strong>입니다. 인간의 직관은 FOMO, 손실회피 편향에 취약합니다. 어제 크게 오른 종목을 오늘도 사고 싶어집니다. 내가 가진 종목은 오를 것 같아 팔지 못합니다. 이런 감정적 반응을 수식으로 대체하면 어떻게 될까요?</p>
+      <p>그래서 이 시스템을 만들었습니다. 평일 새벽 7시, macOS의 launchd가 파이프라인을 자동으로 실행합니다. 아침에 일어나면 결과가 나와 있습니다. 하루 종일 차트를 보는 것 대신 <strong>아침 5분 대시보드 확인</strong>으로 대체합니다.</p>
+    </div>
+    <div class="transition-box">이 시스템이 어떻게 작동하는지 전체 구조를 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-2</div>
+    <div class="slide-title">전체 아키텍처 — 4단계 파이프라인</div>
+    <div class="slide-script">
+      <p>시스템은 4단계로 구성됩니다. 화면에 보이는 흐름도를 보시면서 들으시면 이해가 빠릅니다.</p>
+      <p>먼저 외부에서 데이터를 가져옵니다. Yahoo Finance에서 503개 종목의 1년치 주가 데이터, FRED API에서 금리와 VIX 같은 거시경제 지표, Wikipedia에서 S&P 500 현재 편입 종목 목록입니다. 이것이 Phase 0, 데이터 수집입니다.</p>
+      <p>Phase 1에서는 시장 전체가 지금 어떤 상태인지 판단합니다. Phase 2에서는 503개 종목을 점수 매겨 등급화합니다. Phase 3에서는 상위 종목들을 AI가 심층 분석합니다. 결과는 SQLite 데이터베이스에 저장되고, rsync로 NAS로 전송되어 Next.js 대시보드에서 보여줍니다.</p>
+    </div>
+    <div class="transition-box">각 단계를 하나씩 자세히 보겠습니다. 먼저 데이터 수집입니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-3</div>
+    <div class="slide-title">Phase 0 — 데이터 수집, curl_cffi로 차단 우회</div>
+    <div class="slide-script">
+      <p>데이터 수집에서 가장 까다로운 문제가 있습니다. Yahoo Finance가 자동 스크레이핑을 차단합니다. 봇이 데이터를 긁어가는 것을 막기 위해서입니다.</p>
+      <p>이 문제를 해결하는 방법이 curl_cffi입니다. 브라우저가 서버에 연결할 때 고유한 fingerprint를 보냅니다. curl_cffi는 크롬 브라우저의 fingerprint를 그대로 흉내내서 "사람이 브라우저로 접속하는 것처럼" 위장합니다. 이 방법으로 차단을 우회합니다.</p>
+      <p>심볼 변환 규칙도 있습니다. 버크셔 해서웨이는 BRK.B라고 쓰는데, yfinance 라이브러리는 점(.)을 대시(-)로 써야 합니다. BRK-B. 이런 세부 규칙들을 코드에서 자동으로 처리합니다. 매일 503개 × 1년치 데이터를 안정적으로 가져오는 것이 이 시스템의 기반입니다.</p>
+    </div>
+    <div class="transition-box">데이터가 준비되면 시장 전체의 상태를 판단합니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-4</div>
+    <div class="slide-title">Phase 1 — 5센서 가중투표, 시장 체제 감지</div>
+    <div class="slide-script">
+      <p>시장 체제 감지는 5개 센서의 가중투표로 합니다. 비유하자면 기상청이 "오늘 외출 적합도"를 판단하는 것처럼, 이 시스템은 "오늘 주식 투자 적합도"를 수치로 판단합니다.</p>
+      <p>5개 센서를 소개합니다. 가중치 30%로 가장 중요한 것은 <strong>VIX, 공포지수</strong>입니다. VIX가 높을수록 시장이 두려워하고 있다는 뜻입니다. 25% 가중치의 <strong>추세 센서</strong>는 S&P 500이 50일, 200일 이동평균선 위에 있는지 봅니다. 18% 가중치의 <strong>시장 폭 센서</strong>는 상승하는 종목의 비율입니다. 15% 가중치의 <strong>신용 센서</strong>는 아까 설명드린 HYG/IEF 비율입니다. 마지막 12% 가중치의 <strong>금리차 센서</strong>는 장단기 금리차입니다.</p>
+      <p>이 5개를 더해서 나온 점수로 체제를 판단합니다. 0.75 미만은 risk_on 강세장, 1.5 이상은 risk_off 약세장, 2.25 이상은 crisis 위기 국면입니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "여기서 질문입니다. 하나의 지표만으로 시장을 판단하면 어떤 문제가 생길까요? — 맞습니다. 그 지표가 오류를 내면 전체 판단이 틀립니다. 5개가 동의해야 신호를 내는 이 방식이 훨씬 안정적입니다."
+    </div>
+    <div class="transition-box">체제가 결정되면 그에 맞는 파라미터로 종목 스크리닝이 시작됩니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-5</div>
+    <div class="slide-title">체제별 적응형 파라미터 — 시장에 따라 룰이 바뀝니다</div>
+    <div class="slide-script">
+      <p>시장이 강세장일 때와 위기 국면일 때 같은 룰을 적용하면 안 됩니다. 강세장에서 너무 빨리 손절하면 수익을 놓치고, 위기 국면에서 손절을 늦게 하면 큰 손실을 봅니다.</p>
+      <p>이 시스템은 체제에 따라 파라미터가 자동으로 바뀝니다. risk_on 강세장에서는 Stop Loss -10%, MDD 한도 -12%입니다. 적극적으로 투자할 수 있는 환경이니 여유를 줍니다. neutral 중립 환경에서는 Stop Loss -8%, MDD -10%입니다. risk_off 약세장에서는 Stop Loss -5%, MDD -7%로 빠르게 잘라냅니다. crisis 위기 국면에서는 Stop Loss -3%, MDD -5%입니다. 즉, 위기 때는 아주 조금만 빠져도 즉시 손절합니다.</p>
+      <p>이 적응형 파라미터가 왜 중요하냐면, 시장 환경을 무시하고 항상 같은 기준을 쓰는 것보다 리스크 대비 수익이 훨씬 좋아지기 때문입니다.</p>
+    </div>
+    <div class="transition-box">시장 체제를 알았다면 이제 503개 종목 중 어디를 살지 골라야 합니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-6</div>
+    <div class="slide-title">Phase 2 — 스마트 머니 스크리닝, 6팩터 복합 점수</div>
+    <div class="slide-script">
+      <p>스마트 머니는 기관 투자자들의 자금입니다. 이 시스템의 목표는 기관들이 주목하기 시작하는 종목을 포착하는 것입니다. 6가지 팩터로 점수를 매깁니다.</p>
+      <p>가중치 25%의 <strong>기술적 분석</strong>은 RSI, MACD, 이동평균을 씁니다. 20%의 <strong>펀더멘털</strong>은 PER, 성장률, ROE입니다. 15%의 <strong>애널리스트 의견</strong>은 증권사 컨센서스와 목표주가 상승여력입니다. 15%의 <strong>상대강도(RS)</strong>는 SPY 대비 초과수익률입니다. 이 종목이 시장 평균보다 얼마나 더 잘 나가고 있는지입니다. 15%의 <strong>거래량</strong>은 표준편차 기반으로 이상 거래량을 탐지합니다. 기관이 매집하면 거래량이 튀기 때문입니다. 마지막 10%의 <strong>13F 보유현황</strong>은 헤지펀드가 SEC에 분기별로 제출하는 포트폴리오 변동 데이터입니다.</p>
+    </div>
+    <div class="transition-box">이 6팩터를 합산해서 종목별로 점수가 나오고 Grade가 부여됩니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-7</div>
+    <div class="slide-title">Grade A~F — 등급 의미 해석</div>
+    <div class="slide-script">
+      <p>점수가 계산되면 A부터 F까지 등급이 부여됩니다. <strong>Grade A</strong>는 80점 이상, Strong Accumulation입니다. 기관이 강하게 매집하고 있다는 신호입니다. <strong>Grade B</strong>는 62점 이상, Moderate Accumulation입니다. 관심을 가져볼 구간입니다.</p>
+      <p><strong>Grade C</strong>는 48점 이상, Neutral입니다. 특별한 신호 없음입니다. <strong>Grade D</strong>는 35점 이상, Distribution입니다. 기관이 팔고 있다는 신호입니다. <strong>Grade F</strong>는 35점 미만, Capitulation, 투매 구간입니다.</p>
+      <p>보통은 Grade A나 B 종목 중에서, 전략 분류를 보면서 선택합니다. Trend 전략은 상대강도가 좋고 이동평균이 강세인 종목, Swing 전략은 RSI가 30~70 구간인 종목, Reversal 전략은 RSI가 30 미만이거나 데드크로스 직후 종목입니다. 자신의 스타일에 맞게 고르시면 됩니다.</p>
+    </div>
+    <div class="transition-box">등급이 높은 종목들을 AI가 심층 분석합니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-8</div>
+    <div class="slide-title">Phase 3 — AI Fallback Chain, 절대 멈추지 않는 분석</div>
+    <div class="slide-script">
+      <p>AI 분석 단계에서 3개 AI 모델을 순차적으로 씁니다. 1순위는 Gemini Flash입니다. 가장 저렴하고 빠릅니다. Gemini가 실패하면 2순위 GPT-4o-mini로 넘어가고, 거기서도 실패하면 3순위 Perplexity Sonar로 넘어갑니다. Perplexity는 실시간 웹 검색을 합니다.</p>
+      <p>이 구조를 Fallback Chain이라고 합니다. 어느 하나가 다운되거나 오류가 나도 다음으로 자동 전환되어 파이프라인이 절대 중단되지 않습니다. 각 종목에 대해 투자 thesis, 상승 촉매, 하락 리스크를 생성합니다. 중요한 것은 하락 리스크를 반드시 3개 이상 써야 합니다. AI가 장밋빛으로만 분석하는 것을 방지하기 위해서입니다.</p>
+      <p>비용은 얼마냐고요? 10개 종목 전체 분석에 7원에서 42원 사이입니다. 한 달로 치면 1,000~1,300원 수준입니다. AI 분석을 사람이 하면 수백만원이 들 것을 이 비용으로 자동화합니다.</p>
+    </div>
+    <div class="transition-box">분석이 끝나면 최종 Verdict와 Action이 나옵니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-9</div>
+    <div class="slide-title">Verdict & Action — 최종 결과 해석 방법</div>
+    <div class="slide-script">
+      <p>모든 분석이 끝나면 최종 Verdict가 세 가지 중 하나로 나옵니다. <strong>GO</strong>는 체제 정상 + Gate GO + ML Bullish 세 조건이 모두 충족될 때입니다. 적극 투자 환경입니다. <strong>STOP</strong>은 체제가 crisis나 risk_off이거나, Gate가 STOP일 때입니다. 매수를 중단해야 합니다. <strong>CAUTION</strong>은 그 외의 모든 경우입니다.</p>
+      <p>그리고 각 종목의 Grade와 Verdict를 조합하면 Action이 나옵니다. Verdict GO + Grade A/B이면 BUY입니다. 가장 강한 매수 신호입니다. Verdict CAUTION + Grade A/B이면 SMALL BUY입니다. 조금만 사보는 것을 권장합니다. Verdict STOP이면 Grade에 관계없이 HOLD입니다. 시장이 위험하면 좋은 종목도 사지 않습니다.</p>
+      <p>이 표가 오늘 여러분이 가져가실 가장 실용적인 도구입니다. 복잡한 시장 분석을 이 한 장의 표로 요약할 수 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 퀴즈</div>
+      "Verdict가 STOP인데 Grade A 종목이 있습니다. 사야 합니까, 말아야 합니까? — 정답은 HOLD, 사지 않습니다. 아무리 좋은 종목도 시장이 위기 국면이면 사지 않는 것이 원칙입니다."
+    </div>
+    <div class="transition-box">이 결과를 어디서 확인하는지, 대시보드를 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-10</div>
+    <div class="slide-title">대시보드 13개 페이지 — 한 화면에서 모든 것을</div>
+    <div class="slide-script">
+      <p>대시보드는 13개 페이지로 구성됩니다. 가장 중요한 것부터 말씀드리겠습니다.</p>
+      <p><strong>Overview 페이지</strong>는 시작점입니다. 오늘의 Verdict 색상, 현재 체제, Top 5 종목, 리스크 알림이 한눈에 보입니다. <strong>Market Regime 페이지</strong>는 5센서의 현재 상태를 바 차트로 보여줍니다. 빨간 센서가 3개 이상이면 시장 위험 신호입니다. <strong>Top Picks 페이지</strong>에서는 상위 20개 종목의 Grade, Score, Action을 표로 볼 수 있습니다. <strong>AI Analysis 페이지</strong>에서는 각 종목의 AI 투자 thesis와 상승 촉매, 하락 리스크를 읽을 수 있습니다.</p>
+      <p>그 외에 Index Forecast, ML Rankings, Performance, Graph, AI Builder, Board, Download, API Costs 페이지가 있습니다. 오늘 실습 시간에 같이 들어가 보겠습니다.</p>
+    </div>
+    <div class="transition-box">이 시스템이 어디서 실행되고 어디서 보여주는지, 운영 구조를 마지막으로 설명드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 5-11</div>
+    <div class="slide-title">운영 구조 — 맥북은 분석, NAS는 서빙</div>
+    <div class="slide-script">
+      <p>이 시스템은 두 개의 기기에서 역할을 나눠 운영됩니다. <strong>맥북</strong>은 분석 전용입니다. Python 환경, 모든 API 키, 파이프라인 실행이 여기서 이루어집니다. 평일 새벽 7시에 launchd가 자동으로 실행하고 결과를 SQLite 데이터베이스에 저장합니다.</p>
+      <p><strong>Synology NAS</strong>는 서빙 전용입니다. Docker로 Next.js 대시보드를 실행합니다. 분석 결과는 Tailscale SSH로 rsync되어 NAS로 전송됩니다. NAS는 24시간 켜져 있으니 언제든지 대시보드에 접속할 수 있습니다.</p>
+      <p>중요한 보안 원칙이 있습니다. API 키는 맥북에만 있습니다. NAS로 절대 복사하지 않습니다. NAS가 해킹되더라도 API 키가 노출되지 않습니다. 코드 변경이 있을 때만 GitHub Actions가 동작해서 Docker 이미지를 업데이트합니다. 데이터 변경은 rsync만으로 처리합니다.</p>
+    </div>
+    <div class="transition-box">이제 이 시스템을 실제로 어떻게 쓰는지, Claude Code 활용법으로 넘어가겠습니다.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6 -->
+<!-- ============================================================ -->
+<div class="section-block sec6" id="sec6">
+  <div class="section-header">
+    <div class="sec-label">Section 6</div>
+    <h2>Claude Code 활용법</h2>
+    <div class="section-meta">
+      <span>⏱ 30분</span>
+      <span>💡 실전 사용법 + 5분 루틴 정착</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-1</div>
+    <div class="slide-title">기본 실행 3단계 — 이것만 외우면 됩니다</div>
+    <div class="slide-script">
+      <p>us-stock 시스템을 실행하는 방법은 딱 세 줄입니다. 화면을 보시면서 따라오십시오.</p>
+      <p>첫 번째, <code>source .venv/bin/activate</code> — Python 가상환경을 켭니다. 반드시 먼저 해야 합니다. 두 번째, <code>python scripts/run_integrated_analysis.py</code> — 전체 파이프라인을 실행합니다. Phase 0부터 3까지 순서대로 실행되고 약 5~15분 걸립니다. 세 번째, <code>cd frontend && npm run dev</code> — 대시보드 서버를 켭니다. 브라우저에서 localhost:3000으로 접속하면 됩니다.</p>
+      <p>실제로는 두 번째 단계가 평일 새벽 7시에 자동으로 실행됩니다. 아침에 일어나서 세 번째 명령만 치면 바로 오늘 결과를 볼 수 있습니다. 마지막 자동 실행 상태가 궁금하면 <code>python scripts/run_daily_scheduler.py --status</code>로 확인할 수 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "혹시 지금 노트북 가져오신 분들은 저와 같이 따라해 보시겠습니까? — 준비가 안 되신 분들은 오늘 집에 가서 먼저 GitHub에서 소스코드를 받으시면 됩니다. 접속 주소를 채팅창에 올리겠습니다."
+    </div>
+    <div class="transition-box">실행이 되면 대시보드에서 어떻게 5분 안에 투자 결정을 내리는지 알려드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-2</div>
+    <div class="slide-title">오늘 투자 결정 5분 루틴</div>
+    <div class="slide-script">
+      <p>저는 매일 아침 이 5단계를 5분 안에 합니다. 여러분도 똑같이 하시면 됩니다.</p>
+      <p>Step 1 — Overview 페이지를 엽니다. Verdict 배지 색상을 봅니다. 초록색 GO면 오늘 매수할 수 있는 날입니다. 빨간색 STOP이면 오늘은 관망하는 날입니다. Step 2 — Market Regime 페이지에서 5센서 상태를 확인합니다. 빨간 센서가 3개 이상이면 아무리 GO여도 조심합니다. Step 3 — Top Picks 페이지에서 BUY, SMALL BUY 종목 목록을 확인합니다. Grade A, B 종목을 우선 봅니다.</p>
+      <p>Step 4 — AI Analysis 페이지에서 관심 종목의 투자 thesis를 읽습니다. 상승 촉매가 2개 이상이고 하락 리스크가 낮으면 긍정적 신호입니다. Step 5 — Index Forecast 페이지에서 SPY, QQQ 5일 방향과 신뢰도를 봅니다. 신뢰도 70% 이상 녹색이면 고신뢰입니다. 이 5단계를 매일 아침 반복하면 시장 감이 빠르게 생깁니다.</p>
+    </div>
+    <div class="transition-box">그런데 이 시스템을 쓰다가 뭔가 바꾸고 싶을 때, Claude Code를 어떻게 쓰면 되는지 보여드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-3</div>
+    <div class="slide-title">Claude Code 직접 대화로 수정 — 코드를 몰라도 됩니다</div>
+    <div class="slide-script">
+      <p>이 시스템의 어떤 부분이든 Claude Code에게 한국어로 말하면 바꿀 수 있습니다. 코드를 전혀 몰라도 됩니다. 몇 가지 예를 보여드리겠습니다.</p>
+      <p>"RSI 과매도 기준을 30에서 25로 낮춰줘" — Claude Code가 technical_indicators.py 파일을 열고 해당 값을 찾아서 바꾸고 저장합니다. "VIX 센서 가중치를 30%에서 35%로 올려줘" — market_regime.py를 열고 가중치 값을 바꿉니다. "대시보드 Overview 페이지에 공포탐욕지수 수치를 추가해줘" — 프론트엔드 컴포넌트를 열고 UI를 수정합니다.</p>
+      <p>중요한 팁 하나 드립니다. 요청은 구체적으로 하셔야 합니다. "<strong>RSI 기간을 14에서 21로 바꿔줘</strong>"는 좋은 요청입니다. "좀 더 좋게 만들어줘"는 Claude Code도 어떻게 해야 할지 모릅니다. 무엇을 어떻게 바꾸고 싶은지 명확하게 말씀하시면 됩니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 청중 참여</div>
+      "여러분이라면 이 시스템에 어떤 기능을 추가하고 싶습니까? — 채팅창에 아이디어를 써주십시오. 제가 실시간으로 Claude Code에게 요청해 보겠습니다."
+    </div>
+    <div class="transition-box">더 복잡한 작업은 AI Builder 에이전트 팀을 씁니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-4</div>
+    <div class="slide-title">AI Builder 에이전트 팀 — 대시보드에서 웹으로 실행</div>
+    <div class="slide-script">
+      <p>대시보드의 /ai-builder 페이지에 가면 에이전트 팀을 웹 브라우저에서 바로 실행할 수 있습니다. 터미널을 열지 않아도 됩니다.</p>
+      <p><strong>service-evolver</strong> 에이전트는 가장 중요합니다. 매일 시스템을 1가지씩 자동으로 개선합니다. 현재 상태를 인지하고, 최신 트렌드를 리서치하고, 개선이 필요한 부분을 찾고, 코드를 구현하고, 검증하고, 문서화까지 합니다. 이 7단계를 매일 반복합니다.</p>
+      <p><strong>perf-lead</strong>는 수익률이 SPY에 뒤처질 때 씁니다. 샤프비율, 알파를 개선하는 방법을 찾아줍니다. <strong>research-lead</strong>는 최신 퀀트 논문을 읽고 새로운 팩터를 발굴합니다. 이 에이전트들이 일하는 동안 여러분은 커피 한 잔 마시면 됩니다.</p>
+    </div>
+    <div class="transition-box">실제 시나리오로 종합해 보겠습니다. "AAPL 지금 살까?"</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-5</div>
+    <div class="slide-title">실전 시나리오 — "AAPL 지금 살까?"</div>
+    <div class="slide-script">
+      <p>여러분이 AAPL을 사려고 합니다. 이 시스템을 쓰면 어떻게 결정하는지 단계별로 보여드리겠습니다.</p>
+      <p>먼저 대시보드에서 확인합니다. Overview에서 Verdict = GO 확인. 시장 환경이 좋습니다. Top Picks에서 AAPL을 검색합니다. Grade B, Action = BUY가 나왔습니다. AI Analysis에서 AAPL을 클릭합니다. 상승 촉매 3개 — 아이폰 16 수요 회복, AI 기능 업그레이드, 서비스 매출 성장. 하락 리스크 1개 — 중국 시장 규제. Index Forecast에서 SPY 5일 BULLISH 71%. 고신뢰 신호입니다.</p>
+      <p>그 다음 Claude Code에게 추가로 물어봅니다. "AAPL의 현재 RSI와 이동평균 상태를 알려줘." "AAPL과 같은 IT 섹터에서 Grade A 종목이 더 있어?" "최근 분기 13F에서 AAPL 기관 보유 변동을 알려줘." 이 답변들을 종합해서 최종 판단을 내립니다. 시스템은 참고 도구입니다. <strong>최종 결정은 반드시 여러분이</strong> 하십시오.</p>
+    </div>
+    <div class="transition-box">이 모든 것을 쓰면서 비용이 얼마나 나오는지 확인하는 방법도 알려드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-6</div>
+    <div class="slide-title">API 비용 관리 — 하루 42원 이하로 유지하는 법</div>
+    <div class="slide-script">
+      <p>AI 분석을 매일 쓰면 비용이 걱정되시는 분들이 있습니다. 실제 데이터를 보여드리겠습니다.</p>
+      <p>Gemini Flash가 1순위입니다. 입력 토큰 100만 개당 $0.10, 출력 100만 개당 $0.40입니다. GPT-4o-mini는 입력 $0.15, 출력 $0.60입니다. 이 비용으로 10개 종목을 분석하면 하루 7원에서 42원이 나옵니다. 한 달 1,000~1,300원 수준입니다.</p>
+      <p>비용을 더 줄이려면 Top 20 종목만 AI 분석하시면 됩니다. 비용이 90% 이상 절감됩니다. 대시보드의 /costs 페이지에서 일별, 월별 비용을 추적할 수 있습니다. 시스템 자체에 일일 예산 한도 $0.20이 설정되어 있어서 그 이상 쓰이지 않도록 자동으로 제한됩니다.</p>
+    </div>
+    <div class="transition-box">자주 쓰는 Claude Code 프롬프트를 모아서 드리겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-7</div>
+    <div class="slide-title">자주 쓰는 프롬프트 모음 — 복사해서 바로 쓰세요</div>
+    <div class="slide-script">
+      <p>오늘 가져가실 실용적인 자료입니다. 강의 자료 PDF에 이 내용이 포함되어 있습니다.</p>
+      <p>오늘 결과 요약: "오늘 Verdict가 뭐야? BUY 종목 Top 3 알려줘." 특정 종목 심층 분석: "NVDA 현재 Grade와 6팩터 점수 분해 알려줘." 시스템 상태 확인: "마지막 파이프라인 실행 성공했어? 에러 있으면 로그 보여줘." 파라미터 수정: "스마트 머니 스크리닝에서 기술적 분석 가중치를 25%에서 30%로 바꿔줘." 대시보드 기능 추가: "Top Picks 페이지에 섹터별 필터 버튼 추가해줘." 알림 설정: "Verdict가 STOP으로 바뀌면 텔레그램으로 즉시 알려줘."</p>
+      <p>이 프롬프트들을 기반으로 여러분만의 프롬프트를 만들어 가시면 됩니다. 처음에는 이 형식을 그대로 쓰시다가, 익숙해지면 여러분이 원하는 것을 더 구체적으로 표현하게 됩니다.</p>
+    </div>
+    <div class="transition-box">마지막으로, 이 모든 것을 지속하기 위한 일일 루틴을 정리하겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-8</div>
+    <div class="slide-title">일일 5분 루틴 + 주간·월간 관리</div>
+    <div class="slide-script">
+      <p>지속 가능한 투자 시스템의 핵심은 루틴입니다. 매일 하는 5분이 일년이 지나면 엄청난 차이를 만듭니다.</p>
+      <p>매일 아침 6시에서 9시 사이, 대시보드에서 확인합니다. exit code = 0, 모든 Step [OK] 확인. 체제 변화 모니터링. Top 10 안정성 — 전일 대비 급변 여부. API 비용 하루 $0.05 이하인지. 이 네 가지가 이상 없으면 OK입니다.</p>
+      <p>주간으로는 월요일마다 IndexPredictor를 수동으로 재학습합니다. 지난주 예측이 얼마나 맞았는지 확인합니다. 월간으로는 S&P 500 데이터 전체를 갱신하고, walk-forward 검증으로 시스템 성능을 점검합니다. 이 루틴만 지키시면 시스템이 항상 최신 상태로 유지됩니다.</p>
+    </div>
+    <div class="transition-box">마지막 슬라이드입니다. 오늘 강의 전체를 한 장으로 정리하겠습니다.</div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 6-9</div>
+    <div class="slide-title">마무리 — 오늘 배운 것, 내일 할 것</div>
+    <div class="slide-script">
+      <p>오늘 150분 동안 정말 많은 내용을 다뤘습니다. 한 장으로 정리해 드리겠습니다.</p>
+      <p>기초 파트에서는 이것을 가져가십시오. 미국주식은 구조적 우위 + 달러 자산입니다. Yield Curve와 High Yield Spread가 시장의 체온계입니다. PER과 Forward EPS 두 숫자로 밸류에이션 80%가 판단됩니다. 골든크로스 + RSI가 입문자의 최고 도구입니다. Trailing Stop과 현금 15%는 반드시 지킵니다.</p>
+      <p>시스템 파트에서는 이것을 가져가십시오. 데이터 수집 → 체제 감지 → 스크리닝 → AI 분석, 4단계 파이프라인입니다. 5센서 합의 + Grade A/B + GO Verdict가 가장 강한 매수 신호입니다. Claude Code에게 한국어로 말하면 코드 없이 시스템을 바꿀 수 있습니다. 하루 5분 루틴이 1년 후 차이를 만듭니다.</p>
+      <p>오늘 집에 가셔서 할 일을 드립니다. GitHub에서 소스코드를 받으십시오. Claude Code와 Obsidian을 설치하십시오. FRED 사이트에 들어가서 Yield Curve를 한번 보십시오. 그리고 내일 아침 대시보드를 켜십시오. 질문이 있으시면 frindlelab@gmail.com이나 유튜브 프린들tv 댓글로 주시면 됩니다. 오늘 함께 해주셔서 감사합니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 마무리 Q&A</div>
+      "지금까지 강의 들으시면서 가장 궁금하셨던 것, 한 분씩만 여쭤보겠습니다. — 채팅창에 질문 올려주시면 제가 하나씩 답변 드리겠습니다. 시간이 허락하는 한 최대한 답변 드리겠습니다."
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7 -->
+<!-- ============================================================ -->
+<div class="section-block sec7" id="sec7">
+  <div class="section-header">
+    <div class="sec-label">Section 7</div>
+    <h2>참고 자료 — 네트워크 · OS · WEB 심화</h2>
+    <div class="section-meta">
+      <span>⏱ 시간 여유 시 또는 Q&A 대응용</span>
+      <span>💡 IT 개념 심화 질문 대응 레퍼런스</span>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 7-1</div>
+    <div class="slide-title">네트워크 핵심 — L2·L3·L4 · Encapsulation · TCP vs UDP</div>
+    <div class="slide-script">
+      <p>네트워크 계층별 식별자를 정리합니다. L2 계층에서는 MAC 주소로 NIC, 즉 네트워크 카드를 식별합니다. 48비트 물리 주소이며 같은 네트워크 안에서 통신할 때 씁니다. L3 계층에서는 IP 주소로 호스트, 즉 컴퓨터를 식별합니다. 라우터가 목적지를 찾을 때 씁니다. L4 계층에서는 포트 번호로 서비스를 식별합니다. HTTP는 80번, HTTPS는 443번, SSH는 22번입니다.</p>
+      <p>Encapsulation은 데이터가 전송될 때 각 계층이 헤더를 추가하는 과정입니다. Stream에서 시작해서 L4가 TCP/UDP 헤더를 붙여 Segment, L3가 IP 헤더를 붙여 Packet, L2가 MAC 헤더를 붙여 Frame이 됩니다. 수신 쪽에서는 반대로 헤더를 벗겨냅니다.</p>
+      <p>TCP는 연결 지향 프로토콜입니다. 3-way handshake로 연결을 맺고 순서를 보장합니다. HTTP, 파일 전송에 씁니다. UDP는 비연결 프로토콜입니다. 보장 없이 빠르게 전송합니다. DNS 조회, 스트리밍, 게임에 씁니다. 신뢰성이 필요하면 TCP, 속도가 우선이면 UDP입니다.</p>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 7-2</div>
+    <div class="slide-title">OS 심화 — 메모리 레이아웃 · Compile 과정 · 프로세스 생성</div>
+    <div class="slide-script">
+      <p>프로세스의 메모리는 네 영역으로 나뉩니다. CODE 영역은 실행 코드를 저장합니다. 읽기 전용입니다. DATA 영역은 전역 변수와 static 변수를 저장합니다. HEAP은 malloc 같은 동적 할당 메모리이며 위 방향으로 자랍니다. STACK은 함수 호출과 지역 변수이며 아래 방향으로 자랍니다. HEAP과 STACK이 서로를 향해 자라다가 만나면 메모리 오류가 납니다.</p>
+      <p>Compile 과정은 5단계입니다. .c 소스파일에서 시작해 Preprocessor가 #include와 #define을 처리하고, Compiler가 어셈블리로 변환하고, Assembler가 오브젝트 파일을 만들고, Linker가 라이브러리와 결합해서 최종 실행 파일이 됩니다. Python이나 JavaScript는 인터프리터 방식으로 이 과정 없이 바로 실행합니다.</p>
+      <p>프로세스 생성은 fork()와 exec() 두 단계입니다. fork()는 현재 프로세스를 복사해서 자식 프로세스를 만듭니다. exec()는 자식 프로세스를 새 프로그램으로 교체합니다. 여러분이 터미널에서 python을 실행할 때 이 과정이 일어납니다. 모든 프로세스는 이 방식으로 생성됩니다.</p>
+    </div>
+  </div>
+
+  <div class="slide-card">
+    <div class="slide-num">Slide 7-3</div>
+    <div class="slide-title">WEB &amp; Cloud 심화 — REST API · Cookie/Session · K8s · CI/CD</div>
+    <div class="slide-script">
+      <p>REST API의 핵심 원칙을 정리합니다. URI는 자원을 명사로 표현합니다. GET /users/1은 1번 사용자 조회입니다. HTTP Method는 행위를 동사로 표현합니다. GET 조회, POST 생성, PUT 수정, DELETE 삭제입니다. 무상태 원칙은 요청마다 독립적이어야 한다는 뜻입니다. 서버가 이전 요청을 기억하지 않습니다.</p>
+      <p>쿠키는 상태를 클라이언트 브라우저에 저장합니다. 세션은 상태를 서버에 저장하고 세션 ID만 쿠키로 전달합니다. 로그인 상태 유지 방식의 차이입니다. 보안 측면에서 세션이 더 안전하지만 서버 메모리를 씁니다.</p>
+      <p>Kubernetes는 Docker 컨테이너들을 대규모로 관리하는 시스템입니다. Pod가 컨테이너를 담는 최소 단위입니다. Node는 Pod들이 실행되는 서버입니다. Cluster는 Node들의 집합입니다. AWS EKS, Google GKE, Azure AKS가 모두 K8s 기반입니다. CI/CD는 코드를 push하면 자동으로 Build, Test, Deploy까지 실행하는 자동화 파이프라인입니다. us-stock의 Synology 배포도 GitHub Actions CI/CD로 자동화되어 있습니다.</p>
+    </div>
+    <div class="engage-box">
+      <div class="engage-label">💬 활용 팁</div>
+      이 슬라이드는 강의 중 IT 심화 질문이 나왔을 때 대응용입니다. 시간이 남을 경우 "더 궁금하신 분들을 위해 참고 자료가 있습니다"로 연결하십시오.
+    </div>
+  </div>
+</div>
+
+<!-- 인쇄 버튼 -->
+<button class="print-btn" onclick="window.print()">인쇄 / PDF 저장</button>
+
+<script>
+  function jump(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+</script>
+</body>
+</html>

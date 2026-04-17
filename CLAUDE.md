@@ -221,7 +221,7 @@ cd frontend && npm run dev
 # Open http://localhost:3000
 
 # Legacy static dashboard (archived)
-cd archive/legacy-dashboard && python3 -m http.server 8889
+cd .archive/legacy-dashboard && python3 -m http.server 8889
 ```
 
 Data files synced from `output/` to `frontend/public/data/` by pipeline.

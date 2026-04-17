@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI시대의 미국주식 투자 — 3시간 특강</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f9fafb;color:#111827}
+#app{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-width:240px;height:100vh;background:#111827;color:#f9fafb;display:flex;flex-direction:column;overflow:hidden}
+.sb-header{padding:20px 16px 14px;border-bottom:1px solid #1f2937}
+.sb-eyebrow{font-size:10px;font-weight:700;letter-spacing:1px;color:#6b7280;text-transform:uppercase;margin-bottom:4px}
+.sb-title{font-size:13px;font-weight:700;color:#f9fafb;line-height:1.4}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0}
+.sb-nav::-webkit-scrollbar{width:3px}
+.sb-nav::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
+.sb-sec{width:100%;text-align:left;padding:9px 16px;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:12px;display:flex;align-items:center;gap:8px;transition:background .15s,color .15s}
+.sb-sec:hover,.sb-sec.active{background:#1f2937;color:#f9fafb}
+.sb-dot{width:8px;height:8px;border-radius:50%;border:2px solid;flex-shrink:0;transition:background .15s}
+.sb-sec.active .sb-dot{background:currentColor}
+.sb-num{font-size:10px;opacity:.4;min-width:14px}
+.sb-name{font-size:12px;font-weight:600;flex:1;line-height:1.3}
+.sb-cnt{font-size:10px;opacity:.35}
+.sb-footer{padding:12px 16px;border-top:1px solid #1f2937}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:5px}
+.prog-bar{height:3px;background:#374151;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s}
+.kbd-hint{font-size:10px;color:#4b5563;margin-top:7px;text-align:center}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+.top-bar{height:52px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 24px;gap:10px;flex-shrink:0}
+.sec-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.top-title{font-size:14px;font-weight:600;color:#111827;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-cnt{font-size:12px;color:#9ca3af;white-space:nowrap}
+.slide-area{flex:1;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:28px 24px}
+.slide-area::-webkit-scrollbar{width:5px}
+.slide-area::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
+.slide-card{width:100%;max-width:800px;background:#fff;border-radius:10px;border:1px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,.07);padding:36px 44px;animation:si .18s ease}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.bot-nav{height:58px;background:#fff;border-top:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.nav-btn{padding:8px 18px;border-radius:7px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#374151;transition:all .15s}
+.nav-btn:hover{background:#f3f4f6}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.nav-btn.pri{background:#111827;color:#fff;border-color:#111827}
+.nav-btn.pri:hover{background:#1f2937}
+.dots{display:flex;gap:4px;align-items:center}
+.d{width:5px;height:5px;border-radius:50%;background:#d1d5db;transition:all .2s}
+.d.on{width:16px;border-radius:3px}
+
+/* ── SLIDE CONTENT STYLES ── */
+.s-eye{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.s-title{font-size:26px;font-weight:800;color:#111827;margin-bottom:4px;line-height:1.3}
+.s-sub{font-size:14px;color:#6b7280;margin-bottom:24px;line-height:1.5}
+.s-div{height:1px;background:#f3f4f6;margin:22px 0}
+
+.cover-wrap{text-align:center;padding:16px 0 8px}
+.cover-main{font-size:38px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.cover-desc{font-size:18px;color:#6b7280;margin-bottom:28px}
+.cover-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.cv-stat{text-align:center}
+.cv-val{font-size:20px;font-weight:800}
+.cv-key{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.icard{background:#f9fafb;border:1px solid #f3f4f6;border-radius:8px;padding:14px}
+.icard-t{font-size:12px;font-weight:700;color:#374151;margin-bottom:7px}
+.icard-b{font-size:12px;color:#6b7280;line-height:1.6}
+
+.hl{border-left:4px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+.hl p{font-size:14px;line-height:1.6;color:#374151}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:8px 10px;text-align:left;background:#f9fafb;border-bottom:2px solid #e5e7eb;font-weight:700;color:#374151}
+.tbl td{padding:8px 10px;border-bottom:1px solid #f3f4f6;color:#374151}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#fafafa}
+
+.blist{list-style:none}
+.blist li{padding:5px 0 5px 16px;position:relative;font-size:13px;color:#374151;line-height:1.5}
+.blist li::before{content:"▸";position:absolute;left:0;color:#9ca3af}
+.blist li strong{color:#111827}
+
+.code-box{background:#1e293b;color:#e2e8f0;padding:14px 18px;border-radius:8px;font-family:'JetBrains Mono',Menlo,monospace;font-size:12px;line-height:1.6;margin:10px 0;overflow-x:auto}
+.cc{color:#64748b}
+.cm{color:#7dd3fc}
+
+/* ── ARCHITECTURE DIAGRAM (drawio colors) ── */
+.arch{max-width:560px;margin:0 auto}
+.arch-src{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px}
+.arch-src span{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;background:#dbeafe;border:1px solid #93c5fd;color:#1d4ed8}
+.arch-arr{text-align:center;color:#9ca3af;font-size:16px;line-height:1.7}
+.arch-ph{padding:12px 16px;border-radius:8px;border-left:5px solid;margin:3px 0;display:flex;align-items:center;gap:12px}
+.ph-lbl{font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;min-width:58px;letter-spacing:.4px}
+.ph-info .ph-t{font-size:13px;font-weight:700;color:#111827;margin-bottom:2px}
+.ph-info .ph-d{font-size:11px;color:#6b7280}
+.p1{background:#eff6ff;border-color:#6c8ebf}
+.p2{background:#f0fdf4;border-color:#82b366}
+.p3{background:#fff7ed;border-color:#ef6c00}
+.p4{background:#fef2f2;border-color:#c62828}
+.p5{background:#f0fdfa;border-color:#00838f}
+.pdash{background:#f5f3ff;border-color:#7c4dff}
+.pdeploy{background:#f0fdf4;border-color:#2e7d32}
+
+/* ── 5-SENSOR DIAGRAM ── */
+.sns-row{display:flex;gap:7px;margin-bottom:14px}
+.sns-c{flex:1;padding:11px 8px;border-radius:8px;border:2px solid;text-align:center}
+.sns-pct{font-size:18px;font-weight:800;margin-bottom:1px}
+.sns-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.sns-desc{font-size:10px;color:#6b7280;margin-bottom:3px}
+.sns-src{font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;display:inline-block}
+.sv{border-color:#ef4444;background:#fef2f2}.sv .sns-pct{color:#dc2626}.sv .sns-src{background:#fee2e2;color:#b91c1c}
+.st{border-color:#3b82f6;background:#eff6ff}.st .sns-pct{color:#2563eb}.st .sns-src{background:#dbeafe;color:#1d4ed8}
+.sb2{border-color:#10b981;background:#ecfdf5}.sb2 .sns-pct{color:#059669}.sb2 .sns-src{background:#d1fae5;color:#065f46}
+.sc{border-color:#f59e0b;background:#fffbeb}.sc .sns-pct{color:#d97706}.sc .sns-src{background:#fef3c7;color:#92400e}
+.sy{border-color:#8b5cf6;background:#f5f3ff}.sy .sns-pct{color:#7c3aed}.sy .sns-src{background:#ede9fe;color:#5b21b6}
+.reg-row{display:flex;gap:7px}
+.reg-c{flex:1;padding:9px;border-radius:7px;text-align:center;border:2px solid}
+.reg-name{font-size:11px;font-weight:700;margin-bottom:1px}
+.reg-range{font-size:10px;color:#6b7280}
+.ro{background:#f0fdf4;border-color:#22c55e;color:#16a34a}
+.rn{background:#f0f9ff;border-color:#38bdf8;color:#0284c7}
+.roff{background:#fffbeb;border-color:#fbbf24;color:#d97706}
+.rc{background:#fef2f2;border-color:#ef4444;color:#dc2626}
+
+/* ── 6-FACTOR DIAGRAM ── */
+.fct-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px}
+.fct-c{padding:11px;border-radius:8px;border:1px solid;text-align:center}
+.fct-pct{font-size:17px;font-weight:800;margin-bottom:2px}
+.fct-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.fct-met{font-size:10px;color:#6b7280}
+.ft{background:#eff6ff;border-color:#93c5fd;color:#2563eb}
+.ff{background:#fefce8;border-color:#fde047;color:#ca8a04}
+.fa{background:#fdf4ff;border-color:#e879f9;color:#a21caf}
+.fr{background:#ecfdf5;border-color:#86efac;color:#16a34a}
+.fv{background:#fff7ed;border-color:#fdba74;color:#ea580c}
+.f3{background:#faf5ff;border-color:#c4b5fd;color:#7c3aed}
+
+/* ── AI INVESTMENT FLOW ── */
+.ai-trig{text-align:center;margin-bottom:12px}
+.ai-trig-box{display:inline-block;padding:10px 24px;border-radius:8px;background:#1e293b;color:#f8fafc;font-weight:700;font-size:14px}
+.ai-trig-box span{display:block;font-size:11px;font-weight:400;color:#94a3b8;margin-top:2px}
+.ai-chain{display:flex;align-items:stretch;gap:0}
+.ai-step{flex:1;padding:14px 10px;border-radius:8px;border:2px solid;text-align:center}
+.ai-arr{display:flex;align-items:center;font-size:22px;color:#9ca3af;padding:0 3px}
+.ai-icon{font-size:22px;margin-bottom:5px}
+.ai-sname{font-size:13px;font-weight:800;margin-bottom:3px}
+.ai-tick{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-bottom:5px;display:inline-block}
+.ai-sdesc{font-size:10px;color:#6b7280;line-height:1.4}
+.adc{background:#eff6ff;border-color:#6c8ebf}.adc .ai-sname{color:#1d4ed8}.adc .ai-tick{background:#dbeafe;color:#1d4ed8}
+.asc{background:#f5f3ff;border-color:#a78bfa}.asc .ai-sname{color:#7c3aed}.asc .ai-tick{background:#ede9fe;color:#7c3aed}
+.amc{background:#ecfdf5;border-color:#6ee7b7}.amc .ai-sname{color:#059669}.amc .ai-tick{background:#d1fae5;color:#065f46}
+.asvc{background:#fff7ed;border-color:#fdba74}.asvc .ai-sname{color:#c2410c}.asvc .ai-tick{background:#fed7aa;color:#c2410c}
+
+/* ── IT STACK ── */
+.it-stack{display:flex;flex-direction:column;gap:6px;max-width:520px;margin:0 auto}
+.it-lay{padding:9px 14px;border-radius:6px;border-left:4px solid;display:flex;align-items:center;gap:10px}
+.it-name{font-size:12px;font-weight:700;min-width:90px}
+.it-desc{font-size:11px;color:#6b7280;flex:1}
+.it-ex{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+
+/* ── VERDICT MATRIX ── */
+.vmat{margin-top:12px}
+.vmat table{width:100%;border-collapse:collapse}
+.vmat th{padding:9px 12px;font-size:12px;font-weight:700;background:#f9fafb;border:1px solid #e5e7eb}
+.vmat td{padding:9px 12px;text-align:center;border:1px solid #e5e7eb;font-size:12px}
+.vgo{background:#f0fdf4}.vcau{background:#fffbeb}.vstop{background:#fef2f2}
+.ab{background:#dcfce7;color:#15803d;border-radius:5px;padding:3px 9px;font-weight:700;display:inline-block}
+.asb{background:#fef9c3;color:#854d0e;border-radius:5px;padding:3px 9px;font-weight:700;display:inline-block}
+.aw{background:#f1f5f9;color:#475569;border-radius:5px;padding:3px 9px;font-weight:600;display:inline-block}
+.ah{background:#fee2e2;color:#b91c1c;border-radius:5px;padding:3px 9px;font-weight:600;display:inline-block}
+
+/* ── GRADE CARDS ── */
+.grade-row{display:flex;gap:7px;margin-top:8px}
+.g-c2{flex:1;padding:9px;border-radius:7px;text-align:center;border:2px solid}
+.g-lt{font-size:22px;font-weight:900}
+.g-sc{font-size:10px;color:#6b7280;margin-top:1px}
+.g-nm{font-size:9px;font-weight:600;margin-top:3px}
+.ga{background:#dcfce7;border-color:#86efac;color:#15803d}
+.gb{background:#ecfdf5;border-color:#a7f3d0;color:#059669}
+.gc{background:#f0f9ff;border-color:#bae6fd;color:#0369a1}
+.gd{background:#fffbeb;border-color:#fde68a;color:#d97706}
+.gf{background:#fef2f2;border-color:#fca5a5;color:#dc2626}
+
+/* ── ROUTINE STEPS ── */
+.routine{display:flex;flex-direction:column;gap:7px}
+.r-step{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f9fafb;border-radius:8px;border:1px solid #f3f4f6}
+.r-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.r-page{font-size:13px;font-weight:700;color:#111827}
+.r-act{font-size:11px;color:#6b7280}
+.r-res{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-left:auto;white-space:nowrap}
+
+/* ── DEPLOY SPLIT ── */
+.deploy-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:0;margin:14px 0}
+.dbox{padding:14px;border-radius:8px;border:2px solid}
+.dmac{background:#eff6ff;border-color:#93c5fd}
+.dnas{background:#f0fdf4;border-color:#86efac}
+.darr{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 14px}
+.darr-icon{font-size:22px;color:#6b7280}
+.darr-lbl{font-size:9px;font-weight:700;color:#6b7280;text-align:center;line-height:1.3}
+.dbox-t{font-size:12px;font-weight:800;margin-bottom:7px}
+.dbox-b{font-size:11px;color:#6b7280;line-height:1.7}
+
+/* ── DASH PAGES GRID ── */
+.pg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pg-item{padding:9px 12px;background:#f9fafb;border:1px solid #f3f4f6;border-radius:7px}
+.pg-route{font-size:10px;font-weight:700;color:#6b7280;font-family:monospace;margin-bottom:1px}
+.pg-name{font-size:12px;font-weight:700;color:#111827;margin-bottom:1px}
+.pg-desc{font-size:11px;color:#6b7280}
+
+/* ── KERNEL DIAGRAM ── */
+.ker-stack{display:flex;flex-direction:column;gap:5px;max-width:520px;margin:0 auto}
+.ker-lay{padding:11px 16px;border-radius:7px;font-size:13px;font-weight:700;text-align:center}
+.ker-arr{text-align:center;color:#9ca3af;font-size:13px;line-height:2}
+
+/* ── CPU DIAGRAM ── */
+.cpu-wrap{display:flex;gap:16px;align-items:center;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.cpu-box{border:2px solid;border-radius:8px;padding:12px 14px;text-align:center;min-width:150px}
+.cpu-units{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.cpu-unit{padding:8px 10px;border-radius:5px;font-size:12px;font-weight:700;border:1px solid}
+.cpu-bus{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+
+/* ── CONTEXT SWITCH DIAGRAM ── */
+.ctx-grid{display:grid;grid-template-columns:1fr 54px 1fr 54px 1fr;gap:8px;align-items:start;margin:12px 0}
+.ctx-proc,.ctx-os{border:2px solid;border-radius:8px;padding:10px;text-align:center}
+.ctx-arr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding-top:14px}
+.ctx-pcb{font-size:10px;padding:3px 8px;border-radius:4px;margin-top:4px;display:inline-block;font-weight:600}
+
+/* ── 3-TIER WEB ARCH ── */
+.web3-row{display:flex;align-items:stretch;gap:0;margin:14px 0}
+.web3-node{flex:1;border:2px solid;border-radius:8px;padding:11px 7px;text-align:center}
+.web3-mid{display:flex;align-items:center;justify-content:center;padding:0 5px;font-size:18px;color:#9ca3af}
+.web3-icon{font-size:20px;margin-bottom:4px}
+.web3-name{font-size:12px;font-weight:800;margin-bottom:2px}
+.web3-role{font-size:10px;color:#6b7280;margin-bottom:5px}
+.web3-tech{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;display:inline-block}
+
+/* ── API COST CARDS ── */
+.api-row{display:flex;gap:10px;margin-bottom:10px}
+.api-c{flex:1;padding:13px;border-radius:8px;border:2px solid;text-align:center}
+.api-name{font-size:12px;font-weight:700;margin-bottom:3px}
+.api-rank{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-bottom:7px;display:inline-block}
+.api-price{font-size:18px;font-weight:800;margin-bottom:1px}
+.api-unit{font-size:10px;color:#6b7280}
+.api-note{font-size:11px;margin-top:5px}
+.ag{background:#f0fdf4;border-color:#86efac}.ag .api-price{color:#059669}.ag .api-rank{background:#dcfce7;color:#15803d}
+.ao{background:#eff6ff;border-color:#93c5fd}.ao .api-price{color:#2563eb}.ao .api-rank{background:#dbeafe;color:#1e40af}
+.ap{background:#f5f3ff;border-color:#c4b5fd}.ap .api-price{color:#7c3aed}.ap .api-rank{background:#ede9fe;color:#5b21b6}
+</style>
+</head>
+<body>
+<div id="app">
+<aside class="sidebar">
+  <div class="sb-header">
+    <div class="sb-eyebrow">프린들 특강 2026</div>
+    <div class="sb-title">AI시대의 미국주식 투자</div>
+  </div>
+  <nav class="sb-nav" id="sb-nav"></nav>
+  <div class="sb-footer">
+    <div class="prog-row"><span id="prog-txt">1 / 37</span><span id="prog-pct">3%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:3%"></div></div>
+    <div class="kbd-hint">← → Space &nbsp;|&nbsp; 1~7 섹션</div>
+  </div>
+</aside>
+<main class="main">
+  <header class="top-bar">
+    <span class="sec-badge" id="sec-badge"></span>
+    <span class="top-title" id="top-title"></span>
+    <span class="top-cnt" id="top-cnt"></span>
+  </header>
+  <div class="slide-area">
+    <div class="slide-card" id="slide-card">
+      <div id="slide-content"></div>
+    </div>
+  </div>
+  <footer class="bot-nav">
+    <button class="nav-btn" id="prev-btn" onclick="nav(-1)">← 이전</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn pri" id="next-btn" onclick="nav(1)">다음 →</button>
+  </footer>
+</main>
+</div>
+
+<script>
+const SEC = [
+{id:1,num:"01",title:"Opening Hook",sub:"세상이 빠르게 변하고 있다",color:"#f43f5e",cl:"#fff1f2",
+slides:[
+{t:"AI시대의 미국주식 투자",html:`
+<div class="cover-wrap">
+<div class="s-eye" style="color:#f43f5e">SECTION 1 · OPENING HOOK</div>
+<div class="cover-main">AI시대의<br>미국주식 투자</div>
+<div class="cover-desc">3시간 특강 — 기초부터 Claude Code 자동 분석까지</div>
+<div class="cover-stats">
+<div class="cv-stat"><div class="cv-val" style="color:#f43f5e">3h</div><div class="cv-key">강의 시간</div></div>
+<div class="cv-stat"><div class="cv-val" style="color:#f43f5e">7</div><div class="cv-key">섹션</div></div>
+<div class="cv-stat"><div class="cv-val" style="color:#f43f5e">503</div><div class="cv-key">S&amp;P 500 종목</div></div>
+<div class="cv-stat"><div class="cv-val" style="color:#f43f5e">49</div><div class="cv-key">슬라이드</div></div>
+</div>
+<div style="margin-top:28px;font-size:13px;color:#9ca3af">프린들 투자연구소 · 미국주식 20년차 · Claude Code 에이전트 팀 운영자</div>
+</div>`},
+{t:"변화의 속도",html:`
+<div class="s-eye" style="color:#f43f5e">SECTION 1</div>
+<div class="s-title">세상이 너무 빠르게 변하고 있다</div>
+<div class="s-sub">2022년 11월 ChatGPT 등장 이후 — 모든 것이 달라졌다</div>
+<div class="grid2">
+<div class="icard" style="border-left:4px solid #ef4444">
+<div class="icard-t" style="color:#dc2626">😰 변하지 않으면</div>
+<div class="icard-b">
+• 매일 503개 종목 수동 확인 불가<br>
+• 뉴스·재무제표·차트 각각 따로 분석<br>
+• 감정(FOMO) 이 판단을 지배<br>
+• 경쟁자는 AI로 무장 중
+</div>
+</div>
+<div class="icard" style="border-left:4px solid #22c55e">
+<div class="icard-t" style="color:#16a34a">✅ AI를 도구로 쓰면</div>
+<div class="icard-b">
+• 매일 07:00 자동 분석 완료<br>
+• 파이프라인이 감정 개입 차단<br>
+• 아침 5분으로 투자 결정<br>
+• 코딩 없이 시스템 구축 가능
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#f43f5e;background:#fff1f2;margin-top:16px">
+<p><strong>핵심 메시지:</strong> AI는 일자리를 빼앗는 것이 아니라, <strong>도구를 쓸 줄 아는 사람에게 초능력</strong>을 준다.</p>
+</div>`},
+{t:"AI가 바꾼 투자 환경",html:`
+<div class="s-eye" style="color:#f43f5e">SECTION 1</div>
+<div class="s-title">AI가 바꾼 투자 환경</div>
+<div class="s-sub">2024~2026: 개인 투자자와 기관 투자자의 격차가 좁혀지고 있다</div>
+<table class="tbl">
+<tr><th>항목</th><th>AI 이전 (2022년)</th><th>AI 이후 (2026년)</th></tr>
+<tr><td>종목 분석</td><td>애널리스트 리포트, 수동 차트</td><td>AI가 503개 종목 일괄 자동 분석</td></tr>
+<tr><td>뉴스 처리</td><td>사람이 직접 읽고 판단</td><td>Gemini/GPT가 투자 thesis 자동 생성</td></tr>
+<tr><td>코딩 능력</td><td>개발자만 시스템 구축 가능</td><td>한국어 대화로 Python 시스템 수정</td></tr>
+<tr><td>분석 비용</td><td>Bloomberg Terminal ~$2,400/월</td><td>AI API ~$0.20/일 = $6/월</td></tr>
+<tr><td>실행 속도</td><td>수동 분석 = 수시간</td><td>전체 파이프라인 = 5~15분</td></tr>
+</table>
+<div class="hl" style="border-color:#f43f5e;background:#fff1f2;margin-top:16px">
+<p>지금 이 강의에서 배우는 것이 <strong>현재 가장 접근하기 쉬운 투자 엣지(Edge)</strong>다.</p>
+</div>`},
+{t:"오늘 강의 로드맵",html:`
+<div class="s-eye" style="color:#f43f5e">SECTION 1</div>
+<div class="s-title">오늘 강의 로드맵</div>
+<div class="s-sub">3시간 · 7섹션 · 49슬라이드</div>
+<table class="tbl">
+<tr><th>#</th><th>섹션</th><th>시간</th><th>핵심 질문</th></tr>
+<tr><td style="font-weight:700;color:#f43f5e">1</td><td>Opening Hook</td><td>10분</td><td>왜 지금 바뀌어야 하나?</td></tr>
+<tr><td style="font-weight:700;color:#7c3aed">2</td><td>Claude Code + Obsidian</td><td>20분</td><td>어떻게 내 삶이 바뀌었나?</td></tr>
+<tr><td style="font-weight:700;color:#0891b2">3</td><td>IT 설명 + AI 투자 흐름</td><td>25분</td><td>AI 수혜주 어떻게 찾나?</td></tr>
+<tr><td style="font-weight:700;color:#059669">4</td><td>주식 기초 설명</td><td>30분</td><td>미국주식 어떻게 분석하나?</td></tr>
+<tr><td style="font-weight:700;color:#2563eb">5</td><td>us-stock 시스템구성</td><td>30분</td><td>자동화 시스템은 어떻게 작동하나?</td></tr>
+<tr><td style="font-weight:700;color:#4338ca">6</td><td>Claude Code 활용법</td><td>25분</td><td>내가 직접 써볼 수 있나?</td></tr>
+</table>`},
+{t:"강사 소개",html:`
+<div class="s-eye" style="color:#f43f5e">SECTION 1</div>
+<div class="s-title">강사 소개 — 프린들 (Frindle)</div>
+<div class="s-sub">프린들 투자연구소 대표</div>
+<div class="grid2">
+<div>
+<ul class="blist" style="margin-bottom:16px">
+<li><strong>미국주식 투자 20년차</strong></li>
+<li><strong>프린들tv 유튜브</strong> — 112편, 구독자 4만+</li>
+<li>S&amp;P 500 전종목 <strong>자동 분석 시스템</strong> 구축·운영</li>
+<li>Claude Code <strong>에이전트 팀</strong> 기반 자가진화 투자 시스템</li>
+<li>금융 데이터 엔지니어 출신</li>
+</ul>
+<div class="hl" style="border-color:#f43f5e;background:#fff1f2">
+<p>💡 <strong>"코딩 없이도 AI 시스템을 운영할 수 있다는 것"</strong>을 직접 보여드리겠습니다.</p>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">오늘 강의 결과</div>
+<div class="icard-b">
+✅ us-stock 시스템의 원리 이해<br>
+✅ 대시보드로 투자 결정하는 법<br>
+✅ Claude Code로 시스템 개선하는 법<br>
+✅ AI 투자 흐름 분석 프레임워크<br><br>
+<strong>코딩 지식 필요 없음</strong>
+</div>
+</div>
+</div>`}
+]},
+
+{id:2,num:"02",title:"Claude Code + Obsidian",sub:"경외/영감 — 내 삶이 바뀌었다",color:"#7c3aed",cl:"#f5f3ff",
+slides:[
+{t:"내 삶이 어떻게 바뀌었나",html:`
+<div class="s-eye" style="color:#7c3aed">SECTION 2</div>
+<div class="s-title">내 삶이 어떻게 바뀌었나</div>
+<div class="s-sub">2024년 초 Claude Code를 처음 만난 이후</div>
+<div class="grid2">
+<div class="icard" style="border-top:3px solid #ef4444">
+<div class="icard-t">BEFORE — 2023년</div>
+<div class="icard-b">
+• 엑셀로 종목 정리<br>
+• 뉴스 직접 읽고 요약<br>
+• 코딩 = 개발자에게 의뢰<br>
+• 아이디어 → 실행까지 수주일<br>
+• 매일 3~4시간 리서치
+</div>
+</div>
+<div class="icard" style="border-top:3px solid #22c55e">
+<div class="icard-t">AFTER — 2026년</div>
+<div class="icard-b">
+• us-stock 시스템이 매일 자동 실행<br>
+• AI가 투자 thesis 자동 생성<br>
+• 한국어 대화로 시스템 수정<br>
+• 아이디어 → 코드까지 수분<br>
+• 아침 5분으로 투자 결정
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#7c3aed;background:#f5f3ff;margin-top:14px">
+<p>가장 큰 변화: <strong>아이디어를 가진 사람이 기술자 없이 실행할 수 있게 됐다</strong></p>
+</div>`},
+{t:"Obsidian — 두뇌 외부화",html:`
+<div class="s-eye" style="color:#7c3aed">SECTION 2</div>
+<div class="s-title">Obsidian — 두뇌 외부화</div>
+<div class="s-sub">마크다운 기반 로컬 지식 관리 도구 · 무료 · 개인 소유</div>
+<div class="grid2">
+<div>
+<div class="icard" style="margin-bottom:12px">
+<div class="icard-t">🧠 문제: 인간 뇌의 한계</div>
+<div class="icard-b">
+• 단기 기억 = 7±2 청크<br>
+• 수면 후 70% 망각<br>
+• 맥락 전환 비용 높음
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">💡 Obsidian 해결책</div>
+<div class="icard-b">
+• 모든 메모 로컬 마크다운<br>
+• 링크로 아이디어 연결<br>
+• 검색 즉시 전체 지식 탐색<br>
+• Claude Code가 직접 읽음
+</div>
+</div>
+</div>
+<div>
+<div class="icard" style="height:100%">
+<div class="icard-t">Obsidian + Claude Code 시너지</div>
+<div class="icard-b">
+<strong>1. 강의 교안 작성</strong><br>
+→ Claude Code가 Obsidian 노트를 읽고 슬라이드 자동 생성<br><br>
+<strong>2. 투자 리서치</strong><br>
+→ 종목 노트 → AI 분석 → 결과 저장<br><br>
+<strong>3. 시스템 문서화</strong><br>
+→ 아키텍처 다이어그램 + 코드 + 운영 노트 통합
+</div>
+</div>
+</div>
+</div>`},
+{t:"Claude Code — 개인 AI 개발팀",html:`
+<div class="s-eye" style="color:#7c3aed">SECTION 2</div>
+<div class="s-title">Claude Code — 개인 AI 개발팀</div>
+<div class="s-sub">터미널에서 실행하는 AI. 파일을 읽고, 코드를 수정하고, 시스템을 구축한다</div>
+<div class="grid3" style="margin-bottom:16px">
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">🔍 이해</div>
+<div class="icard-b">전체 코드베이스를<br>컨텍스트로 파악<br>수천 개 파일 동시 이해</div>
+</div>
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">✏️ 수정</div>
+<div class="icard-b">한국어 지시만으로<br>파일 직접 수정<br>변경 사항 즉시 적용</div>
+</div>
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">🤖 자동화</div>
+<div class="icard-b">에이전트 팀이<br>매일 자동으로 시스템<br>분석·개선·실행</div>
+</div>
+</div>
+<div class="hl" style="border-color:#7c3aed;background:#f5f3ff">
+<p>Claude Code는 단순 코드 도우미가 아니다 — <strong>코드베이스 전체를 이해하는 시니어 개발자</strong>가 24시간 대기 중인 것과 같다.</p>
+</div>
+<div class="code-box" style="margin-top:14px">
+<span class="cc"># 실제 사용 예시 — 코딩 지식 불필요</span><br>
+<span class="cm">"VIX 센서 가중치를 30%에서 35%로 올려줘"</span><br>
+<span class="cm">"Top Picks 페이지에 섹터 필터 버튼 추가해줘"</span><br>
+<span class="cm">"어제 자동 실행 결과 요약해줘"</span>
+</div>`},
+{t:"실제로 만든 것들",html:`
+<div class="s-eye" style="color:#7c3aed">SECTION 2</div>
+<div class="s-title">실제로 만든 것들</div>
+<div class="s-sub">Claude Code를 활용해 구축한 시스템들</div>
+<table class="tbl">
+<tr><th>시스템</th><th>설명</th><th>구축 시간</th></tr>
+<tr><td><strong>us-stock</strong></td><td>S&amp;P 500 503종목 일일 자동 분석 + 대시보드</td><td>~3개월 (지속 진화)</td></tr>
+<tr><td><strong>에이전트 팀</strong></td><td>21개 전문 AI 에이전트가 매일 자동으로 시스템 개선</td><td>~2개월</td></tr>
+<tr><td><strong>Telegram 봇</strong></td><td>Verdict STOP 시 즉시 알림 자동 발송</td><td>~2시간</td></tr>
+<tr><td><strong>강의 교안</strong></td><td>이 슬라이드 포함 전체 강의 자료 자동 생성</td><td>~4시간</td></tr>
+<tr><td><strong>book-finder</strong></td><td>만화카페 도서 위치 검색 앱 (Next.js + Supabase)</td><td>~1주일</td></tr>
+</table>
+<div class="hl" style="border-color:#7c3aed;background:#f5f3ff;margin-top:14px">
+<p>공통점: 모두 <strong>코딩 없이 한국어 대화</strong>로 요구사항 전달 → Claude Code가 구현</p>
+</div>`},
+{t:"당신도 할 수 있다",html:`
+<div class="s-eye" style="color:#7c3aed">SECTION 2</div>
+<div class="s-title">당신도 할 수 있다</div>
+<div class="s-sub">필요한 것: 호기심 + Claude Code 구독 ($20/월) + 이 강의</div>
+<div class="grid2" style="margin-bottom:16px">
+<div class="icard" style="border-left:4px solid #ef4444">
+<div class="icard-t">❌ 필요 없는 것</div>
+<div class="icard-b">• Python 코딩 실력<br>• 컴퓨터공학 학위<br>• 개발자 경험<br>• 영어 능통</div>
+</div>
+<div class="icard" style="border-left:4px solid #22c55e">
+<div class="icard-t">✅ 필요한 것</div>
+<div class="icard-b">• 원하는 것을 말할 수 있는 능력<br>• Claude Code Max 구독 ($20/월)<br>• macOS or Linux 환경<br>• 기다리는 인내심 (AI가 생각하는 동안)</div>
+</div>
+</div>
+<div class="hl" style="border-color:#7c3aed;background:#f5f3ff">
+<p>오늘 강의가 끝나면 여러분은 <strong>us-stock 대시보드를 읽고 Claude Code에게 개선을 지시할 수 있게</strong> 됩니다.</p>
+</div>`}
+]},
+
+{id:3,num:"03",title:"IT 설명 + AI 투자 흐름",sub:"OS·WEB·API 기초 + AI 투자 흐름",color:"#0891b2",cl:"#ecfeff",
+slides:[
+{t:"IT 개념 5분 정리",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">IT 개념 5분 정리</div>
+<div class="s-sub">OS에서 AI까지 — 투자자가 알아야 할 계층 구조</div>
+<div class="it-stack">
+<div class="it-lay" style="border-color:#374151;background:#f9fafb">
+  <span class="it-name" style="color:#374151">OS</span>
+  <span class="it-desc">하드웨어 추상화 · 프로그램 실행 토대</span>
+  <span class="it-ex" style="background:#f3f4f6;color:#374151">macOS · Linux · Windows</span>
+</div>
+<div class="it-lay" style="border-color:#2563eb;background:#eff6ff">
+  <span class="it-name" style="color:#2563eb">Network</span>
+  <span class="it-desc">컴퓨터 간 데이터 전송 · TCP/IP 기반</span>
+  <span class="it-ex" style="background:#dbeafe;color:#1d4ed8">인터넷 · LAN · WiFi</span>
+</div>
+<div class="it-lay" style="border-color:#0891b2;background:#ecfeff">
+  <span class="it-name" style="color:#0891b2">WEB</span>
+  <span class="it-desc">HTTP로 데이터 교환 · 브라우저 인터페이스</span>
+  <span class="it-ex" style="background:#cffafe;color:#0e7490">HTML · REST API · Next.js</span>
+</div>
+<div class="it-lay" style="border-color:#7c3aed;background:#f5f3ff">
+  <span class="it-name" style="color:#7c3aed">Cloud</span>
+  <span class="it-desc">인터넷으로 컴퓨팅 자원 임대 · 확장 무한</span>
+  <span class="it-ex" style="background:#ede9fe;color:#6d28d9">AWS · GCP · Azure</span>
+</div>
+<div class="it-lay" style="border-color:#ea580c;background:#fff7ed">
+  <span class="it-name" style="color:#ea580c">Git</span>
+  <span class="it-desc">코드 버전 관리 · 협업 · 변경 이력 추적</span>
+  <span class="it-ex" style="background:#fed7aa;color:#c2410c">GitHub · GitLab</span>
+</div>
+<div class="it-lay" style="border-color:#f43f5e;background:#fff1f2">
+  <span class="it-name" style="color:#f43f5e">AI/Claude</span>
+  <span class="it-desc">LLM이 코드·텍스트·분석을 자동 생성</span>
+  <span class="it-ex" style="background:#fecdd3;color:#be123c">Claude · GPT · Gemini</span>
+</div>
+</div>`},
+{t:"OS 커널 구조",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · OS</div>
+<div class="s-title">운영체제(OS) 커널 구조</div>
+<div class="s-sub">커널 = Process·메모리·저장장치 관리의 핵심 — 사용자는 인터페이스를 통해서만 접근</div>
+<div class="ker-stack">
+<div class="ker-lay" style="background:#f9fafb;border:2px solid #374151;color:#374151">
+  👤 사용자 프로그램 (User Space)
+</div>
+<div class="ker-arr">↕ 시스템 콜 (System Call Interface)</div>
+<div class="ker-lay" style="background:#eff6ff;border:2px solid #2563eb;color:#1d4ed8">
+  인터페이스 레이어 — 시스템 콜 핸들러
+</div>
+<div class="ker-arr">↕</div>
+<div class="ker-lay" style="background:#fef9c3;border:2px solid #ca8a04;color:#92400e">
+  커널 코어 — 프로세스 관리 · 메모리 관리 · 파일 시스템
+</div>
+<div class="ker-arr">↕ 드라이버 인터페이스</div>
+<div class="ker-lay" style="background:#f5f3ff;border:2px solid #7c3aed;color:#6d28d9">
+  드라이버 레이어 — 하드웨어 제어
+</div>
+<div class="ker-arr">↕</div>
+<div class="ker-lay" style="background:#1e293b;border:2px solid #475569;color:#f8fafc">
+  하드웨어 (CPU · RAM · 디스크 · 네트워크 카드)
+</div>
+</div>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff;margin-top:10px">
+<p>사용자 → 인터페이스 → 커널 → 드라이버 → 하드웨어. <strong>직접 접근 불가 — 인터페이스(API)를 통해서만</strong></p>
+</div>`},
+{t:"CPU + 메모리 구조",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · OS</div>
+<div class="s-title">CPU + 메모리 구조 (폰 노이만)</div>
+<div class="s-sub">CPU와 메모리 사이에 버스(데이터 통로)를 두고 데이터를 전송 — 프로그램 내장 방식</div>
+<div class="cpu-wrap">
+<div class="cpu-box" style="border-color:#2563eb;background:#eff6ff">
+  <div style="font-size:13px;font-weight:800;color:#2563eb;margin-bottom:8px">CPU</div>
+  <div class="cpu-units">
+    <div class="cpu-unit" style="background:#dbeafe;border-color:#93c5fd;color:#1d4ed8">제어장치 (CU)<br><span style="font-size:10px;font-weight:400;color:#6b7280">명령어 해석·제어</span></div>
+    <div class="cpu-unit" style="background:#fce7f3;border-color:#f9a8d4;color:#be185d">연산장치 (ALU)<br><span style="font-size:10px;font-weight:400;color:#6b7280">사칙연산·논리비교</span></div>
+    <div class="cpu-unit" style="background:#d1fae5;border-color:#6ee7b7;color:#065f46">레지스터<br><span style="font-size:10px;font-weight:400;color:#6b7280">CPU 내부 임시 저장</span></div>
+  </div>
+</div>
+<div class="cpu-bus">
+  <div style="font-size:10px;font-weight:700;color:#6b7280;margin-bottom:3px">버스</div>
+  <div style="width:4px;height:70px;background:#9ca3af;border-radius:2px"></div>
+  <div style="font-size:9px;color:#9ca3af;margin-top:3px;text-align:center">데이터<br>전달</div>
+</div>
+<div class="cpu-box" style="border-color:#059669;background:#f0fdf4">
+  <div style="font-size:13px;font-weight:800;color:#059669;margin-bottom:8px">메모리</div>
+  <div class="cpu-units">
+    <div class="cpu-unit" style="background:#dcfce7;border-color:#86efac;color:#166534">RAM<br><span style="font-size:10px;font-weight:400;color:#6b7280">실행 데이터 · 전력 OFF=소실<br>랜덤 접근 가능</span></div>
+    <div class="cpu-unit" style="background:#fef9c3;border-color:#fde047;color:#854d0e">ROM<br><span style="font-size:10px;font-weight:400;color:#6b7280">BIOS 저장 · 전력 OFF도 유지<br>쓰기 불가</span></div>
+  </div>
+</div>
+</div>`},
+{t:"Context Switching",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · OS ⭐</div>
+<div class="s-title">Context Switching</div>
+<div class="s-sub">실행 중인 프로세스를 교체하는 핵심 메커니즘 — PCB에 상태를 저장하고 복원한다</div>
+<div class="ctx-grid">
+<div class="ctx-proc" style="border-color:#2563eb;background:#eff6ff">
+  <div style="font-size:13px;font-weight:800;color:#2563eb;margin-bottom:5px">프로세스 A</div>
+  <div style="font-size:10px;color:#6b7280;margin-bottom:6px">CPU에서 실행 중</div>
+  <div class="ctx-pcb" style="background:#dbeafe;color:#1d4ed8">PCB A 저장</div>
+  <div style="font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5">레지스터 값<br>프로그램 카운터<br>→ <strong>Ready 상태로</strong></div>
+</div>
+<div class="ctx-arr">
+  <div style="font-size:14px;color:#9ca3af">→</div>
+  <div style="font-size:9px;color:#6b7280;text-align:center;line-height:1.6">①인터럽트<br>②저장</div>
+</div>
+<div class="ctx-os" style="border-color:#ea580c;background:#fff7ed">
+  <div style="font-size:13px;font-weight:800;color:#ea580c;margin-bottom:5px">운영체제</div>
+  <div style="font-size:10px;color:#6b7280;margin-bottom:6px">CPU 스케줄러</div>
+  <div style="font-size:11px;line-height:1.8;color:#374151">
+    ① A 상태 → PCB A<br>
+    ② B 선택 (스케줄링)<br>
+    ③ PCB B → B 복원
+  </div>
+</div>
+<div class="ctx-arr">
+  <div style="font-size:14px;color:#9ca3af">→</div>
+  <div style="font-size:9px;color:#6b7280;text-align:center;line-height:1.6">③복원<br>④재개</div>
+</div>
+<div class="ctx-proc" style="border-color:#059669;background:#f0fdf4">
+  <div style="font-size:13px;font-weight:800;color:#059669;margin-bottom:5px">프로세스 B</div>
+  <div style="font-size:10px;color:#6b7280;margin-bottom:6px">CPU 할당 받음</div>
+  <div class="ctx-pcb" style="background:#dcfce7;color:#166534">PCB B 복원</div>
+  <div style="font-size:10px;color:#6b7280;margin-top:5px;line-height:1.5">레지스터 복원<br>프로그램 카운터<br>→ <strong>Running 상태로</strong></div>
+</div>
+</div>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff;margin-top:6px">
+<p>PCB = 프로세스 ID · 레지스터 · PC · 메모리 정보 · 스케줄링 정보. <strong>멀티태스킹의 핵심 원리</strong></p>
+</div>`},
+{t:"프로세스 상태 머신",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · OS</div>
+<div class="s-title">프로세스 상태 머신</div>
+<div class="s-sub">프로세스는 5가지 상태를 순환한다. CPU 스케줄러가 READY ↔ RUNNING을 결정</div>
+<div style="display:grid;grid-template-columns:80px 38px 80px 54px 94px 38px 106px;align-items:center;gap:4px;max-width:500px;margin:14px auto">
+<div style="border:2px solid #9ca3af;background:#f9fafb;border-radius:7px;padding:9px;text-align:center"><div style="font-size:11px;font-weight:800;color:#6b7280">NEW</div><div style="font-size:10px;color:#9ca3af">생성</div></div>
+<div style="text-align:center;font-size:16px;color:#9ca3af;line-height:1.2">→<br><span style="font-size:8px">fork</span></div>
+<div style="border:2px solid #2563eb;background:#eff6ff;border-radius:7px;padding:9px;text-align:center"><div style="font-size:11px;font-weight:800;color:#2563eb">READY</div><div style="font-size:10px;color:#3b82f6">준비</div></div>
+<div style="text-align:center;font-size:10px;color:#6b7280;line-height:2">→ CPU<br>← I/O완료</div>
+<div style="border:2px solid #059669;background:#ecfdf5;border-radius:7px;padding:9px;text-align:center"><div style="font-size:11px;font-weight:800;color:#059669">RUNNING</div><div style="font-size:10px;color:#10b981">실행 중</div></div>
+<div style="text-align:center;font-size:16px;color:#9ca3af;line-height:1.2">→<br><span style="font-size:8px">exit</span></div>
+<div style="border:2px solid #475569;background:#f8fafc;border-radius:7px;padding:9px;text-align:center"><div style="font-size:11px;font-weight:800;color:#475569">TERMINATED</div><div style="font-size:10px;color:#94a3b8">종료</div></div>
+<div></div><div></div><div></div><div></div>
+<div style="text-align:center;color:#9ca3af;font-size:18px;line-height:1.1">↕<br><span style="font-size:9px;color:#6b7280">I/O 요청<br>I/O 완료</span></div>
+<div></div><div></div>
+<div></div><div></div><div></div><div></div>
+<div style="border:2px solid #ea580c;background:#fff7ed;border-radius:7px;padding:9px;text-align:center"><div style="font-size:11px;font-weight:800;color:#ea580c">WAITING</div><div style="font-size:10px;color:#f97316">I/O 대기</div></div>
+<div></div><div></div>
+</div>
+<div class="grid2" style="margin-top:14px">
+<div class="icard">
+<div class="icard-t">상태 전환 요약</div>
+<div class="icard-b" style="font-size:12px;line-height:1.9">
+<strong>NEW → READY</strong>: fork() — 프로세스 생성<br>
+<strong>READY → RUNNING</strong>: 스케줄러 선택 (CPU 할당)<br>
+<strong>RUNNING → WAITING</strong>: I/O 요청 (disk · network)<br>
+<strong>WAITING → READY</strong>: I/O 완료 인터럽트<br>
+<strong>RUNNING → TERMINATED</strong>: exit() 호출
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">WAITING이 필요한 이유</div>
+<div class="icard-b" style="font-size:12px">
+CPU: <strong>ns (나노초)</strong> 단위<br>
+Disk I/O: <strong>ms (밀리초)</strong> 단위<br>
+→ <strong>10만 배 속도 차이</strong><br><br>
+기다리는 동안 CPU를 독점하면 낭비.<br>
+WAITING으로 빼고 다른 프로세스에게 CPU 양보 = <strong>멀티태스킹 핵심</strong>
+</div>
+</div>
+</div>`},
+{t:"Thread vs Process",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · OS</div>
+<div class="s-title">Thread vs Process</div>
+<div class="s-sub">Process = 독립 실행 단위. Thread = Process 안의 실행 흐름. 메모리 공유가 핵심 차이</div>
+<div class="grid2" style="margin-bottom:12px">
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">Process — 독립 메모리</div>
+<div class="icard-b">
+<div style="border:2px solid #7c3aed;border-radius:6px;padding:8px;margin-bottom:8px">
+<div style="font-size:10px;font-weight:700;text-align:center;color:#7c3aed;margin-bottom:5px">Process A</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+<div style="background:#f3e8ff;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#7c3aed">CODE</div>
+<div style="background:#f3e8ff;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#7c3aed">DATA</div>
+<div style="background:#f3e8ff;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#7c3aed">HEAP</div>
+<div style="background:#f3e8ff;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#7c3aed">STACK</div>
+</div>
+</div>
+<div style="font-size:10px;text-align:center;color:#6b7280">완전 독립 — 메모리 공유 없음</div>
+</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">Thread — 메모리 공유</div>
+<div class="icard-b">
+<div style="border:2px solid #059669;border-radius:6px;padding:8px">
+<div style="font-size:10px;font-weight:700;text-align:center;color:#059669;margin-bottom:5px">Process B</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:5px">
+<div style="background:#d1fae5;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#059669">CODE</div>
+<div style="background:#d1fae5;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#059669">DATA</div>
+<div style="background:#d1fae5;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#059669">HEAP</div>
+</div>
+<div style="font-size:9px;text-align:center;color:#6b7280;margin-bottom:4px">공유(Shared)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+<div style="background:#fef9c3;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#ca8a04">STACK<br><span style="font-size:8px;font-weight:400">Thread 1</span></div>
+<div style="background:#fef9c3;border-radius:4px;padding:5px;text-align:center;font-size:10px;font-weight:700;color:#ca8a04">STACK<br><span style="font-size:8px;font-weight:400">Thread 2</span></div>
+</div>
+<div style="font-size:9px;text-align:center;color:#6b7280;margin-top:4px">개별(Per-Thread)</div>
+</div>
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th></th><th>Chrome 브라우저</th><th>Firefox 브라우저</th></tr>
+<tr><td><strong>구조</strong></td><td>탭마다 독립 Process</td><td>4개 Process + 다수 Thread</td></tr>
+<tr><td><strong>장점</strong></td><td>탭 충돌 격리 (안정·보안)</td><td>메모리 절약, 빠른 탭 전환</td></tr>
+<tr><td><strong>단점</strong></td><td>탭 100개 = 메모리 폭발</td><td>한 탭 오류가 전파될 수 있음</td></tr>
+</table>`},
+{t:"WEB 기초 — URL · HTTP",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · WEB</div>
+<div class="s-title">WEB 기초 — URL · HTTP Method · 상태코드</div>
+<div class="s-sub">URL = 리소스가 저장된 위치(서버). HTTP Header의 요청 부분 = Method</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard">
+<div class="icard-t">🌐 URL (Uniform Resource Locator)</div>
+<div class="icard-b">
+<strong>통합 Resource가 저장된 위치(서버)</strong><br>
+<code style="font-size:11px">https://example.com/path</code><br><br>
+HTTP Header = 요청·응답 메타정보<br>
+<strong>요청 Header = Method (GET/POST 등)</strong>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">📤 HTTP Method (요청)</div>
+<div class="icard-b">
+<strong>GET ≒ Download ≒ Read</strong><br>
+→ 서버에서 데이터 조회/다운로드<br><br>
+<strong>POST ≒ Write ≒ Upload</strong><br>
+→ 서버에 데이터 생성/업로드
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>상태코드</th><th>의미</th><th>설명</th></tr>
+<tr><td><strong style="color:#059669">200 OK</strong></td><td>성공</td><td>요청이 정상 처리됨</td></tr>
+<tr><td><strong style="color:#2563eb">301</strong></td><td>영구 이동 (Permanently Moved)</td><td>URL 영구 변경 — SEO 점수 새 URL로 이전</td></tr>
+<tr><td><strong style="color:#0891b2">302</strong></td><td>임시 이동 (Temporarily Moved)</td><td>URL 임시 변경 — SEO 점수 원본 유지</td></tr>
+<tr><td><strong style="color:#dc2626">404 Not Found</strong></td><td>없음</td><td>해당 리소스를 서버에서 찾을 수 없음</td></tr>
+</table>`},
+{t:"웹서비스 3-Tier 아키텍처",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · WEB</div>
+<div class="s-title">웹서비스 3-Tier 아키텍처</div>
+<div class="s-sub">Client → Web Server(송수신) → WAS(연산) → DB(자료) — 역순으로 응답</div>
+<div class="web3-row">
+<div class="web3-node" style="border-color:#374151;background:#f9fafb">
+  <div class="web3-icon">💻</div>
+  <div class="web3-name">Client</div>
+  <div class="web3-role">브라우저 / 앱</div>
+  <div class="web3-tech" style="background:#f3f4f6;color:#374151">HTTP 요청</div>
+</div>
+<div class="web3-mid">⟷</div>
+<div class="web3-node" style="border-color:#2563eb;background:#eff6ff">
+  <div class="web3-icon">🌐</div>
+  <div class="web3-name">Web Server</div>
+  <div class="web3-role">송수신 담당</div>
+  <div class="web3-tech" style="background:#dbeafe;color:#1d4ed8">Nginx · Apache</div>
+  <div style="font-size:10px;color:#6b7280;margin-top:5px">정적 파일<br>HTML/CSS/JS</div>
+</div>
+<div class="web3-mid">⟷</div>
+<div class="web3-node" style="border-color:#ea580c;background:#fff7ed">
+  <div class="web3-icon">⚙️</div>
+  <div class="web3-name">WAS</div>
+  <div class="web3-role">처리·연산 담당</div>
+  <div class="web3-tech" style="background:#fed7aa;color:#c2410c">Tomcat · Node.js</div>
+  <div style="font-size:10px;color:#6b7280;margin-top:5px">
+    MVC 패턴<br>
+    <span style="color:#7c3aed;font-weight:700">View</span> ·
+    <span style="color:#2563eb;font-weight:700">Control</span> ·
+    <span style="color:#059669;font-weight:700">Model</span>
+  </div>
+</div>
+<div class="web3-mid">⟷</div>
+<div class="web3-node" style="border-color:#059669;background:#f0fdf4">
+  <div class="web3-icon">🗄️</div>
+  <div class="web3-name">DB Server</div>
+  <div class="web3-role">자료 담당</div>
+  <div class="web3-tech" style="background:#dcfce7;color:#166534">SQL</div>
+  <div style="font-size:10px;color:#6b7280;margin-top:5px">Oracle<br>MySQL · PostgreSQL</div>
+</div>
+</div>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff">
+<p>Cookie = Client 상태 저장 (Key=Value). Session/DB = Server 상태 저장. <strong>Stateless HTTP → Cookie로 상태 유지</strong></p>
+</div>`},
+{t:"API & REST API",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · WEB</div>
+<div class="s-title">API &amp; REST API</div>
+<div class="s-sub">API = 프로그램 간 소통 약속. REST API = CRUD를 URL 함수 형식으로 호출하는 기술</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard">
+<div class="icard-t">🔌 API (Application Programming Interface)</div>
+<div class="icard-b">
+두 프로그램이 소통하는 <strong>약속된 인터페이스</strong><br><br>
+<strong>UI/Data 분리 진화:</strong><br>
+기존: HTML 통째 전송<br>
+현재: <strong>JSON/XML 데이터만</strong> 전송<br>
+→ JS가 디바이스별 HTML 생성<br>
+→ <strong>React.js / Vue.js</strong>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">🛠️ REST API — CRUD × URL</div>
+<div class="icard-b">
+<strong>GET</strong> /stocks → 목록 조회<br>
+<strong>POST</strong> /stocks → 항목 추가<br>
+<strong>PUT</strong> /stocks/1 → 항목 수정<br>
+<strong>DELETE</strong> /stocks/1 → 항목 삭제<br><br>
+<span style="font-size:11px;color:#6b7280">CRUD를 URL + HTTP Method 형식으로 호출</span>
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>개념</th><th>설명</th><th>비유</th></tr>
+<tr><td><strong>JVM</strong></td><td>Java를 위해 SW로 구현된 CPU (user 모드)</td><td>Java 전용 가상 컴퓨터</td></tr>
+<tr><td><strong>Servlet</strong></td><td>HTTP 요청을 처리하는 자바 웹 프로그래밍 기술</td><td>요청 전담 일꾼</td></tr>
+<tr><td><strong>Container</strong></td><td>Servlet들을 관리하는 컨테이너</td><td>일꾼들의 사무실</td></tr>
+<tr><td><strong>Framework</strong></td><td>Frame(틀)+work — 규칙·부품으로 결과물 생성</td><td>밀키트</td></tr>
+</table>`},
+{t:"Docker &amp; Container",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3 · Cloud</div>
+<div class="s-title">Docker &amp; Container</div>
+<div class="s-sub">Image = 불변 설계도(≒ Program). Container = 실행 인스턴스(≒ Process). 같은 Image로 여러 Container 실행</div>
+<div style="display:flex;align-items:center;gap:0;justify-content:center;margin:14px 0;flex-wrap:wrap">
+<div style="border:2px solid #9ca3af;background:#f9fafb;border-radius:8px;padding:10px 14px;text-align:center;min-width:88px">
+<div style="font-size:18px">📝</div>
+<div style="font-size:12px;font-weight:700;margin-top:3px">소스코드</div>
+<div style="font-size:10px;color:#6b7280">Dockerfile</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+<div style="font-size:14px;color:#9ca3af">→</div>
+<div style="font-size:9px;color:#2563eb;font-weight:700">docker build</div>
+</div>
+<div style="border:2px solid #2563eb;background:#eff6ff;border-radius:8px;padding:10px 14px;text-align:center;min-width:88px">
+<div style="font-size:18px">📦</div>
+<div style="font-size:12px;font-weight:700;color:#2563eb;margin-top:3px">Image</div>
+<div style="font-size:10px;color:#3b82f6">Immutable</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+<div style="font-size:14px;color:#9ca3af">→</div>
+<div style="font-size:9px;color:#059669;font-weight:700">docker run</div>
+</div>
+<div style="border:2px solid #059669;background:#ecfdf5;border-radius:8px;padding:10px 14px;text-align:center;min-width:88px">
+<div style="font-size:18px">🚀</div>
+<div style="font-size:12px;font-weight:700;color:#059669;margin-top:3px">Container</div>
+<div style="font-size:10px;color:#10b981">실행 인스턴스</div>
+</div>
+<div style="padding:0 6px;font-size:10px;color:#9ca3af;text-align:center">× N개<br>동시 실행</div>
+<div style="border:2px solid #059669;background:#ecfdf5;border-radius:8px;padding:10px 14px;text-align:center;min-width:88px;opacity:.65">
+<div style="font-size:18px">🚀</div>
+<div style="font-size:12px;font-weight:700;color:#059669;margin-top:3px">Container</div>
+<div style="font-size:10px;color:#10b981">인스턴스 2</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th></th><th>VM (가상머신)</th><th>Container (Docker)</th></tr>
+<tr><td><strong>가상화 단위</strong></td><td>OS 전체</td><td>프로세스 격리</td></tr>
+<tr><td><strong>이미지 크기</strong></td><td>수 GB</td><td>수십~수백 MB</td></tr>
+<tr><td><strong>시작 시간</strong></td><td>수 분</td><td>수 초</td></tr>
+<tr><td><strong>격리 수준</strong></td><td>완전 격리</td><td>프로세스 수준</td></tr>
+</table>
+<div class="hl" style="border-color:#2563eb;background:#eff6ff;margin-top:10px">
+<p><strong>비유:</strong> Image = 밀키트(틀). Container = 밀키트로 만든 실제 요리. 같은 Image로 Container 수십 개 동시 실행 가능</p>
+</div>`},
+{t:"클라우드와 AI 인프라",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">클라우드와 AI 인프라</div>
+<div class="s-sub">AI 훈련과 추론에는 엄청난 컴퓨팅 파워가 필요하다</div>
+<div class="grid2" style="margin-bottom:16px">
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">AI 훈련 (Training)</div>
+<div class="icard-b">
+• <strong>GPU 수천 개</strong>가 수주일 연속 실행<br>
+• GPT-4 훈련 비용 ~$100M<br>
+• NVIDIA H100 1장 = $30,000+<br>
+• 수요: Meta, Google, OpenAI, Microsoft
+</div>
+</div>
+<div class="icard" style="border-top:3px solid #0891b2">
+<div class="icard-t">AI 추론 (Inference)</div>
+<div class="icard-b">
+• 학습된 모델로 실시간 응답 생성<br>
+• ChatGPT = 하루 수억 건 추론<br>
+• GPU + 메모리 + 서버 지속 수요<br>
+• 훈련보다 <strong>장기적으로 더 큰 시장</strong>
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff">
+<p><strong>투자 관점:</strong> AI 훈련·추론 인프라는 전력, 냉각, 반도체, 메모리, 서버를 모두 필요로 한다. 이것이 AI 투자 연쇄의 시작점이다.</p>
+</div>`},
+{t:"AI 투자 흐름 다이어그램",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">AI 투자 흐름 다이어그램</div>
+<div class="s-sub">AI 수요 폭발이 만들어내는 산업 연쇄 — 투자 기회의 지도</div>
+<div class="ai-trig">
+  <div class="ai-trig-box">AI 수요 폭발<span>LLM 훈련 + 실시간 추론 + 멀티모달 확산</span></div>
+</div>
+<div style="text-align:center;color:#9ca3af;font-size:18px;margin:6px 0">↓</div>
+<div class="ai-chain">
+  <div class="ai-step adc">
+    <div class="ai-icon">🏢</div>
+    <div class="ai-sname">데이터센터</div>
+    <div><span class="ai-tick">EQIX · DLR · AMT</span></div>
+    <div class="ai-sdesc">AI GPU 수용<br>전력·냉각·공간<br>하이퍼스케일 REIT</div>
+  </div>
+  <div class="ai-arr">→</div>
+  <div class="ai-step asc">
+    <div class="ai-icon">⚡</div>
+    <div class="ai-sname">반도체</div>
+    <div><span class="ai-tick">NVDA · AMD · INTC</span></div>
+    <div class="ai-sdesc">GPU + AI 전용 칩<br>CUDA 생태계<br>AI 가속기 독점</div>
+  </div>
+  <div class="ai-arr">→</div>
+  <div class="ai-step amc">
+    <div class="ai-icon">💾</div>
+    <div class="ai-sname">메모리</div>
+    <div><span class="ai-tick">MU · 삼성 · SK하이닉스</span></div>
+    <div class="ai-sdesc">HBM3/HBM3e<br>DDR5 · LPDDR5<br>AI용 고대역폭 메모리</div>
+  </div>
+  <div class="ai-arr">→</div>
+  <div class="ai-step asvc">
+    <div class="ai-icon">🖥️</div>
+    <div class="ai-sname">서버</div>
+    <div><span class="ai-tick">DELL · HPE · SMCI</span></div>
+    <div class="ai-sdesc">AI 서버 조립·공급<br>GPU 인클로저<br>냉각 솔루션</div>
+  </div>
+</div>
+<div style="text-align:center;color:#9ca3af;font-size:14px;margin-top:10px">↓</div>
+<div style="text-align:center;padding:8px;background:#f5f3ff;border-radius:8px;border:2px solid #c4b5fd">
+  <span style="font-size:13px;font-weight:700;color:#7c3aed">클라우드 빅3</span>
+  <span style="font-size:12px;color:#6b7280;margin-left:8px">AWS (AMZN) · Google Cloud (GOOGL) · Azure (MSFT) — 모든 AI 인프라 최종 소비자</span>
+</div>`},
+{t:"데이터센터 투자 테마",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">데이터센터 투자 테마</div>
+<div class="s-sub">AI 수요 폭발 → 데이터센터 건설 붐 → 전력·토지·냉각 수혜</div>
+<table class="tbl" style="margin-bottom:14px">
+<tr><th>투자 테마</th><th>대표 종목</th><th>수혜 이유</th></tr>
+<tr><td><strong>데이터센터 REIT</strong></td><td>EQIX, DLR, AMT</td><td>AI 서버 공간 임대 수요 급증</td></tr>
+<tr><td><strong>전력 인프라</strong></td><td>VST, CEG, NRG</td><td>데이터센터 전력 소비 = 국가급</td></tr>
+<tr><td><strong>냉각 솔루션</strong></td><td>VRT, NVENT</td><td>고밀도 GPU 냉각 필수</td></tr>
+<tr><td><strong>광통신 · 네트워크</strong></td><td>CIEN, ANET, CSCO</td><td>AI 추론 = 초고속 네트워크 필요</td></tr>
+</table>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff">
+<p>💡 <strong>핵심 관찰:</strong> 2026년 미국 데이터센터 전력 소비 = 미국 전체 전력의 4~8% 예상. 전력 인프라가 AI 인프라다.</p>
+</div>`},
+{t:"반도체 + 메모리 연결고리",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">반도체 + 메모리 연결고리</div>
+<div class="s-sub">GPU 1장에 HBM 메모리 수십 GB — 반도체와 메모리는 함께 성장한다</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard" style="border-top:3px solid #7c3aed">
+<div class="icard-t">⚡ NVIDIA GPU (H100/B200)</div>
+<div class="icard-b">
+• HBM3e 80GB 탑재<br>
+• AI 훈련 독점적 수요<br>
+• Forward PER ~20배 (2026 기준)<br>
+• 매출 YoY +71% 예상<br>
+• 월가 38명 Strong Buy
+</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">💾 메모리 (SK하이닉스 · Micron)</div>
+<div class="icard-b">
+• HBM = AI용 고대역폭 메모리<br>
+• SK하이닉스 HBM 시장 50%+ 점유<br>
+• 삼성전자 PER 5~7배 (저평가)<br>
+• Micron (MU): 미국 내 유일 DRAM<br>
+• EPS 2개월 만에 2배 상향
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff">
+<p>AI GPU 수요 1개 = HBM 메모리 수십 GB 수요. <strong>NVIDIA 납품 발표 → SK하이닉스 주가 연동</strong> 패턴이 반복된다.</p>
+</div>`},
+{t:"AI 수혜주 분류",html:`
+<div class="s-eye" style="color:#0891b2">SECTION 3</div>
+<div class="s-title">AI 수혜주 분류</div>
+<div class="s-sub">시간 축에 따른 수혜 단계 구분</div>
+<table class="tbl">
+<tr><th>단계</th><th>종목</th><th>수혜 시기</th><th>리스크</th></tr>
+<tr><td><strong style="color:#dc2626">1단계 인프라</strong></td><td>NVDA, AMD, EQIX, SMCI</td><td>지금 (2024~2026)</td><td>밸류에이션 높음</td></tr>
+<tr><td><strong style="color:#2563eb">2단계 플랫폼</strong></td><td>MSFT, GOOGL, AMZN, META</td><td>지금~2027</td><td>규제 리스크</td></tr>
+<tr><td><strong style="color:#059669">3단계 응용</strong></td><td>AAPL, CRM, ADBE, NOW</td><td>2026~2028</td><td>경쟁 심화</td></tr>
+<tr><td><strong style="color:#7c3aed">4단계 산업화</strong></td><td>자동차·헬스케어·에너지 AI</td><td>2027~2030</td><td>채택 속도 불확실</td></tr>
+</table>
+<div class="hl" style="border-color:#0891b2;background:#ecfeff;margin-top:14px">
+<p>us-stock 시스템은 이 모든 종목을 <strong>매일 자동으로 스크리닝</strong>하여 Grade A~F로 분류한다.</p>
+</div>`}
+]},
+
+{id:4,num:"04",title:"주식 기초 설명",sub:"미국주식 분석 프레임워크",color:"#059669",cl:"#ecfdf5",
+slides:[
+{t:"왜 미국주식인가?",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">왜 미국주식인가?</div>
+<div class="s-sub">구조적 우위 + 달러 자산 + 주주 친화</div>
+<div class="grid3" style="margin-bottom:14px">
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">🌍 글로벌 지배력</div>
+<div class="icard-b">세계 시가총액 ~45%<br>S&amp;P 500 3년 수익률 vs 코스피 격차<br>글로벌 기업 접근성</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">💵 달러 기축통화</div>
+<div class="icard-b">달러 자산 보유 = 환율 헤지<br>원화 약세 시 자동 수익<br>환율 1,508원 (2026)</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">📋 투명한 공시</div>
+<div class="icard-b">SEC 규제 + 분기 실적 공시<br>주주 친화 정책<br>(자사주 매입·배당)</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>지표</th><th>현재 수치</th><th>의미</th></tr>
+<tr><td>대통령 사이클</td><td>6년차 (2026)</td><td>역사적 상승 확률 100%</td></tr>
+<tr><td>위기 등급</td><td>B+~A-</td><td>2008 금융위기(S급) 대비 낮음</td></tr>
+<tr><td>환율</td><td>1,508원</td><td>달러 자산 보유 = 헤지 효과</td></tr>
+</table>`},
+{t:"거시경제 읽기",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">거시경제 읽기</div>
+<div class="s-sub">FED 금리 + Yield Curve + High Yield Spread — 3가지로 시장 체온 측정</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard">
+<div class="icard-t">📈 Yield Curve</div>
+<div class="icard-b">
+<strong>정상:</strong> 장기 > 단기 → 경제 성장 기대<br>
+<strong>역전:</strong> 단기 > 장기 → 경기침체 선행 (12~18개월)<br>
+현재: 역전 해소 후 정상화 진행 중<br><br>
+확인: FRED (fred.stlouisfed.org)
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">💳 High Yield Spread</div>
+<div class="icard-b">
+<strong>정의:</strong> 회사채 - 국채 금리차<br>
+<strong>좁아지면:</strong> 위험 선호 → 주식 상승<br>
+<strong>벌어지면:</strong> 위험 회피 → 주식 하락<br><br>
+us-stock Credit 센서가 HYG/IEF로 측정
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>항목</th><th>수치</th></tr>
+<tr><td>미국 기준금리</td><td>3.50~3.75%</td></tr>
+<tr><td>다음 FOMC</td><td>4/28~29</td></tr>
+<tr><td>금리 인하 전망</td><td>0~1회 (Wells Fargo)</td></tr>
+</table>`},
+{t:"재무제표 5분 가이드",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">재무제표 5분 가이드</div>
+<div class="s-sub">PER + EPS — 이 두 숫자로 80% 판단한다</div>
+<div class="grid3" style="margin-bottom:14px">
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">📊 Balance Sheet</div>
+<div class="icard-b">자산 = 부채 + 자본<br>시점의 사진 (연·분기말)<br>부채비율 체크 포인트</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">📈 Income Statement</div>
+<div class="icard-b">매출 → 영업이익 → 순이익<br>기간의 영상 (분기/연간)<br>EPS 성장률 가장 중요</div>
+</div>
+<div class="icard" style="border-top:3px solid #059669">
+<div class="icard-t">💵 Cash Flow</div>
+<div class="icard-b">영업(+) / 투자(-) / 재무(±)<br>현금 흐름이 이익보다 중요<br>자사주매입·배당 여력 확인</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>지표</th><th>공식</th><th>S&amp;P 500 기준</th></tr>
+<tr><td>EPS</td><td>순이익 ÷ 주식수</td><td>YoY 성장률 > 15% 우수</td></tr>
+<tr><td>PER</td><td>주가 ÷ EPS</td><td>Forward 19.8배 (2026)</td></tr>
+<tr><td>ROE</td><td>순이익 ÷ 자기자본</td><td>15%+ 우수</td></tr>
+</table>`},
+{t:"기술적 분석 기초",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">기술적 분석 기초</div>
+<div class="s-sub">이동평균 + RSI + MACD — us-stock 기술적 팩터의 핵심</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard">
+<div class="icard-t">📊 이동평균선</div>
+<div class="icard-b">
+<strong>골든크로스:</strong> 단기MA > 장기MA → 매수 신호<br>
+<strong>데드크로스:</strong> 단기MA &lt; 장기MA → 매도 신호<br>
+<strong>정배열:</strong> 5 > 20 > 60 > 120 = 강한 상승 추세<br>
+us-stock: SMA50, SMA200 사용
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">📈 RSI (상대강도지수)</div>
+<div class="icard-b">
+<strong>70 이상:</strong> 과매수 → 조정 가능성<br>
+<strong>30 이하:</strong> 과매도 → 반등 가능성<br>
+<strong>30~70:</strong> Swing 전략 적용 구간<br>
+us-stock: RSI 30 이하 = Reversal 전략
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#059669;background:#ecfdf5">
+<p>us-stock 기술적 팩터(25% 가중치)는 RSI + MACD + 이동평균을 복합 점수로 계산한다.</p>
+</div>`},
+{t:"ETF 활용법",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">ETF 활용법</div>
+<div class="s-sub">SPY vs QQQ — 입문자의 최선택은 적립식 QQQ</div>
+<table class="tbl" style="margin-bottom:14px">
+<tr><th>ETF</th><th>추적 지수</th><th>10년 수익률</th><th>특성</th></tr>
+<tr><td><strong>SPY</strong></td><td>S&amp;P 500</td><td>~250%</td><td>안정적, 배당 O, 시장 평균</td></tr>
+<tr><td><strong>QQQ</strong></td><td>나스닥 100</td><td>~450%</td><td>기술주 중심, 성장</td></tr>
+<tr><td><strong>TQQQ</strong></td><td>나스닥 3배</td><td>~2000%</td><td>⚠️ 장기보유 비추 (경로의존)</td></tr>
+<tr><td><strong>VTI</strong></td><td>미국 전체</td><td>~220%</td><td>분산 최대화</td></tr>
+</table>
+<div class="hl" style="border-color:#059669;background:#ecfdf5">
+<p><strong>DCA 전략 추천:</strong> 매월 정액 자동 매수 → 평균 매입단가 하락. <strong>SPY/QQQ 적립식 70% + 개별종목 30%</strong></p>
+</div>`},
+{t:"위험관리",html:`
+<div class="s-eye" style="color:#059669">SECTION 4</div>
+<div class="s-title">위험관리 — MDD, 손절, 분산</div>
+<div class="s-sub">수익을 지키는 것이 버는 것보다 중요하다</div>
+<div class="grid2" style="margin-bottom:14px">
+<div class="icard">
+<div class="icard-t">📉 MDD (Maximum Drawdown)</div>
+<div class="icard-b">
+-10% 손실 회복: +11.1% 필요<br>
+-20% 손실 회복: +25.0% 필요<br>
+-50% 손실 회복: +100.0% 필요<br><br>
+<strong>→ 손실을 막는 것이 훨씬 유리</strong>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">🛡️ Stop Loss 3단계</div>
+<div class="icard-b">
+1. 손실제한: -5% → 자동 매도<br>
+2. 이익실현: +10% → 일부 매도<br>
+3. Trailing Stop: 최고가 -N%<br><br>
+us-stock: Regime별 자동 조정
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th>체제</th><th>Stop Loss</th><th>MDD 한도</th></tr>
+<tr><td>risk_on (강세)</td><td>-10%</td><td>-12%</td></tr>
+<tr><td>neutral</td><td>-8%</td><td>-10%</td></tr>
+<tr><td>risk_off (약세)</td><td>-5%</td><td>-7%</td></tr>
+<tr><td>crisis (위기)</td><td>-3%</td><td>-5%</td></tr>
+</table>`}
+]},
+
+{id:5,num:"05",title:"us-stock 시스템구성",sub:"4단계 자동 분석 파이프라인",color:"#2563eb",cl:"#eff6ff",
+slides:[
+{t:"왜 이 시스템이 필요한가?",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">왜 이 시스템이 필요한가?</div>
+<div class="s-sub">S&amp;P 500 503개 종목을 매일 수동으로 분석하는 것은 불가능하다</div>
+<div class="grid3" style="margin-bottom:16px">
+<div class="icard" style="text-align:center;border-top:3px solid #ef4444">
+<div style="font-size:36px;font-weight:800;color:#dc2626">503</div>
+<div style="font-size:12px;color:#6b7280">S&amp;P 500 종목 수</div>
+</div>
+<div class="icard" style="text-align:center;border-top:3px solid #f59e0b">
+<div style="font-size:36px;font-weight:800;color:#d97706">1년</div>
+<div style="font-size:12px;color:#6b7280">수집 OHLCV 기간</div>
+</div>
+<div class="icard" style="text-align:center;border-top:3px solid #2563eb">
+<div style="font-size:36px;font-weight:800;color:#2563eb">07:00</div>
+<div style="font-size:12px;color:#6b7280">평일 KST 자동 실행</div>
+</div>
+</div>
+<ul class="blist">
+<li><strong>데이터 폭발:</strong> 주가 + 재무제표 + 거시경제 + AI 뉴스 → 사람이 처리할 수 있는 한계 초과</li>
+<li><strong>편향 제거:</strong> 인간의 직관(System 1)은 FOMO·손실회피에 취약 → 수식으로 대체</li>
+<li><strong>완전 자동화:</strong> 평일 07:00 macOS launchd가 파이프라인 실행 → 아침에 일어나면 결과가 나와 있다</li>
+</ul>
+<div class="hl" style="border-color:#2563eb;background:#eff6ff;margin-top:14px">
+<p><strong>비유:</strong> 기상청이 "오늘 외출 적합도"를 판단하듯, 이 시스템은 <strong>"오늘 주식 투자 적합도"</strong>를 수치로 판단한다.</p>
+</div>`},
+{t:"전체 아키텍처 파이프라인",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">전체 아키텍처 파이프라인</div>
+<div class="s-sub">외부 데이터 → 4단계 분석 → 대시보드</div>
+<div class="arch">
+<div class="arch-src">
+<span>Yahoo Finance</span><span>FRED API</span><span>Wikipedia</span><span>CNN F&amp;G</span><span>Finnhub</span>
+</div>
+<div class="arch-arr">↓</div>
+<div class="arch-ph p1">
+<span class="ph-lbl">Phase 0</span>
+<div class="ph-info"><div class="ph-t">데이터 수집</div><div class="ph-d">503종목 × 1년치 OHLCV + 거시경제 + 섹터 ETF</div></div>
+</div>
+<div class="arch-arr">↓</div>
+<div class="arch-ph p2">
+<span class="ph-lbl">Phase 1</span>
+<div class="ph-info"><div class="ph-t">시장 체제 감지</div><div class="ph-d">5센서 가중투표 → risk_on / neutral / risk_off / crisis</div></div>
+</div>
+<div class="arch-arr">↓</div>
+<div class="arch-ph p3">
+<span class="ph-lbl">Phase 2</span>
+<div class="ph-info"><div class="ph-t">스마트 머니 스크리닝</div><div class="ph-d">6팩터 복합 점수 → Grade A~F → BUY / WATCH / HOLD</div></div>
+</div>
+<div class="arch-arr">↓</div>
+<div class="arch-ph p4">
+<span class="ph-lbl">Phase 3</span>
+<div class="ph-info"><div class="ph-t">AI 분석</div><div class="ph-d">Gemini Flash → GPT-4o-mini → Perplexity (순차 fallback)</div></div>
+</div>
+<div class="arch-arr">↓</div>
+<div class="arch-ph pdash">
+<span class="ph-lbl">Dashboard</span>
+<div class="ph-info"><div class="ph-t">Next.js 대시보드</div><div class="ph-d">Mac: localhost:3000 · NAS: frindle.synology.me:8889</div></div>
+</div>
+</div>`},
+{t:"Phase 0 — 데이터 수집",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">Phase 0 — 데이터 수집</div>
+<div class="s-sub">4가지 데이터를 자동 수집하여 CSV로 저장</div>
+<table class="tbl" style="margin-bottom:14px">
+<tr><th>데이터</th><th>소스</th><th>저장 파일</th><th>설명</th></tr>
+<tr><td>OHLCV + 지표</td><td>Yahoo Finance</td><td>us_daily_prices.csv</td><td>503종목 × 1년치 일봉</td></tr>
+<tr><td>거시경제</td><td>FRED API + Yahoo</td><td>us_macro.csv</td><td>VIX, 기준금리, Fear&amp;Greed</td></tr>
+<tr><td>섹터 ETF</td><td>Yahoo Finance</td><td>us_sectors.csv</td><td>SPY/XLK/XLF 등 11개 섹터</td></tr>
+<tr><td>종목 목록</td><td>Wikipedia</td><td>sp500_list.csv</td><td>S&amp;P 500 현재 편입 503종목</td></tr>
+</table>
+<div class="grid2">
+<div class="icard">
+<div class="icard-t">🛡️ curl_cffi 브라우저 위장</div>
+<div class="icard-b">Yahoo Finance 차단 우회<br>Chrome fingerprint 위장<br>Rate limit 자동 회피</div>
+</div>
+<div class="icard">
+<div class="icard-t">🔧 심볼 변환 규칙</div>
+<div class="icard-b">BRK.B → BRK-B<br>(점 → 대시, yfinance 규칙)<br>Finnhub = 가격 fallback</div>
+</div>
+</div>`},
+{t:"Phase 1 — 5센서 시장 체제 감지",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">Phase 1 — 5센서 시장 체제 감지</div>
+<div class="s-sub">5개 센서의 가중투표로 시장 전체 환경을 판단한다</div>
+<div class="sns-row">
+<div class="sns-c sv">
+  <div class="sns-pct">30%</div>
+  <div class="sns-name">VIX</div>
+  <div class="sns-desc">공포지수</div>
+  <span class="sns-src">^VIX</span>
+</div>
+<div class="sns-c st">
+  <div class="sns-pct">25%</div>
+  <div class="sns-name">Trend</div>
+  <div class="sns-desc">추세</div>
+  <span class="sns-src">SPY vs SMA</span>
+</div>
+<div class="sns-c sb2">
+  <div class="sns-pct">18%</div>
+  <div class="sns-name">Breadth</div>
+  <div class="sns-desc">시장 폭</div>
+  <span class="sns-src">RSP/SPY</span>
+</div>
+<div class="sns-c sc">
+  <div class="sns-pct">15%</div>
+  <div class="sns-name">Credit</div>
+  <div class="sns-desc">신용</div>
+  <span class="sns-src">HYG/IEF</span>
+</div>
+<div class="sns-c sy">
+  <div class="sns-pct">12%</div>
+  <div class="sns-name">Yield</div>
+  <div class="sns-desc">금리차</div>
+  <span class="sns-src">TNX-IRX</span>
+</div>
+</div>
+<div style="text-align:center;color:#9ca3af;font-size:16px;margin:8px 0">↓ 가중 합산 점수</div>
+<div class="reg-row">
+<div class="reg-c ro"><div class="reg-name">risk_on</div><div class="reg-range">&lt; 0.75</div></div>
+<div class="reg-c rn"><div class="reg-name">neutral</div><div class="reg-range">0.75 ~ 1.50</div></div>
+<div class="reg-c roff"><div class="reg-name">risk_off</div><div class="reg-range">1.50 ~ 2.25</div></div>
+<div class="reg-c rc"><div class="reg-name">crisis</div><div class="reg-range">≥ 2.25</div></div>
+</div>`},
+{t:"Phase 2 — 6팩터 스크리닝",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">Phase 2 — 6팩터 스마트 머니 스크리닝</div>
+<div class="s-sub">기관(스마트 머니)이 주목하는 종목을 6팩터로 복합 점수화</div>
+<div class="fct-grid">
+<div class="fct-c ft"><div class="fct-pct">25%</div><div class="fct-name">기술적 분석</div><div class="fct-met">RSI · MACD · 이동평균</div></div>
+<div class="fct-c ff"><div class="fct-pct">20%</div><div class="fct-name">펀더멘털</div><div class="fct-met">PER · 성장률 · ROE</div></div>
+<div class="fct-c fa"><div class="fct-pct">15%</div><div class="fct-name">애널리스트</div><div class="fct-met">컨센서스 · 목표주가</div></div>
+<div class="fct-c fr"><div class="fct-pct">15%</div><div class="fct-name">상대강도 RS</div><div class="fct-met">SPY 대비 초과수익률</div></div>
+<div class="fct-c fv"><div class="fct-pct">15%</div><div class="fct-name">거래량</div><div class="fct-met">표준편차 기반 이상 탐지</div></div>
+<div class="fct-c f3"><div class="fct-pct">10%</div><div class="fct-name">13F 보유</div><div class="fct-met">기관 지분 변동 (SEC)</div></div>
+</div>
+<div class="grade-row">
+<div class="g-c2 ga"><div class="g-lt">A</div><div class="g-sc">80점+</div><div class="g-nm">Strong Accum</div></div>
+<div class="g-c2 gb"><div class="g-lt">B</div><div class="g-sc">62점+</div><div class="g-nm">Moderate</div></div>
+<div class="g-c2 gc"><div class="g-lt">C</div><div class="g-sc">48점+</div><div class="g-nm">Neutral</div></div>
+<div class="g-c2 gd"><div class="g-lt">D</div><div class="g-sc">35점+</div><div class="g-nm">Distribution</div></div>
+<div class="g-c2 gf"><div class="g-lt">F</div><div class="g-sc">&lt;35</div><div class="g-nm">Capitulation</div></div>
+</div>`},
+{t:"Phase 3 — AI 분석",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">Phase 3 — AI 분석</div>
+<div class="s-sub">3개 AI 모델 순차 fallback — 파이프라인은 절대 중단하지 않는다</div>
+<div class="arch" style="margin-bottom:16px">
+<div class="arch-ph p1" style="background:#f0fdf4;border-color:#22c55e">
+<span class="ph-lbl" style="color:#16a34a">1순위</span>
+<div class="ph-info"><div class="ph-t">Gemini Flash</div><div class="ph-d">$0.10/1M tokens 입력 · $0.40/1M 출력 · 가장 저렴</div></div>
+</div>
+<div class="arch-arr">↓ 실패 시</div>
+<div class="arch-ph p3" style="background:#eff6ff;border-color:#3b82f6">
+<span class="ph-lbl" style="color:#2563eb">2순위</span>
+<div class="ph-info"><div class="ph-t">GPT-4o-mini</div><div class="ph-d">$0.15/1M tokens 입력 · $0.60/1M 출력 · Gemini 실패 시</div></div>
+</div>
+<div class="arch-arr">↓ 실패 시</div>
+<div class="arch-ph p4" style="background:#f5f3ff;border-color:#8b5cf6">
+<span class="ph-lbl" style="color:#7c3aed">3순위</span>
+<div class="ph-info"><div class="ph-t">Perplexity Sonar</div><div class="ph-d">$3/1K requests · 실시간 웹 검색 포함</div></div>
+</div>
+</div>
+<ul class="blist">
+<li>종목별 <strong>투자 thesis, 상승 촉매, 하락 리스크, 매수/매도 추천</strong> 자동 생성</li>
+<li>에러 발생 시 graceful fallback JSON 반환 → <strong>파이프라인 절대 중단 없음</strong></li>
+<li>일일 API 예산 한도: <strong>$0.20/일</strong> (APIUsageTracker 자동 추적)</li>
+</ul>`},
+{t:"Verdict × Grade 매트릭스",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">Verdict × Grade — 최종 결과 해석</div>
+<div class="s-sub">Verdict(시장 환경) × Grade(종목 품질) = Action(투자 행동)</div>
+<div class="vmat">
+<table>
+<tr>
+  <th style="background:#f9fafb"></th>
+  <th style="background:#dcfce7;color:#15803d">Grade A/B<br><small>80점+</small></th>
+  <th style="background:#f0f9ff;color:#0369a1">Grade C<br><small>48~79점</small></th>
+  <th style="background:#fef2f2;color:#b91c1c">Grade D/F<br><small>48점 미만</small></th>
+</tr>
+<tr>
+  <td class="vgo" style="font-weight:700;color:#16a34a">🟢 GO<br><small>시장 정상</small></td>
+  <td class="vgo"><span class="ab">BUY</span></td>
+  <td class="vgo"><span class="aw">WATCH</span></td>
+  <td class="vgo"><span class="aw">WATCH</span></td>
+</tr>
+<tr>
+  <td class="vcau" style="font-weight:700;color:#d97706">🟡 CAUTION<br><small>불확실</small></td>
+  <td class="vcau"><span class="asb">SMALL BUY</span></td>
+  <td class="vcau"><span class="aw">WATCH</span></td>
+  <td class="vcau"><span class="aw">WATCH</span></td>
+</tr>
+<tr>
+  <td class="vstop" style="font-weight:700;color:#dc2626">🔴 STOP<br><small>위기/약세</small></td>
+  <td class="vstop"><span class="ah">HOLD</span></td>
+  <td class="vstop"><span class="ah">HOLD</span></td>
+  <td class="vstop"><span class="ah">HOLD</span></td>
+</tr>
+</table>
+</div>
+<div style="margin-top:12px;font-size:12px;color:#6b7280">
+<strong>GO 조건:</strong> Regime 정상 + Gate GO + ML Bullish &nbsp;|&nbsp;
+<strong>STOP 조건:</strong> Regime crisis/risk_off 또는 Gate STOP
+</div>`},
+{t:"대시보드 13개 페이지",html:`
+<div class="s-eye" style="color:#2563eb">SECTION 5</div>
+<div class="s-title">대시보드 — 13개 페이지</div>
+<div class="s-sub">http://localhost:3000 또는 frindle.synology.me:8889</div>
+<div class="pg-grid">
+<div class="pg-item"><div class="pg-route">/</div><div class="pg-name">Overview</div><div class="pg-desc">Verdict + 체제 + Top 5 + 리스크 알림</div></div>
+<div class="pg-item"><div class="pg-route">/risk</div><div class="pg-name">Risk Monitor</div><div class="pg-desc">VaR / CDaR / Stress Test</div></div>
+<div class="pg-item"><div class="pg-route">/regime</div><div class="pg-name">Market Regime</div><div class="pg-desc">5센서 상태 + 게이트 + 섹터 히트맵</div></div>
+<div class="pg-item"><div class="pg-route">/top-picks</div><div class="pg-name">Top Picks</div><div class="pg-desc">상위 20종목 Grade/Score/Action</div></div>
+<div class="pg-item"><div class="pg-route">/ai</div><div class="pg-name">AI Analysis</div><div class="pg-desc">종목별 AI 투자 thesis + 촉매/리스크</div></div>
+<div class="pg-item"><div class="pg-route">/forecast</div><div class="pg-name">Index Forecast</div><div class="pg-desc">SPY/QQQ 5일 방향 예측 + 신뢰도</div></div>
+<div class="pg-item"><div class="pg-route">/ml</div><div class="pg-name">ML Rankings</div><div class="pg-desc">GBM 종목 랭킹 + 6팩터 분해</div></div>
+<div class="pg-item"><div class="pg-route">/performance</div><div class="pg-name">Performance</div><div class="pg-desc">백테스트 수익률 vs SPY</div></div>
+<div class="pg-item"><div class="pg-route">/graph</div><div class="pg-name">Graph</div><div class="pg-desc">종목-섹터 네트워크 시각화</div></div>
+<div class="pg-item"><div class="pg-route">/ai-builder</div><div class="pg-name">AI Builder</div><div class="pg-desc">Claude Code 에이전트 갤러리</div></div>
+<div class="pg-item"><div class="pg-route">/board</div><div class="pg-name">Board</div><div class="pg-desc">Reddit 스타일 게시판 (공지/일반)</div></div>
+<div class="pg-item"><div class="pg-route">/download</div><div class="pg-name">Download</div><div class="pg-desc">강의 자료 zip 다운로드</div></div>
+<div class="pg-item"><div class="pg-route">/costs</div><div class="pg-name">API Costs</div><div class="pg-desc">AI API 단가표 비교</div></div>
+</div>`}
+]},
+
+{id:6,num:"06",title:"Claude Code 활용법",sub:"코딩 없이 시스템을 진화시킨다",color:"#4338ca",cl:"#eef2ff",
+slides:[
+{t:"기본 실행 3단계",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">기본 실행 — 3단계</div>
+<div class="s-sub">이 3줄이 전부다. 코딩 지식 불필요</div>
+<div class="code-box">
+<span class="cc"># Step 1: Python 환경 활성화 (반드시 먼저)</span><br>
+<span class="cm">source .venv/bin/activate</span><br><br>
+<span class="cc"># Step 2: 통합 분석 실행 (Phase 0~3 전체, 5~15분 소요)</span><br>
+<span class="cm">python scripts/run_integrated_analysis.py</span><br><br>
+<span class="cc"># Step 3: 대시보드 서버 실행</span><br>
+<span class="cm">cd frontend && npm run dev</span><br>
+<span class="cc"># → 브라우저: http://localhost:3000</span>
+</div>
+<div class="grid2" style="margin-top:14px">
+<div class="icard" style="border-top:3px solid #22c55e">
+<div class="icard-t">✅ 자동 실행 (평일)</div>
+<div class="icard-b">
+평일 07:00 KST launchd가<br>Step 2를 자동 실행<br><br>
+Step 3만 수동 실행하면<br>오늘 결과 즉시 확인
+</div>
+</div>
+<div class="icard" style="border-top:3px solid #3b82f6">
+<div class="icard-t">📊 상태 확인</div>
+<div class="icard-b">
+<code style="font-size:11px">python scripts/run_daily_scheduler.py --status</code><br><br>
+마지막 실행 성공 여부<br>+ 오류 로그 요약 출력
+</div>
+</div>
+</div>`},
+{t:"대시보드 5분 루틴",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">오늘 투자 결정 — 5분 루틴</div>
+<div class="s-sub">매일 아침 이 5단계로 투자 결정을 완성한다</div>
+<div class="routine">
+<div class="r-step">
+  <div class="r-num" style="background:#eff6ff;color:#2563eb">1</div>
+  <div style="flex:1"><div class="r-page">Overview <span style="font-size:11px;color:#9ca3af">/</span></div><div class="r-act">Verdict 배지 색상 확인</div></div>
+  <div class="r-res" style="background:#dcfce7;color:#15803d">🟢 GO → 투자 가능</div>
+</div>
+<div class="r-step">
+  <div class="r-num" style="background:#f0fdf4;color:#059669">2</div>
+  <div style="flex:1"><div class="r-page">Market Regime <span style="font-size:11px;color:#9ca3af">/regime</span></div><div class="r-act">5센서 상태 + 빨간 센서 개수</div></div>
+  <div class="r-res" style="background:#fef2f2;color:#dc2626">빨간 3개+ → 주의</div>
+</div>
+<div class="r-step">
+  <div class="r-num" style="background:#ecfdf5;color:#059669">3</div>
+  <div style="flex:1"><div class="r-page">Top Picks <span style="font-size:11px;color:#9ca3af">/top-picks</span></div><div class="r-act">Grade A/B + BUY Action 종목 목록</div></div>
+  <div class="r-res" style="background:#dcfce7;color:#15803d">BUY 후보 확인</div>
+</div>
+<div class="r-step">
+  <div class="r-num" style="background:#fef2f2;color:#dc2626">4</div>
+  <div style="flex:1"><div class="r-page">AI Analysis <span style="font-size:11px;color:#9ca3af">/ai</span></div><div class="r-act">관심 종목 투자 thesis + 촉매 읽기</div></div>
+  <div class="r-res" style="background:#fffbeb;color:#d97706">리스크 검토</div>
+</div>
+<div class="r-step">
+  <div class="r-num" style="background:#f5f3ff;color:#7c3aed">5</div>
+  <div style="flex:1"><div class="r-page">Index Forecast <span style="font-size:11px;color:#9ca3af">/forecast</span></div><div class="r-act">SPY/QQQ 5일 방향 + 신뢰도 % 확인</div></div>
+  <div class="r-res" style="background:#dbeafe;color:#1d4ed8">≥70% → 확신</div>
+</div>
+</div>`},
+{t:"Claude Code로 수정하기",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">Claude Code로 시스템 수정하기</div>
+<div class="s-sub">한국어로 말하면 된다 — 코드를 몰라도 된다</div>
+<div class="code-box" style="margin-bottom:14px">
+<span class="cc"># 파라미터 수정</span><br>
+<span class="cm">"RSI 과매도 기준을 30에서 25로 낮춰줘"</span><br>
+<span class="cm">"VIX 센서 가중치를 30%에서 35%로 올려줘"</span><br><br>
+<span class="cc"># 기능 추가</span><br>
+<span class="cm">"Top Picks 페이지에 섹터별 필터 버튼 추가해줘"</span><br>
+<span class="cm">"Verdict가 STOP으로 바뀌면 텔레그램으로 알려줘"</span><br><br>
+<span class="cc"># 분석 요청</span><br>
+<span class="cm">"오늘 Verdict가 뭐야? BUY 종목 Top 3 알려줘"</span><br>
+<span class="cm">"NVDA 현재 Grade와 6팩터 점수 분해 알려줘"</span>
+</div>
+<div class="hl" style="border-color:#4338ca;background:#eef2ff">
+<p>Claude Code가 관련 파일을 찾아서 수정하고 결과를 보여준다. <strong>변경 승인 전에는 절대 적용하지 않는다.</strong></p>
+</div>`},
+{t:"AI Builder 에이전트 팀",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">AI Builder 에이전트 팀</div>
+<div class="s-sub">대시보드 /ai-builder 페이지에서 웹으로 에이전트 실행</div>
+<table class="tbl">
+<tr><th>에이전트</th><th>역할</th><th>언제 사용</th></tr>
+<tr><td><strong>service-evolver</strong></td><td>매일 1개 자동 개선 제안·실행</td><td>자동 실행 (수동 트리거 가능)</td></tr>
+<tr><td><strong>perf-lead</strong></td><td>Sharpe/Alpha 개선 총괄 오케스트레이터</td><td>전략 수익률이 SPY에 뒤처질 때</td></tr>
+<tr><td><strong>equity-lead</strong></td><td>팩터 상관관계 감사 (&lt;0.7 관리)</td><td>팩터 추가/수정 후 검증</td></tr>
+<tr><td><strong>research-lead</strong></td><td>논문 리서치로 신규 팩터 발굴</td><td>시스템 성능 정체 시</td></tr>
+<tr><td><strong>signal-optimizer</strong></td><td>센서/팩터 코드 직접 개선</td><td>하루 1~2개 작은 변경</td></tr>
+</table>
+<div class="hl" style="border-color:#4338ca;background:#eef2ff;margin-top:14px">
+<p>이 에이전트들이 <strong>매일 자동으로 시스템을 분석·개선</strong>한다. us-stock은 자가진화 투자 시스템이다.</p>
+</div>`},
+{t:"실전 시나리오 — AAPL 분석",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">실전 시나리오 — "AAPL 지금 살까?"</div>
+<div class="s-sub">대시보드 확인 + Claude Code 질문으로 5분 안에 결론</div>
+<div class="grid2">
+<div>
+<div class="icard" style="margin-bottom:10px;border-top:3px solid #2563eb">
+<div class="icard-t">📊 대시보드에서 확인</div>
+<div class="icard-b" style="font-size:12px">
+1. Overview → Verdict = GO 확인<br>
+2. Top Picks → AAPL 검색<br>&nbsp;&nbsp;&nbsp;Grade B, Action = BUY<br>
+3. AI Analysis → AAPL 클릭<br>&nbsp;&nbsp;&nbsp;상승 촉매 3개, 리스크 1개<br>
+4. Forecast → SPY BULLISH 71%
+</div>
+</div>
+</div>
+<div>
+<div class="icard" style="border-top:3px solid #4338ca">
+<div class="icard-t">💬 Claude Code에게 추가 질문</div>
+<div class="icard-b" style="font-size:12px">
+"AAPL RSI와 이동평균 상태?"<br>
+"IT 섹터 Grade A 종목 더 있어?"<br>
+"AAPL 최근 13F 기관 보유 변동?"<br>
+"목표주가 대비 상승여력은?"
+</div>
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#4338ca;background:#eef2ff;margin-top:12px">
+<p>결론: <strong>Grade B + GO Verdict + AI 촉매 3개 + SPY BULLISH 71%</strong> = 소량 분할 매수 시작</p>
+</div>`},
+{t:"API 비용 관리",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">API 비용 관리</div>
+<div class="s-sub">일일 $0.20 예산으로 503종목 AI 분석 — 비결은 계층형 fallback</div>
+<div class="api-row">
+<div class="api-c ag">
+<div class="api-name">Gemini Flash</div>
+<div><span class="api-rank">1순위</span></div>
+<div class="api-price">$0.10</div>
+<div class="api-unit">/1M tokens 입력</div>
+<div class="api-note">가장 저렴 · 빠름 · 기본 선택</div>
+</div>
+<div class="api-c ao">
+<div class="api-name">GPT-4o-mini</div>
+<div><span class="api-rank">2순위</span></div>
+<div class="api-price">$0.15</div>
+<div class="api-unit">/1M tokens 입력</div>
+<div class="api-note">Gemini 실패 시 자동 전환</div>
+</div>
+<div class="api-c ap">
+<div class="api-name">Perplexity Sonar</div>
+<div><span class="api-rank">3순위</span></div>
+<div class="api-price">$3</div>
+<div class="api-unit">/1K requests</div>
+<div class="api-note">실시간 웹 검색 포함</div>
+</div>
+</div>
+<ul class="blist">
+<li><strong>일일 예산 $0.20/일</strong> — APIUsageTracker 자동 추적</li>
+<li>비용 확인: 대시보드 <code>/costs</code> 페이지</li>
+<li><strong>절감 팁:</strong> Top 20 종목만 AI 분석 = 비용 90% 절감</li>
+</ul>`},
+{t:"마무리 & Q&A",html:`
+<div class="s-eye" style="color:#4338ca">SECTION 6</div>
+<div class="s-title">마무리 — 오늘 핵심 메시지 3가지</div>
+<div class="s-sub">이것만 기억하고 가세요</div>
+<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+<div class="hl" style="border-color:#f43f5e;background:#fff1f2">
+<p>1️⃣ <strong>AI는 도구다.</strong> 코딩 없이 한국어 대화만으로 주식 분석 시스템을 운영할 수 있다.</p>
+</div>
+<div class="hl" style="border-color:#2563eb;background:#eff6ff">
+<p>2️⃣ <strong>503개 종목을 매일 자동 분석.</strong> 아침 5분 대시보드 확인으로 오늘의 투자 결정을 내린다.</p>
+</div>
+<div class="hl" style="border-color:#059669;background:#ecfdf5">
+<p>3️⃣ <strong>AI 투자 흐름:</strong> 데이터센터 → 반도체 → 메모리 → 서버. 이 연쇄가 2026~2028 핵심 테마다.</p>
+</div>
+</div>
+<div class="grid2">
+<div class="icard">
+<div class="icard-t">📚 참고 자료</div>
+<div class="icard-b" style="font-size:12px">
+대시보드: localhost:3000<br>
+CLAUDE.md: 전체 시스템 문서<br>
+GitHub: us-stock 리포지토리<br>
+프린들tv: 유튜브 112편
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">❓ Q&amp;A</div>
+<div class="icard-b" style="font-size:12px">
+무엇이든 질문하세요.<br><br>
+Claude Code 설치법,<br>대시보드 해석법,<br>특정 종목 분석 방법 등
+</div>
+</div>
+</div>`}
+]}
+,{id:7, num:7, title:"참고 자료", sub:"네트워크 · OS · WEB 핵심 정리", color:"#64748b", cl:"#f1f5f9", slides:[
+{t:"네트워크 핵심",html:`
+<div class="s-eye" style="color:#64748b">SECTION 7 · REF</div>
+<div class="s-title">네트워크 핵심</div>
+<div class="s-sub">L2·L3·L4 계층별 식별자. Encapsulation = 각 계층이 헤더를 씌워 전달</div>
+<div class="grid2" style="margin-bottom:12px">
+<div class="icard">
+<div class="icard-t">계층별 식별자</div>
+<div class="icard-b" style="font-size:12px">
+<strong>L2 — MAC</strong>: NIC(네트워크 카드) 식별. 48bit 물리 주소. 같은 네트워크 내 통신<br><br>
+<strong>L3 — IP</strong>: Host(컴퓨터) 식별. 논리 주소. 라우터가 목적지 찾기<br><br>
+<strong>L4 — Port</strong>: Service 식별. 0~65535. HTTP=80, HTTPS=443, SSH=22
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">Encapsulation (캡슐화)</div>
+<div class="icard-b">
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="background:#dbeafe;border-radius:5px;padding:6px 8px;font-size:11px;font-weight:700;color:#1d4ed8">Stream (데이터)</div>
+<div style="text-align:center;color:#9ca3af;font-size:10px">↓ L4 TCP/UDP 헤더 추가</div>
+<div style="background:#d1fae5;border-radius:5px;padding:6px 8px;font-size:11px;font-weight:700;color:#065f46">Segment</div>
+<div style="text-align:center;color:#9ca3af;font-size:10px">↓ L3 IP 헤더 추가</div>
+<div style="background:#fef3c7;border-radius:5px;padding:6px 8px;font-size:11px;font-weight:700;color:#92400e">Packet</div>
+<div style="text-align:center;color:#9ca3af;font-size:10px">↓ L2 MAC 헤더 추가</div>
+<div style="background:#fce7f3;border-radius:5px;padding:6px 8px;font-size:11px;font-weight:700;color:#9d174d">Frame (물리 전송)</div>
+</div>
+</div>
+</div>
+</div>
+<table class="tbl">
+<tr><th></th><th>TCP</th><th>UDP</th></tr>
+<tr><td><strong>연결</strong></td><td>3-way handshake (연결 지향)</td><td>비연결 (connectionless)</td></tr>
+<tr><td><strong>신뢰성</strong></td><td>순서 보장 · 재전송</td><td>보장 없음</td></tr>
+<tr><td><strong>용도</strong></td><td>HTTP · DB · 파일 전송</td><td>DNS · 스트리밍 · 게임</td></tr>
+</table>`},
+{t:"OS 심화 — 메모리 레이아웃",html:`
+<div class="s-eye" style="color:#64748b">SECTION 7 · REF</div>
+<div class="s-title">OS 심화 — 메모리 레이아웃</div>
+<div class="s-sub">프로세스 메모리 = 4영역. Compile = 소스→실행파일 5단계. fork+exec = 프로세스 생성</div>
+<div class="grid2" style="margin-bottom:12px">
+<div class="icard">
+<div class="icard-t">프로세스 메모리 영역</div>
+<div class="icard-b">
+<div style="display:flex;flex-direction:column;gap:3px;font-size:11px">
+<div style="background:#dbeafe;border-radius:5px;padding:7px 10px;font-weight:700;color:#1d4ed8">CODE (Text) — 실행 코드 (읽기 전용)</div>
+<div style="background:#d1fae5;border-radius:5px;padding:7px 10px;font-weight:700;color:#065f46">DATA — 전역 변수 · static 변수</div>
+<div style="background:#fef3c7;border-radius:5px;padding:7px 10px;font-weight:700;color:#92400e">HEAP — 동적 할당 (malloc) ↑ 위로 성장</div>
+<div style="background:#f3f4f6;border-radius:5px;padding:7px 10px;text-align:center;font-size:10px;color:#9ca3af">↕ 빈 공간</div>
+<div style="background:#fce7f3;border-radius:5px;padding:7px 10px;font-weight:700;color:#9d174d">STACK — 지역 변수 · 함수 호출 ↓ 아래로 성장</div>
+</div>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">Compile 과정 (C언어)</div>
+<div class="icard-b">
+<div style="display:flex;flex-direction:column;gap:3px;font-size:11px">
+<div style="background:#eff6ff;border-radius:4px;padding:5px 8px;font-weight:600">.c 소스파일</div>
+<div style="color:#9ca3af;padding-left:10px;font-size:10px">↓ Preprocessor (#include 처리)</div>
+<div style="background:#eff6ff;border-radius:4px;padding:5px 8px;font-weight:600">.i 전처리 파일</div>
+<div style="color:#9ca3af;padding-left:10px;font-size:10px">↓ Compiler (최적화)</div>
+<div style="background:#eff6ff;border-radius:4px;padding:5px 8px;font-weight:600">.s 어셈블리</div>
+<div style="color:#9ca3af;padding-left:10px;font-size:10px">↓ Assembler</div>
+<div style="background:#eff6ff;border-radius:4px;padding:5px 8px;font-weight:600">.o 오브젝트 파일</div>
+<div style="color:#9ca3af;padding-left:10px;font-size:10px">↓ Linker (라이브러리 결합)</div>
+<div style="background:#d1fae5;border-radius:4px;padding:5px 8px;font-weight:700;color:#065f46">실행 파일 (ELF / exe)</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hl" style="border-color:#64748b;background:#f8fafc">
+<p><strong>프로세스 생성:</strong> fork() = 부모 프로세스 복사 → exec() = 새 프로그램으로 교체. 모든 프로세스는 이 2단계로 생성됨</p>
+</div>`},
+{t:"WEB &amp; Cloud 심화",html:`
+<div class="s-eye" style="color:#64748b">SECTION 7 · REF</div>
+<div class="s-title">WEB &amp; Cloud 심화</div>
+<div class="s-sub">REST API 원칙 · Cookie vs Session · Kubernetes 구조 · CI/CD 파이프라인</div>
+<div class="grid2" style="margin-bottom:12px">
+<div class="icard">
+<div class="icard-t">REST API 핵심 원칙</div>
+<div class="icard-b" style="font-size:12px">
+<strong>URI = 자원 표현</strong> (명사)<br>
+<code style="font-size:11px">GET /users/1</code><br><br>
+<strong>HTTP Method = 행위 표현</strong><br>
+GET(조회) · POST(생성) · PUT(수정) · DELETE(삭제)<br><br>
+<strong>무상태(Stateless)</strong>: 요청마다 독립. 서버가 클라이언트 상태 저장 안 함<br><br>
+<strong>Cookie</strong>: 상태를 Client에 저장<br>
+<strong>Session</strong>: 상태를 Server에 저장 (SessionID만 Cookie로 전달)
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">Kubernetes (K8s) 구조</div>
+<div class="icard-b">
+<div style="border:2px solid #7c3aed;border-radius:6px;padding:8px">
+<div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:5px">Cluster (전체 시스템)</div>
+<div style="border:1px solid #a78bfa;border-radius:4px;padding:6px 8px;margin-bottom:4px">
+<div style="font-size:10px;font-weight:600;color:#6d28d9;margin-bottom:4px">Node (물리/가상 서버)</div>
+<div style="display:flex;gap:3px">
+<div style="background:#ede9fe;border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;color:#6d28d9">Pod</div>
+<div style="background:#ede9fe;border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;color:#6d28d9">Pod</div>
+<div style="background:#ede9fe;border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;color:#6d28d9">Pod</div>
+</div>
+</div>
+<div style="font-size:10px;color:#6b7280;line-height:1.7">Pod = 컨테이너 1개 이상의 실행 단위<br>Node = Pod를 실행하는 서버<br>Cluster = Node들의 집합</div>
+</div>
+</div>
+</div>
+</div>
+<div class="icard">
+<div class="icard-t">CI/CD 파이프라인</div>
+<div class="icard-b">
+<div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;margin-bottom:8px">
+<div style="background:#dbeafe;border-radius:5px;padding:6px 10px;font-size:11px;font-weight:700;color:#1d4ed8">Code</div>
+<div style="color:#9ca3af;padding:0 5px;font-size:13px">→</div>
+<div style="background:#d1fae5;border-radius:5px;padding:6px 10px;font-size:11px;font-weight:700;color:#065f46">Build</div>
+<div style="color:#9ca3af;padding:0 5px;font-size:13px">→</div>
+<div style="background:#fef3c7;border-radius:5px;padding:6px 10px;font-size:11px;font-weight:700;color:#92400e">Test</div>
+<div style="color:#9ca3af;padding:0 5px;font-size:13px">→</div>
+<div style="background:#fce7f3;border-radius:5px;padding:6px 10px;font-size:11px;font-weight:700;color:#9d174d">Deploy</div>
+</div>
+<div style="font-size:11px;color:#6b7280;line-height:1.8">
+<strong>CI</strong> (Continuous Integration): 코드 push → 자동 빌드 + 테스트<br>
+<strong>CD</strong> (Continuous Deployment): 테스트 통과 → 자동 배포<br>
+도구: GitHub Actions · Jenkins · GitLab CI
+</div>
+</div>
+</div>`}
+]}
+]
+
+// ============================================================
+// FLATTEN ALL SLIDES
+// ============================================================
+const ALL = SEC.flatMap(s => s.slides.map((sl,i) => ({...sl, sec:s, secIdx:i, secLen:s.slides.length})))
+let cur = 0
+
+function render(idx) {
+  cur = idx
+  const sl = ALL[idx]
+  const sec = sl.sec
+
+  // sidebar
+  document.querySelectorAll('.sb-sec').forEach((el,i) => {
+    el.classList.toggle('active', SEC[i].id === sec.id)
+    el.style.color = SEC[i].id === sec.id ? sec.color : ''
+  })
+
+  // top bar
+  const badge = document.getElementById('sec-badge')
+  badge.textContent = `SECTION ${sec.num}`
+  badge.style.background = sec.cl
+  badge.style.color = sec.color
+  document.getElementById('top-title').textContent = sl.t
+  document.getElementById('top-cnt').textContent = `${sl.secIdx+1} / ${sl.secLen}`
+
+  // slide content
+  document.getElementById('slide-content').innerHTML = sl.html
+
+  // progress
+  const pct = Math.round(((idx+1)/ALL.length)*100)
+  document.getElementById('prog-txt').textContent = `${idx+1} / ${ALL.length}`
+  document.getElementById('prog-pct').textContent = `${pct}%`
+  document.getElementById('prog-fill').style.width = pct+'%'
+
+  // prev/next
+  document.getElementById('prev-btn').disabled = idx === 0
+  document.getElementById('next-btn').disabled = idx === ALL.length-1
+
+  // dots (show section dots)
+  const dotsEl = document.getElementById('dots')
+  dotsEl.innerHTML = ''
+  const secSlides = SEC.find(s=>s.id===sec.id).slides
+  secSlides.forEach((_,i) => {
+    const d = document.createElement('div')
+    d.className = 'd' + (i===sl.secIdx?' on':'')
+    if(i===sl.secIdx) d.style.background = sec.color
+    dotsEl.appendChild(d)
+  })
+
+  // scroll slide area to top
+  document.querySelector('.slide-area').scrollTop = 0
+}
+
+function nav(dir) {
+  const n = cur + dir
+  if(n >= 0 && n < ALL.length) render(n)
+}
+
+function jumpSec(id) {
+  const idx = ALL.findIndex(s => s.sec.id === id)
+  if(idx >= 0) render(idx)
+}
+
+// build sidebar
+const nav2 = document.getElementById('sb-nav')
+SEC.forEach(s => {
+  const btn = document.createElement('button')
+  btn.className = 'sb-sec'
+  btn.onclick = () => jumpSec(s.id)
+  btn.innerHTML = `<span class="sb-dot" style="border-color:${s.color}"></span><span class="sb-num">${s.num}</span><span class="sb-name">${s.title}</span><span class="sb-cnt">${s.slides.length}</span>`
+  nav2.appendChild(btn)
+})
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT') return
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nav(1)}
+  else if(e.key==='ArrowLeft'){e.preventDefault();nav(-1)}
+  else if(e.key>='1'&&e.key<='7'){e.preventDefault();jumpSec(parseInt(e.key))}
+})
+
+render(0)
+</script>
+</body>
+</html>
