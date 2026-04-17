@@ -1,9 +1,16 @@
 #!/bin/bash
-# us-stock daily pipeline + deploy via git-scraping
-# Runs on Mac (launchd / weekdays 07:00 KST), pushes JSON to git → GitHub Actions builds & deploys.
+# us-stock daily pipeline + deploy via SSH pipe to Synology
+# Runs on Mac (launchd / weekdays 07:00 KST).
+# Data delivered via SSH cat pipe (output/data.db → NAS) — no git commit, no image rebuild required.
 set -euo pipefail
 cd /Users/frindle/workspace/synology/us-stock
 source .venv/bin/activate
+
+# Synology NAS — SSH key auth (jeehoon@frindle.synology.me:22211)
+NAS_SSH_HOST="frindle.synology.me"
+NAS_SSH_PORT="${NAS_SSH_PORT:-22211}"
+NAS_SSH_USER="${NAS_SSH_USER:-jeehoon}"
+NAS_DATA_DB_PATH="/volume1/docker/us-stock/board/data.db"
 
 # --- Mac 알림 헬퍼 ---
 notify() {
@@ -32,67 +39,41 @@ if ! ping -c 1 -W 3 8.8.8.8 &>/dev/null; then
 fi
 
 LOG="logs/deploy_$(date +%Y%m%d_%H%M%S).log"
-mkdir -p logs frontend/public/data/reports
+mkdir -p logs
 
 {
   echo "[$(date)] === Starting pipeline ==="
 
-  python scripts/run_integrated_analysis.py
-  python scripts/regen_dashboard_data.py
+  .venv/bin/python3 scripts/run_integrated_analysis.py
+  .venv/bin/python3 scripts/regen_dashboard_data.py
 
-  # Verify all required JSON files exist before committing
-  MISSING=""
-  for f in output/regime_config.json output/regime_result.json \
-           output/market_gate.json output/final_top10_report.json \
-           output/gbm_predictions.json output/ai_summaries.json \
-           output/index_prediction.json output/prediction_history.json \
-           output/latest_report.json output/reports/latest_report.json \
-           output/risk_alerts.json; do
-    if [ ! -f "$f" ]; then
-      MISSING="${MISSING} $f"
-    fi
-  done
-  if [ -n "$MISSING" ]; then
-    echo "[$(date)] MISSING FILES:$MISSING"
+  # Verify data.db was written by the pipeline
+  if [ ! -f "output/data.db" ]; then
+    echo "[$(date)] ERROR: output/data.db not found — SQLite write may have failed"
     exit 1
   fi
 
-  # Copy JSON to Next.js public/data (build-time import source)
-  DATA_DIR="frontend/public/data"
-  cp output/regime_config.json "$DATA_DIR/"
-  cp output/regime_result.json "$DATA_DIR/"
-  cp output/market_gate.json "$DATA_DIR/"
-  cp output/final_top10_report.json "$DATA_DIR/"
-  cp output/gbm_predictions.json "$DATA_DIR/"
-  cp output/ai_summaries.json "$DATA_DIR/"
-  cp output/index_prediction.json "$DATA_DIR/"
-  cp output/prediction_history.json "$DATA_DIR/"
-  cp output/latest_report.json "$DATA_DIR/"
-  cp output/risk_alerts.json "$DATA_DIR/" 2>/dev/null || true
-  cp output/reports/*.json "$DATA_DIR/reports/" 2>/dev/null || true
-  mkdir -p output/picks
-  cp result/smart_money_picks_*.csv output/picks/ 2>/dev/null || true
-  # risk_dates_manifest.json 갱신 (날짜별 risk_alerts 파일 목록)
-  python3 -c "
-import json, pathlib
-fe = pathlib.Path('$DATA_DIR')
-dates = sorted(set(
-    f.stem.replace('risk_alerts_', '')
-    for f in fe.glob('risk_alerts_????????.json')
-    if f.stem.replace('risk_alerts_', '') >= '20260217'
-))
-(fe / 'risk_dates_manifest.json').write_text(json.dumps({'dates': dates}, indent=2))
-" 2>/dev/null || true
+  # WAL checkpoint: flush WAL journal into main DB before rsync
+  # (prevents rsync from copying an incomplete state)
+  echo "[$(date)] === SQLite WAL checkpoint ==="
+  .venv/bin/python3 -c "
+import sqlite3
+conn = sqlite3.connect('output/data.db')
+result = conn.execute('PRAGMA wal_checkpoint(FULL)').fetchone()
+conn.close()
+print(f'WAL checkpoint complete: busy={result[0]}, written={result[1]}, moved={result[2]}')
+"
 
-  # Git commit & push if there are changes
-  if ! git diff --quiet "$DATA_DIR" 2>/dev/null; then
-    git add "$DATA_DIR"
-    git commit -m "chore(data): daily update $(date +%F)"
-    git push origin main
-    echo "[$(date)] === Pushed new data to GitHub — Actions will build & deploy ==="
-  else
-    echo "[$(date)] === No data changes, skipping commit ==="
-  fi
+  # SSH pipe data.db to Synology — Next.js reads it live, no image rebuild needed
+  # rsync 대신 SSH pipe 사용: Synology sshd가 rsync 프로토콜을 거부함
+  echo "[$(date)] === SSH pipe data.db → Synology (${NAS_SSH_USER}@${NAS_SSH_HOST}) ==="
+  ssh -p "${NAS_SSH_PORT}" -i /Users/frindle/.ssh/id_rsa \
+    "${NAS_SSH_USER}@${NAS_SSH_HOST}" \
+    "cat > ${NAS_DATA_DB_PATH}" < output/data.db \
+    && echo "[$(date)] SSH pipe succeeded" \
+    || { notify "배포 실패 — 수동 배포 필요" "배포 오류 ❌" "Basso"; exit 1; }
+
+  echo "[$(date)] === Pipeline + deploy complete ==="
 } 2>&1 | tee "$LOG"
 
-notify "분석 완료 — 데이터 갱신 후 GitHub 배포 트리거됨" "$(date +%H:%M) 완료 ✅" "Glass"
+notify "분석 완료 — data.db Synology 배포 완료" "$(date +%H:%M) 완료 ✅" "Glass"

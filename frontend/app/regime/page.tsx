@@ -59,9 +59,8 @@ export default function RegimePage() {
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
 
   async function loadReport(dateStr: string) {
-    const ymd = dateStr.replace(/-/g, "");
     try {
-      const res = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+      const res = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
       if (!res.ok) throw new Error(String(res.status));
       const d = (await res.json()) as DailyReport;
       setMt(d.market_timing ?? {});
@@ -74,32 +73,22 @@ export default function RegimePage() {
     }
   }
 
-  async function shiftDate(delta: number) {
-    const d = new Date(date);
-    for (let attempt = 0; attempt < 7; attempt++) {
-      d.setDate(d.getDate() + delta);
-      const dateStr = d.toISOString().slice(0, 10);
-      const ymd = dateStr.replace(/-/g, "");
-      try {
-        const res = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
-        if (res.ok) {
-          const data = (await res.json()) as DailyReport;
-          setMt(data.market_timing ?? {});
-          setDate(dateStr);
-          setStatus("");
-          return;
-        }
-      } catch { /* 계속 탐색 */ }
-    }
-    setStatus("데이터 없음");
+  function shiftDate(delta: number) {
+    if (availableDates.size === 0) return;
+    const sorted = Array.from(availableDates).sort();
+    const idx = sorted.indexOf(date);
+    if (idx === -1) return;
+    const next = sorted[idx + delta];
+    if (next) void loadReport(next);
+    else setStatus("데이터 없음");
   }
 
   useEffect(() => {
-    fetch("/data/dates_manifest.json", { cache: "no-store" })
+    fetch("/api/data/dates", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
 
-    fetch("/data/latest_report.json", { cache: "no-store" })
+    fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: DailyReport) => {
         const dateStr = d.data_date ?? todayStr();

@@ -113,6 +113,13 @@ def save_market_gate_json(gate=None, session=None) -> Path:
     OUTPUT_DIR.mkdir(exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     logger.info("saved %s (gate=%s, sectors=%d, div=%s)", out, gate.gate, len(gate.sectors), divergence)
+    try:
+        from db import data_store as _ds
+        _conn = _ds.get_db()
+        _ds.upsert_market_gate_snapshot(_conn, payload)
+        _conn.close()
+    except Exception as _e:
+        logger.warning("SQLite market_gate 쓰기 실패: %s", _e)
     return out
 
 
@@ -161,6 +168,13 @@ def save_gbm_json(gbm_df=None) -> Path | None:
     out = OUTPUT_DIR / "gbm_predictions.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     logger.info("saved %s (top %d)", out, len(rows))
+    try:
+        from db import data_store as _ds
+        _conn = _ds.get_db()
+        _ds.upsert_gbm_predictions(_conn, payload)
+        _conn.close()
+    except Exception as _e:
+        logger.warning("SQLite gbm_predictions 쓰기 실패: %s", _e)
     return out
 
 

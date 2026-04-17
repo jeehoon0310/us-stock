@@ -19,9 +19,8 @@ export function DashboardClient() {
   const [riskData, setRiskData] = useState<RiskAlertData | null>(null);
 
   async function loadReport(dateStr: string) {
-    const ymd = dateStr.replace(/-/g, "");
     try {
-      const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
+      const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
       if (!r.ok) throw new Error(String(r.status));
       const data = (await r.json()) as LatestReport;
       setReport(data);
@@ -34,36 +33,23 @@ export function DashboardClient() {
     }
   }
 
-  async function shiftDate(delta: number) {
-    const d = new Date(date);
-    // 주말·공휴일 자동 skip: 최대 7일 탐색
-    for (let attempt = 0; attempt < 7; attempt++) {
-      d.setDate(d.getDate() + delta);
-      const dateStr = d.toISOString().slice(0, 10);
-      const ymd = dateStr.replace(/-/g, "");
-      try {
-        const r = await fetch(`/data/reports/daily_report_${ymd}.json`, { cache: "no-store" });
-        if (r.ok) {
-          const data = (await r.json()) as LatestReport;
-          setReport(data);
-          setDate(dateStr);
-          setStatus("");
-          return;
-        }
-      } catch {
-        // 계속 탐색
-      }
-    }
-    setStatus("데이터 없음");
+  function shiftDate(delta: number) {
+    if (availableDates.size === 0) return;
+    const sorted = Array.from(availableDates).sort();
+    const idx = sorted.indexOf(date);
+    if (idx === -1) return;
+    const next = sorted[idx + delta];
+    if (next) void loadReport(next);
+    else setStatus("데이터 없음");
   }
 
   useEffect(() => {
-    fetch("/data/dates_manifest.json", { cache: "no-store" })
+    fetch("/api/data/dates", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
 
-    // CSR: 최신 리포트 + regime_config 초기 로딩
-    fetch("/data/latest_report.json", { cache: "no-store" })
+    // CSR: 최신 리포트 + regime 초기 로딩
+    fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: LatestReport) => {
         setReport(d);
@@ -72,12 +58,12 @@ export function DashboardClient() {
       })
       .catch(() => setStatus("데이터 없음"));
 
-    fetch("/data/regime_config.json", { cache: "no-store" })
+    fetch("/api/data/regime", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: RegimeConfig) => setRegime(d))
       .catch(() => {});
 
-    fetch("/data/risk_alerts.json", { cache: "no-store" })
+    fetch("/api/data/risk?date=latest", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: RiskAlertData) => setRiskData(d))
       .catch(() => {});

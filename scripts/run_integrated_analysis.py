@@ -264,6 +264,13 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
     with open(daily_path, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
     logger.info("  리포트 저장: %s", daily_path)
+    try:
+        from db import data_store as _ds
+        _conn = _ds.get_db()
+        _ds.upsert_daily_report(_conn, now.strftime("%Y-%m-%d"), report)
+        _conn.close()
+    except Exception as _e:
+        logger.warning("SQLite daily_report 쓰기 실패: %s", _e)
 
     # latest_report.json 업데이트 (복사)
     latest_path = REPORTS_DIR / "latest_report.json"

@@ -31,10 +31,8 @@ export default function RiskPage() {
   async function loadForDate(d: string) {
     setStatus("로딩 중...");
     setData(null);
-    const compact = toCompact(d);
-    // 날짜별 파일 먼저 시도, 없으면 최신 파일
-    let res = await fetch(`/data/risk_alerts_${compact}.json`, { cache: "no-store" });
-    if (!res.ok) res = await fetch("/data/risk_alerts.json", { cache: "no-store" });
+    let res = await fetch(`/api/data/risk?date=${d}`, { cache: "no-store" });
+    if (!res.ok) res = await fetch("/api/data/risk?date=latest", { cache: "no-store" });
     if (!res.ok) { setStatus("데이터 없음"); return; }
     const json = await res.json() as RiskAlertData;
     setData(json);
@@ -43,25 +41,19 @@ export default function RiskPage() {
   }
 
   // ◀▶ 인접 날짜 탐색
-  async function shiftDate(delta: number) {
-    const cur = new Date(date);
-    for (let i = 1; i <= 7; i++) {
-      cur.setDate(cur.getDate() + delta);
-      const s = cur.toISOString().slice(0, 10);
-      const res = await fetch(`/data/risk_alerts_${toCompact(s)}.json`, { cache: "no-store" });
-      if (res.ok) {
-        setData(await res.json() as RiskAlertData);
-        setDate(s);
-        setStatus("");
-        return;
-      }
-    }
+  function shiftDate(delta: number) {
+    if (availableDates.size === 0) return;
+    const sorted = Array.from(availableDates).sort();
+    const idx = sorted.indexOf(date);
+    if (idx === -1) return;
+    const next = sorted[idx + delta];
+    if (next) void loadForDate(next);
   }
 
   // 초기 로드
   useEffect(() => {
     // 날짜 매니페스트
-    fetch("/data/risk_dates_manifest.json", { cache: "no-store" })
+    fetch("/api/data/risk-dates", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: { dates: string[] }) => {
         const converted = d.dates.map((s) => `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`);

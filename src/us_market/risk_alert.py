@@ -1194,6 +1194,14 @@ class RiskAlertSystem:
             with open(dated_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2, default=str)
             logger.info("날짜별 리스크 알림 저장: %s", dated_file)
+            try:
+                from db import data_store as _ds
+                _conn = _ds.get_db()
+                _date_iso = f"{output_date[:4]}-{output_date[4:6]}-{output_date[6:]}"
+                _ds.upsert_risk_alert(_conn, _date_iso, result, update_snapshot=False)
+                _conn.close()
+            except Exception as _e:
+                logger.warning("SQLite risk_alert 쓰기 실패: %s", _e)
             if fe_data.exists():
                 shutil.copy2(dated_file, fe_data / f"risk_alerts_{output_date}.json")
                 logger.info("대시보드 복사: %s", fe_data / f"risk_alerts_{output_date}.json")
@@ -1202,6 +1210,13 @@ class RiskAlertSystem:
             with open(self.output_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2, default=str)
             logger.info("리스크 알림 저장: %s", self.output_file)
+            try:
+                from db import data_store as _ds
+                _conn = _ds.get_db()
+                _ds.upsert_risk_alert(_conn, now.strftime("%Y-%m-%d"), result, update_snapshot=True)
+                _conn.close()
+            except Exception as _e:
+                logger.warning("SQLite risk_alert 쓰기 실패: %s", _e)
             if fe_data.exists():
                 shutil.copy2(self.output_file, fe_data / "risk_alerts.json")
                 today_str = now.strftime("%Y%m%d")

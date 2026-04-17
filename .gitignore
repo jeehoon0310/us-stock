@@ -28,10 +28,8 @@ src/ml/experiments/
 src/ml/validation/
 src/ml/features/
 
-# Git-scraping: frontend/public/data/ is the deploy staging area.
-# Mac pipeline commits daily snapshots here, CI bakes them into the image.
-!frontend/public/data/
-!frontend/public/data/**
+# frontend/public/data/ JSON files delivered via SQLite rsync (data.db → Synology).
+# No longer tracked in git — Next.js serves data from /api/data/* routes.
 
 # OS
 .DS_Store

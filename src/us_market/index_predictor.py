@@ -603,6 +603,13 @@ class IndexPredictor:
         with open(self.output_file, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         logger.info("Saved prediction to %s", self.output_file)
+        try:
+            from db import data_store as _ds
+            _conn = _ds.get_db()
+            _ds.upsert_index_prediction(_conn, results)
+            _conn.close()
+        except Exception as _e:
+            logger.warning("SQLite index_prediction 쓰기 실패: %s", _e)
 
         # Save to history
         self._save_prediction_history(results)
@@ -680,6 +687,13 @@ class IndexPredictor:
             with open(self.history_file, 'w', encoding='utf-8') as f:
                 json.dump(history, f, indent=2, ensure_ascii=False)
             logger.info("Saved prediction history (%d entries)", len(history))
+            try:
+                from db import data_store as _ds
+                _conn = _ds.get_db()
+                _ds.upsert_prediction_history_entry(_conn, entry)
+                _conn.close()
+            except Exception as _e:
+                logger.warning("SQLite prediction_history 쓰기 실패: %s", _e)
         except Exception as e:
             logger.warning("Failed to save prediction history: %s", e)
 

@@ -11,6 +11,11 @@
 
 GitHub Actions ubuntu-latest runner 가 이미지를 빌드해서 GHCR 에 푸시한 뒤, **Tailscale tailnet 에 ephemeral node 로 가입**한다. 그 상태에서 `appleboy/ssh-action@v1` 이 Synology 의 **tailnet IP `100.93.245.113` 의 포트 `28080`** 으로 SSH 연결을 시도하고, Synology 쪽의 **`tailscaled` 가 userspace 모드로 로컬 sshd 에 TCP 릴레이**한다. sshd 관점에서는 source IP 가 `127.0.0.1` 로 보인다. 이후 `sudo docker compose up -d` 로 컨테이너를 교체하고 `/api/health` 폴링으로 검증. **핵심은 포트 28080 과 Tailscale 경로 — ASUS WAN 포트포워드는 CI 경로에 사용하지 않는다.**
 
+> **⚠️ 2026-04-17 변경**: 이 CI/CD 파이프라인은 **코드 변경** 전용이다.
+> 데이터(분석 결과)는 git push 없이 Mac에서 rsync로 Synology에 직접 전달한다.
+> `frontend/public/data/**` 는 더 이상 git 추적되지 않으며 CI 트리거 조건에서 제외됐다.
+> 자세한 내용: [docker-deployment_v2.md](./docker-deployment_v2.md)
+
 ---
 
 ## 2. Context — 왜 v2 를 만드는가
@@ -750,3 +755,17 @@ sudo /usr/local/bin/docker compose -f /volume1/docker/us-stock/docker-compose.ym
 ---
 
 **문서 끝.** 이 문서가 다음 번 CI/CD 이슈 디버깅에 참고될 때, 오늘 쓴 시간을 또 쓰지 않도록 하는 것이 목적이다.
+
+---
+
+## [추가됨 2026-04-17] 두 가지 배포 경로
+
+| 배포 유형 | 트리거 | 경로 | 이미지 재빌드 |
+|-----------|--------|------|---------------|
+| **코드 변경** | `git push main` (src/, frontend/app, frontend/src 등) | GHA → GHCR → SSH → docker pull | ✓ 필요 |
+| **데이터 갱신** | launchd 07:00 KST (자동) 또는 수동 | Mac → output/data.db → rsync → Synology /data/data.db | ✗ 불필요 |
+
+**과거(v2 이전)**: `frontend/public/data/*.json` 변경도 git push → CI 트리거됐음.
+**현재(v3)**: JSON 파일은 git 미추적. 데이터 변경은 rsync가 전담.
+
+자세한 데이터 배포 흐름: [docker-deployment_v2.md](./docker-deployment_v2.md)

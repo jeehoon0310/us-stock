@@ -354,8 +354,9 @@ export function riskLevelColor(level: RiskLevel | string): string {
 
 export async function loadRiskAlerts(): Promise<RiskAlertData | null> {
   try {
-    const data = await fetchReportData("risk_alerts.json");
-    return data as RiskAlertData;
+    const res = await fetch("/api/data/risk?date=latest", { cache: "no-store" });
+    if (!res.ok) return null;
+    return await res.json() as RiskAlertData;
   } catch {
     return null;
   }

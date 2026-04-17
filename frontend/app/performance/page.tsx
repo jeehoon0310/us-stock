@@ -265,7 +265,7 @@ export default function PerformancePage() {
 
   useEffect(() => {
     setMounted(true);
-    fetch("/data/performance.json", { cache: "no-store" })
+    fetch("/api/data/performance", { cache: "no-store" })
       .then((r) => r.json())
       .then((d: PerformanceData) => {
         setData(d);

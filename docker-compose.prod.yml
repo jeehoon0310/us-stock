@@ -9,6 +9,7 @@ services:
       - TZ=America/New_York
       - NODE_OPTIONS=--dns-result-order=ipv4first --no-network-family-autoselection
       - BOARD_DB_PATH=/data/board.db
+      - DATA_DB_PATH=/data/data.db
     volumes:
       - /volume1/docker/us-stock/board:/data
     restart: unless-stopped

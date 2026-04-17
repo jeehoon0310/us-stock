@@ -367,6 +367,13 @@ class MarketRegimeDetector:
         with open(path, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=2, default=str)
         logger.info("결과 저장: %s", path)
+        try:
+            from db import data_store as _ds
+            _conn = _ds.get_db()
+            _ds.upsert_regime_snapshot(_conn, result)
+            _conn.close()
+        except Exception as _e:
+            logger.warning("SQLite regime 쓰기 실패: %s", _e)
         return str(path)
 
 
