@@ -14,6 +14,25 @@ function todayStr() {
 
 type DatePickRow = { ticker: string; grade: string; action?: string };
 
+type StockPick = {
+  ticker: string; company_name?: string; composite_score?: number;
+  grade: string; action?: string; strategy?: string; setup?: string;
+  technical_score?: number; fundamental_score?: number; analyst_score?: number;
+  rs_score?: number; volume_score?: number; "13f_score"?: number;
+  rs_vs_spy?: number;
+};
+type MarketTiming = {
+  regime: string; regime_confidence?: number; gate?: string;
+  signals?: Record<string, string>;
+  ml_predictor?: { spy?: { direction: string; confidence_pct?: number; predicted_return?: number }; qqq?: { direction: string; confidence_pct?: number } };
+};
+type DailyReport = {
+  data_date?: string;
+  verdict?: string;
+  stock_picks?: StockPick[];
+  market_timing?: MarketTiming;
+};
+
 // ── 타입 ─────────────────────────────────────────────────────────
 
 type GraphJson = {
@@ -84,6 +103,70 @@ function getEdgeContext(
   }
 }
 
+// ── 종목 중심 그래프 빌더 ─────────────────────────────────────────
+
+function buildTickerGraph(ticker: string, report: DailyReport): GraphData {
+  const pick = report.stock_picks?.find((p) => p.ticker === ticker);
+  const mt = report.market_timing;
+
+  const regimeColor = (r?: string) =>
+    r === "risk_on" ? "#4ade80" : r === "risk_off" ? "#f87171" : "#facc15";
+  const dirColor = (d?: string) =>
+    d === "bullish" ? "#4ade80" : d === "bearish" ? "#f87171" : "#facc15";
+  const gradeColor = (g?: string) =>
+    g === "A" ? "#4ade80" : g === "B" ? "#86efac" : g === "C" ? "#facc15" : "#f87171";
+
+  const nodes: GraphNode[] = [
+    {
+      id: ticker, name: ticker, type: "ticker",
+      description: `${pick?.company_name ?? ""} · Grade ${pick?.grade ?? "?"} · Score ${pick?.composite_score?.toFixed(1) ?? "?"}`,
+      color: gradeColor(pick?.grade),
+      weight: 14,
+    },
+    {
+      id: "ind_regime", name: "Market Regime", type: "signal",
+      description: `${mt?.regime?.toUpperCase() ?? "—"} · 신뢰도 ${mt?.regime_confidence?.toFixed(0) ?? "?"}% · Gate ${mt?.gate ?? "?"}`,
+      color: regimeColor(mt?.regime),
+    },
+    {
+      id: "ind_ai", name: "AI Analysis", type: "agent",
+      description: "AI 심층 분석 (thesis + catalysts + bear cases)",
+      color: "#a78bfa",
+    },
+    {
+      id: "ind_forecast", name: "Index Forecast", type: "signal",
+      description: `SPY ${mt?.ml_predictor?.spy?.direction?.toUpperCase() ?? "—"} · ${((mt?.ml_predictor?.spy?.predicted_return ?? 0) * 100).toFixed(2)}% · 신뢰도 ${mt?.ml_predictor?.spy?.confidence_pct?.toFixed(0) ?? "?"}%`,
+      color: dirColor(mt?.ml_predictor?.spy?.direction),
+    },
+    {
+      id: "ind_ml", name: "ML Rankings", type: "analyzer",
+      description: `Composite ${pick?.composite_score?.toFixed(1) ?? "?"} · Tech ${pick?.technical_score ?? "?"} / Fund ${pick?.fundamental_score ?? "?"} / Analyst ${pick?.analyst_score ?? "?"}`,
+      color: gradeColor(pick?.grade),
+    },
+    {
+      id: "ind_risk", name: "Risk Monitor", type: "output",
+      description: `Adaptive stop-loss ${mt?.ml_predictor?.spy?.direction === "bearish" ? "강화" : "기준"} · 포지션 진입 전 확인`,
+      color: "#fb923c",
+    },
+    {
+      id: "ind_perf", name: "Performance", type: "output",
+      description: `vs SPY ${pick?.rs_vs_spy !== undefined ? (pick.rs_vs_spy >= 0 ? "+" : "") + pick.rs_vs_spy.toFixed(1) + "%" : "—"} · ${pick?.strategy ?? "?"} / ${pick?.setup ?? "?"}`,
+      color: (pick?.rs_vs_spy ?? 0) >= 0 ? "#4ade80" : "#f87171",
+    },
+  ];
+
+  const edges = [
+    { source: "ind_regime",   target: ticker, type: "determines" },
+    { source: "ind_ai",       target: ticker, type: "enhances" },
+    { source: "ind_forecast", target: ticker, type: "determines" },
+    { source: "ind_ml",       target: ticker, type: "produces" },
+    { source: "ind_risk",     target: ticker, type: "gates" },
+    { source: "ind_perf",     target: ticker, type: "displays" },
+  ];
+
+  return { nodes, edges };
+}
+
 // ── 페이지 ───────────────────────────────────────────────────────
 
 export default function GraphPage() {
@@ -99,9 +182,12 @@ export default function GraphPage() {
   const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
   const [dateTickers, setDateTickers] = useState<DatePickRow[]>([]);
   const [dateStatus, setDateStatus] = useState<string>("");
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [fullReport, setFullReport] = useState<DailyReport | null>(null);
 
   async function loadTickersForDate(dateStr: string) {
     setDateStatus("");
+    setSelectedTicker(null);
     try {
       const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
       if (!r.ok) {
@@ -110,8 +196,9 @@ export default function GraphPage() {
         setDateStatus("데이터 없음");
         return;
       }
-      const d = (await r.json()) as { data_date?: string; stock_picks?: Array<DatePickRow & { [k: string]: unknown }> };
+      const d = (await r.json()) as DailyReport & { stock_picks?: Array<StockPick & { [k: string]: unknown }> };
       setDateTickers((d.stock_picks ?? []).map((p) => ({ ticker: p.ticker, grade: p.grade, action: p.action })));
+      setFullReport(d);
       setDate(d.data_date ?? dateStr);
     } catch {
       setDateTickers([]);
@@ -146,10 +233,11 @@ export default function GraphPage() {
 
     fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((d: { data_date?: string; stock_picks?: Array<DatePickRow & { [k: string]: unknown }> } | null) => {
+      .then((d: (DailyReport & { stock_picks?: Array<StockPick & { [k: string]: unknown }> }) | null) => {
         if (!d) return;
         setDate(d.data_date ?? todayStr());
         setDateTickers((d.stock_picks ?? []).map((p) => ({ ticker: p.ticker, grade: p.grade, action: p.action })));
+        setFullReport(d);
       })
       .catch(() => {});
   }, []);
@@ -161,6 +249,7 @@ export default function GraphPage() {
   const handleTabChange = useCallback((tab: TabId) => {
     setActiveTab(tab);
     setSelectedNode(null);
+    setSelectedTicker(null);
   }, []);
 
   if (loading) {
@@ -182,9 +271,11 @@ export default function GraphPage() {
   }
 
   const currentGraph =
-    activeTab === "system" ? data.system_graph :
-    activeTab === "stock"  ? data.stock_graph  :
-    (data.stock_market_graph ?? data.stock_graph);
+    selectedTicker && fullReport
+      ? buildTickerGraph(selectedTicker, fullReport)
+      : activeTab === "system" ? data.system_graph
+      : activeTab === "stock"  ? data.stock_graph
+      : (data.stock_market_graph ?? data.stock_graph);
 
   // 선택된 노드의 연결 엣지 수
   const nodeEdges = selectedNode
@@ -220,14 +311,17 @@ export default function GraphPage() {
           </span>
           <HelpBtn topic="picks" value={dateTickers.length} />
           <select
-            value=""
+            value={selectedTicker ?? ""}
             onChange={(e) => {
               const tk = e.target.value;
-              if (tk) router.push(`/stock/${tk}?date=${date}`);
+              if (tk) {
+                setSelectedTicker(tk);
+                setSelectedNode(null);
+              }
             }}
             disabled={dateTickers.length === 0}
             className="bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-3 py-1 text-sm font-bold text-primary min-w-[180px] cursor-pointer outline-none focus:border-primary transition-colors disabled:opacity-50"
-            title="해당 날짜 Top Picks 종목 선택 → 상세 페이지로 이동"
+            title="해당 날짜 Top Picks 종목 선택 → 종목 중심 그래프로 전환"
           >
             <option value="">
               {dateTickers.length > 0
@@ -242,9 +336,15 @@ export default function GraphPage() {
               </option>
             ))}
           </select>
-          <span className="text-[10px] text-on-surface-variant hidden md:inline">
-            → /stock/[ticker]?date={date}
-          </span>
+          {selectedTicker ? (
+            <span className="text-[10px] text-primary font-bold hidden md:inline">
+              → {selectedTicker} 중심 그래프 표시 중
+            </span>
+          ) : (
+            <span className="text-[10px] text-on-surface-variant hidden md:inline">
+              → 종목 선택 시 인디케이터 연관 그래프로 전환
+            </span>
+          )}
         </div>
         <CalendarPicker
           value={date}
@@ -278,13 +378,13 @@ export default function GraphPage() {
 
       {/* 탭 + 범례 */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
           {(["system", "stock", "market"] as TabId[]).map((tab) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
               className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-                activeTab === tab
+                activeTab === tab && !selectedTicker
                   ? "bg-primary text-on-primary"
                   : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
               }`}
@@ -295,12 +395,26 @@ export default function GraphPage() {
               {tab === "system" ? "시스템 아키텍처" : tab === "stock" ? "종목 네트워크" : "종목-시장 관계"}
             </button>
           ))}
+          {selectedTicker && (
+            <div className="flex items-center gap-1 px-3 py-1.5 bg-primary rounded-lg text-on-primary text-sm font-bold">
+              <span className="material-symbols-outlined text-base align-middle">insights</span>
+              <span>{selectedTicker} 중심</span>
+              <button
+                onClick={() => setSelectedTicker(null)}
+                className="ml-1 hover:opacity-70 transition-opacity"
+                title="종목 뷰 닫기"
+              >
+                <span className="material-symbols-outlined text-base">close</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 범례 */}
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           {Object.entries(TYPE_LABEL_KEYS)
             .filter(([type]) => {
+              if (selectedTicker) return ["ticker", "signal", "agent", "analyzer", "output"].includes(type);
               if (activeTab === "system") return !["ticker", "sector", "agent"].includes(type);
               if (activeTab === "stock")  return ["ticker", "sector"].includes(type);
               return ["ticker", "signal", "page", "agent"].includes(type);
@@ -317,8 +431,32 @@ export default function GraphPage() {
         </div>
       </div>
 
+      {/* 종목 중심 뷰 배너 */}
+      {selectedTicker && fullReport && (
+        <div className="bg-surface-container-high rounded-xl p-4 flex gap-3 items-start border border-primary/20">
+          <span className="material-symbols-outlined text-primary text-xl flex-shrink-0 mt-0.5">hub</span>
+          <div className="flex-1 space-y-1">
+            <p className="text-sm font-bold text-on-surface">
+              {selectedTicker} · 6개 인디케이터 연관 그래프
+            </p>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              Market Regime · AI Analysis · Index Forecast · ML Rankings · Risk Monitor · Performance가{" "}
+              <span className="text-primary font-bold">{selectedTicker}</span>와 어떻게 연결되는지 보여줍니다.
+              노드를 클릭하면 각 인디케이터의 현재 상태와 연결 의미를 확인할 수 있어요.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push(`/stock/${selectedTicker}?date=${date}`)}
+            className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">open_in_new</span>
+            상세 페이지
+          </button>
+        </div>
+      )}
+
       {/* 종목-시장 관계 탭 설명 배너 */}
-      {activeTab === "market" && (
+      {activeTab === "market" && !selectedTicker && (
         <div className="bg-surface-container-high rounded-xl p-4 flex gap-3 items-start border border-outline-variant/10">
           <span className="material-symbols-outlined text-primary text-xl flex-shrink-0 mt-0.5">info</span>
           <div className="space-y-1">
