@@ -1,8 +1,18 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ForceGraph, GraphData, GraphNode, TYPE_COLORS } from "@/components/ForceGraph";
 import { HelpBtn } from "@/components/HelpBtn";
+import { CalendarPicker } from "@/components/CalendarPicker";
+import { gradeClass } from "@/lib/ui";
 import { useT } from "@/lib/i18n";
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+type DatePickRow = { ticker: string; grade: string; action?: string };
 
 // ── 타입 ─────────────────────────────────────────────────────────
 
@@ -78,10 +88,46 @@ function getEdgeContext(
 
 export default function GraphPage() {
   const t = useT();
+  const router = useRouter();
   const [data, setData] = useState<GraphJson | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("system");
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
+
+  // 날짜별 종목 검색 상태
+  const [date, setDate] = useState<string>(todayStr());
+  const [availableDates, setAvailableDates] = useState<Set<string>>(new Set());
+  const [dateTickers, setDateTickers] = useState<DatePickRow[]>([]);
+  const [dateStatus, setDateStatus] = useState<string>("");
+
+  async function loadTickersForDate(dateStr: string) {
+    setDateStatus("");
+    try {
+      const r = await fetch(`/api/data/reports?date=${dateStr}`, { cache: "no-store" });
+      if (!r.ok) {
+        setDateTickers([]);
+        setDate(dateStr);
+        setDateStatus("데이터 없음");
+        return;
+      }
+      const d = (await r.json()) as { data_date?: string; stock_picks?: Array<DatePickRow & { [k: string]: unknown }> };
+      setDateTickers((d.stock_picks ?? []).map((p) => ({ ticker: p.ticker, grade: p.grade, action: p.action })));
+      setDate(d.data_date ?? dateStr);
+    } catch {
+      setDateTickers([]);
+      setDate(dateStr);
+      setDateStatus("데이터 없음");
+    }
+  }
+
+  function shiftDate(delta: number) {
+    if (availableDates.size === 0) return;
+    const sorted = Array.from(availableDates).sort();
+    const idx = sorted.indexOf(date);
+    if (idx === -1) return;
+    const next = sorted[idx + delta];
+    if (next) void loadTickersForDate(next);
+  }
 
   useEffect(() => {
     fetch("/api/data/graph", { cache: "no-store" })
@@ -91,6 +137,21 @@ export default function GraphPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    // 날짜 manifest + 최신 Top Picks 리스트
+    fetch("/api/data/dates", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)))
+      .catch(() => {});
+
+    fetch("/api/data/reports?date=latest", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { data_date?: string; stock_picks?: Array<DatePickRow & { [k: string]: unknown }> } | null) => {
+        if (!d) return;
+        setDate(d.data_date ?? todayStr());
+        setDateTickers((d.stock_picks ?? []).map((p) => ({ ticker: p.ticker, grade: p.grade, action: p.action })));
+      })
+      .catch(() => {});
   }, []);
 
   const handleNodeClick = useCallback((node: GraphNode) => {
@@ -150,6 +211,50 @@ export default function GraphPage() {
 
   return (
     <div className="space-y-6">
+      {/* Explore Stock bar — date + ticker selector */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="material-symbols-outlined text-primary text-lg">travel_explore</span>
+          <span className="hidden sm:inline text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+            Explore Stock
+          </span>
+          <HelpBtn topic="picks" value={dateTickers.length} />
+          <select
+            value=""
+            onChange={(e) => {
+              const tk = e.target.value;
+              if (tk) router.push(`/stock/${tk}?date=${date}`);
+            }}
+            disabled={dateTickers.length === 0}
+            className="bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-3 py-1 text-sm font-bold text-primary min-w-[180px] cursor-pointer outline-none focus:border-primary transition-colors disabled:opacity-50"
+            title="해당 날짜 Top Picks 종목 선택 → 상세 페이지로 이동"
+          >
+            <option value="">
+              {dateTickers.length > 0
+                ? `종목 상세 이동… (${dateTickers.length}종목)`
+                : dateStatus || "데이터 로딩 중…"}
+            </option>
+            {dateTickers.map((p, i) => (
+              <option key={p.ticker} value={p.ticker}>
+                #{String(i + 1).padStart(2, "0")} {p.ticker}
+                {p.grade ? `  [${p.grade}]` : ""}
+                {p.action ? `  · ${p.action}` : ""}
+              </option>
+            ))}
+          </select>
+          <span className="text-[10px] text-on-surface-variant hidden md:inline">
+            → /stock/[ticker]?date={date}
+          </span>
+        </div>
+        <CalendarPicker
+          value={date}
+          availableDates={availableDates}
+          onChange={(d) => void loadTickersForDate(d)}
+          onShift={shiftDate}
+          status={dateStatus || undefined}
+        />
+      </div>
+
       {/* Header */}
       <div className="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
         <div className="relative z-10">
@@ -400,6 +505,25 @@ export default function GraphPage() {
                 </span>
                 {selectedNode.type === "agent" ? "AI Builder 열기" : "페이지 열기"}
               </a>
+            )}
+
+            {/* 종목 노드 → Stock Detail 페이지 이동 */}
+            {selectedNode.type === "ticker" && (
+              <Link
+                href={`/stock/${selectedNode.id}?date=${date}`}
+                className="flex items-center gap-2 text-sm text-primary hover:underline pt-2 border-t border-outline-variant/10 font-bold"
+              >
+                <span className="material-symbols-outlined text-base">insights</span>
+                Stock Detail 페이지 열기 · {date}
+                {(() => {
+                  const row = dateTickers.find((p) => p.ticker.toUpperCase() === selectedNode.id.toUpperCase());
+                  return row?.grade ? (
+                    <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded border ${gradeClass(row.grade)}`}>
+                      {row.grade}
+                    </span>
+                  ) : null;
+                })()}
+              </Link>
             )}
           </div>
         )}
