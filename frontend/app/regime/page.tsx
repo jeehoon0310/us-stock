@@ -86,7 +86,8 @@ export default function RegimePage() {
   useEffect(() => {
     fetch("/api/data/dates", { cache: "no-store" })
       .then((r) => r.json())
-      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
+      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)))
+      .catch(() => {});
 
     fetch("/api/data/reports?date=latest", { cache: "no-store" })
       .then((r) => r.json())

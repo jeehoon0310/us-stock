@@ -10,7 +10,7 @@
  *   3. <project_root>/output/data.db  (local dev: cwd = frontend/)
  */
 import Database from 'better-sqlite3';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, statSync } from 'fs';
 import { dirname, join } from 'path';
 
 function getDataDbPath(): string {
@@ -21,18 +21,28 @@ function getDataDbPath(): string {
 }
 
 let _db: Database.Database | null = null;
+let _dbMtime = 0;
+let _dbPath = '';
 
 export function getDataDb(): Database.Database | null {
-  if (_db) return _db;
   try {
     const dbPath = getDataDbPath();
-    if (!existsSync(dbPath)) return null;
+    if (!existsSync(dbPath)) { _db = null; return null; }
+
+    // Reopen if file was replaced by daily pipeline upload
+    const mtime = statSync(dbPath).mtimeMs;
+    if (_db && _dbPath === dbPath && mtime === _dbMtime) return _db;
+
+    try { _db?.close(); } catch { /* ignore close errors */ }
     const dir = dirname(dbPath);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     _db = new Database(dbPath, { readonly: true });
     _db.pragma('journal_mode = WAL');
+    _dbMtime = mtime;
+    _dbPath = dbPath;
     return _db;
   } catch {
+    _db = null;
     return null;
   }
 }

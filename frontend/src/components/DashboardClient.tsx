@@ -46,7 +46,8 @@ export function DashboardClient() {
   useEffect(() => {
     fetch("/api/data/dates", { cache: "no-store" })
       .then((r) => r.json())
-      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)));
+      .then((d: { dates: string[] }) => setAvailableDates(new Set(d.dates)))
+      .catch(() => {});
 
     // CSR: 최신 리포트 + regime 초기 로딩
     fetch("/api/data/reports?date=latest", { cache: "no-store" })
