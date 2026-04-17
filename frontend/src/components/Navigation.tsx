@@ -6,6 +6,7 @@ import { LangToggle } from "@/components/LangToggle";
 import { useT } from "@/lib/i18n";
 
 const NAV = [
+  { href: "/board", icon: "forum", labelKey: "nav.board", key: "board" },
   { href: "/", icon: "dashboard", labelKey: "nav.overview", key: "dashboard" },
   { href: "/regime", icon: "analytics", labelKey: "nav.regime", key: "regime" },
   { href: "/top-picks", icon: "star", labelKey: "nav.topPicks", key: "top10" },
@@ -16,12 +17,12 @@ const NAV = [
   { href: "/performance", icon: "trending_up", labelKey: "nav.performance", key: "performance" },
   { href: "/graph", icon: "hub", labelKey: "nav.graph", key: "graph" },
   { href: "/ai-builder", icon: "smart_toy", labelKey: "nav.aiBuilder", key: "ai-builder" },
-  { href: "/board", icon: "forum", labelKey: "nav.board", key: "board" },
   { href: "/download", icon: "download", labelKey: "nav.download", key: "download" },
   { href: "/costs", icon: "payments", labelKey: "nav.costs", key: "cost" },
 ];
 
 const MOBILE_NAV = [
+  { href: "/board", icon: "forum", labelKey: "nav.mobile.board" },
   { href: "/", icon: "dashboard", labelKey: "nav.mobile.overview" },
   { href: "/regime", icon: "analytics", labelKey: "nav.mobile.regime" },
   { href: "/top-picks", icon: "star", labelKey: "nav.mobile.topPicks" },
@@ -32,7 +33,6 @@ const MOBILE_NAV = [
   { href: "/performance", icon: "trending_up", labelKey: "nav.mobile.performance" },
   { href: "/graph", icon: "hub", labelKey: "nav.mobile.graph" },
   { href: "/ai-builder", icon: "smart_toy", labelKey: "nav.mobile.aiBuilder" },
-  { href: "/board", icon: "forum", labelKey: "nav.mobile.board" },
   { href: "/download", icon: "download", labelKey: "nav.mobile.download" },
   { href: "/costs", icon: "payments", labelKey: "nav.mobile.costs" },
 ];
