@@ -15,6 +15,7 @@ const EN: Dict = {
   "nav.graph": "System Graph",
   "nav.aiBuilder": "AI Builder",
   "nav.board": "Board",
+  "nav.download": "Download",
   "nav.costs": "API Costs",
   // Mobile short forms
   "nav.mobile.overview": "Overview",
@@ -28,6 +29,7 @@ const EN: Dict = {
   "nav.mobile.graph": "Graph",
   "nav.mobile.aiBuilder": "Builder",
   "nav.mobile.board": "Board",
+  "nav.mobile.download": "Files",
   "nav.mobile.costs": "Cost",
   // Sidebar meta
   "side.title": "Frindle Tools",
@@ -290,6 +292,7 @@ const KO: Dict = {
   "nav.graph": "시스템 그래프",
   "nav.aiBuilder": "AI 빌더",
   "nav.board": "게시판",
+  "nav.download": "다운로드",
   "nav.costs": "API 비용",
   // Mobile short forms
   "nav.mobile.overview": "개요",
@@ -303,6 +306,7 @@ const KO: Dict = {
   "nav.mobile.graph": "그래프",
   "nav.mobile.aiBuilder": "빌더",
   "nav.mobile.board": "게시판",
+  "nav.mobile.download": "파일",
   "nav.mobile.costs": "비용",
   // Sidebar meta
   "side.title": "Frindle Tools",
