@@ -20,8 +20,7 @@ archive/
 dashboard/
 
 # Python pipeline outputs (data goes into dashboard-next/public/data)
-data/
-!frontend/app/api/data/
+/data/
 output/
 reports/
 result/
