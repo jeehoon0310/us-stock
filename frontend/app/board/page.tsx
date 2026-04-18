@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 interface Category {
   id: string;
@@ -268,6 +269,110 @@ function PostCard({
   );
 }
 
+function NoticePanel() {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-8">
+      <div className="text-center mb-2">
+        <p className="text-[11px] text-on-surface-variant uppercase tracking-widest mb-1">공지사항</p>
+        <h2 className="text-xl font-black text-on-surface">강의 공지</h2>
+        <p className="text-xs text-on-surface-variant mt-1">수강생 안내 및 공지사항 문서입니다</p>
+      </div>
+      <a
+        href="/prompts/notice.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
+      >
+        <span
+          className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors"
+          style={{ fontSize: "48px" }}
+        >
+          campaign
+        </span>
+        <div className="text-center">
+          <p className="text-base font-black text-on-surface group-hover:text-primary transition-colors">
+            공지사항 열기
+          </p>
+          <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+            강의 일정, 수강 안내 등 공지사항
+          </p>
+        </div>
+        <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
+          열기
+        </span>
+      </a>
+    </div>
+  );
+}
+
+function PromptsPanel() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const isDark = !mounted || resolvedTheme === "dark";
+
+  const items = [
+    {
+      id: "mac",
+      label: "Mac",
+      icon: "laptop_mac",
+      description: "macOS 환경용 Claude Code 프롬프트 가이드",
+      href: isDark ? "/prompts/mac_v2.html" : "/prompts/mac_v2_light.html",
+    },
+    {
+      id: "windows",
+      label: "Windows",
+      icon: "desktop_windows",
+      description: "Windows 환경용 Claude Code 프롬프트 가이드",
+      href: isDark ? "/prompts/windows_v2.html" : "/prompts/windows_v2_light.html",
+    },
+  ];
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-8">
+      <div className="text-center mb-2">
+        <p className="text-[11px] text-on-surface-variant uppercase tracking-widest mb-1">운영 체제 선택</p>
+        <h2 className="text-xl font-black text-on-surface">Prompts 가이드</h2>
+        <p className="text-xs text-on-surface-variant mt-1">
+          현재 테마: <span className="text-primary font-semibold">{isDark ? "Dark" : "Light"}</span> 버전으로 열립니다
+        </p>
+      </div>
+      <div className="flex gap-6 flex-wrap justify-center">
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
+          >
+            <span
+              className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors"
+              style={{ fontSize: "48px" }}
+            >
+              {item.icon}
+            </span>
+            <div className="text-center">
+              <p className="text-base font-black text-on-surface group-hover:text-primary transition-colors">
+                {item.label}
+              </p>
+              <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+            <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+              <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
+              열기
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function BoardPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [posts, setPosts] = useState<PostWithMeta[]>([]);
@@ -408,6 +513,11 @@ export default function BoardPage() {
 
         {/* Main feed */}
         <main className="flex-1 min-w-0">
+          {/* Special panels */}
+          {selectedCategory === "notice" && <NoticePanel />}
+          {selectedCategory === "strategies" && <PromptsPanel />}
+          {selectedCategory === "notice" || selectedCategory === "strategies" ? null : (
+          <>
           {/* Sort + Search bar */}
           <div className="flex items-center gap-3 mb-4 flex-wrap">
             <div className="flex items-center gap-1 bg-surface-container-low rounded-lg border border-outline-variant/10 p-1 flex-shrink-0">
@@ -516,6 +626,8 @@ export default function BoardPage() {
                 />
               ))}
             </div>
+          )}
+          </>
           )}
         </main>
       </div>
