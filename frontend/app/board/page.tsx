@@ -269,6 +269,43 @@ function PostCard({
   );
 }
 
+function LecturePanel() {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-8">
+      <div className="text-center mb-2">
+        <p className="text-[11px] text-on-surface-variant uppercase tracking-widest mb-1">강의자료</p>
+        <h2 className="text-xl font-black text-on-surface">전체 강의자료</h2>
+        <p className="text-xs text-on-surface-variant mt-1">수강생용 강의 전체 자료입니다</p>
+      </div>
+      <a
+        href="/prompts/lecture.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
+      >
+        <span
+          className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors"
+          style={{ fontSize: "48px" }}
+        >
+          menu_book
+        </span>
+        <div className="text-center">
+          <p className="text-base font-black text-on-surface group-hover:text-primary transition-colors">
+            강의자료 열기
+          </p>
+          <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+            전체 강의 커리큘럼 및 실습 자료
+          </p>
+        </div>
+        <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
+          열기
+        </span>
+      </a>
+    </div>
+  );
+}
+
 function NoticePanel() {
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-8">
@@ -514,9 +551,10 @@ export default function BoardPage() {
         {/* Main feed */}
         <main className="flex-1 min-w-0">
           {/* Special panels */}
+          {selectedCategory === "stocks" && <LecturePanel />}
           {selectedCategory === "notice" && <NoticePanel />}
           {selectedCategory === "strategies" && <PromptsPanel />}
-          {selectedCategory === "notice" || selectedCategory === "strategies" ? null : (
+          {selectedCategory === "stocks" || selectedCategory === "notice" || selectedCategory === "strategies" ? null : (
           <>
           {/* Sort + Search bar */}
           <div className="flex items-center gap-3 mb-4 flex-wrap">

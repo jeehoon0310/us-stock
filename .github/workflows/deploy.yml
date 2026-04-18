@@ -72,6 +72,7 @@ jobs:
 
       - name: Sync dashboard files to Synology
         uses: appleboy/scp-action@v0.1.7
+        continue-on-error: true
         with:
           host: ${{ secrets.SYNOLOGY_HOST }}
           username: ${{ secrets.SYNOLOGY_USERNAME }}
