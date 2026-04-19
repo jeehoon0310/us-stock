@@ -45,15 +45,17 @@ function ViewerContent() {
 
         <div className="flex items-center gap-2">
           {/* PDF download button */}
-          <a
-            href={src ? `/api/pdf?src=${encodeURIComponent(src)}` : "#"}
-            download
-            className="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-low rounded-md text-xs font-semibold text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors border border-outline-variant/20"
-            title="PDF 파일로 내려받기"
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>download</span>
-            PDF 내려받기
-          </a>
+          {src && (
+            <a
+              href={src.replace("/prompts/", "/downloads/").replace(".html", ".pdf")}
+              download
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-low rounded-md text-xs font-semibold text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors border border-outline-variant/20"
+              title="PDF 파일로 내려받기"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>download</span>
+              PDF 내려받기
+            </a>
+          )}
 
           {/* Fullscreen button */}
           <button
