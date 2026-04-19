@@ -107,7 +107,9 @@ function FileCard({ file }: { file: DownloadEntry }) {
   return (
     <div className="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant/10 hover:border-outline-variant/30 transition-all">
       <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-        <span className="material-symbols-outlined text-primary">folder_zip</span>
+        <span className="material-symbols-outlined text-primary">
+          {file.filename.toLowerCase().endsWith(".pdf") ? "picture_as_pdf" : "folder_zip"}
+        </span>
       </div>
       <div className="flex-1 min-w-0">
         <h3 className="text-sm font-semibold text-on-surface truncate mb-0.5">

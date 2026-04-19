@@ -18,7 +18,7 @@ export function listZips(): DownloadEntry[] {
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir, { withFileTypes: true })
-    .filter((e) => e.isFile() && e.name.toLowerCase().endsWith(".zip"))
+    .filter((e) => e.isFile() && /\.(zip|pdf)$/i.test(e.name))
     .map((e) => {
       const st = fs.statSync(path.join(dir, e.name));
       return {
@@ -34,7 +34,7 @@ export function resolveSafe(rawFilename: string): string | null {
   if (!rawFilename || rawFilename.includes("\0")) return null;
   const base = path.basename(rawFilename);
   if (base !== rawFilename) return null;
-  if (!base.toLowerCase().endsWith(".zip")) return null;
+  if (!/\.(zip|pdf)$/i.test(base)) return null;
 
   const dir = getDownloadDir();
   const full = path.resolve(dir, base);
