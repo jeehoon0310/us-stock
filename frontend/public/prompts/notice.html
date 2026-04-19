@@ -38,7 +38,7 @@
             color: var(--text);
             -webkit-font-smoothing: antialiased;
         }
-        .wrap { max-width: 800px; margin: 0 auto; }
+        .wrap { max-width: 100%; }
 
         /* ══════════════════════ TICKER ══════════════════════ */
         .ticker {
@@ -305,6 +305,11 @@
             .tk-list { display: none; }
             .ss-grid { grid-template-columns: 1fr 1fr; }
             .bonus-grid { grid-template-columns: 1fr; }
+        }
+        @media print {
+            @page { margin: 10mm; }
+            .ticker { display: none; }
+            body { background: #fff !important; color: #111 !important; }
         }
     </style>
 </head>

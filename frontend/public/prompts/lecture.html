@@ -271,6 +271,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun 
 .org-dept-icon{font-size:18px;margin-bottom:4px}
 .org-dept-name{font-size:12px;font-weight:800;margin-bottom:3px}
 .org-dept-desc{font-size:10px;color:#6b7280;line-height:1.5}
+
+/* ── PDF mode ── */
+#pdf-mode{display:none}
+.pdf-slide{page-break-after:always;break-after:page;max-width:100%!important;animation:none!important;box-shadow:none!important}
+.pdf-slide:last-child{page-break-after:auto;break-after:auto}
+@media print{@page{margin:8mm}#app{display:none!important}#pdf-mode{display:block!important}}
 </style>
 </head>
 <body>
@@ -5044,6 +5050,28 @@ try {
   render(isNaN(startIdx) ? 0 : startIdx)
 } catch(e) { render(0) }
 updateSecProgress(cur)
+
+// PDF / Print: beforeprint shows all slides, afterprint restores
+window.addEventListener('beforeprint',function(){
+  document.getElementById('app').style.display='none';
+  const pm=document.getElementById('pdf-mode');
+  pm.style.display='block';
+  if(!pm.children.length){
+    ALL.forEach(sl=>{
+      const d=document.createElement('div');
+      d.className='pdf-slide slide-card';
+      d.innerHTML=sl.html;
+      pm.appendChild(d);
+    });
+  }
+});
+window.addEventListener('afterprint',function(){
+  document.getElementById('app').style.display='flex';
+  const pm=document.getElementById('pdf-mode');
+  pm.style.display='none';
+  pm.innerHTML='';
+});
 </script>
+<div id="pdf-mode"></div>
 </body>
 </html>

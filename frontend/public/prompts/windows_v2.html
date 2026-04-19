@@ -137,6 +137,12 @@ code{font-family:inherit;font-size:inherit;color:inherit}
 .diff-item{font-size:12px;color:#a6adc8;padding:3px 0;border-bottom:1px solid #313244;display:flex;justify-content:space-between;align-items:center}
 .diff-item:last-child{border-bottom:none}
 .diff-val{font-family:monospace;font-size:11px;color:#cdd6f4}
+
+/* ── PDF mode ── */
+#pdf-mode{display:none}
+.pdf-slide{page-break-after:always;break-after:page;max-width:100%!important;animation:none!important;box-shadow:none!important}
+.pdf-slide:last-child{page-break-after:auto;break-after:auto}
+@media print{@page{margin:8mm}#app{display:none!important}#pdf-mode{display:block!important}}
 </style>
 </head>
 <body>
@@ -317,7 +323,7 @@ bun install -g @anthropic-ai/claude-code
 claude --version</code></pre>
 </div>
 <div class="callout danger"><strong>주의:</strong> Windows PowerShell에서 설치하면 작동하지 않습니다. 반드시 WSL2 Ubuntu 터미널에서 실행하세요.</div>
-<div class="callout tip">WSL2 안의 파일은 Windows 탐색기에서 <code>\\wsl$\Ubuntu\home\{사용자명}\projects\us-stock</code> 경로로 접근할 수 있습니다.</div>`},
+<div class="callout tip">WSL2 안의 파일은 Windows 탐색기에서 <code>\\\\wsl$\\Ubuntu\\home\\{사용자명}\\projects\\us-stock</code> 경로로 접근할 수 있습니다.</div>`},
 {t:"로그인 & 초기 설정",html:`
 <div class="s-eye" style="color:#0891b2">SECTION 02</div>
 <div class="s-title">로그인 & 초기 설정</div>
@@ -1357,6 +1363,28 @@ try {
   render(saved!==null ? Math.min(parseInt(saved)||0, ALL.length-1) : 0)
 } catch(e) { render(0) }
 updateSecProgress(cur)
+
+// PDF / Print: beforeprint shows all slides, afterprint restores
+window.addEventListener('beforeprint',function(){
+  document.getElementById('app').style.display='none';
+  const pm=document.getElementById('pdf-mode');
+  pm.style.display='block';
+  if(!pm.children.length){
+    ALL.forEach(sl=>{
+      const d=document.createElement('div');
+      d.className='pdf-slide slide-card';
+      d.innerHTML=sl.html;
+      pm.appendChild(d);
+    });
+  }
+});
+window.addEventListener('afterprint',function(){
+  document.getElementById('app').style.display='flex';
+  const pm=document.getElementById('pdf-mode');
+  pm.style.display='none';
+  pm.innerHTML='';
+});
 </script>
+<div id="pdf-mode"></div>
 </body>
 </html>

@@ -277,10 +277,8 @@ function LecturePanel() {
         <h2 className="text-xl font-black text-on-surface">전체 강의자료</h2>
         <p className="text-xs text-on-surface-variant mt-1">수강생용 강의 전체 자료입니다</p>
       </div>
-      <a
-        href="/prompts/lecture.html"
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
+        href={`/viewer?src=${encodeURIComponent("/prompts/lecture.html")}`}
         className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
       >
         <span
@@ -298,10 +296,10 @@ function LecturePanel() {
           </p>
         </div>
         <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
-          열기
+          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>arrow_forward</span>
+          보기
         </span>
-      </a>
+      </Link>
     </div>
   );
 }
@@ -314,10 +312,8 @@ function NoticePanel() {
         <h2 className="text-xl font-black text-on-surface">강의 공지</h2>
         <p className="text-xs text-on-surface-variant mt-1">수강생 안내 및 공지사항 문서입니다</p>
       </div>
-      <a
-        href="/prompts/notice.html"
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
+        href={`/viewer?src=${encodeURIComponent("/prompts/notice.html")}`}
         className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
       >
         <span
@@ -335,10 +331,10 @@ function NoticePanel() {
           </p>
         </div>
         <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
-          열기
+          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>arrow_forward</span>
+          보기
         </span>
-      </a>
+      </Link>
     </div>
   );
 }
@@ -378,11 +374,9 @@ function PromptsPanel() {
       </div>
       <div className="flex gap-6 flex-wrap justify-center">
         {items.map((item) => (
-          <a
+          <Link
             key={item.id}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/viewer?src=${encodeURIComponent(item.href)}`}
             className="flex flex-col items-center gap-4 p-8 w-56 bg-surface-container-low border border-outline-variant/20 rounded-2xl hover:border-primary/50 hover:bg-surface-container transition-all group shadow-sm"
           >
             <span
@@ -400,10 +394,10 @@ function PromptsPanel() {
               </p>
             </div>
             <span className="flex items-center gap-1 text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-              <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>open_in_new</span>
-              열기
+              <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>arrow_forward</span>
+              보기
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </div>

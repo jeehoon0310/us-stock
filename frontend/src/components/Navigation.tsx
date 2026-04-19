@@ -7,7 +7,7 @@ import { useT } from "@/lib/i18n";
 
 const NAV = [
   { href: "/board", icon: "forum", labelKey: "nav.board", key: "board" },
-  { href: "/", icon: "dashboard", labelKey: "nav.overview", key: "dashboard" },
+  { href: "/overview", icon: "dashboard", labelKey: "nav.overview", key: "dashboard" },
   { href: "/regime", icon: "analytics", labelKey: "nav.regime", key: "regime" },
   { href: "/top-picks", icon: "star", labelKey: "nav.topPicks", key: "top10" },
   { href: "/ai", icon: "psychology", labelKey: "nav.ai", key: "ai" },
@@ -23,7 +23,7 @@ const NAV = [
 
 const MOBILE_NAV = [
   { href: "/board", icon: "forum", labelKey: "nav.mobile.board" },
-  { href: "/", icon: "dashboard", labelKey: "nav.mobile.overview" },
+  { href: "/overview", icon: "dashboard", labelKey: "nav.mobile.overview" },
   { href: "/regime", icon: "analytics", labelKey: "nav.mobile.regime" },
   { href: "/top-picks", icon: "star", labelKey: "nav.mobile.topPicks" },
   { href: "/ai", icon: "psychology", labelKey: "nav.mobile.ai" },
@@ -40,8 +40,7 @@ const MOBILE_NAV = [
 export function SideNav({ syncedAt }: { syncedAt: string }) {
   const pathname = usePathname();
   const t = useT();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
 
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 bg-surface-container-low flex-col py-8 z-40 mt-16">
@@ -94,8 +93,7 @@ export function SideNav({ syncedAt }: { syncedAt: string }) {
 export function MobileNav() {
   const pathname = usePathname();
   const t = useT();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
   return (
     <nav className="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-low flex items-center h-16 z-50 border-t border-outline-variant/10 overflow-x-auto scrollbar-none">
       {MOBILE_NAV.map((item) => {
