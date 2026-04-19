@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { DOWNLOAD_COOKIE_NAME, isAuthorized } from "@/lib/download-auth";
 import { resolveSafe } from "@/lib/download-fs";
+import { incrementDownloadCount } from "@/lib/board-db";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,8 @@ export async function GET(
   const decoded = decodeURIComponent(filename);
   const safe = resolveSafe(decoded);
   if (!safe) return new Response("Not Found", { status: 404 });
+
+  incrementDownloadCount(decoded);
 
   const stat = fs.statSync(safe);
   const nodeStream = fs.createReadStream(safe);

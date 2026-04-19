@@ -5,6 +5,7 @@ interface DownloadEntry {
   filename: string;
   size: number;
   mtime: string;
+  download_count: number;
 }
 
 function formatBytes(bytes: number): string {
@@ -119,6 +120,11 @@ function FileCard({ file }: { file: DownloadEntry }) {
           <span className="tabular-nums">{formatBytes(file.size)}</span>
           <span className="opacity-30">·</span>
           <span>{formatDate(file.mtime)}</span>
+          <span className="opacity-30">·</span>
+          <span className="flex items-center gap-0.5">
+            <span className="material-symbols-outlined" style={{ fontSize: "12px" }}>download</span>
+            {file.download_count.toLocaleString()}회
+          </span>
         </div>
       </div>
       <a

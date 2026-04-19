@@ -83,6 +83,11 @@ function initSchema(db: Database.Database) {
       count INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (date)
     );
+
+    CREATE TABLE IF NOT EXISTS download_counts (
+      filename TEXT PRIMARY KEY,
+      count INTEGER NOT NULL DEFAULT 0
+    );
   `);
 
   // 카테고리 시드
@@ -355,6 +360,22 @@ export function castVote(data: {
   }
 
   return buildVoteScore(db, target_type, target_id, voter_id);
+}
+
+// ── Download Counts ─────────────────────────────────────────────
+
+export function incrementDownloadCount(filename: string): void {
+  getDb().prepare(`
+    INSERT INTO download_counts (filename, count) VALUES (?, 1)
+    ON CONFLICT(filename) DO UPDATE SET count = count + 1
+  `).run(filename);
+}
+
+export function getDownloadCounts(): Record<string, number> {
+  const rows = getDb()
+    .prepare("SELECT filename, count FROM download_counts")
+    .all() as { filename: string; count: number }[];
+  return Object.fromEntries(rows.map((r) => [r.filename, r.count]));
 }
 
 // ── Page Views ──────────────────────────────────────────────────
