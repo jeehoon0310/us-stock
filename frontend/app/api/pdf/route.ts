@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import path from "path";
 
 export const dynamic = "force-dynamic";
-
-const CHROME_PATHS = [
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  "/usr/bin/google-chrome",
-  "/usr/bin/chromium-browser",
-  "/usr/bin/chromium",
-];
-
-function findChrome(): string | null {
-  const { existsSync } = require("fs");
-  return CHROME_PATHS.find((p) => existsSync(p)) ?? null;
-}
 
 export async function GET(request: NextRequest) {
   const src = request.nextUrl.searchParams.get("src") ?? "";
@@ -22,17 +10,11 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Invalid src", { status: 400 });
   }
 
-  const chromePath = findChrome();
-  if (!chromePath) {
-    return new NextResponse("Chrome not found on this server", { status: 501 });
-  }
-
   const origin = request.nextUrl.origin;
   const url = `${origin}${src}`;
   const filename = path.basename(src, ".html") + ".pdf";
 
   const browser = await puppeteer.launch({
-    executablePath: chromePath,
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
   });
