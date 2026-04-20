@@ -11,7 +11,27 @@
 
 이 대시보드도 똑같아요. **미국 주식 시장의 여러 정보**를 한 화면에 모아 보여주는 프로그램이에요.
 
-왼쪽 메뉴에 **6개 페이지**가 있어요. 오늘은 그중에서 **"Index Forecast" (지수 예보)** 페이지를 자세히 배워볼 거예요.
+왼쪽 메뉴에 **13개 페이지**가 있어요. 오늘은 그중에서 **"Index Forecast" (지수 예보)** 페이지를 자세히 배워볼 거예요.
+
+---
+
+## 메뉴 목록 (왼쪽 네비게이션 순서)
+
+| 순서 | 페이지 이름 | 주소 | 한 줄 설명 |
+|------|-----------|------|----------|
+| 1 | **Board** | /board | 커뮤니티 게시판 (Reddit 스타일) |
+| 2 | Overview | / | 시장 종합 건강검진서 |
+| 3 | Market Regime | /regime | 시장 체온계 5개 |
+| 4 | Top Picks | /top-picks | 추천 주식 Top 10 |
+| 5 | AI Analysis | /ai | AI 종목 분석 노트 |
+| 6 | Index Forecast | /forecast | 지수 날씨 예보 (SPY/QQQ) |
+| 7 | GBM Ranking | /ml | 50종목 ML 순위 |
+| 8 | Risk Monitor | /risk | 위험 신호등 |
+| 9 | Performance | /performance | 과거 성과 추적 |
+| 10 | Graph | /graph | 시스템 관계도 |
+| 11 | AI Builder | /ai-builder | 에이전트 실행 포털 |
+| 12 | **Download** | /download | 교육 자료 다운로드 |
+| 13 | API Costs | /costs | AI 사용료 가계부 |
 
 ---
 
@@ -380,6 +400,66 @@ AI에게 분석 맡기면 **돈을 내야 해요** (엄청 조금!).
 
 ---
 
+### Board — "주식 이야기 게시판" (2026-04-17 추가)
+
+**Reddit 게시판**처럼 글을 올리고 댓글 달 수 있는 공간이에요.
+
+- 카테고리별 글 정리 (뉴스·전략·질문)
+- 게시글마다 좋아요(↑) / 싫어요(↓) 투표
+- 방문자 수 위젯
+- SQLite DB (`board.db`) 에 저장 — 분석 데이터와 완전히 분리
+
+**비유**: 반 친구들끼리 주식 공부 내용 공유하는 **카카오톡 오픈채팅방** 같은 거예요.
+
+---
+
+### Risk Monitor — "위험 신호등"
+
+시장에서 **갑자기 위험한 신호가 오면 알려주는** 페이지예요.
+
+화면에 이렇게 나와요:
+- **REGIME** 배지 — 지금 시장 체제 (risk_on / neutral / risk_off / crisis)
+- **VERDICT** 배지 — 오늘의 최종 판정 (GO / CAUTION / STOP)
+- **SPY** 배지 — S&P 500 방향 예측 (항상 표시)
+- **QQQ** 배지 — 나스닥 방향 예측 (항상 표시)
+
+> 2026-04-17 업데이트: SPY·QQQ 배지가 데이터 유무와 관계없이 **항상** 화면에 표시됩니다.
+
+---
+
+### Performance — "과거 성과 추적기"
+
+이 시스템이 추천한 종목들이 **실제로 얼마나 맞았는지** 추적해요.
+
+- 날짜별 예측 정확도 기록
+- look-ahead bias 없는 공정한 평가 (결과 발표 전 데이터만 사용)
+
+---
+
+### Graph — "시스템 관계도" (2026-04-17 기능 추가)
+
+**시스템의 모든 요소가 어떻게 연결되어 있는지** 시각화해요.
+
+탭 3가지:
+- **System** — 전체 파이프라인 구조도
+- **Stock** — 종목 간 상관관계 그래프
+- **Market** — 시장 체제별 연결 지도
+
+> **2026-04-17 신기능**: EXPLORE STOCK에서 종목을 선택하면 해당 종목을 중심으로 **6개 인디케이터** (Market Regime / AI Analysis / Index Forecast / ML Rankings / Risk Monitor / Performance)가 방사형으로 펼쳐지는 **종목 중심 그래프**로 즉시 전환됩니다. 페이지 이동 없이 그래프만 바뀌어요.
+
+---
+
+### Download — "교육 자료 다운로드" (2026-04-17 추가)
+
+이 서비스와 관련된 **학습 자료를 zip 파일로 다운로드**할 수 있어요.
+
+현재 제공 자료:
+- Python 기초 (`lesson01-python-basics.zip`)
+- 데이터 분석 (`lesson02-data-analysis.zip`)
+- 금융 실습 (`lesson03-finance-practice.zip`)
+
+---
+
 ## ★ 새로 추가된 기능들 (2026-04-08)
 
 ### Verdict Banner — "오늘 투자해도 될까?" 한마디 판정
@@ -545,11 +625,11 @@ AI가 "70% 확률로 오른다"고 했을 때, 정말 70%만큼 정확한 걸까
 ### 1단계: 대시보드 열기
 
 ```bash
-cd /Users/frindle/workspace/synology/us-stock/archive/legacy-dashboard
-python3 -m http.server 8889
+cd /Users/frindle/workspace/synology/us-stock/frontend
+npm run dev
 ```
 
-그다음 브라우저 열고 주소창에 입력: `http://localhost:8889`
+그다음 브라우저 열고 주소창에 입력: `http://localhost:3000`
 
 ### 2단계: Index Forecast 페이지 들어가기
 
@@ -634,4 +714,4 @@ AI 예측이 **항상 맞는 건 아니에요**. 화면에서 본 것처럼:
 ---
 
 **만든 사람**: Claude Code (AI 어시스턴트)
-**기준 날짜**: 2026-04-05
+**기준 날짜**: 2026-04-17

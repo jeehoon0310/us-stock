@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Stock Analysis System — macOS 설치 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #1e1e2e;
+  --bg-card: #2a2a3e;
+  --bg-code: #181825;
+  --bg-sidebar: #181825;
+  --border: #313244;
+  --text: #cdd6f4;
+  --text-muted: #6c7086;
+  --text-bright: #ffffff;
+  --accent: #89b4fa;
+  --accent-hover: #b4d0fa;
+  --success: #a6e3a1;
+  --warning: #f9e2af;
+  --danger: #f38ba8;
+  --phase-color: #cba6f7;
+  --mac-color: #89dceb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+/* Header */
+.top-header{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:1000;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo-icon{color:var(--accent);font-size:28px;}
+.top-header h1{font-size:16px;font-weight:700;color:var(--text-bright);}
+.os-badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.mac-badge{background:rgba(137,220,235,0.15);color:var(--mac-color);border:1px solid var(--mac-color);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.progress-text{font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.progress-bar-header{width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill-header{height:100%;background:var(--accent);border-radius:3px;transition:width 0.3s;}
+/* Layout */
+.layout{display:flex;margin-top:60px;min-height:calc(100vh - 60px);}
+/* Sidebar */
+.sidebar{width:260px;background:var(--bg-sidebar);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
+.sidebar-title{padding:8px 20px 16px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+.phase-nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;transition:background 0.15s;position:relative;}
+.phase-nav-item:hover{background:rgba(137,180,250,0.08);}
+.phase-nav-item.active{background:rgba(137,180,250,0.12);border-right:2px solid var(--accent);}
+.phase-nav-item.done{opacity:0.7;}
+.phase-num{width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);flex-shrink:0;}
+.phase-nav-item.active .phase-num{background:var(--accent);color:#1e1e2e;}
+.phase-nav-item.done .phase-num{background:var(--success);color:#1e1e2e;}
+.phase-title-nav{font-size:13px;flex:1;}
+.check-icon{font-size:16px;color:var(--success);display:none;}
+.phase-nav-item.done .check-icon{display:block;}
+.sidebar-divider{height:1px;background:var(--border);margin:16px 20px;}
+.total-time{padding:8px 20px;font-size:12px;color:var(--text-muted);}
+/* Content */
+.content{flex:1;padding:40px;max-width:860px;}
+/* Phase Card */
+.phase-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:32px;transition:border-color 0.2s;}
+.phase-card.done{border-color:rgba(166,227,161,0.3);}
+.phase-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.phase-badge{background:rgba(203,166,247,0.15);color:var(--phase-color);border:1px solid rgba(203,166,247,0.3);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.phase-header h2{font-size:20px;font-weight:700;color:var(--text-bright);flex:1;}
+.time-badge{background:rgba(137,180,250,0.1);color:var(--text-muted);padding:4px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);}
+.phase-complete-btn{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.phase-checkbox{width:16px;height:16px;accent-color:var(--success);cursor:pointer;}
+.phase-complete-btn label{font-size:13px;color:var(--text-muted);cursor:pointer;}
+/* Goal */
+.phase-goal{background:rgba(137,180,250,0.08);border:1px solid rgba(137,180,250,0.2);border-radius:8px;padding:14px 16px;margin-bottom:24px;font-size:14px;}
+/* Step */
+.step{display:flex;gap:16px;margin-bottom:24px;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--phase-color);color:#1e1e2e;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.step-content h3{font-size:15px;font-weight:600;color:var(--text-bright);margin-bottom:8px;}
+.step-content p{font-size:14px;color:var(--text);margin-bottom:10px;}
+/* Code wrapper */
+.code-wrapper{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:10px 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);}
+.lang-badge{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;}
+.copy-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--text-muted);font-size:12px;transition:all 0.15s;}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn.copied{border-color:var(--success);color:var(--success);}
+.copy-btn .material-icons{font-size:14px;}
+.code-pre{margin:0!important;border-radius:0!important;font-size:13px!important;max-height:400px;overflow-y:auto;}
+.code-pre code{font-size:13px!important;}
+/* Callout */
+.callout{display:flex;gap:12px;padding:12px 16px;border-radius:8px;margin:16px 0;border-left:4px solid;font-size:14px;}
+.callout.tip{background:rgba(166,227,161,0.1);border-color:var(--success);}
+.callout.warning{background:rgba(249,226,175,0.1);border-color:var(--warning);}
+.callout.danger{background:rgba(243,139,168,0.1);border-color:var(--danger);}
+.callout.note{background:rgba(137,180,250,0.1);border-color:var(--accent);}
+.callout-icon{font-size:18px;flex-shrink:0;}
+/* Completion check */
+.completion-check{background:rgba(166,227,161,0.07);border:1px solid rgba(166,227,161,0.2);border-radius:8px;padding:16px 20px;margin:20px 0;}
+.completion-check h4{font-size:14px;font-weight:600;color:var(--success);margin-bottom:12px;}
+.check-item{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;font-size:14px;}
+.check-item input[type=checkbox]{accent-color:var(--success);width:15px;height:15px;cursor:pointer;}
+/* Next arrow */
+.next-phase-arrow{margin:20px 0;display:flex;justify-content:center;}
+.arrow-box{display:flex;align-items:center;gap:8px;background:rgba(137,180,250,0.08);border:1px solid rgba(137,180,250,0.2);border-radius:8px;padding:10px 20px;font-size:14px;color:var(--accent);}
+.arrow-box .material-icons{font-size:20px;}
+/* FAQ */
+.faq-section{margin-top:20px;}
+.faq-section h4{font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
+.faq-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.faq-item summary{padding:12px 16px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:"expand_more";font-family:'Material Icons';font-size:18px;color:var(--text-muted);}
+.faq-item[open] summary::after{content:"expand_less";}
+.faq-item>div{padding:12px 16px;font-size:14px;border-top:1px solid var(--border);color:var(--text-muted);}
+/* Table */
+.info-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+.info-table th{background:rgba(137,180,250,0.1);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--border);color:var(--accent);}
+.info-table td{padding:10px 14px;border:1px solid var(--border);}
+.info-table tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+.info-table a{color:var(--accent);}
+/* Final checklist */
+.final-checklist{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:40px;}
+.final-checklist h2{font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:24px;}
+.checklist-grid{display:grid;gap:8px;margin-bottom:24px;}
+.cl-item{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:14px;}
+.cl-dot{width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.2s;}
+.cl-item.done .cl-dot{background:var(--success);}
+.cl-status{margin-left:auto;font-size:12px;color:var(--text-muted);}
+.cl-item.done .cl-status{color:var(--success);}
+.master-progress{margin-top:20px;}
+.progress-bar-big{height:12px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.progress-fill-big{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:6px;transition:width 0.4s;}
+.progress-label{font-size:14px;color:var(--text-muted);text-align:center;}
+/* Hamburger */
+.hamburger{display:none;background:transparent;border:none;cursor:pointer;padding:8px;}
+.hamburger .material-icons{color:var(--text);font-size:24px;}
+/* Mobile overlay */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998;}
+/* Diagram */
+.diagram-box{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:20px;margin:12px 0;font-family:'Courier New',monospace;font-size:13px;color:var(--text);overflow-x:auto;white-space:pre;}
+/* Verdict table */
+.verdict-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin:12px 0;font-size:13px;}
+.vg-cell{background:var(--bg-code);padding:10px 12px;text-align:center;}
+.vg-header{background:rgba(137,180,250,0.1);font-weight:700;color:var(--accent);}
+.vg-buy{color:var(--success);font-weight:600;}
+.vg-watch{color:var(--warning);}
+.vg-hold{color:var(--danger);}
+/* Phase section label */
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:1px;margin:24px 0 8px;}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:60px;left:-260px;height:calc(100vh - 60px);z-index:999;transition:left 0.25s;}
+  .sidebar.open{left:0;}
+  .sidebar-overlay.open{display:block;}
+  .hamburger{display:block;}
+  .content{padding:20px;}
+  .top-header h1{font-size:14px;}
+  .progress-bar-header{width:80px;}
+}
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div class="header-left">
+    <button class="hamburger" id="hamburgerBtn" aria-label="메뉴">
+      <span class="material-icons">menu</span>
+    </button>
+    <span class="material-icons logo-icon">analytics</span>
+    <h1>US Stock Analysis System</h1>
+    <span class="os-badge mac-badge">macOS</span>
+  </div>
+  <div class="header-right">
+    <span class="progress-text" id="headerProgressText">0 / 10 완료</span>
+    <div class="progress-bar-header">
+      <div class="progress-fill-header" id="headerProgressFill" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">진행 단계</div>
+    <div class="phase-nav-item" data-phase="0" onclick="scrollToPhase(0)">
+      <span class="phase-num">0</span>
+      <span class="phase-title-nav">사전 준비</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="1" onclick="scrollToPhase(1)">
+      <span class="phase-num">1</span>
+      <span class="phase-title-nav">프로젝트 초기화</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="2" onclick="scrollToPhase(2)">
+      <span class="phase-num">2</span>
+      <span class="phase-title-nav">데이터 수집기</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="3" onclick="scrollToPhase(3)">
+      <span class="phase-num">3</span>
+      <span class="phase-title-nav">분석 엔진</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="4" onclick="scrollToPhase(4)">
+      <span class="phase-num">4</span>
+      <span class="phase-title-nav">ML 파이프라인</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="5" onclick="scrollToPhase(5)">
+      <span class="phase-num">5</span>
+      <span class="phase-title-nav">DB + 리스크</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="6" onclick="scrollToPhase(6)">
+      <span class="phase-num">6</span>
+      <span class="phase-title-nav">실행 스크립트</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="7" onclick="scrollToPhase(7)">
+      <span class="phase-num">7</span>
+      <span class="phase-title-nav">Next.js 대시보드</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="8" onclick="scrollToPhase(8)">
+      <span class="phase-num">8</span>
+      <span class="phase-title-nav">자동화</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="9" onclick="scrollToPhase(9)">
+      <span class="phase-num">9</span>
+      <span class="phase-title-nav">Claude 에이전트</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="total-time">⏱ 총 예상 시간: 3~4시간</div>
+  </nav>
+
+  <main class="content">
+
+    <!-- Phase 0 -->
+    <section id="phase-0" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 0</div>
+        <h2>사전 준비 — 도구 설치 &amp; API 키</h2>
+        <span class="time-badge">⏱ 15분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-0-done" class="phase-checkbox" data-key="phase-0-done">
+          <label for="phase-0-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> Python 3.13, Node.js 20을 설치하고, 분석에 필요한 API 키 5개를 발급받습니다. 이것만 있으면 나머지는 전부 자동입니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>API 키 발급 (무료)</h3>
+          <p>아래 5개 서비스에 가입하고 API 키를 메모장에 복사해두세요. 나중에 <code>.env</code> 파일에 붙여넣습니다.</p>
+          <table class="info-table">
+            <tr><th>서비스</th><th>용도</th><th>발급 링크</th><th>무료 한도</th></tr>
+            <tr><td>FRED</td><td>미국 경제 데이터 (금리, GDP)</td><td><a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank">발급 →</a></td><td>무제한</td></tr>
+            <tr><td>Google Gemini</td><td>AI 리포트 생성</td><td><a href="https://aistudio.google.com/app/apikey" target="_blank">발급 →</a></td><td>월 60회/분</td></tr>
+            <tr><td>OpenAI</td><td>GPT 보조 분석 (선택)</td><td><a href="https://platform.openai.com/api-keys" target="_blank">발급 →</a></td><td>유료</td></tr>
+            <tr><td>Perplexity</td><td>실시간 뉴스 검색 (선택)</td><td><a href="https://www.perplexity.ai/settings/api" target="_blank">발급 →</a></td><td>유료</td></tr>
+            <tr><td>Finnhub</td><td>주가 데이터 백업</td><td><a href="https://finnhub.io/register" target="_blank">발급 →</a></td><td>분당 60회</td></tr>
+          </table>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> FRED + Google Gemini 두 개만 있으면 핵심 기능이 전부 작동합니다. 나머지는 나중에 추가해도 됩니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Homebrew 설치</h3>
+          <p>Homebrew는 macOS용 패키지 관리자입니다. "앱스토어 없이 터미널로 프로그램 설치"라고 생각하면 됩니다. 터미널(Terminal.app 또는 iTerm2)을 열고 아래 명령을 붙여넣으세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> Apple Silicon(M1/M2/M3/M4) Mac이면 설치 후 아래 명령도 실행하세요. Homebrew 경로를 쉘에 등록합니다.</div></div>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Python 3.13 + Node.js 20 설치</h3>
+          <p>한 번에 설치합니다. 2~5분 소요됩니다.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">brew install python@3.13
+brew install node@20
+
+# Node.js PATH 등록 (Apple Silicon)
+echo 'export PATH="/opt/homebrew/opt/node@20/bin:$PATH"' >> ~/.zprofile
+source ~/.zprofile
+
+# 버전 확인
+python3 --version   # Python 3.13.x 출력 확인
+node --version      # v20.x.x 출력 확인
+npm --version       # 10.x.x 출력 확인</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p0-python"> <code>python3 --version</code> → Python 3.13.x 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-node"> <code>node --version</code> → v20.x.x 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-npm"> <code>npm --version</code> → 10.x.x 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-apikeys"> API 키 5개 메모장에 저장 완료</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>Homebrew 설치가 안 되면?</summary><div>macOS 12(Monterey) 이상인지 확인하세요. 설치 도중 Xcode Command Line Tools 설치 안내가 뜨면 "Install"을 눌러 진행하세요. 또는 <a href="https://www.python.org/downloads/" style="color:var(--accent)">python.org</a>에서 직접 .pkg 파일을 다운로드해도 됩니다.</div></details>
+        <details class="faq-item"><summary>python3 명령이 Python 3.9 또는 2.7을 가리키면?</summary><div><code>which python3</code>로 경로를 확인하세요. Homebrew로 설치된 경로가 <code>/opt/homebrew/bin/python3</code>이면 정상입니다. <code>brew link python@3.13 --force</code>를 실행해보세요.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 1 — 프로젝트 초기화</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 1 -->
+    <section id="phase-1" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 1</div>
+        <h2>프로젝트 초기화</h2>
+        <span class="time-badge">⏱ 5분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-1-done" class="phase-checkbox" data-key="phase-1-done">
+          <label for="phase-1-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 프로젝트 폴더 구조를 만들고, Python 가상환경을 생성하고, 필요한 라이브러리를 설치합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>디렉토리 구조 생성</h3>
+          <p>아래 스크립트를 한 번에 실행하면 전체 폴더 구조가 만들어집니다.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">mkdir -p ~/workspace/us-stock
+cd ~/workspace/us-stock
+
+# 소스코드 디렉토리
+mkdir -p src/collectors src/analyzers src/pipeline src/ml/pipeline src/ml/validation src/us_market
+mkdir -p scripts output/reports output/picks output/models
+mkdir -p data logs frontend tests
+mkdir -p .claude/agents
+
+echo "디렉토리 생성 완료!"
+ls -la</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Python 가상환경 생성 &amp; 활성화</h3>
+          <p>가상환경이란 "이 프로젝트 전용 Python 설치 공간"입니다. 다른 프로젝트와 라이브러리가 충돌하지 않도록 격리합니다.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock
+python3 -m venv .venv
+source .venv/bin/activate</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> 가상환경 활성화가 되면 터미널 프롬프트 앞에 <code>(.venv)</code> 가 표시됩니다. 이후 모든 작업은 이 상태에서 진행하세요.</div></div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> 터미널을 새로 열 때마다 <code>source .venv/bin/activate</code>를 다시 실행해야 합니다. <code>(.venv)</code>가 안 보이면 활성화되지 않은 상태입니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>requirements.txt 생성</h3>
+          <p>아래 내용을 복사하여 <code>~/workspace/us-stock/requirements.txt</code> 파일로 저장하세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cat > requirements.txt << 'EOF'
+yfinance>=0.2.40
+curl_cffi>=0.7.0
+pandas>=2.2.0
+numpy>=1.26.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+google-generativeai>=0.7.0
+openai>=1.30.0
+fredapi>=0.5.1
+finnhub-python>=2.4.19
+lightgbm>=4.3.0
+scikit-learn>=1.4.0
+joblib>=1.3.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+beautifulsoup4>=4.12.0
+lxml>=5.2.0
+schedule>=1.2.0
+rich>=13.7.0
+EOF</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>라이브러리 설치</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">pip install --upgrade pip
+pip install -r requirements.txt</code></pre>
+          </div>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> 설치에 2~3분 소요됩니다. "Successfully installed" 메시지가 여러 줄 나오면 정상입니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>.env 파일 생성 (API 키 입력)</h3>
+          <p>Phase 0에서 발급받은 API 키를 입력합니다. <code>your_xxx_key_here</code> 부분을 실제 키로 교체하세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cat > .env << 'EOF'
+# Federal Reserve Economic Data
+FRED_API_KEY=your_fred_key_here
+
+# AI Providers
+GOOGLE_API_KEY=your_gemini_key_here
+OPENAI_API_KEY=your_openai_key_here
+PERPLEXITY_API_KEY=your_perplexity_key_here
+
+# Market Data
+FINNHUB_API_KEY=your_finnhub_key_here
+EOF</code></pre>
+          </div>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>보안 주의:</strong> .env 파일은 절대 GitHub에 올리면 안 됩니다. <code>echo ".env" >> .gitignore</code>를 실행해두세요.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p1-venv"> 터미널 앞에 <code>(.venv)</code> 표시됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p1-pkg"> <code>pip list | grep yfinance</code> → yfinance 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p1-env"> <code>.env</code> 파일에 API 키 입력 완료</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>pip install 중 ERROR: Could not build wheels가 나오면?</summary><div><code>pip install --upgrade pip setuptools wheel</code>을 먼저 실행 후 다시 시도하세요.</div></details>
+        <details class="faq-item"><summary>가상환경 비활성화는 어떻게?</summary><div>터미널에서 <code>deactivate</code>를 입력하면 됩니다.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 2 — 데이터 수집기 구축</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section id="phase-2" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 2</div>
+        <h2>데이터 수집기 구축</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-2-done" class="phase-checkbox" data-key="phase-2-done">
+          <label for="phase-2-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> S&amp;P 500 주가, 거시경제 데이터, 섹터 데이터를 자동으로 수집하는 5개 파일을 만듭니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>수집기 파일 목록과 역할</h3>
+          <p>아래 5개 파일이 데이터 수집을 담당합니다. Claude Code에게 "이 파일들을 만들어줘"라고 말할 때 참고하세요.</p>
+          <table class="info-table">
+            <tr><th>파일</th><th>역할</th><th>수집 데이터</th></tr>
+            <tr><td><code>src/collectors/us_price_fetcher.py</code></td><td>주가 수집기</td><td>개별 종목 OHLCV (시가/고가/저가/종가/거래량)</td></tr>
+            <tr><td><code>src/collectors/fetch_sp500_list.py</code></td><td>S&amp;P 500 목록</td><td>Wikipedia에서 503개 종목 티커+섹터</td></tr>
+            <tr><td><code>src/collectors/fetch_sp500_prices.py</code></td><td>대량 다운로드</td><td>503개 전 종목 1년치 OHLCV</td></tr>
+            <tr><td><code>src/collectors/macro_collector.py</code></td><td>거시경제 수집기</td><td>FRED API + VIX + 공포탐욕지수</td></tr>
+            <tr><td><code>src/collectors/data_fetcher.py</code></td><td>통합 수집기</td><td>yfinance 1차, Finnhub 2차 폴백</td></tr>
+          </table>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> <code>curl_cffi</code> 라이브러리는 yfinance가 Yahoo Finance에서 차단당하지 않도록 Chrome 브라우저처럼 위장합니다. 모든 yfinance 세션에 <code>Session(impersonate="chrome")</code>을 사용합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Claude Code로 파일 생성하기</h3>
+          <p>프로젝트 폴더에서 Claude Code를 실행하고 아래처럼 말하면 됩니다:</p>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>Claude Code 프롬프트 예시:</strong><br><br>"CLAUDE.md를 읽고, src/collectors/ 아래에 다음 5개 파일을 만들어줘: us_price_fetcher.py (USPriceFetcher 클래스, curl_cffi Session 사용), fetch_sp500_list.py (Wikipedia에서 S&amp;P500 목록 스크래핑), fetch_sp500_prices.py (503개 종목 배치 다운로드), macro_collector.py (FRED API + VIX + Fear&amp;Greed), data_fetcher.py (yfinance 1차 + Finnhub 폴백)"</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>데이터 파이프라인 실행 파일 생성</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># src/pipeline/ 아래에 파이프라인 오케스트레이터 생성 안내
+# Claude Code에게 요청:
+# "src/pipeline/us_data_pipeline.py 파일을 만들어줘.
+# USDataPipeline 클래스가 5개 수집기를 순서대로 호출하고
+# data/ 폴더에 CSV로 저장하게 해줘."</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>데이터 수집 테스트 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock
+source .venv/bin/activate
+
+# S&P 500 목록 먼저 수집 (30초)
+python src/collectors/fetch_sp500_list.py
+
+# 확인
+head -5 data/sp500_list.csv
+
+# 전체 파이프라인 실행 (15~30분 소요)
+python src/pipeline/run_pipeline.py --top-n 50 --period 1y --output-dir data</code></pre>
+          </div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> 503개 종목 전체 다운로드는 15~30분 소요됩니다. 처음 실행 시 "Rate limit" 메시지가 나올 수 있는데, 자동으로 재시도하므로 기다리면 됩니다.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p2-sp500list"> <code>data/sp500_list.csv</code> 파일 생성됨 (503행)</label>
+        <label class="check-item"><input type="checkbox" data-key="p2-prices"> <code>data/us_daily_prices.csv</code> 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p2-macro"> <code>data/us_macro.csv</code> 파일 생성됨</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>yfinance가 데이터를 못 가져오면?</summary><div>Yahoo Finance 서버 장애이거나 네트워크 문제입니다. 30분 후 다시 시도하거나, <code>curl_cffi</code>가 제대로 설치됐는지 <code>pip show curl-cffi</code>로 확인하세요.</div></details>
+        <details class="faq-item"><summary>FRED API 에러가 나면?</summary><div>.env 파일의 FRED_API_KEY 값을 확인하세요. 따옴표 없이 키만 입력해야 합니다 (예: <code>FRED_API_KEY=abcd1234</code>).</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 3 — 분석 엔진 구축</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section id="phase-3" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 3</div>
+        <h2>분석 엔진 구축</h2>
+        <span class="time-badge">⏱ 60분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-3-done" class="phase-checkbox" data-key="phase-3-done">
+          <label for="phase-3-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 시장 체제 감지기, 스마트머니 스크리너, AI 리포트 생성기를 구축합니다. 이 엔진들이 "지금 살 종목"을 골라냅니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>시장 체제 5개 센서 이해하기</h3>
+          <p>시장이 "좋은 상태"인지 "위험한 상태"인지 판단하는 5개 신호입니다. 각 신호에 가중치를 곱해 점수를 계산하고, 점수에 따라 투자 전략을 바꿉니다.</p>
+          <table class="info-table">
+            <tr><th>센서</th><th>가중치</th><th>쉬운 설명</th><th>데이터 소스</th></tr>
+            <tr><td>VIX</td><td>30%</td><td>주식 시장의 "공포 온도계". 20 아래면 안전, 30 이상이면 패닉 상태</td><td>^VIX</td></tr>
+            <tr><td>Trend</td><td>25%</td><td>SPY(S&amp;P500 ETF)가 50일/200일 이동평균선 위에 있으면 "상승 추세"</td><td>SPY vs SMA</td></tr>
+            <tr><td>Breadth</td><td>18%</td><td>RSP(동일가중 ETF) vs SPY — 소형주도 오르면 시장 전체가 건강한 것</td><td>RSP/SPY 비율</td></tr>
+            <tr><td>Credit</td><td>15%</td><td>HYG(회사채)/IEF(국채) 비율 — 투자자가 위험 자산을 기피하면 이 비율이 낮아짐</td><td>HYG/IEF</td></tr>
+            <tr><td>Yield Curve</td><td>12%</td><td>10년 금리 - 3개월 금리. 마이너스(장단기 역전)면 경기 침체 신호</td><td>^TNX - ^IRX</td></tr>
+          </table>
+          <div class="diagram-box">점수 → 체제 판단:
+  0.00 ~ 0.75 → risk_on  (공격 투자 가능)
+  0.75 ~ 1.50 → neutral  (중립)
+  1.50 ~ 2.25 → risk_off (방어 투자)
+  2.25 이상   → crisis   (현금 보유)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>스마트머니 스크리닝 6개 팩터</h3>
+          <p>503개 종목 중 "기관이 조용히 사모으고 있는 종목"을 골라냅니다.</p>
+          <table class="info-table">
+            <tr><th>팩터</th><th>가중치</th><th>의미</th></tr>
+            <tr><td>기술적 지표</td><td>25%</td><td>RSI, MACD, 이동평균선 조합 — "지금 추세가 좋은가?"</td></tr>
+            <tr><td>펀더멘털</td><td>20%</td><td>PER, 매출 성장률, ROE — "실제로 돈을 잘 버는 회사인가?"</td></tr>
+            <tr><td>애널리스트</td><td>15%</td><td>월가 평균 목표가 대비 업사이드 — "전문가들이 얼마나 낙관적인가?"</td></tr>
+            <tr><td>상대강도</td><td>15%</td><td>SPY 대비 최근 3개월 수익률 — "시장보다 강한가?"</td></tr>
+            <tr><td>거래량</td><td>15%</td><td>평균 대비 거래량 표준편차 — "기관이 몰래 매집 중인가?"</td></tr>
+            <tr><td>13F 보유</td><td>10%</td><td>헤지펀드 분기보고서 보유량 변화 — "스마트머니가 담았는가?"</td></tr>
+          </table>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>등급 기준:</strong> 80점 이상 A등급 (Strong Accumulation), 60~80점 B등급, 40~60점 C등급, 20~40점 D등급, 20점 미만 F등급 (Capitulation)</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>분석 엔진 파일 생성 요청</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># Claude Code에게 아래 파일들 생성 요청:
+# src/analyzers/technical_indicators.py  - SMA/RSI/ATR/BB (항상 복사본 반환)
+# src/analyzers/sector_analyzer.py       - 11개 SPDR 섹터 ETF 분석
+# src/analyzers/market_regime.py         - 5센서 가중투표 체제 감지기
+# src/analyzers/market_gate.py           - GO/CAUTION/STOP 게이트
+# src/analyzers/smart_money_screener_v2.py - 6팩터 복합 점수 스크리너
+# src/analyzers/ai_summary_generator.py  - Gemini/OpenAI/Perplexity AI 리포트
+# src/analyzers/final_report_generator.py - 최종 Top10 리포트</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>분석 엔진 검증</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock
+source .venv/bin/activate
+
+# 시장 체제 분석 (data/ 폴더에 데이터가 있어야 함)
+python src/analyzers/market_regime.py
+
+# 예상 출력:
+# [MarketRegime] VIX: 18.3 → score 0.2
+# [MarketRegime] Trend: Bullish → score 0.0
+# [MarketRegime] Total score: 0.8 → NEUTRAL
+# 체제: neutral | 적응형 손절: -8% | 최대 손실 허용: -10%
+
+# S&P 500 스크리닝 (30~60분)
+python scripts/run_screening.py</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p3-regime"> <code>market_regime.py</code> 실행 시 체제 판정 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p3-picks"> <code>output/picks/</code>에 CSV 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p3-ai"> AI 요약 JSON 생성됨 (GOOGLE_API_KEY 필요)</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 4 — ML 파이프라인</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 4 -->
+    <section id="phase-4" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 4</div>
+        <h2>ML 파이프라인 구축</h2>
+        <span class="time-badge">⏱ 45분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-4-done" class="phase-checkbox" data-key="phase-4-done">
+          <label for="phase-4-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> LightGBM 머신러닝 모델로 SPY/QQQ의 다음 날 방향을 예측하는 시스템을 구축합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>GBM이 뭔가요? (초보자 설명)</h3>
+          <p>GBM(Gradient Boosting Machine)은 "약한 예측기 여러 개를 합쳐서 강한 예측기를 만드는" 알고리즘입니다.</p>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>비유:</strong> Excel의 예측 함수(FORECAST)가 1명의 예측이라면, GBM은 100명의 예측을 평균 낸 결과입니다. 훨씬 정확합니다. 주식 방향 예측, 신용카드 사기 탐지, 날씨 예보 등에 실제로 쓰입니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Walk-Forward 검증이란?</h3>
+          <div class="diagram-box">일반 방식 (잘못된 방법):
+  전체 데이터 → 학습 + 테스트 (미래 데이터로 과거 테스트 → 사기!)
+
+Walk-Forward (올바른 방법):
+  1월~6월 학습 → 7월 예측 → 성능 측정
+  1월~7월 학습 → 8월 예측 → 성능 측정
+  1월~8월 학습 → 9월 예측 → 성능 측정
+  ...
+  실제 투자 환경과 동일한 방식으로 검증!</div>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> Walk-Forward 검증을 통과한 모델만 실제 예측에 사용합니다. 이 검증이 없으면 "백테스트에서만 잘 되는 가짜 전략"이 나올 수 있습니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>ML 파일 생성 및 학습</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># Claude Code에게 요청:
+# src/ml/pipeline/feature_store.py  - 기술적 지표 → 피처 변환
+# src/ml/pipeline/train.py           - LightGBM 학습 + 저장
+# src/ml/pipeline/predict.py         - 저장된 모델로 예측
+# src/ml/validation/walk_forward.py  - Walk-Forward 교차 검증
+# src/us_market/index_predictor.py   - SPY/QQQ 방향 예측 클래스
+
+# 모델 학습 (5~10분)
+python src/ml/pipeline/train.py
+
+# 예상 출력:
+# Training LightGBM model...
+# Walk-Forward Validation Accuracy: 54.2%
+# Model saved: output/models/predictor_model_20260418.joblib</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> 주식 방향 예측 정확도 52~56%면 실전에서 유의미합니다. 동전 던지기(50%)보다 조금만 높아도 장기적으로 수익을 낼 수 있습니다.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p4-model"> <code>output/models/</code>에 .joblib 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p4-pred"> <code>python src/ml/pipeline/predict.py</code> 실행 시 예측 출력됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 5 — DB + 리스크 관리</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 5 -->
+    <section id="phase-5" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 5</div>
+        <h2>DB + 리스크 관리</h2>
+        <span class="time-badge">⏱ 20분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-5-done" class="phase-checkbox" data-key="phase-5-done">
+          <label for="phase-5-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> SQLite 데이터베이스에 분석 결과를 저장하고, 손절·포지션 크기 계산 로직을 추가합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>SQLite가 뭔가요?</h3>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>비유:</strong> SQLite는 "Excel처럼 생겼지만 1,000배 빠른 데이터베이스"입니다. 단일 파일(<code>data.db</code>)에 저장되어 설치나 서버가 필요 없습니다. iPhone, Android 앱 대부분이 내부적으로 SQLite를 사용합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>data.db 테이블 구조</h3>
+          <table class="info-table">
+            <tr><th>테이블</th><th>역할</th></tr>
+            <tr><td>daily_prices</td><td>일별 OHLCV 데이터 (종목별)</td></tr>
+            <tr><td>regime_history</td><td>시장 체제 판정 이력</td></tr>
+            <tr><td>screening_results</td><td>스크리닝 결과 (날짜별)</td></tr>
+            <tr><td>ai_summaries</td><td>AI 분석 요약 캐시</td></tr>
+            <tr><td>final_reports</td><td>최종 Top10 리포트 이력</td></tr>
+            <tr><td>macro_data</td><td>거시경제 지표 이력</td></tr>
+            <tr><td>sector_data</td><td>11개 섹터 수익률 이력</td></tr>
+            <tr><td>ml_predictions</td><td>ML 예측 결과 이력</td></tr>
+            <tr><td>risk_parameters</td><td>체제별 적응형 리스크 파라미터</td></tr>
+            <tr><td>portfolio_signals</td><td>BUY/WATCH/HOLD 시그널 이력</td></tr>
+            <tr><td>api_usage</td><td>API 비용 추적 로그</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>체제별 적응형 리스크 파라미터</h3>
+          <table class="info-table">
+            <tr><th>체제</th><th>손절선</th><th>최대 낙폭 허용</th><th>포지션 크기</th></tr>
+            <tr><td>risk_on (공격)</td><td>-10%</td><td>-12%</td><td>풀 포지션</td></tr>
+            <tr><td>neutral (중립)</td><td>-8%</td><td>-10%</td><td>70% 포지션</td></tr>
+            <tr><td>risk_off (방어)</td><td>-5%</td><td>-7%</td><td>40% 포지션</td></tr>
+            <tr><td>crisis (위기)</td><td>-3%</td><td>-5%</td><td>현금 보유</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p5-db"> <code>data/data.db</code> 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p5-tables"> <code>sqlite3 data/data.db ".tables"</code> → 테이블 목록 출력됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 6 — 실행 스크립트</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 6 -->
+    <section id="phase-6" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 6</div>
+        <h2>실행 스크립트 구성</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-6-done" class="phase-checkbox" data-key="phase-6-done">
+          <label for="phase-6-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 언제 어떤 스크립트를 실행하는지 파악하고, 첫 통합 분석을 실행합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>스크립트 역할 정리</h3>
+          <table class="info-table">
+            <tr><th>스크립트</th><th>언제 실행?</th><th>소요 시간</th></tr>
+            <tr><td><code>run_integrated_analysis.py</code></td><td>빠른 판단 필요 시 (Phase 0~3만 실행)</td><td>5~10분</td></tr>
+            <tr><td><code>run_full_pipeline.py</code></td><td>완전한 분석 (9단계 전체)</td><td>30~60분</td></tr>
+            <tr><td><code>run_screening.py</code></td><td>종목 스크리닝만 필요할 때</td><td>10~20분</td></tr>
+            <tr><td><code>run_daily_scheduler.py</code></td><td>자동화 테스트 / 즉시 실행</td><td>30~60분</td></tr>
+            <tr><td><code>regen_dashboard_data.py</code></td><td>대시보드 JSON만 재생성할 때</td><td>1분</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Verdict → Action 흐름</h3>
+          <div class="diagram-box">체제(Regime) + 게이트(Gate) + ML 예측
+           ↓
+    ┌──────────────────────────────────┐
+    │  Regime OK  +  Gate GO  +  ML ↑ │ → Verdict: GO
+    │  Regime crisis/risk_off          │ → Verdict: STOP
+    │  나머지 조합                      │ → Verdict: CAUTION
+    └──────────────────────────────────┘
+           ↓
+    Verdict × Grade → Action:
+
+    GO     × A/B등급 → BUY    (매수)
+    GO     × C등급   → WATCH  (관망)
+    CAUTION× A/B등급 → SMALL BUY (소량 매수)
+    CAUTION× C등급   → WATCH
+    STOP   × 모든등급 → HOLD  (보유/현금)</div>
+          <div class="verdict-grid">
+            <div class="vg-cell vg-header">Verdict \ Grade</div>
+            <div class="vg-cell vg-header">A / B</div>
+            <div class="vg-cell vg-header">C</div>
+            <div class="vg-cell vg-header">D+</div>
+            <div class="vg-cell vg-header">GO</div>
+            <div class="vg-cell vg-buy">BUY</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-header">CAUTION</div>
+            <div class="vg-cell vg-buy">SMALL BUY</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-header">STOP</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>첫 통합 분석 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock
+source .venv/bin/activate
+
+python scripts/run_integrated_analysis.py</code></pre>
+          </div>
+          <p style="margin-top:12px;font-size:14px;">예상 출력 화면:</p>
+          <div class="diagram-box">============================================================
+  US STOCK ANALYSIS SYSTEM — 통합 분석
+  2026-04-18 07:00:01
+============================================================
+
+[Phase 0] 데이터 수집 중...
+  ✓ S&P500 목록: 503개 종목
+  ✓ 가격 데이터: 503개 종목 1년치 로드
+
+[Phase 1] 시장 체제 분석...
+  VIX: 18.3 (정상)
+  Trend: Bullish (SPY > SMA200)
+  → 체제: NEUTRAL (점수: 0.89)
+
+[Phase 2] 스마트머니 스크리닝...
+  A등급: 12개 | B등급: 47개 | C등급: 203개
+
+[Phase 3] AI 리포트 생성...
+  Gemini Flash 사용 중 (비용: $0.002)
+
+============================================================
+  VERDICT: CAUTION  |  추천 전략: SMALL BUY
+============================================================
+  Top 5 추천 종목:
+  1. NVDA — Grade B | Action: SMALL BUY
+  2. MSFT — Grade B | Action: SMALL BUY
+  ...</div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p6-run"> <code>run_integrated_analysis.py</code> 에러 없이 완료됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p6-report"> <code>output/reports/latest_report.json</code> 생성됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 7 — Next.js 대시보드</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 7 -->
+    <section id="phase-7" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 7</div>
+        <h2>Next.js 대시보드 구축</h2>
+        <span class="time-badge">⏱ 60분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-7-done" class="phase-checkbox" data-key="phase-7-done">
+          <label for="phase-7-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 분석 결과를 시각화하는 Next.js 대시보드를 설치하고 실행합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>대시보드 페이지 구조</h3>
+          <div class="diagram-box">http://localhost:3000/
+
+├── /                   → Board        (종목 추천 + 시장 판단)
+├── /market-timing      → Market Timing (SPY/QQQ 예측)
+├── /sector             → Sector        (11개 섹터 히트맵)
+├── /risk-monitor       → Risk Monitor  (SPY/QQQ 배지 + 리스크)
+├── /macro              → Macro         (거시경제 지표)
+├── /report             → Report        (AI 리포트 뷰어)
+├── /graph              → Graph         (개별 종목 차트)
+└── /download           → Download      (데이터 다운로드)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>의존성 설치 &amp; 개발 서버 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock/frontend
+npm install
+
+# 개발 서버 실행
+npm run dev</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> 브라우저에서 <a href="http://localhost:3000" target="_blank" style="color:var(--accent)">http://localhost:3000</a> 을 열면 대시보드가 표시됩니다.</div></div>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>빌드 오류 대처:</strong> 오류가 나면 <code>rm -rf node_modules .next && npm install</code>을 실행하세요. node_modules를 완전히 지우고 재설치합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>데이터 파일 연결</h3>
+          <p>파이프라인 실행 후 생성된 JSON 파일들이 <code>frontend/public/data/</code>에 있어야 합니다.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># output/ → frontend/public/data/ 동기화
+python scripts/regen_dashboard_data.py
+
+# 또는 직접 복사
+cp output/reports/latest_report.json frontend/public/data/
+cp output/regime_result.json frontend/public/data/</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p7-npm"> <code>npm install</code> 완료 (에러 없음)</label>
+        <label class="check-item"><input type="checkbox" data-key="p7-dev"> <code>npm run dev</code> 실행 후 localhost:3000 접속됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p7-data"> 대시보드에 데이터가 표시됨</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>Port 3000 already in use 에러가 나면?</summary><div><code>lsof -ti:3000 | xargs kill -9</code>로 포트를 해제하거나, <code>npm run dev -- --port 3001</code>로 다른 포트로 실행하세요.</div></details>
+        <details class="faq-item"><summary>대시보드에 "데이터 없음"이 표시되면?</summary><div>Phase 6의 통합 분석을 먼저 완료하고 <code>regen_dashboard_data.py</code>를 실행했는지 확인하세요.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 8 — 자동화 설정</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 8 -->
+    <section id="phase-8" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 8</div>
+        <h2>자동화 설정 (launchd)</h2>
+        <span class="time-badge">⏱ 15분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-8-done" class="phase-checkbox" data-key="phase-8-done">
+          <label for="phase-8-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 매일 오전 7시에 분석이 자동으로 실행되도록 macOS launchd 스케줄러를 설정합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>launchd란?</h3>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> launchd는 macOS의 작업 스케줄러입니다. Windows의 "작업 스케줄러"와 같은 역할을 합니다. 컴퓨터가 켜져 있으면 지정한 시간에 자동으로 스크립트를 실행합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>자동 실행 등록</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash">cd ~/workspace/us-stock
+source .venv/bin/activate
+
+# 매일 오전 7시 자동 실행 등록
+python scripts/run_daily_scheduler.py --install-cron --time 07:00
+
+# 상태 확인
+python scripts/run_daily_scheduler.py --status
+
+# 즉시 1회 실행 테스트
+python scripts/run_daily_scheduler.py</code></pre>
+          </div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> 자동 실행 시 .env 파일의 API 키가 올바르지 않으면 에러가 발생합니다. 로그는 <code>logs/daily_run_YYYYMMDD.log</code>에서 확인하세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>launchd plist 파일 직접 수정 (고급)</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># 실행 시간 변경 (예: 오전 6시로 변경)
+# ~/Library/LaunchAgents/com.us-stock.daily.plist 편집 후:
+launchctl unload ~/Library/LaunchAgents/com.us-stock.daily.plist
+launchctl load ~/Library/LaunchAgents/com.us-stock.daily.plist
+
+# 로그 확인
+tail -50 ~/workspace/us-stock/logs/daily_run_$(date +%Y%m%d).log</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p8-cron"> <code>launchctl list | grep us-stock</code> → 등록 확인됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p8-test"> 즉시 실행 테스트 성공</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 9 — Claude 에이전트 설정</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 9 -->
+    <section id="phase-9" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 9</div>
+        <h2>Claude 에이전트 설정</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-9-done" class="phase-checkbox" data-key="phase-9-done">
+          <label for="phase-9-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 7개 전문 AI 에이전트 팀을 구성하여 코드 생성, 디버깅, 분석을 자동화합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>에이전트가 뭔가요?</h3>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>비유:</strong> 에이전트는 "각자 전문 분야가 있는 AI 팀원들"입니다. 데이터 분석 전문 팀원, 프론트엔드 전문 팀원, 에러 수정 전문 팀원... 각자의 역할에 집중하므로 일반 Claude보다 훨씬 정확합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>7개 에이전트 팀 구성</h3>
+          <table class="info-table">
+            <tr><th>에이전트</th><th>역할</th><th>파일명</th></tr>
+            <tr><td>data-collector</td><td>데이터 수집 오류 디버깅 + 최적화</td><td><code>data-collector.md</code></td></tr>
+            <tr><td>market-analyzer</td><td>시장 체제 분석 로직 개선</td><td><code>market-analyzer.md</code></td></tr>
+            <tr><td>screener-specialist</td><td>종목 스크리닝 팩터 튜닝</td><td><code>screener-specialist.md</code></td></tr>
+            <tr><td>ml-engineer</td><td>ML 모델 학습/예측/검증</td><td><code>ml-engineer.md</code></td></tr>
+            <tr><td>frontend-dev</td><td>Next.js 대시보드 기능 추가</td><td><code>frontend-dev.md</code></td></tr>
+            <tr><td>report-writer</td><td>AI 리포트 품질 개선</td><td><code>report-writer.md</code></td></tr>
+            <tr><td>devops</td><td>자동화 스케줄러 + 배포</td><td><code>devops.md</code></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>에이전트 파일 생성 방법</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-bash"># .claude/agents/ 디렉토리에 각 에이전트 MD 파일 생성
+# Claude Code에게 요청:
+# ".claude/agents/ 폴더에 7개 에이전트 파일을 만들어줘.
+# 각 에이전트는 name, description, 전문 분야 지식,
+# 그리고 이 프로젝트의 파일 구조를 알고 있어야 해."
+
+ls .claude/agents/
+# data-collector.md
+# market-analyzer.md
+# screener-specialist.md
+# ml-engineer.md
+# frontend-dev.md
+# report-writer.md
+# devops.md</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>에이전트 사용법:</strong> Claude Code에서 <code>/market-analyzer</code>를 입력하면 해당 전문 에이전트가 활성화됩니다. 일반 채팅보다 더 깊은 전문 지식으로 답변합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p9-agents"> <code>.claude/agents/</code>에 7개 MD 파일 존재</label>
+        <label class="check-item"><input type="checkbox" data-key="p9-test"> Claude Code에서 에이전트 응답 테스트 완료</label>
+      </div>
+    </section>
+
+    <!-- Final Checklist -->
+    <section class="final-checklist">
+      <h2>최종 완료 체크리스트</h2>
+      <div class="checklist-grid" id="checklistGrid">
+        <div class="cl-item" data-phase="0"><span class="cl-dot"></span><span>Phase 0: 사전 준비 (Python, Node.js, API 키)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="1"><span class="cl-dot"></span><span>Phase 1: 프로젝트 초기화 (가상환경, 라이브러리)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="2"><span class="cl-dot"></span><span>Phase 2: 데이터 수집기 (5개 파일)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="3"><span class="cl-dot"></span><span>Phase 3: 분석 엔진 (체제 감지 + 스크리너)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="4"><span class="cl-dot"></span><span>Phase 4: ML 파이프라인 (학습 + 예측)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="5"><span class="cl-dot"></span><span>Phase 5: DB + 리스크 관리</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="6"><span class="cl-dot"></span><span>Phase 6: 통합 분석 첫 실행 성공</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="7"><span class="cl-dot"></span><span>Phase 7: 대시보드 localhost:3000 접속</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="8"><span class="cl-dot"></span><span>Phase 8: 매일 오전 7시 자동 실행 등록</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="9"><span class="cl-dot"></span><span>Phase 9: Claude 에이전트 7개 설정</span><span class="cl-status">미완료</span></div>
+      </div>
+      <div class="master-progress">
+        <div class="progress-bar-big"><div class="progress-fill-big" id="masterFill" style="width:0%"></div></div>
+        <div class="progress-label" id="masterLabel">0 / 10 단계 완료</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+<script>
+const STORAGE_KEY = 'us-stock-mac-progress';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function updateProgress() {
+  const state = loadState();
+  let done = 0;
+  for (let i = 0; i < 10; i++) {
+    const v = state['phase-' + i + '-done'];
+    const navItem = document.querySelector('.phase-nav-item[data-phase="' + i + '"]');
+    const card = document.getElementById('phase-' + i);
+    const clItem = document.querySelector('.cl-item[data-phase="' + i + '"]');
+    if (v) {
+      done++;
+      navItem && navItem.classList.add('done');
+      card && card.classList.add('done');
+      if (clItem) { clItem.classList.add('done'); clItem.querySelector('.cl-status').textContent = '완료'; }
+    } else {
+      navItem && navItem.classList.remove('done');
+      card && card.classList.remove('done');
+      if (clItem) { clItem.classList.remove('done'); clItem.querySelector('.cl-status').textContent = '미완료'; }
+    }
+  }
+  const pct = (done / 10 * 100).toFixed(0);
+  document.getElementById('headerProgressFill').style.width = pct + '%';
+  document.getElementById('headerProgressText').textContent = done + ' / 10 완료';
+  document.getElementById('masterFill').style.width = pct + '%';
+  document.getElementById('masterLabel').textContent = done + ' / 10 단계 완료';
+}
+
+function initCheckboxes() {
+  const state = loadState();
+  document.querySelectorAll('.phase-checkbox, .check-item input[type=checkbox]').forEach(cb => {
+    const key = cb.dataset.key || cb.id;
+    if (!key) return;
+    cb.checked = !!state[key];
+    cb.addEventListener('change', () => {
+      const s = loadState();
+      s[key] = cb.checked;
+      saveState(s);
+      updateProgress();
+    });
+  });
+}
+
+function scrollToPhase(n) {
+  const el = document.getElementById('phase-' + n);
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  if (window.innerWidth < 768) closeSidebar();
+}
+
+function copyCode(btn) {
+  const code = btn.closest('.code-wrapper').querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.querySelector('.copy-text').textContent = '✓ 복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.querySelector('.copy-text').textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Intersection Observer for sidebar active state
+function initObserver() {
+  const sections = document.querySelectorAll('.phase-card');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        const n = id.replace('phase-', '');
+        document.querySelectorAll('.phase-nav-item').forEach(el => el.classList.remove('active'));
+        const nav = document.querySelector('.phase-nav-item[data-phase="' + n + '"]');
+        if (nav) nav.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -60% 0px', threshold: 0 });
+  sections.forEach(s => obs.observe(s));
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+initCheckboxes();
+updateProgress();
+initObserver();
+</script>
+</body>
+</html>

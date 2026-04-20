@@ -1,0 +1,757 @@
+<mxfile host="app.diagrams.net" modified="2026-04-11T00:00:00.000Z" agent="Claude Code" version="21.0.0" type="device">
+  <diagram id="page1" name="강의 흐름도 v2 — 193분 상세 플로우 (개인 스토리 강화)">
+    <mxGraphModel dx="1800" dy="3600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="3600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== TITLE ===== -->
+        <mxCell id="v2title" value="&lt;font style=&quot;font-size:22px;&quot;&gt;&lt;b&gt;주식 투자 강의 — 193분 상세 플로우 v2 (개인 스토리 강화)&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px; color:#666;&quot;&gt;감정 아크: 공포 → 경외/12역할 → 호기심 → 흡수 → 신뢰 → 미래비전 → 실전 → 행동&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="10" width="1400" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEFT TIMELINE BAR ===== -->
+        <mxCell id="tlBar" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2c3e50;strokeColor=#1a252f;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="40" height="3400" as="geometry" />
+        </mxCell>
+        <mxCell id="tl0" value="&lt;b&gt;0분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="65" y="75" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl18" value="&lt;b&gt;18분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="65" y="310" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl43" value="&lt;b&gt;43분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="65" y="900" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl78" value="&lt;b&gt;78분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="65" y="1350" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl88" value="&lt;b&gt;88분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="65" y="1470" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl133" value="&lt;b&gt;133분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1950" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl158" value="&lt;b&gt;158분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="60" y="2280" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl178" value="&lt;b&gt;178분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="60" y="2570" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tl193" value="&lt;b&gt;193분&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=10;fontColor=#2c3e50;" vertex="1" parent="1">
+          <mxGeometry x="60" y="2850" width="50" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===== RIGHT EMOTION ARC ===== -->
+        <mxCell id="emoBar1" value="&lt;b&gt;공포/현실&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e74c3c;strokeColor=#c0392b;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="80" width="80" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar2" value="&lt;b&gt;경외/12역할&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2980b9;strokeColor=#1a6496;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="330" width="80" height="590" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar3" value="&lt;b&gt;호기심&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8e44ad;strokeColor=#6c3483;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="920" width="80" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar4" value="&lt;b&gt;흡수&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#7f8c8d;strokeColor=#616a6b;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1360" width="80" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar5" value="&lt;b&gt;신뢰&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#27ae60;strokeColor=#1e8449;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1480" width="80" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar6" value="&lt;b&gt;미래&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0e6655;strokeColor=#0b5345;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1960" width="80" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar7" value="&lt;b&gt;실전&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1c40f;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="2280" width="80" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="emoBar8" value="&lt;b&gt;행동&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e8449;strokeColor=#196f3d;fontColor=#ffffff;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="2580" width="80" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S1: Opening Hook (18분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s1box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 1 : Opening Hook — 세상이 빠르게 변하고 있다 (18분) : 공포/긴급&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c0392b;strokeColor=#922b21;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="80" width="1500" height="230" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1_1" value="&lt;b&gt;1-1. 강남 비유 (3분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;테헤란로 vs 뒷골목&lt;br&gt;50m = 30년 격차&lt;br&gt;&amp;quot;괜찮은 게 아닙니다&amp;quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5b7b1;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="120" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_2" value="&lt;b&gt;1-2. 충격 통계 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;850만 일자리 대체&lt;br&gt;43% AI 사용 / 56% 교육 0&lt;br&gt;연 500시간 = 62.5일 손실&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5b7b1;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="415" y="120" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_2b" value="&lt;b&gt;1-2b. 나의 현실 (3분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;[실제 캘린더 데이터]&lt;br&gt;6주 120건 미팅 / 382.8시간&lt;br&gt;주당 20건 / 63.8시간&lt;br&gt;&amp;quot;미팅만으로 주 63시간&amp;quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5b7b1;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="690" y="120" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_3" value="&lt;b&gt;1-3. 마지막 기회 (4분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;AI 타임라인 2022-2027&lt;br&gt;엑셀 거부 회계사 = 실직&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5b7b1;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="965" y="120" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_4" value="&lt;b&gt;1-4. 역설 선언 (3분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;&amp;quot;주식 강의가 중요한 게 아니다&amp;quot;&lt;br&gt;이중 트랙: 투자 + AI&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5b7b1;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="120" width="260" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- S1 -> S2 Transition -->
+        <mxCell id="tr_s1s2" value="&lt;font style=&quot;font-size:10px; color:#c0392b;&quot;&gt;&amp;quot;깨어 있으면 뭐가 달라지는지 보여드리겠습니다...&amp;quot;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#c0392b;strokeWidth=2;fontSize=10;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="s1box" target="s2box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S2: 나는 이렇게 빡세게 산다 (25분) — LARGEST SECTION ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s2box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 2 : &amp;quot;나는 이렇게 빡세게 산다&amp;quot; — 개인 스토리 (25분) : 경외/공감&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a6496;strokeColor=#154360;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=4;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="340" width="1500" height="550" as="geometry" />
+        </mxCell>
+
+        <!-- S2 Row 1: 12가지 역할 공개 -->
+        <mxCell id="s2_1_header" value="&lt;b&gt;2-1. 12가지 역할 공개 (7분)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#1a1a2e;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="370" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#aed6f1;strokeColor=#5dade2;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="140" y="395" width="1460" height="180" as="geometry" />
+        </mxCell>
+        <!-- Row A: 6 cards -->
+        <mxCell id="r1" value="&lt;b&gt;1. 교보그룹&lt;/b&gt;&lt;br&gt;디플래닉스 조직장&lt;br&gt;(임원)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="155" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="&lt;b&gt;2. 데이터 사업&lt;/b&gt;&lt;br&gt;기획자&lt;br&gt;KANDLE/AI Studio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" value="&lt;b&gt;3. AI 컨설턴트&lt;/b&gt;&lt;br&gt;금융사 생성형AI&lt;br&gt;도입 자문" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="625" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" value="&lt;b&gt;4. 만화카페 사장&lt;/b&gt;&lt;br&gt;150평&lt;br&gt;book.frindle.synology.me" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r5" value="&lt;b&gt;5. 주식 강사&lt;/b&gt;&lt;br&gt;유튜브 112편&lt;br&gt;지금 이 순간" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r6" value="&lt;b&gt;6. 엑셀 강사&lt;/b&gt;&lt;br&gt;광화문&lt;br&gt;생산성본부" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="405" width="220" height="70" as="geometry" />
+        </mxCell>
+        <!-- Row B: 6 cards -->
+        <mxCell id="r7" value="&lt;b&gt;7. 쌍둥이 아빠&lt;/b&gt;&lt;br&gt;8살&lt;br&gt;결혼 늦게" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="155" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r8" value="&lt;b&gt;8. 이직 준비생&lt;/b&gt;&lt;br&gt;이 와중에&lt;br&gt;병행 중" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r9" value="&lt;b&gt;9. 경매 투자자&lt;/b&gt;&lt;br&gt;부동산 경매&lt;br&gt;경험자" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="625" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r10" value="&lt;b&gt;10. 해외구매대행&lt;/b&gt;&lt;br&gt;새 수익원&lt;br&gt;탐색 중" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r11" value="&lt;b&gt;11. 자판기 사업&lt;/b&gt;&lt;br&gt;국가유공자&lt;br&gt;생업지원" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r12" value="&lt;b&gt;12. 퀀트 개발자&lt;/b&gt;&lt;br&gt;US Stock&lt;br&gt;AI 시스템" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="490" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- S2 Row 2: 비밀 공개 + 충격 데모 -->
+        <mxCell id="s2_2" value="&lt;b&gt;2-2. 비밀 공개 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Claude Code $200 x 4계정&lt;br&gt;= $800/월&lt;br&gt;&lt;br&gt;멀티계정 아키텍처:&lt;br&gt;claude-a / b / c / cloud&lt;br&gt;17개 MCP 동시 연결&lt;br&gt;4개가 동시에 다른 일&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85c1e9;strokeColor=#5dade2;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="590" width="400" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s2_3_header" value="&lt;b&gt;2-3. 충격 데모 6연발 (8분)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#1a1a2e;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="580" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_3_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85c1e9;strokeColor=#5dade2;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="560" y="600" width="1040" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="&lt;b&gt;D1: PLAUD&lt;/b&gt;&lt;br&gt;주 20건 회의록&lt;br&gt;자동 5분" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="575" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="&lt;b&gt;D2: 주간보고&lt;/b&gt;&lt;br&gt;5개소스→3분" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="745" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="&lt;b&gt;D3: 유튜브&lt;/b&gt;&lt;br&gt;112편 리서치 자동" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="915" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="&lt;b&gt;D4: 500종목&lt;/b&gt;&lt;br&gt;42원/월 $13.50" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1085" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="&lt;b&gt;D5: 이 강의&lt;/b&gt;&lt;br&gt;8-agent 팀" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1255" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" value="&lt;b&gt;D6: LLM Wiki&lt;/b&gt;&lt;br&gt;7-Layer 33페이지" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d6eaf8;strokeColor=#85c1e9;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1425" y="610" width="155" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- S2 Row 3: 철학 + 시스템 연결 -->
+        <mxCell id="s2_4" value="&lt;b&gt;2-4. 철학 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;&amp;quot;게으름이 아니라 생존 문제&amp;quot;&lt;br&gt;&amp;quot;욕심내면 안 되고 시기하면 안 된다&amp;quot;&lt;br&gt;&amp;quot;100-200억 있어도 그 다음은?&amp;quot;&lt;br&gt;&amp;quot;자식에게 Agent를 물려줄 것&amp;quot;&lt;br&gt;&amp;quot;따라올 것인가? 포기할 것인가?&amp;quot;&lt;br&gt;= 생존의 문제&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#aed6f1;strokeColor=#5dade2;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="740" width="700" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_5" value="&lt;b&gt;2-5. 시스템 연결 (3분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;$500K/년 vs $33.50/월&lt;br&gt;99.8% 절감&lt;br&gt;&amp;quot;택시 놔두고 걸어가는 격&amp;quot;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#aed6f1;strokeColor=#5dade2;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="740" width="400" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- S2 -> S3 Transition -->
+        <mxCell id="tr_s2s3" value="&lt;font style=&quot;font-size:10px; color:#1a6496;&quot;&gt;&amp;quot;가장 인상적인 걸 보여드리겠습니다. 제가 빡세게 사는 이유를 아시겠죠?&amp;quot;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1a6496;strokeWidth=2;fontSize=10;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="s2box" target="s3box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S3: Market Intelligence Terminal (35분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s3box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 3 : Market Intelligence Terminal — 실시간 데모 (35분) : 호기심/놀라움&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6c3483;strokeColor=#5b2c6f;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="930" width="1500" height="400" as="geometry" />
+        </mxCell>
+        <!-- Row 1: Screenshots SS1-SS7 -->
+        <mxCell id="ss1" value="&lt;b&gt;SS1&lt;/b&gt;&lt;br&gt;Market Regime&lt;br&gt;현재 국면 판단" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss2" value="&lt;b&gt;SS2&lt;/b&gt;&lt;br&gt;Fear/Greed&lt;br&gt;공포탐욕 지수" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="340" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss3" value="&lt;b&gt;SS3&lt;/b&gt;&lt;br&gt;Portfolio Grid&lt;br&gt;500종목 현황" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="540" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss4" value="&lt;b&gt;SS4&lt;/b&gt;&lt;br&gt;Sector Rotation&lt;br&gt;섹터 순환 분석" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="740" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss5" value="&lt;b&gt;SS5&lt;/b&gt;&lt;br&gt;Weekly Signals&lt;br&gt;매매 신호" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="940" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss6" value="&lt;b&gt;SS6&lt;/b&gt;&lt;br&gt;Risk Dashboard&lt;br&gt;리스크 관리" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss7" value="&lt;b&gt;SS7&lt;/b&gt;&lt;br&gt;AI Report&lt;br&gt;종합 리포트" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d7bde2;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="975" width="185" height="70" as="geometry" />
+        </mxCell>
+        <!-- Row 2: Concepts A-D -->
+        <mxCell id="s3a" value="&lt;b&gt;A. 6-Stage Pipeline&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;수집→분석→신호→리포트&lt;br&gt;전 과정 자동화&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ebdef0;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1070" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s3b" value="&lt;b&gt;B. Market Regime&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Bull/Bear/Correction&lt;br&gt;자동 국면 판단&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ebdef0;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1070" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s3c" value="&lt;b&gt;C. 500종목 관리&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;yfinance + FRED&lt;br&gt;월 $13.50 비용&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ebdef0;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1070" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s3d" value="&lt;b&gt;D. AI 리포트 생성&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Claude API 자동 분석&lt;br&gt;주간 리포트 생성&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ebdef0;strokeColor=#8e44ad;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="1070" width="340" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ===== BREAK (10분) ===== -->
+        <mxCell id="breakbox" value="&lt;font style=&quot;font-size:14px;&quot;&gt;&lt;b&gt;BREAK — 휴식 (10분)&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5d8dc;strokeColor=#aab7b8;fontColor=#2c3e50;fontSize=14;verticalAlign=middle;arcSize=10;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1370" width="600" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S4: 유튜브 핵심 + 투자 방법론 (45분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s4box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 4 : 유튜브 핵심 + 투자 방법론 (45분) : 신뢰/전문성&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27ae60;strokeColor=#1e8449;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1470" width="1500" height="470" as="geometry" />
+        </mxCell>
+        <!-- Row 1 -->
+        <mxCell id="s4_1" value="&lt;b&gt;4-1. 112편 핵심 (10분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;유튜브 채널 소개&lt;br&gt;핵심 콘텐츠 Top 10&lt;br&gt;구독자 성장 곡선&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1510" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_2" value="&lt;b&gt;4-2. 매매 철학 (8분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;손절 vs 물타기&lt;br&gt;시장 사이클 이해&lt;br&gt;감정 제어 원칙&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1510" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_3" value="&lt;b&gt;4-3. 종목 선정 (10분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;퀀트 기반 스크리닝&lt;br&gt;팩터 분석&lt;br&gt;AI 점수 활용&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1510" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_4" value="&lt;b&gt;4-4. 포트폴리오 (7분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;분산 투자 원칙&lt;br&gt;섹터 배분&lt;br&gt;리밸런싱 전략&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="1510" width="340" height="110" as="geometry" />
+        </mxCell>
+        <!-- Row 2 -->
+        <mxCell id="s4_5" value="&lt;b&gt;4-5. 거시경제 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;금리/환율/유가&lt;br&gt;FRED 데이터 읽기&lt;br&gt;매크로 시그널&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1650" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_6" value="&lt;b&gt;4-6. 리스크 관리 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;VIX 활용&lt;br&gt;자동 손절선&lt;br&gt;헤지 전략&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1650" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_7" value="&lt;b&gt;4-7. 실전 사례 (10분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;최근 매매 기록&lt;br&gt;실패 사례 분석&lt;br&gt;교훈과 복기&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5f5e3;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1650" width="700" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S5: 최신 트렌드 + AI (25분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s5box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 5 : 최신 트렌드 + AI (25분) : 미래비전&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0e6655;strokeColor=#0b5345;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1980" width="1500" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_1" value="&lt;b&gt;5-1. AI 투자 트렌드 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;GPT/Claude/Gemini 투자 활용&lt;br&gt;AI 에이전트 시대&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1f2eb;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="2020" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_2" value="&lt;b&gt;5-2. MCP 생태계 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;17개 서버 연결&lt;br&gt;도구 생태계 확장&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1f2eb;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="2020" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_3" value="&lt;b&gt;5-3. 자동화 파이프라인 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;daily-sync 구조&lt;br&gt;6개 스킬 오케스트레이션&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1f2eb;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="2020" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_4" value="&lt;b&gt;5-4. 미래 전망 (10분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;2025-2027 AI 로드맵&lt;br&gt;일자리 변화 대응&lt;br&gt;투자와 AI의 수렴&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1f2eb;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="2020" width="340" height="100" as="geometry" />
+        </mxCell>
+        <!-- 5 Theme sub-boxes -->
+        <mxCell id="s5t1" value="DeepSeek R1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="2140" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5t2" value="Claude MCP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="2140" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5t3" value="OpenAI Codex" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="2140" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5t4" value="Gemini Pro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="980" y="2140" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s5t5" value="Agent Framework" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#0e6655;fontColor=#1a1a2e;fontSize=9;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="2140" width="260" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S6: 한투 API 자동매매 (20분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s6box" value="&lt;font style=&quot;font-size:16px; color:#1a1a2e;&quot;&gt;&lt;b&gt;SECTION 6 : 한투 API 자동매매 (20분) : 실전&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4ac0d;strokeColor=#b7950b;fontColor=#1a1a2e;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="2300" width="1500" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_1" value="&lt;b&gt;6-1. API 구조 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;한투 Open API&lt;br&gt;인증/토큰 관리&lt;br&gt;REST 호출 구조&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9e7;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="2340" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_2" value="&lt;b&gt;6-2. 매매 로직 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;시그널 기반 자동매매&lt;br&gt;주문 실행 파이프라인&lt;br&gt;에러 핸들링&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9e7;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="2340" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_3" value="&lt;b&gt;6-3. 백테스트 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;과거 데이터 검증&lt;br&gt;전략 수익률 비교&lt;br&gt;샤프 비율 분석&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9e7;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="2340" width="340" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_4" value="&lt;b&gt;6-4. 실전 배포 (5분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;cron 스케줄링&lt;br&gt;모니터링/알림&lt;br&gt;안전장치 설계&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9e7;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="2340" width="340" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== S7: GitHub Top 10 + 개선점 (15분) ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="s7box" value="&lt;font style=&quot;font-size:16px; color:#ffffff;&quot;&gt;&lt;b&gt;SECTION 7 : GitHub Top 10 + 개선점 (15분) : 행동&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e8449;strokeColor=#196f3d;fontColor=#ffffff;fontSize=16;verticalAlign=top;arcSize=6;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="120" y="2590" width="1500" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_1" value="&lt;b&gt;7-1. GitHub Top 10 (8분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;오픈소스 투자 도구&lt;br&gt;각 프로젝트 핵심 기능&lt;br&gt;직접 적용 방법&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4efdf;strokeColor=#1e8449;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="2630" width="700" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_2" value="&lt;b&gt;7-2. 개선 로드맵 (7분)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;현재 시스템 한계&lt;br&gt;다음 분기 개선 계획&lt;br&gt;커뮤니티 참여 방법&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4efdf;strokeColor=#1e8449;fontColor=#1a1a2e;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="2630" width="700" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================================= -->
+        <!-- ===== CLOSING ===== -->
+        <!-- ========================================================= -->
+        <mxCell id="closing" value="&lt;font style=&quot;font-size:13px;&quot;&gt;&lt;b&gt;CLOSING&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;&amp;quot;저도 잠잘 시간이 없습니다. 하지만 AI가 잠을 안 자니까 저는 7시간 잡니다.&lt;br&gt;여러분도 AI에게 일을 시키고 잠을 자세요. 오늘 시작하세요.&amp;quot;&lt;br&gt;&lt;br&gt;&lt;b&gt;총 강의 시간: 193분&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2c3e50;strokeColor=#1a252f;fontColor=#ecf0f1;fontSize=13;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="350" y="2810" width="900" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page2" name="6-Stage Pipeline">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title2" value="us-stock Market Intelligence Terminal — 6-Stage Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 1: Data Collection -->
+        <mxCell id="p1" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;1. Data Collection&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;yfinance&lt;br&gt;FRED API&lt;br&gt;Finnhub&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a5276;strokeColor=#154360;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 1->2 -->
+        <mxCell id="pa1" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;raw data&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;fontSize=10;fontColor=#555;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="p1" target="p2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 2: Market Regime Detection -->
+        <mxCell id="p2" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;2. Market Regime&lt;br&gt;Detection&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;5-Sensor Voting&lt;br&gt;GO/CAUTION/STOP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a04000;strokeColor=#784212;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 2->3 -->
+        <mxCell id="pa2" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;regime signal&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;fontSize=10;fontColor=#555;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="p2" target="p3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 3: Smart Money Screening -->
+        <mxCell id="p3" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;3. Smart Money&lt;br&gt;Screening&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;6-Factor Model&lt;br&gt;종목 필터링&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e6f2a;strokeColor=#155220;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 3->4 -->
+        <mxCell id="pa3" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;candidates&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;fontSize=10;fontColor=#555;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="p3" target="p4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 4: AI Analysis -->
+        <mxCell id="p4" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;4. AI Analysis&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Multi-LLM&lt;br&gt;Claude / GPT&lt;br&gt;종합 분석&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6c3483;strokeColor=#512e5f;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="720" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 4->5 -->
+        <mxCell id="pa4" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;analysis&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;fontSize=10;fontColor=#555;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="p4" target="p5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 5: Index Prediction -->
+        <mxCell id="p5" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;5. Index Prediction&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;GradientBoosting&lt;br&gt;ML 예측 모델&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="940" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 5->6 -->
+        <mxCell id="pa5" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;predictions&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;fontSize=10;fontColor=#555;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="p5" target="p6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 6: Dashboard -->
+        <mxCell id="p6" value="&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;6. Dashboard&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;hr/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;HTML SPA&lt;br&gt;실시간 시각화&lt;br&gt;보고서 출력&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#148f77;strokeColor=#0e6655;fontColor=#ffffff;fontSize=12;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="100" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-diagram title: 5-Sensor Voting -->
+        <mxCell id="subTitle" value="5-Sensor Voting System (Market Regime Detection 상세)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="300" y="290" width="700" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Sensor 1: VIX -->
+        <mxCell id="sv1" value="&lt;b&gt;VIX&lt;/b&gt;&lt;br&gt;30%" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1a5276;strokeColor=#154360;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="370" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sv1a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="sv1" target="sRegime" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sensor 2: Trend -->
+        <mxCell id="sv2" value="&lt;b&gt;Trend&lt;/b&gt;&lt;br&gt;25%" style="ellipse;whiteSpace=wrap;html=1;fillColor=#6c3483;strokeColor=#512e5f;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="100" y="480" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sv2a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=1.5;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="sv2" target="sRegime" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sensor 3: Breadth -->
+        <mxCell id="sv3" value="&lt;b&gt;Breadth&lt;/b&gt;&lt;br&gt;18%" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e6f2a;strokeColor=#155220;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="360" y="590" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sv3a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=1.5;entryX=0.3;entryY=1;entryDx=0;entryDy=0;" edge="1" source="sv3" target="sRegime" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sensor 4: Credit -->
+        <mxCell id="sv4" value="&lt;b&gt;Credit&lt;/b&gt;&lt;br&gt;15%" style="ellipse;whiteSpace=wrap;html=1;fillColor=#a04000;strokeColor=#784212;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="480" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sv4a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=1.5;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="sv4" target="sRegime" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sensor 5: Yield -->
+        <mxCell id="sv5" value="&lt;b&gt;Yield&lt;/b&gt;&lt;br&gt;12%" style="ellipse;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="370" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sv5a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="sv5" target="sRegime" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Central Regime Decision Diamond -->
+        <mxCell id="sRegime" value="&lt;b&gt;Regime&lt;br&gt;Decision&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#aaa;fontColor=#ffffff;fontSize=14;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="380" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Output: GO -->
+        <mxCell id="sGo" value="✅ GO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e6f2a;strokeColor=#155220;fontColor=#ffffff;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="350" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sGoArr" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1e6f2a;strokeWidth=2;exitX=1;exitY=0.35;exitDx=0;exitDy=0;" edge="1" source="sRegime" target="sGo" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Output: CAUTION -->
+        <mxCell id="sCaution" value="⚠️ CAUTION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b7950b;strokeColor=#9a7d0a;fontColor=#ffffff;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sCautionArr" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b7950b;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="sRegime" target="sCaution" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Output: STOP -->
+        <mxCell id="sStop" value="🛑 STOP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="510" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sStopArr" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#922b21;strokeWidth=2;exitX=1;exitY=0.65;exitDx=0;exitDy=0;" edge="1" source="sRegime" target="sStop" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="page3" name="한투 API 자동매매 플로우">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title3" value="한국투자증권 API 자동매매 플로우" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Main Flow: centered column -->
+
+        <!-- Step 1: 자연어 입력 (User shape) -->
+        <mxCell id="k1" value="&lt;b&gt;👤 자연어 입력&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px; color:#cce5ff;&quot;&gt;&quot;골든크로스 전략 만들어줘&quot;&lt;/font&gt;" style="shape=mxgraph.flowchart.start_2;whiteSpace=wrap;html=1;fillColor=#1a5276;strokeColor=#154360;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="440" y="80" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 1->2 -->
+        <mxCell id="ka1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k1" target="k2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2: kis-strategy-builder -->
+        <mxCell id="k2" value="&lt;b&gt;kis-strategy-builder&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Claude가 .kis.yaml 생성&lt;br&gt;전략 파라미터 정의&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6c3483;strokeColor=#512e5f;fontColor=#ffffff;fontSize=13;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="190" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 2->3 -->
+        <mxCell id="ka2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k2" target="k3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 3: 사용자 확인 (Diamond) -->
+        <mxCell id="k3" value="&lt;b&gt;사용자 확인&lt;/b&gt;&lt;br&gt;전략 검토" style="rhombus;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#aaa;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="440" y="310" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Reject branch -->
+        <mxCell id="ka3rej" value="수정 요청" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#e74c3c;strokeWidth=2;fontColor=#e74c3c;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="k3" target="k2" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="360" />
+              <mxPoint x="340" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Arrow 3->4 (approve) -->
+        <mxCell id="ka3" value="승인" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1e6f2a;strokeWidth=2;fontColor=#1e6f2a;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k3" target="k4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 4: kis-backtester -->
+        <mxCell id="k4" value="&lt;b&gt;kis-backtester&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;HTML 성과 리포트 생성&lt;br&gt;Sharpe / MDD / Win Rate&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a04000;strokeColor=#784212;fontColor=#ffffff;fontSize=13;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="450" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 4->5 -->
+        <mxCell id="ka4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k4" target="k5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 5: 사용자 리뷰 (Diamond) -->
+        <mxCell id="k5" value="&lt;b&gt;사용자 리뷰&lt;/b&gt;&lt;br&gt;백테스트 검토" style="rhombus;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#aaa;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="440" y="570" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Reject branch 5->4 -->
+        <mxCell id="ka5rej" value="파라미터 재조정" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#e74c3c;strokeWidth=2;fontColor=#e74c3c;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="k5" target="k4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="620" />
+              <mxPoint x="760" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Arrow 5->6 (approve) -->
+        <mxCell id="ka5" value="승인" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1e6f2a;strokeWidth=2;fontColor=#1e6f2a;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k5" target="k6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 6: kis-order-executor -->
+        <mxCell id="k6" value="&lt;b&gt;kis-order-executor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;주문 실행 엔진&lt;br&gt;안전장치 적용&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a6496;strokeColor=#124b73;fontColor=#ffffff;fontSize=13;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="710" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 6->7 -->
+        <mxCell id="ka6" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k6" target="k7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 7: 모의투자/실전 Diamond -->
+        <mxCell id="k7" value="&lt;b&gt;모의투자 / 실전?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#aaa;fontColor=#ffffff;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="440" y="830" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Safety Hook Annotation on k7 -->
+        <mxCell id="kSafety" value="🛡️ Safety Hooks&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;kis-prod-guard&lt;br&gt;kis-secret-guard&lt;br&gt;kis-trade-log&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=12;verticalAlign=middle;arcSize=10;dashed=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="730" y="840" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="kSafetyArr" value="" style="edgeStyle=none;html=1;strokeColor=#e74c3c;strokeWidth=1.5;dashed=1;" edge="1" source="k7" target="kSafety" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Simulated branch -->
+        <mxCell id="ka7sim" value="모의투자" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b7950b;strokeWidth=2;fontColor=#b7950b;fontSize=12;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="k7" target="k8" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="880" />
+              <mxPoint x="340" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Real branch -->
+        <mxCell id="ka7real" value="실전" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1e6f2a;strokeWidth=2;fontColor=#1e6f2a;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k7" target="k8" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 8: WebSocket 실시간 모니터링 -->
+        <mxCell id="k8" value="&lt;b&gt;WebSocket 실시간 모니터링&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;체결 감시 / 포지션 추적&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#148f77;strokeColor=#0e6655;fontColor=#ffffff;fontSize=13;verticalAlign=middle;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="970" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow 8->9 -->
+        <mxCell id="ka8" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#555;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="k8" target="k9" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 9: End -->
+        <mxCell id="k9" value="&lt;b&gt;체결 완료 / Stop Loss&lt;/b&gt;" style="shape=mxgraph.flowchart.terminate;whiteSpace=wrap;html=1;fillColor=#1e8449;strokeColor=#155c34;fontColor=#ffffff;fontSize=14;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1090" width="220" height="60" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="page4" name="us-stock 개선 로드맵">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title4" value="us-stock 개선 로드맵" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Timeline Header -->
+        <mxCell id="timelineHdr" value="" style="line;strokeColor=#aaa;strokeWidth=2;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="1400" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- Phase Labels on timeline -->
+        <mxCell id="tph1" value="Phase 1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=1;fontColor=#e74c3c;" vertex="1" parent="1">
+          <mxGeometry x="80" y="60" width="380" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tph2" value="Phase 2" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=1;fontColor=#e67e22;" vertex="1" parent="1">
+          <mxGeometry x="520" y="60" width="380" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tph3" value="Phase 3" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=1;fontColor=#27ae60;" vertex="1" parent="1">
+          <mxGeometry x="960" y="60" width="520" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 1 Box (red - high priority) -->
+        <mxCell id="ph1box" value="&lt;b&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Phase 1 — 2주&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px; color:#ffcccc;&quot;&gt;🔴 우선순위: 높음&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=13;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="380" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 1 Tasks -->
+        <mxCell id="ph1t1" value="&lt;b&gt;Backtrader 통합&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;백테스팅 프레임워크 연결&lt;br&gt;전략 검증 자동화&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1948a;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph1t2" value="&lt;b&gt;한투 API WebSocket&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;실시간 체결 스트림&lt;br&gt;포지션 추적&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1948a;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="215" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph1t3" value="&lt;b&gt;kis-order-executor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;자동매매 엔진&lt;br&gt;안전장치 연동&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1948a;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="350" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 2 Box (yellow - medium priority) -->
+        <mxCell id="ph2box" value="&lt;b&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Phase 2 — 1개월&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px; color:#ffe0a0;&quot;&gt;🟡 우선순위: 중간&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b7950b;strokeColor=#9a7d0a;fontColor=#ffffff;fontSize=13;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="380" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 2 Tasks -->
+        <mxCell id="ph2t1" value="&lt;b&gt;Qlib 포트폴리오&lt;br&gt;최적화&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Microsoft Qlib 통합&lt;br&gt;수익률 극대화&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9e79f;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph2t2" value="&lt;b&gt;Telegram 알림&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;신호 발생 시&lt;br&gt;실시간 푸시 알림&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9e79f;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="655" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph2t3" value="&lt;b&gt;멀티전략 A/B&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;전략 비교 실험&lt;br&gt;최적 전략 선택&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9e79f;strokeColor=#d4ac0d;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="790" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 3 Box (green - future) -->
+        <mxCell id="ph3box" value="&lt;b&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Phase 3 — 3개월&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px; color:#c8f0c8;&quot;&gt;🟢 우선순위: 미래 비전&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e6f2a;strokeColor=#155220;fontColor=#ffffff;fontSize=13;verticalAlign=top;arcSize=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="100" width="520" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 3 Tasks -->
+        <mxCell id="ph3t1" value="&lt;b&gt;FinRL 강화학습&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;딥러닝 기반&lt;br&gt;적응형 전략&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph3t2" value="&lt;b&gt;유니버스 확장&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;옵션/선물&lt;br&gt;크립토/한국주식&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph3t3" value="&lt;b&gt;대안 데이터&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Reddit / Twitter&lt;br&gt;Google Trends&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ph3t4" value="&lt;b&gt;NLP 업그레이드&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Claude Opus&lt;br&gt;뉴스 감성 분석&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a9dfbf;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="190" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Dependency Arrows -->
+        <mxCell id="dep1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#e74c3c;strokeWidth=1.5;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ph1box" target="ph2box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b7950b;strokeWidth=1.5;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ph2box" target="ph3box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Summary Row -->
+        <mxCell id="sumTitle" value="목표 지표" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=15;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sum1" value="&lt;b&gt;Phase 1 완료 시&lt;/b&gt;&lt;br&gt;한투 API 연동 완전 자동화&lt;br&gt;백테스트 → 실전 원클릭" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde8e8;strokeColor=#e74c3c;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="370" width="380" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sum2" value="&lt;b&gt;Phase 2 완료 시&lt;/b&gt;&lt;br&gt;다전략 포트폴리오 운영&lt;br&gt;Telegram 실시간 알림 수신" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9e7;strokeColor=#b7950b;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="370" width="380" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sum3" value="&lt;b&gt;Phase 3 완료 시&lt;/b&gt;&lt;br&gt;강화학습 자율 전략 생성&lt;br&gt;멀티에셋 글로벌 운용 가능" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eafaf1;strokeColor=#27ae60;fontColor=#1a1a2e;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="370" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="leg1" value="🔴 높음" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#922b21;strokeColor=#7b241c;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="500" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="🟡 중간" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b7950b;strokeColor=#9a7d0a;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="500" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="🟢 미래" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e6f2a;strokeColor=#155220;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="320" y="500" width="100" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -410,7 +410,7 @@ def run_integrated_analysis(
                       f"{p.get('composite_score', 0):.1f}점 [{p.get('grade', '?')}] "
                       f"{p.get('strategy', '')}/{p.get('setup', '')} → {p.get('action', '?')}")
 
-        print(f"\n  리포트: SQLite data_daily_reports ({now.strftime('%Y-%m-%d')})")
+        print(f"\n  리포트: SQLite data_daily_reports ({(target_date or start).strftime('%Y-%m-%d')})")
         print(f"  로그: {log_path}")
         print(f"  총 소요 시간: {elapsed:.1f}초")
         print(f"{'=' * 65}")

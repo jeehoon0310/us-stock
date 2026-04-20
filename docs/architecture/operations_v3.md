@@ -13,7 +13,7 @@
 | 매일 1줄 명령 | `source .venv/bin/activate && python scripts/run_integrated_analysis.py` |
 | 레거시 파이프라인 | `python scripts/run_full_pipeline.py` (AI 분석 + GBM 포함 9단계) |
 | 일일 스케줄러 | `python scripts/run_daily_scheduler.py` (1회) / `--status` (상태) / `--install-cron` (자동화) |
-| 대시보드 | `cd archive/legacy-dashboard && python3 -m http.server 8889` → http://localhost:8889 |
+| 대시보드 | `cd frontend && npm run dev` → http://localhost:3000 |
 | 긴급 롤백 | `git checkout -- <file>` (사이클별 롤백 명령은 `docs/evolution/YYYY-MM-DD_cycle*.md` 각 문서 하단) |
 | API 키 | `.env` (FRED / GOOGLE / OPENAI / PERPLEXITY / FINNHUB) |
 | 진화 에이전트 호출 | `@service-evolver 오늘의 evolution cycle 실행해줘` |
@@ -28,7 +28,9 @@ logs/               ← 실행 로그 (daily_run_YYYYMMDD.log)
 src/ml/                 ← GBM 피처/모델/검증 (Part 5)
 docs/notes/       ← memory.md + backlog.md
 docs/notes/daily/ ← 일일 개발 노트 + 사이클 로그
-archive/legacy-dashboard/ ← 정적 대시보드 (레거시)
+output/data.db    ← 분석 데이터 (11개 테이블, Mac 생성 → rsync)
+/data/board.db    ← 게시판 데이터 (Synology에만 존재, 쓰기 가능)
+.archive/legacy-dashboard/ ← 정적 대시보드 (레거시, 숨김 처리)
 frontend/         ← Next.js 대시보드 (현재)
 ```
 

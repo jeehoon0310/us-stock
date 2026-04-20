@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Stock Analysis System — Windows 설치 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #1e1e2e;
+  --bg-card: #2a2a3e;
+  --bg-code: #181825;
+  --bg-sidebar: #181825;
+  --border: #313244;
+  --text: #cdd6f4;
+  --text-muted: #6c7086;
+  --text-bright: #ffffff;
+  --accent: #89b4fa;
+  --accent-hover: #b4d0fa;
+  --success: #a6e3a1;
+  --warning: #f9e2af;
+  --danger: #f38ba8;
+  --phase-color: #cba6f7;
+  --win-color: #74c7ec;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+.top-header{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:1000;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo-icon{color:var(--accent);font-size:28px;}
+.top-header h1{font-size:16px;font-weight:700;color:var(--text-bright);}
+.os-badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.win-badge{background:rgba(116,199,236,0.15);color:var(--win-color);border:1px solid var(--win-color);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.progress-text{font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.progress-bar-header{width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill-header{height:100%;background:var(--accent);border-radius:3px;transition:width 0.3s;}
+.layout{display:flex;margin-top:60px;min-height:calc(100vh - 60px);}
+.sidebar{width:260px;background:var(--bg-sidebar);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
+.sidebar-title{padding:8px 20px 16px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+.phase-nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;transition:background 0.15s;position:relative;}
+.phase-nav-item:hover{background:rgba(137,180,250,0.08);}
+.phase-nav-item.active{background:rgba(137,180,250,0.12);border-right:2px solid var(--accent);}
+.phase-nav-item.done{opacity:0.7;}
+.phase-num{width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-muted);flex-shrink:0;}
+.phase-nav-item.active .phase-num{background:var(--accent);color:#1e1e2e;}
+.phase-nav-item.done .phase-num{background:var(--success);color:#1e1e2e;}
+.phase-title-nav{font-size:13px;flex:1;}
+.check-icon{font-size:16px;color:var(--success);display:none;}
+.phase-nav-item.done .check-icon{display:block;}
+.sidebar-divider{height:1px;background:var(--border);margin:16px 20px;}
+.total-time{padding:8px 20px;font-size:12px;color:var(--text-muted);}
+.content{flex:1;padding:40px;max-width:860px;}
+.phase-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:32px;transition:border-color 0.2s;}
+.phase-card.done{border-color:rgba(166,227,161,0.3);}
+.phase-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.phase-badge{background:rgba(203,166,247,0.15);color:var(--phase-color);border:1px solid rgba(203,166,247,0.3);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.phase-header h2{font-size:20px;font-weight:700;color:var(--text-bright);flex:1;}
+.time-badge{background:rgba(137,180,250,0.1);color:var(--text-muted);padding:4px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);}
+.phase-complete-btn{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.phase-checkbox{width:16px;height:16px;accent-color:var(--success);cursor:pointer;}
+.phase-complete-btn label{font-size:13px;color:var(--text-muted);cursor:pointer;}
+.phase-goal{background:rgba(137,180,250,0.08);border:1px solid rgba(137,180,250,0.2);border-radius:8px;padding:14px 16px;margin-bottom:24px;font-size:14px;}
+.step{display:flex;gap:16px;margin-bottom:24px;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--phase-color);color:#1e1e2e;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.step-content h3{font-size:15px;font-weight:600;color:var(--text-bright);margin-bottom:8px;}
+.step-content p{font-size:14px;color:var(--text);margin-bottom:10px;}
+.code-wrapper{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:10px 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);}
+.lang-badge{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;}
+.copy-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--text-muted);font-size:12px;transition:all 0.15s;}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn.copied{border-color:var(--success);color:var(--success);}
+.copy-btn .material-icons{font-size:14px;}
+.code-pre{margin:0!important;border-radius:0!important;font-size:13px!important;max-height:400px;overflow-y:auto;}
+.code-pre code{font-size:13px!important;}
+.callout{display:flex;gap:12px;padding:12px 16px;border-radius:8px;margin:16px 0;border-left:4px solid;font-size:14px;}
+.callout.tip{background:rgba(166,227,161,0.1);border-color:var(--success);}
+.callout.warning{background:rgba(249,226,175,0.1);border-color:var(--warning);}
+.callout.danger{background:rgba(243,139,168,0.1);border-color:var(--danger);}
+.callout.note{background:rgba(137,180,250,0.1);border-color:var(--accent);}
+.callout-icon{font-size:18px;flex-shrink:0;}
+.completion-check{background:rgba(166,227,161,0.07);border:1px solid rgba(166,227,161,0.2);border-radius:8px;padding:16px 20px;margin:20px 0;}
+.completion-check h4{font-size:14px;font-weight:600;color:var(--success);margin-bottom:12px;}
+.check-item{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;font-size:14px;}
+.check-item input[type=checkbox]{accent-color:var(--success);width:15px;height:15px;cursor:pointer;}
+.next-phase-arrow{margin:20px 0;display:flex;justify-content:center;}
+.arrow-box{display:flex;align-items:center;gap:8px;background:rgba(137,180,250,0.08);border:1px solid rgba(137,180,250,0.2);border-radius:8px;padding:10px 20px;font-size:14px;color:var(--accent);}
+.arrow-box .material-icons{font-size:20px;}
+.faq-section{margin-top:20px;}
+.faq-section h4{font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
+.faq-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.faq-item summary{padding:12px 16px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:"expand_more";font-family:'Material Icons';font-size:18px;color:var(--text-muted);}
+.faq-item[open] summary::after{content:"expand_less";}
+.faq-item>div{padding:12px 16px;font-size:14px;border-top:1px solid var(--border);color:var(--text-muted);}
+.info-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+.info-table th{background:rgba(137,180,250,0.1);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--border);color:var(--accent);}
+.info-table td{padding:10px 14px;border:1px solid var(--border);}
+.info-table tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+.info-table a{color:var(--accent);}
+.final-checklist{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:40px;}
+.final-checklist h2{font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:24px;}
+.checklist-grid{display:grid;gap:8px;margin-bottom:24px;}
+.cl-item{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:14px;}
+.cl-dot{width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.2s;}
+.cl-item.done .cl-dot{background:var(--success);}
+.cl-status{margin-left:auto;font-size:12px;color:var(--text-muted);}
+.cl-item.done .cl-status{color:var(--success);}
+.master-progress{margin-top:20px;}
+.progress-bar-big{height:12px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.progress-fill-big{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:6px;transition:width 0.4s;}
+.progress-label{font-size:14px;color:var(--text-muted);text-align:center;}
+.hamburger{display:none;background:transparent;border:none;cursor:pointer;padding:8px;}
+.hamburger .material-icons{color:var(--text);font-size:24px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998;}
+.diagram-box{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:20px;margin:12px 0;font-family:'Courier New',monospace;font-size:13px;color:var(--text);overflow-x:auto;white-space:pre;}
+.verdict-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin:12px 0;font-size:13px;}
+.vg-cell{background:var(--bg-code);padding:10px 12px;text-align:center;}
+.vg-header{background:rgba(137,180,250,0.1);font-weight:700;color:var(--accent);}
+.vg-buy{color:var(--success);font-weight:600;}
+.vg-watch{color:var(--warning);}
+.vg-hold{color:var(--danger);}
+.win-tag{display:inline-block;background:rgba(116,199,236,0.15);color:var(--win-color);border:1px solid rgba(116,199,236,0.3);padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:60px;left:-260px;height:calc(100vh - 60px);z-index:999;transition:left 0.25s;}
+  .sidebar.open{left:0;}
+  .sidebar-overlay.open{display:block;}
+  .hamburger{display:block;}
+  .content{padding:20px;}
+  .top-header h1{font-size:14px;}
+  .progress-bar-header{width:80px;}
+}
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div class="header-left">
+    <button class="hamburger" id="hamburgerBtn" aria-label="메뉴">
+      <span class="material-icons">menu</span>
+    </button>
+    <span class="material-icons logo-icon">analytics</span>
+    <h1>US Stock Analysis System</h1>
+    <span class="os-badge win-badge">Windows</span>
+  </div>
+  <div class="header-right">
+    <span class="progress-text" id="headerProgressText">0 / 10 완료</span>
+    <div class="progress-bar-header">
+      <div class="progress-fill-header" id="headerProgressFill" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">진행 단계</div>
+    <div class="phase-nav-item" data-phase="0" onclick="scrollToPhase(0)">
+      <span class="phase-num">0</span>
+      <span class="phase-title-nav">사전 준비</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="1" onclick="scrollToPhase(1)">
+      <span class="phase-num">1</span>
+      <span class="phase-title-nav">프로젝트 초기화</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="2" onclick="scrollToPhase(2)">
+      <span class="phase-num">2</span>
+      <span class="phase-title-nav">데이터 수집기</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="3" onclick="scrollToPhase(3)">
+      <span class="phase-num">3</span>
+      <span class="phase-title-nav">분석 엔진</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="4" onclick="scrollToPhase(4)">
+      <span class="phase-num">4</span>
+      <span class="phase-title-nav">ML 파이프라인</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="5" onclick="scrollToPhase(5)">
+      <span class="phase-num">5</span>
+      <span class="phase-title-nav">DB + 리스크</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="6" onclick="scrollToPhase(6)">
+      <span class="phase-num">6</span>
+      <span class="phase-title-nav">실행 스크립트</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="7" onclick="scrollToPhase(7)">
+      <span class="phase-num">7</span>
+      <span class="phase-title-nav">Next.js 대시보드</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="8" onclick="scrollToPhase(8)">
+      <span class="phase-num">8</span>
+      <span class="phase-title-nav">자동화</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="phase-nav-item" data-phase="9" onclick="scrollToPhase(9)">
+      <span class="phase-num">9</span>
+      <span class="phase-title-nav">Claude 에이전트</span>
+      <span class="check-icon material-icons">check_circle</span>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="total-time">⏱ 총 예상 시간: 3~4시간</div>
+  </nav>
+
+  <main class="content">
+
+    <!-- Phase 0 -->
+    <section id="phase-0" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 0</div>
+        <h2>사전 준비 — 도구 설치 &amp; API 키</h2>
+        <span class="time-badge">⏱ 20분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-0-done" class="phase-checkbox" data-key="phase-0-done">
+          <label for="phase-0-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> Python 3.13, Node.js 20을 설치하고, 분석에 필요한 API 키 5개를 발급받습니다. Windows 환경 특성상 몇 가지 추가 설정이 필요합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>PowerShell 실행 정책 설정 <span class="win-tag">Windows 필수</span></h3>
+          <p>Windows PowerShell은 기본적으로 스크립트 실행을 막습니다. 아래 명령으로 해제합니다. <strong>PowerShell을 관리자 권한으로 실행</strong>하세요 (시작 메뉴 → PowerShell 우클릭 → 관리자 권한으로 실행).</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></pre>
+          </div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> "실행 정책을 변경하시겠습니까?" 프롬프트가 나오면 <code>Y</code>를 입력하고 Enter를 누르세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>API 키 발급 (무료)</h3>
+          <p>아래 5개 서비스에 가입하고 API 키를 메모장에 복사해두세요.</p>
+          <table class="info-table">
+            <tr><th>서비스</th><th>용도</th><th>발급 링크</th><th>무료 한도</th></tr>
+            <tr><td>FRED</td><td>미국 경제 데이터 (금리, GDP)</td><td><a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank">발급 →</a></td><td>무제한</td></tr>
+            <tr><td>Google Gemini</td><td>AI 리포트 생성</td><td><a href="https://aistudio.google.com/app/apikey" target="_blank">발급 →</a></td><td>월 60회/분</td></tr>
+            <tr><td>OpenAI</td><td>GPT 보조 분석 (선택)</td><td><a href="https://platform.openai.com/api-keys" target="_blank">발급 →</a></td><td>유료</td></tr>
+            <tr><td>Perplexity</td><td>실시간 뉴스 검색 (선택)</td><td><a href="https://www.perplexity.ai/settings/api" target="_blank">발급 →</a></td><td>유료</td></tr>
+            <tr><td>Finnhub</td><td>주가 데이터 백업</td><td><a href="https://finnhub.io/register" target="_blank">발급 →</a></td><td>분당 60회</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>winget으로 Python 3.13 + Node.js 20 설치</h3>
+          <p>winget은 Windows 11/10에 기본 포함된 패키지 관리자입니다. PowerShell에서 실행하세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># Python 3.13 설치
+winget install Python.Python.3.13
+
+# Node.js 20 LTS 설치
+winget install OpenJS.NodeJS.LTS
+
+# 설치 후 PowerShell 재시작, 그 다음 버전 확인
+python --version    # Python 3.13.x 출력 확인
+node --version      # v20.x.x 출력 확인
+npm --version       # 10.x.x 출력 확인</code></pre>
+          </div>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>Windows Defender 차단 대처:</strong> Python 설치 시 "Windows Defender SmartScreen" 경고가 나오면 "추가 정보" → "실행"을 클릭하세요. 공식 Microsoft Store 경로를 통한 설치는 안전합니다.</div></div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>winget이 없으면?</strong> <a href="https://www.python.org/downloads/" style="color:var(--accent)" target="_blank">python.org</a>와 <a href="https://nodejs.org/" style="color:var(--accent)" target="_blank">nodejs.org</a>에서 직접 인스톨러를 다운로드하세요. Python 설치 시 반드시 "Add Python to PATH" 체크박스를 선택하세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>(선택 권장) WSL2 설치</h3>
+          <p>WSL2(Windows Subsystem for Linux)를 설치하면 리눅스 명령어를 Windows에서 그대로 쓸 수 있습니다. yfinance, curl_cffi 같은 라이브러리가 WSL2에서 더 안정적으로 동작합니다.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># 관리자 PowerShell에서 실행
+wsl --install
+
+# 재부팅 후 Ubuntu 설정 완료
+# Ubuntu 터미널에서는 macOS 가이드의 bash 명령을 그대로 사용 가능</code></pre>
+          </div>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> WSL2를 사용하면 이 가이드의 나머지 단계 대신 macOS 가이드의 명령어를 그대로 사용할 수 있습니다. Windows 네이티브로 진행하려면 이 가이드를 계속 따르세요.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p0-ps"> PowerShell 실행 정책 RemoteSigned 설정됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-python"> <code>python --version</code> → Python 3.13.x 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-node"> <code>node --version</code> → v20.x.x 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p0-apikeys"> API 키 5개 메모장에 저장 완료</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>'python'은 내부 또는 외부 명령이 아닙니다 오류가 나면?</summary><div>Python이 PATH에 추가되지 않은 것입니다. Python을 재설치하고 "Add Python to PATH" 체크박스를 반드시 선택하세요. 또는 환경 변수 편집에서 <code>C:\Users\사용자명\AppData\Local\Programs\Python\Python313\</code>을 PATH에 추가하세요.</div></details>
+        <details class="faq-item"><summary>winget 명령이 없다고 나오면?</summary><div>Windows 10 버전 1809 이상이어야 합니다. Microsoft Store에서 "앱 설치 관리자"를 검색해 업데이트하세요.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 1 — 프로젝트 초기화</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 1 -->
+    <section id="phase-1" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 1</div>
+        <h2>프로젝트 초기화</h2>
+        <span class="time-badge">⏱ 5분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-1-done" class="phase-checkbox" data-key="phase-1-done">
+          <label for="phase-1-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 프로젝트 폴더 구조를 만들고, Python 가상환경을 생성하고, 필요한 라이브러리를 설치합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>프로젝트 경로 주의사항 <span class="win-tag">Windows 중요</span></h3>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>한글 경로 절대 금지:</strong> <code>C:\Users\홍길동\바탕화면\us-stock</code> 같은 한글 경로를 사용하면 Python 라이브러리가 오작동합니다. 반드시 영문 경로를 사용하세요.</div></div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>권장 경로:</strong> <code>C:\workspace\us-stock</code></div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>디렉토리 구조 생성</h3>
+          <p>PowerShell에서 실행하세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">New-Item -ItemType Directory -Force -Path C:\workspace\us-stock
+Set-Location C:\workspace\us-stock
+
+# 소스코드 디렉토리 생성
+$dirs = @(
+  "src\collectors", "src\analyzers", "src\pipeline",
+  "src\ml\pipeline", "src\ml\validation", "src\us_market",
+  "scripts", "output\reports", "output\picks", "output\models",
+  "data", "logs", "frontend", "tests", ".claude\agents"
+)
+foreach ($d in $dirs) {
+  New-Item -ItemType Directory -Force -Path $d | Out-Null
+}
+
+Write-Host "디렉토리 생성 완료!" -ForegroundColor Green
+Get-ChildItem</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Python 가상환경 생성 &amp; 활성화</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+python -m venv .venv
+.venv\Scripts\activate</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> 가상환경 활성화가 되면 터미널 프롬프트 앞에 <code>(.venv)</code>가 표시됩니다. 이후 모든 작업은 이 상태에서 진행하세요.</div></div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> PowerShell을 새로 열 때마다 <code>.venv\Scripts\activate</code>를 다시 실행해야 합니다. CMD(명령 프롬프트)에서는 <code>.venv\Scripts\activate.bat</code>을 사용하세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>requirements.txt 생성</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">@"
+yfinance>=0.2.40
+curl_cffi>=0.7.0
+pandas>=2.2.0
+numpy>=1.26.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+google-generativeai>=0.7.0
+openai>=1.30.0
+fredapi>=0.5.1
+finnhub-python>=2.4.19
+lightgbm>=4.3.0
+scikit-learn>=1.4.0
+joblib>=1.3.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+beautifulsoup4>=4.12.0
+lxml>=5.2.0
+schedule>=1.2.0
+rich>=13.7.0
+"@ | Set-Content requirements.txt</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>라이브러리 설치</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">pip install --upgrade pip
+pip install -r requirements.txt</code></pre>
+          </div>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>curl_cffi 설치 실패 시:</strong> Visual C++ Build Tools가 없어서 발생합니다. <a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/" style="color:var(--accent)" target="_blank">여기</a>에서 설치 후 다시 시도하세요. 또는 <code>pip install curl_cffi --no-binary :all:</code>를 시도해보세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h3>.env 파일 생성 (API 키 입력)</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">@"
+# Federal Reserve Economic Data
+FRED_API_KEY=your_fred_key_here
+
+# AI Providers
+GOOGLE_API_KEY=your_gemini_key_here
+OPENAI_API_KEY=your_openai_key_here
+PERPLEXITY_API_KEY=your_perplexity_key_here
+
+# Market Data
+FINNHUB_API_KEY=your_finnhub_key_here
+"@ | Set-Content .env</code></pre>
+          </div>
+          <p style="margin-top:10px;font-size:14px;">메모장으로 <code>C:\workspace\us-stock\.env</code>를 열어 <code>your_xxx_key_here</code> 부분을 실제 키로 교체하세요.</p>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p1-venv"> 터미널 앞에 <code>(.venv)</code> 표시됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p1-pkg"> <code>pip list</code>에서 yfinance 확인됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p1-env"> <code>.env</code> 파일에 API 키 입력 완료</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>pip install 중 "Microsoft Visual C++ 14.0 required" 에러가 나면?</summary><div><a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/" style="color:var(--accent)" target="_blank">Visual C++ Build Tools</a>를 설치하세요. "C++ build tools" 워크로드를 선택하면 됩니다. 설치 후 PowerShell 재시작 후 다시 시도하세요.</div></details>
+        <details class="faq-item"><summary>가상환경 비활성화는 어떻게?</summary><div>PowerShell에서 <code>deactivate</code>를 입력하면 됩니다.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 2 — 데이터 수집기 구축</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section id="phase-2" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 2</div>
+        <h2>데이터 수집기 구축</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-2-done" class="phase-checkbox" data-key="phase-2-done">
+          <label for="phase-2-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> S&amp;P 500 주가, 거시경제 데이터, 섹터 데이터를 자동으로 수집하는 5개 파일을 만듭니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>수집기 파일 목록과 역할</h3>
+          <table class="info-table">
+            <tr><th>파일</th><th>역할</th><th>수집 데이터</th></tr>
+            <tr><td><code>src\collectors\us_price_fetcher.py</code></td><td>주가 수집기</td><td>개별 종목 OHLCV (시가/고가/저가/종가/거래량)</td></tr>
+            <tr><td><code>src\collectors\fetch_sp500_list.py</code></td><td>S&amp;P 500 목록</td><td>Wikipedia에서 503개 종목 티커+섹터</td></tr>
+            <tr><td><code>src\collectors\fetch_sp500_prices.py</code></td><td>대량 다운로드</td><td>503개 전 종목 1년치 OHLCV</td></tr>
+            <tr><td><code>src\collectors\macro_collector.py</code></td><td>거시경제 수집기</td><td>FRED API + VIX + 공포탐욕지수</td></tr>
+            <tr><td><code>src\collectors\data_fetcher.py</code></td><td>통합 수집기</td><td>yfinance 1차, Finnhub 2차 폴백</td></tr>
+          </table>
+          <div class="callout note"><span class="callout-icon">📌</span><div><strong>참고:</strong> <code>curl_cffi</code> 라이브러리는 yfinance가 Yahoo Finance에서 차단당하지 않도록 Chrome 브라우저처럼 위장합니다. 모든 yfinance 세션에 <code>Session(impersonate="chrome")</code>을 사용합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>파일 생성 명령 (PowerShell)</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># 빈 파일 생성 (macOS의 touch 대체)
+$files = @(
+  "src\collectors\us_price_fetcher.py",
+  "src\collectors\fetch_sp500_list.py",
+  "src\collectors\fetch_sp500_prices.py",
+  "src\collectors\macro_collector.py",
+  "src\collectors\data_fetcher.py",
+  "src\pipeline\us_data_pipeline.py",
+  "src\pipeline\run_pipeline.py"
+)
+foreach ($f in $files) {
+  New-Item -ItemType File -Path $f -Force | Out-Null
+}
+Write-Host "파일 생성 완료!" -ForegroundColor Green</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>Claude Code 프롬프트 예시:</strong><br><br>"CLAUDE.md를 읽고, src\collectors\ 아래에 5개 파일을 작성해줘: us_price_fetcher.py (curl_cffi Session 사용), fetch_sp500_list.py (Wikipedia 스크래핑), fetch_sp500_prices.py (503개 종목 배치 다운로드), macro_collector.py (FRED + VIX), data_fetcher.py (yfinance + Finnhub 폴백)"</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>데이터 수집 테스트 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+.venv\Scripts\activate
+
+# S&P 500 목록 수집 (30초)
+python src\collectors\fetch_sp500_list.py
+
+# 첫 5줄 확인
+Get-Content data\sp500_list.csv | Select-Object -First 5
+
+# 전체 파이프라인 실행 (15~30분)
+python src\pipeline\run_pipeline.py --top-n 50 --period 1y --output-dir data</code></pre>
+          </div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> Windows에서 경로 구분자는 백슬래시(<code>\</code>)입니다. Python 코드 내부에서는 <code>/</code>도 동작하지만, PowerShell 명령에서는 <code>\</code>를 사용하세요.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p2-sp500list"> <code>data\sp500_list.csv</code> 파일 생성됨 (503행)</label>
+        <label class="check-item"><input type="checkbox" data-key="p2-prices"> <code>data\us_daily_prices.csv</code> 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p2-macro"> <code>data\us_macro.csv</code> 파일 생성됨</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>SSL 인증서 오류가 나면?</summary><div>회사 네트워크나 VPN 환경에서 발생할 수 있습니다. <code>pip install certifi</code> 후 <code>python -c "import ssl; print(ssl.get_default_verify_paths())"</code>로 경로를 확인하세요.</div></details>
+        <details class="faq-item"><summary>Permission denied 오류가 나면?</summary><div>PowerShell을 관리자 권한으로 실행하거나, <code>C:\workspace\</code> 폴더의 쓰기 권한을 확인하세요.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 3 — 분석 엔진 구축</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section id="phase-3" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 3</div>
+        <h2>분석 엔진 구축</h2>
+        <span class="time-badge">⏱ 60분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-3-done" class="phase-checkbox" data-key="phase-3-done">
+          <label for="phase-3-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 시장 체제 감지기, 스마트머니 스크리너, AI 리포트 생성기를 구축합니다. 이 엔진들이 "지금 살 종목"을 골라냅니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>시장 체제 5개 센서 이해하기</h3>
+          <table class="info-table">
+            <tr><th>센서</th><th>가중치</th><th>쉬운 설명</th><th>데이터 소스</th></tr>
+            <tr><td>VIX</td><td>30%</td><td>주식 시장의 "공포 온도계". 20 아래면 안전, 30 이상이면 패닉 상태</td><td>^VIX</td></tr>
+            <tr><td>Trend</td><td>25%</td><td>SPY(S&amp;P500 ETF)가 50일/200일 이동평균선 위에 있으면 "상승 추세"</td><td>SPY vs SMA</td></tr>
+            <tr><td>Breadth</td><td>18%</td><td>RSP(동일가중 ETF) vs SPY — 소형주도 오르면 시장 전체가 건강한 것</td><td>RSP/SPY 비율</td></tr>
+            <tr><td>Credit</td><td>15%</td><td>HYG(회사채)/IEF(국채) — 투자자가 위험 자산을 기피하면 이 비율이 낮아짐</td><td>HYG/IEF</td></tr>
+            <tr><td>Yield Curve</td><td>12%</td><td>10년 금리 - 3개월 금리. 마이너스면 경기 침체 신호</td><td>^TNX - ^IRX</td></tr>
+          </table>
+          <div class="diagram-box">점수 → 체제 판단:
+  0.00 ~ 0.75 → risk_on  (공격 투자 가능)
+  0.75 ~ 1.50 → neutral  (중립)
+  1.50 ~ 2.25 → risk_off (방어 투자)
+  2.25 이상   → crisis   (현금 보유)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>스마트머니 스크리닝 6개 팩터</h3>
+          <table class="info-table">
+            <tr><th>팩터</th><th>가중치</th><th>의미</th></tr>
+            <tr><td>기술적 지표</td><td>25%</td><td>RSI, MACD, 이동평균선 — "지금 추세가 좋은가?"</td></tr>
+            <tr><td>펀더멘털</td><td>20%</td><td>PER, 매출 성장률, ROE — "실제로 돈을 잘 버는가?"</td></tr>
+            <tr><td>애널리스트</td><td>15%</td><td>월가 평균 목표가 대비 업사이드</td></tr>
+            <tr><td>상대강도</td><td>15%</td><td>SPY 대비 최근 3개월 수익률</td></tr>
+            <tr><td>거래량</td><td>15%</td><td>평균 대비 거래량 — 기관 매집 신호</td></tr>
+            <tr><td>13F 보유</td><td>10%</td><td>헤지펀드 분기보고서 보유량 변화</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>분석 엔진 검증</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+.venv\Scripts\activate
+
+# 시장 체제 분석
+python src\analyzers\market_regime.py
+
+# S&P 500 스크리닝 (30~60분)
+python scripts\run_screening.py</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p3-regime"> <code>market_regime.py</code> 실행 시 체제 판정 출력됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p3-picks"> <code>output\picks\</code>에 CSV 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p3-ai"> AI 요약 JSON 생성됨 (GOOGLE_API_KEY 필요)</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 4 — ML 파이프라인</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 4 -->
+    <section id="phase-4" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 4</div>
+        <h2>ML 파이프라인 구축</h2>
+        <span class="time-badge">⏱ 45분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-4-done" class="phase-checkbox" data-key="phase-4-done">
+          <label for="phase-4-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> LightGBM 머신러닝 모델로 SPY/QQQ의 다음 날 방향을 예측하는 시스템을 구축합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>GBM이 뭔가요?</h3>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>비유:</strong> GBM(Gradient Boosting Machine)은 "100명의 전문가 의견을 평균 낸 예측"입니다. Excel FORECAST 함수(1명의 예측)보다 훨씬 정확합니다. 주식 방향 예측, 신용카드 사기 탐지, 날씨 예보에 실제로 쓰입니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Walk-Forward 검증 원리</h3>
+          <div class="diagram-box">일반 방식 (잘못된 방법):
+  전체 데이터 → 학습 + 테스트 (미래로 과거 예측 → 사기!)
+
+Walk-Forward (올바른 방법):
+  1월~6월 학습 → 7월 예측 → 성능 측정
+  1월~7월 학습 → 8월 예측 → 성능 측정
+  ...
+  실제 투자와 동일한 방식으로 검증!</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>ML 모델 학습</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+.venv\Scripts\activate
+
+# 모델 학습 (5~10분)
+python src\ml\pipeline\train.py
+
+# 예측 테스트
+python src\ml\pipeline\predict.py</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p4-model"> <code>output\models\</code>에 .joblib 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p4-pred"> <code>predict.py</code> 실행 시 예측 출력됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 5 — DB + 리스크 관리</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 5 -->
+    <section id="phase-5" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 5</div>
+        <h2>DB + 리스크 관리</h2>
+        <span class="time-badge">⏱ 20분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-5-done" class="phase-checkbox" data-key="phase-5-done">
+          <label for="phase-5-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> SQLite DB에 분석 결과를 저장하고 체제별 리스크 파라미터를 설정합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>SQLite DB 확인 (Windows)</h3>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>SQLite 뷰어:</strong> Windows에서 DB 내용을 눈으로 보려면 <a href="https://sqlitebrowser.org/" style="color:var(--accent)" target="_blank">DB Browser for SQLite</a>를 설치하세요. 무료이며 Excel처럼 테이블을 볼 수 있습니다.</div></div>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># Python으로 테이블 목록 확인
+python -c "import sqlite3; conn=sqlite3.connect('data/data.db'); print([r[0] for r in conn.execute(\"SELECT name FROM sqlite_master WHERE type='table'\").fetchall()]); conn.close()"</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>체제별 적응형 리스크 파라미터</h3>
+          <table class="info-table">
+            <tr><th>체제</th><th>손절선</th><th>최대 낙폭 허용</th><th>포지션 크기</th></tr>
+            <tr><td>risk_on (공격)</td><td>-10%</td><td>-12%</td><td>풀 포지션</td></tr>
+            <tr><td>neutral (중립)</td><td>-8%</td><td>-10%</td><td>70% 포지션</td></tr>
+            <tr><td>risk_off (방어)</td><td>-5%</td><td>-7%</td><td>40% 포지션</td></tr>
+            <tr><td>crisis (위기)</td><td>-3%</td><td>-5%</td><td>현금 보유</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p5-db"> <code>data\data.db</code> 파일 생성됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p5-tables"> Python 쿼리로 테이블 목록 출력됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 6 — 실행 스크립트</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 6 -->
+    <section id="phase-6" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 6</div>
+        <h2>실행 스크립트 구성</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-6-done" class="phase-checkbox" data-key="phase-6-done">
+          <label for="phase-6-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 각 스크립트의 역할을 파악하고 첫 통합 분석을 실행합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>스크립트 역할 정리</h3>
+          <table class="info-table">
+            <tr><th>스크립트</th><th>언제 실행?</th><th>소요 시간</th></tr>
+            <tr><td><code>run_integrated_analysis.py</code></td><td>빠른 판단 필요 시</td><td>5~10분</td></tr>
+            <tr><td><code>run_full_pipeline.py</code></td><td>완전한 분석 (9단계)</td><td>30~60분</td></tr>
+            <tr><td><code>run_screening.py</code></td><td>종목 스크리닝만</td><td>10~20분</td></tr>
+            <tr><td><code>run_daily_scheduler.py</code></td><td>자동화 테스트</td><td>30~60분</td></tr>
+            <tr><td><code>regen_dashboard_data.py</code></td><td>대시보드 JSON 재생성</td><td>1분</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Verdict → Action 흐름</h3>
+          <div class="diagram-box">체제(Regime) + 게이트(Gate) + ML 예측
+           ↓
+    ┌──────────────────────────────────┐
+    │  Regime OK  +  Gate GO  +  ML ↑ │ → Verdict: GO
+    │  Regime crisis/risk_off          │ → Verdict: STOP
+    │  나머지 조합                      │ → Verdict: CAUTION
+    └──────────────────────────────────┘
+           ↓ Verdict × Grade → Action</div>
+          <div class="verdict-grid">
+            <div class="vg-cell vg-header">Verdict \ Grade</div>
+            <div class="vg-cell vg-header">A / B</div>
+            <div class="vg-cell vg-header">C</div>
+            <div class="vg-cell vg-header">D+</div>
+            <div class="vg-cell vg-header">GO</div>
+            <div class="vg-cell vg-buy">BUY</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-header">CAUTION</div>
+            <div class="vg-cell vg-buy">SMALL BUY</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-watch">WATCH</div>
+            <div class="vg-cell vg-header">STOP</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+            <div class="vg-cell vg-hold">HOLD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>첫 통합 분석 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+.venv\Scripts\activate
+
+python scripts\run_integrated_analysis.py</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p6-run"> <code>run_integrated_analysis.py</code> 에러 없이 완료됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p6-report"> <code>output\reports\latest_report.json</code> 생성됨</label>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 7 — Next.js 대시보드</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 7 -->
+    <section id="phase-7" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 7</div>
+        <h2>Next.js 대시보드 구축</h2>
+        <span class="time-badge">⏱ 60분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-7-done" class="phase-checkbox" data-key="phase-7-done">
+          <label for="phase-7-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 분석 결과를 시각화하는 Next.js 대시보드를 설치하고 실행합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>대시보드 페이지 구조</h3>
+          <div class="diagram-box">http://localhost:3000/
+
+├── /                   → Board        (종목 추천 + 시장 판단)
+├── /market-timing      → Market Timing (SPY/QQQ 예측)
+├── /sector             → Sector        (11개 섹터 히트맵)
+├── /risk-monitor       → Risk Monitor  (배지 + 리스크)
+├── /macro              → Macro         (거시경제 지표)
+├── /report             → Report        (AI 리포트 뷰어)
+├── /graph              → Graph         (개별 종목 차트)
+└── /download           → Download      (데이터 다운로드)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>의존성 설치 &amp; 개발 서버 실행</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock\frontend
+npm install
+
+# 개발 서버 실행
+npm run dev</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>팁:</strong> 브라우저에서 <a href="http://localhost:3000" target="_blank" style="color:var(--accent)">http://localhost:3000</a>을 열면 대시보드가 표시됩니다.</div></div>
+          <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>빌드 오류 대처:</strong> 오류가 나면 아래 명령으로 초기화하세요.</div></div>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Remove-Item -Recurse -Force node_modules, .next -ErrorAction SilentlyContinue
+npm install</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>데이터 파일 연결</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+.venv\Scripts\activate
+
+# output/ → frontend/public/data/ 동기화
+python scripts\regen_dashboard_data.py</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p7-npm"> <code>npm install</code> 완료 (에러 없음)</label>
+        <label class="check-item"><input type="checkbox" data-key="p7-dev"> localhost:3000 접속됨</label>
+        <label class="check-item"><input type="checkbox" data-key="p7-data"> 대시보드에 데이터가 표시됨</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>Windows Firewall이 포트 3000 차단하면?</summary><div>Windows Defender 방화벽 → "Windows Defender 방화벽을 통해 앱 허용" → Node.js 허용으로 추가하세요.</div></details>
+        <details class="faq-item"><summary>EACCES: permission denied 오류가 나면?</summary><div>PowerShell을 관리자 권한으로 실행하거나, <code>npm config set cache C:\workspace\npm-cache</code>로 캐시 경로를 변경해보세요.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 8 — 자동화 설정</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 8 -->
+    <section id="phase-8" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 8</div>
+        <h2>자동화 설정 (작업 스케줄러)</h2>
+        <span class="time-badge">⏱ 15분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-8-done" class="phase-checkbox" data-key="phase-8-done">
+          <label for="phase-8-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 매일 오전 7시에 분석이 자동으로 실행되도록 Windows 작업 스케줄러를 설정합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>PowerShell로 작업 스케줄러 등록 <span class="win-tag">Windows 방식</span></h3>
+          <p>macOS launchd 대신 Windows Task Scheduler를 사용합니다. <strong>관리자 권한 PowerShell</strong>에서 실행하세요.</p>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># 작업 스케줄러 등록 스크립트 생성
+$scriptPath = "C:\workspace\us-stock\scripts\run_scheduler.bat"
+@"
+@echo off
+cd /d C:\workspace\us-stock
+call .venv\Scripts\activate.bat
+python scripts\run_daily_scheduler.py >> logs\scheduler.log 2>&1
+"@ | Set-Content $scriptPath
+
+# 매일 오전 7시 자동 실행 등록
+$action = New-ScheduledTaskAction -Execute $scriptPath
+$trigger = New-ScheduledTaskTrigger -Daily -At "07:00"
+$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Hours 2)
+Register-ScheduledTask -TaskName "USStockAnalysis" -Action $action -Trigger $trigger -Settings $settings -RunLevel Highest
+
+Write-Host "작업 스케줄러 등록 완료!" -ForegroundColor Green</code></pre>
+          </div>
+          <div class="callout warning"><span class="callout-icon">⚠️</span><div><strong>주의:</strong> 자동 실행 시 .env 파일의 API 키가 올바르지 않으면 에러가 발생합니다. 로그는 <code>logs\scheduler.log</code>에서 확인하세요.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>작업 스케줄러 관리</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell"># 등록 확인
+Get-ScheduledTask -TaskName "USStockAnalysis"
+
+# 즉시 실행 테스트
+Start-ScheduledTask -TaskName "USStockAnalysis"
+
+# 작업 삭제 (필요 시)
+Unregister-ScheduledTask -TaskName "USStockAnalysis" -Confirm:$false
+
+# 로그 확인
+Get-Content C:\workspace\us-stock\logs\scheduler.log -Tail 50</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p8-task"> <code>Get-ScheduledTask</code> → USStockAnalysis 등록 확인</label>
+        <label class="check-item"><input type="checkbox" data-key="p8-test"> 즉시 실행 테스트 성공</label>
+      </div>
+
+      <div class="faq-section">
+        <h4>❓ 자주 묻는 질문</h4>
+        <details class="faq-item"><summary>작업이 실행됐는데 결과 파일이 없으면?</summary><div><code>logs\scheduler.log</code>를 확인하세요. .venv 경로나 Python 경로가 잘못됐을 가능성이 높습니다. bat 파일을 직접 더블클릭해서 실행해보세요.</div></details>
+        <details class="faq-item"><summary>컴퓨터가 꺼져 있으면 자동 실행 안 되나요?</summary><div>Windows 작업 스케줄러는 컴퓨터가 켜져 있을 때만 실행됩니다. "조건" 탭에서 "컴퓨터가 절전 모드일 때 절전 모드 해제" 옵션을 활성화하면 절전 상태에서 자동으로 깨어납니다.</div></details>
+      </div>
+
+      <div class="next-phase-arrow">
+        <div class="arrow-box">
+          <span class="material-icons">arrow_downward</span>
+          <span>다음: Phase 9 — Claude 에이전트 설정</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 9 -->
+    <section id="phase-9" class="phase-card">
+      <div class="phase-header">
+        <div class="phase-badge">Phase 9</div>
+        <h2>Claude 에이전트 설정</h2>
+        <span class="time-badge">⏱ 30분</span>
+        <div class="phase-complete-btn">
+          <input type="checkbox" id="phase-9-done" class="phase-checkbox" data-key="phase-9-done">
+          <label for="phase-9-done">완료 표시</label>
+        </div>
+      </div>
+      <div class="phase-goal"><strong>🎯 이 단계의 목표:</strong> 7개 전문 AI 에이전트 팀을 구성하여 코드 생성, 디버깅, 분석을 자동화합니다.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>에이전트란?</h3>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>비유:</strong> 에이전트는 "각자 전문 분야가 있는 AI 팀원"입니다. 데이터 분석 전문 팀원, 프론트엔드 전문 팀원, 에러 수정 전문 팀원... 일반 Claude보다 해당 분야에서 훨씬 정확합니다.</div></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>7개 에이전트 팀 구성</h3>
+          <table class="info-table">
+            <tr><th>에이전트</th><th>역할</th><th>파일명</th></tr>
+            <tr><td>data-collector</td><td>데이터 수집 오류 디버깅 + 최적화</td><td><code>data-collector.md</code></td></tr>
+            <tr><td>market-analyzer</td><td>시장 체제 분석 로직 개선</td><td><code>market-analyzer.md</code></td></tr>
+            <tr><td>screener-specialist</td><td>종목 스크리닝 팩터 튜닝</td><td><code>screener-specialist.md</code></td></tr>
+            <tr><td>ml-engineer</td><td>ML 모델 학습/예측/검증</td><td><code>ml-engineer.md</code></td></tr>
+            <tr><td>frontend-dev</td><td>Next.js 대시보드 기능 추가</td><td><code>frontend-dev.md</code></td></tr>
+            <tr><td>report-writer</td><td>AI 리포트 품질 개선</td><td><code>report-writer.md</code></td></tr>
+            <tr><td>devops</td><td>자동화 스케줄러 + 배포</td><td><code>devops.md</code></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>에이전트 파일 생성</h3>
+          <div class="code-wrapper">
+            <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)"><span class="material-icons">content_copy</span><span class="copy-text">복사</span></button></div>
+            <pre class="code-pre"><code class="language-powershell">Set-Location C:\workspace\us-stock
+
+$agents = @(
+  ".claude\agents\data-collector.md",
+  ".claude\agents\market-analyzer.md",
+  ".claude\agents\screener-specialist.md",
+  ".claude\agents\ml-engineer.md",
+  ".claude\agents\frontend-dev.md",
+  ".claude\agents\report-writer.md",
+  ".claude\agents\devops.md"
+)
+foreach ($a in $agents) {
+  New-Item -ItemType File -Path $a -Force | Out-Null
+}
+
+Write-Host "에이전트 파일 생성 완료!" -ForegroundColor Green
+Get-ChildItem .claude\agents\</code></pre>
+          </div>
+          <div class="callout tip"><span class="callout-icon">💡</span><div><strong>에이전트 사용법:</strong> Claude Code에서 <code>/market-analyzer</code>를 입력하면 해당 전문 에이전트가 활성화됩니다. 각 MD 파일에 에이전트의 역할과 전문 지식을 상세히 작성할수록 더 정확한 답변을 받을 수 있습니다.</div></div>
+        </div>
+      </div>
+
+      <div class="completion-check">
+        <h4>✅ 완료 후 확인사항</h4>
+        <label class="check-item"><input type="checkbox" data-key="p9-agents"> <code>.claude\agents\</code>에 7개 MD 파일 존재</label>
+        <label class="check-item"><input type="checkbox" data-key="p9-test"> Claude Code에서 에이전트 응답 테스트 완료</label>
+      </div>
+    </section>
+
+    <!-- Final Checklist -->
+    <section class="final-checklist">
+      <h2>최종 완료 체크리스트</h2>
+      <div class="checklist-grid" id="checklistGrid">
+        <div class="cl-item" data-phase="0"><span class="cl-dot"></span><span>Phase 0: 사전 준비 (Python, Node.js, API 키, PS 실행 정책)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="1"><span class="cl-dot"></span><span>Phase 1: 프로젝트 초기화 (C:\workspace\us-stock)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="2"><span class="cl-dot"></span><span>Phase 2: 데이터 수집기 (5개 파일)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="3"><span class="cl-dot"></span><span>Phase 3: 분석 엔진 (체제 감지 + 스크리너)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="4"><span class="cl-dot"></span><span>Phase 4: ML 파이프라인 (학습 + 예측)</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="5"><span class="cl-dot"></span><span>Phase 5: DB + 리스크 관리</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="6"><span class="cl-dot"></span><span>Phase 6: 통합 분석 첫 실행 성공</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="7"><span class="cl-dot"></span><span>Phase 7: 대시보드 localhost:3000 접속</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="8"><span class="cl-dot"></span><span>Phase 8: 작업 스케줄러 자동 실행 등록</span><span class="cl-status">미완료</span></div>
+        <div class="cl-item" data-phase="9"><span class="cl-dot"></span><span>Phase 9: Claude 에이전트 7개 설정</span><span class="cl-status">미완료</span></div>
+      </div>
+      <div class="master-progress">
+        <div class="progress-bar-big"><div class="progress-fill-big" id="masterFill" style="width:0%"></div></div>
+        <div class="progress-label" id="masterLabel">0 / 10 단계 완료</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+<script>
+const STORAGE_KEY = 'us-stock-win-progress';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function updateProgress() {
+  const state = loadState();
+  let done = 0;
+  for (let i = 0; i < 10; i++) {
+    const v = state['phase-' + i + '-done'];
+    const navItem = document.querySelector('.phase-nav-item[data-phase="' + i + '"]');
+    const card = document.getElementById('phase-' + i);
+    const clItem = document.querySelector('.cl-item[data-phase="' + i + '"]');
+    if (v) {
+      done++;
+      navItem && navItem.classList.add('done');
+      card && card.classList.add('done');
+      if (clItem) { clItem.classList.add('done'); clItem.querySelector('.cl-status').textContent = '완료'; }
+    } else {
+      navItem && navItem.classList.remove('done');
+      card && card.classList.remove('done');
+      if (clItem) { clItem.classList.remove('done'); clItem.querySelector('.cl-status').textContent = '미완료'; }
+    }
+  }
+  const pct = (done / 10 * 100).toFixed(0);
+  document.getElementById('headerProgressFill').style.width = pct + '%';
+  document.getElementById('headerProgressText').textContent = done + ' / 10 완료';
+  document.getElementById('masterFill').style.width = pct + '%';
+  document.getElementById('masterLabel').textContent = done + ' / 10 단계 완료';
+}
+
+function initCheckboxes() {
+  const state = loadState();
+  document.querySelectorAll('.phase-checkbox, .check-item input[type=checkbox]').forEach(cb => {
+    const key = cb.dataset.key || cb.id;
+    if (!key) return;
+    cb.checked = !!state[key];
+    cb.addEventListener('change', () => {
+      const s = loadState();
+      s[key] = cb.checked;
+      saveState(s);
+      updateProgress();
+    });
+  });
+}
+
+function scrollToPhase(n) {
+  const el = document.getElementById('phase-' + n);
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  if (window.innerWidth < 768) closeSidebar();
+}
+
+function copyCode(btn) {
+  const code = btn.closest('.code-wrapper').querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.querySelector('.copy-text').textContent = '✓ 복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.querySelector('.copy-text').textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function initObserver() {
+  const sections = document.querySelectorAll('.phase-card');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        const n = id.replace('phase-', '');
+        document.querySelectorAll('.phase-nav-item').forEach(el => el.classList.remove('active'));
+        const nav = document.querySelector('.phase-nav-item[data-phase="' + n + '"]');
+        if (nav) nav.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -60% 0px', threshold: 0 });
+  sections.forEach(s => obs.observe(s));
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+initCheckboxes();
+updateProgress();
+initObserver();
+</script>
+</body>
+</html>
