@@ -48,7 +48,7 @@ export async function GET(
 
   return new Response(webStream, {
     headers: {
-      "Content-Type": "application/zip",
+      "Content-Type": basename.toLowerCase().endsWith(".pdf") ? "application/pdf" : "application/zip",
       "Content-Length": String(stat.size),
       "Content-Disposition": `attachment; filename="${ascii}"; filename*=UTF-8''${utf8}`,
       "Cache-Control": "no-store",
