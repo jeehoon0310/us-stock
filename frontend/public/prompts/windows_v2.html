@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>US Stock Analysis System — Windows 구축 가이드</title>
+<title>US Stock — Part 1~6 강의안 (Windows)</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;background:#1e1e2e;color:#cdd6f4}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#1e1e2e;color:#cdd6f4}
 #app{display:flex;height:100vh}
 
 /* SIDEBAR */
-.sidebar{width:240px;min-width:240px;height:100vh;background:#181825;border-right:1px solid #313244;color:#cdd6f4;display:flex;flex-direction:column;overflow:hidden}
+.sidebar{width:240px;min-width:240px;height:100vh;background:#181825;border-right:1px solid #313244;display:flex;flex-direction:column;overflow:hidden}
 .sb-header{padding:20px 16px 14px;border-bottom:1px solid #313244;background:linear-gradient(135deg,#1e1e2e 0%,#252537 100%)}
 .sb-eyebrow{font-size:10px;font-weight:700;letter-spacing:1px;color:#585b70;text-transform:uppercase;margin-bottom:4px}
 .sb-title{font-size:13px;font-weight:700;color:#cdd6f4;line-height:1.4}
@@ -19,12 +19,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',san
 .sb-nav::-webkit-scrollbar{width:3px}
 .sb-nav::-webkit-scrollbar-thumb{background:#45475a;border-radius:2px}
 .sb-sec{width:100%;text-align:left;padding:9px 16px;background:none;border:none;cursor:pointer;color:#6c7086;font-size:12px;display:flex;align-items:center;gap:8px;transition:background .15s,color .15s}
-.sb-sec:hover,.sb-sec.active{background:rgba(137,180,250,0.08);color:#cdd6f4}
+.sb-sec:hover,.sb-sec.active{background:#313244;color:#cdd6f4}
 .sb-dot{width:8px;height:8px;border-radius:50%;border:2px solid;flex-shrink:0;transition:background .15s}
 .sb-sec.active .sb-dot{background:currentColor}
-.sb-num{font-size:10px;opacity:.5;min-width:14px}
+.sb-num{font-size:10px;opacity:.4;min-width:14px}
 .sb-name{font-size:12px;font-weight:600;flex:1;line-height:1.3}
-.sb-cnt{font-size:10px;opacity:.4}
+.sb-cnt{font-size:10px;opacity:.35}
 .sb-footer{padding:12px 16px;border-top:1px solid #313244}
 .prog-row{display:flex;justify-content:space-between;font-size:11px;color:#585b70;margin-bottom:5px}
 .prog-bar{height:3px;background:#313244;border-radius:2px;overflow:hidden}
@@ -40,103 +40,68 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',san
 .slide-area{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;align-items:flex-start;justify-content:center;padding:12px 16px;background:#1e1e2e}
 .slide-area::-webkit-scrollbar{width:5px}
 .slide-area::-webkit-scrollbar-thumb{background:#45475a;border-radius:3px}
-.slide-card{width:100%;max-width:1100px;min-height:calc(100vh - 52px - 58px - 24px);padding:32px 48px;background:#2a2a3e;border-radius:12px;border:1px solid #313244;display:flex;flex-direction:column;gap:20px;animation:si .18s ease}
+.slide-card{overflow:hidden;width:100%;max-width:1200px;min-height:calc(100vh - 52px - 58px - 24px);padding:36px 52px;background:linear-gradient(145deg,#2a2a3e 0%,#252537 100%);border-radius:14px;box-shadow:0 4px 32px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.04) inset;display:flex;flex-direction:column;gap:22px;animation:si .2s ease}
 @keyframes si{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
 .bot-nav{height:58px;background:rgba(24,24,37,.95);border-top:1px solid #313244;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;backdrop-filter:blur(8px)}
-.nav-btn{padding:8px 18px;border-radius:7px;border:1px solid #45475a;background:#2a2a3e;cursor:pointer;font-size:13px;font-weight:600;color:#a6adc8;transition:all .15s}
-.nav-btn:hover{background:#313244;color:#cdd6f4}
+.nav-btn{padding:8px 20px;border-radius:8px;border:1px solid #45475a;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:#cdd6f4;transition:all .2s cubic-bezier(.4,0,.2,1)}
+.nav-btn:hover{background:#313244;border-color:#585b70;transform:translateY(-1px)}
 .nav-btn:disabled{opacity:.3;cursor:not-allowed}
 .nav-btn.pri{background:linear-gradient(135deg,#89b4fa 0%,#74c7ec 100%);color:#1e1e2e;border-color:transparent;box-shadow:0 2px 12px rgba(137,180,250,.35)}
-.nav-btn.pri:hover{background:#b4d0fa}
+.nav-btn.pri:hover{background:#74c7ec;border-color:#74c7ec}
 .dots{display:flex;gap:4px;align-items:center}
 .d{width:5px;height:5px;border-radius:50%;background:#45475a;transition:all .25s cubic-bezier(.4,0,.2,1)}
 .d.on{width:16px;border-radius:3px}
 
-/* ── SLIDE CONTENT ── */
-.s-eye{font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+/* PROGRESS PIPS */
+.sec-pip{width:8px;height:8px;border-radius:50%;background:#313244;transition:all .2s;flex-shrink:0;cursor:pointer}
+.sec-pip.current{background:#f59e0b!important;transform:scale(1.3)}
+.sec-pip.visited{opacity:.7}
+
+/* SLIDE CONTENT */
+.s-eye{font-size:.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 .s-title{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#cdd6f4 0%,#89b4fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;line-height:1.25}
 .s-sub{font-size:1.05rem;color:#a6adc8;margin-bottom:24px;line-height:1.5}
-.s-div{height:1px;background:#313244;margin:22px 0}
 
-.cover-wrap{text-align:center;padding:16px 0 8px}
-.cover-main{font-size:38px;font-weight:800;line-height:1.2;margin-bottom:10px;color:#cdd6f4}
-.cover-desc{font-size:18px;color:#6c7086;margin-bottom:28px}
-.cover-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
-.cv-stat{text-align:center}
-.cv-val{font-size:20px;font-weight:800}
-.cv-key{font-size:10px;color:#585b70;text-transform:uppercase;letter-spacing:.5px}
-
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.icard{background:#1e1e2e;border:1px solid #313244;border-radius:8px;padding:14px}
-.icard-t{font-size:12px;font-weight:700;color:#a6adc8;margin-bottom:7px}
-.icard-b{font-size:0.93rem;color:#6c7086;line-height:1.75}
-
-.tbl{width:100%;border-collapse:collapse;font-size:0.93rem}
-.tbl th{padding:10px 14px;text-align:left;background:#181825;border-bottom:2px solid #313244;font-weight:700;color:#89b4fa}
+.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th{padding:11px 14px;text-align:left;background:linear-gradient(135deg,#313244,#2e2e42);border-bottom:2px solid #89b4fa;font-weight:700;color:#cdd6f4}
 .tbl td{padding:10px 14px;border-bottom:1px solid #313244;color:#a6adc8}
 .tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:rgba(137,180,250,0.04)}
+.tbl tr:hover td{background:#313244}
+.tbl code{background:#1e1e2e;padding:1px 5px;border-radius:3px;font-size:.85em;color:#89b4fa}
 
-.blist{list-style:none}
-.blist li{padding:5px 0 5px 16px;position:relative;font-size:0.93rem;color:#a6adc8;line-height:1.5}
-.blist li::before{content:"▸";position:absolute;left:0;color:#585b70}
-.blist li strong{color:#cdd6f4}
+.code-wrapper{margin:12px 0;border-radius:8px;overflow-y:hidden;border:1px solid #313244}
+.code-header{display:flex;justify-content:space-between;align-items:center;background:#11111b;padding:6px 12px}
+.lang-badge{font-size:11px;font-weight:700;color:#6c7086;text-transform:uppercase}
+.copy-btn{font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid #45475a;background:transparent;color:#6c7086;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:#313244;color:#cdd6f4}
+pre{margin:0;overflow-x:auto}
+pre code{display:block;padding:14px 18px;background:#11111b;color:#cdd6f4;font-family:'JetBrains Mono',Menlo,monospace;font-size:.88rem;line-height:1.6;white-space:pre}
 
-/* code-wrapper */
-.code-wrapper{background:#11111b;border:1px solid #313244;border-radius:8px;overflow:hidden;margin:10px 0}
-.code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #313244}
-.lang-badge{font-size:11px;color:#585b70;font-weight:600;text-transform:uppercase}
-.copy-btn{background:transparent;border:1px solid #45475a;border-radius:6px;padding:4px 10px;cursor:pointer;color:#6c7086;font-size:12px;transition:all .15s}
-.copy-btn:hover{border-color:#89b4fa;color:#89b4fa}
-pre{margin:0;padding:14px 18px;font-family:'JetBrains Mono',Menlo,Consolas,monospace;font-size:0.88rem;line-height:1.6;overflow-x:auto;color:#cdd6f4}
-code{font-family:inherit;font-size:inherit;color:inherit}
-.comment{color:#45475a}
-.kw{color:#cba6f7}
-.str{color:#a6e3a1}
-.num{color:#fab387}
-
-/* callout */
-.callout{padding:12px 16px;border-radius:8px;margin:12px 0;border-left:4px solid;font-size:14px;color:#a6adc8;line-height:1.6}
+.callout{padding:13px 16px;border-radius:8px;margin:12px 0;font-size:.93rem;line-height:1.6;border-left:4px solid;backdrop-filter:blur(4px)}
 .callout.tip{background:#1c3a2c;border-color:#a6e3a1;color:#a6e3a1}
 .callout.warning{background:#2d2617;border-color:#f9e2af;color:#f9e2af}
 .callout.danger{background:#2d1a1a;border-color:#f38ba8;color:#f38ba8}
 .callout.note{background:#1e1e3a;border-color:#89b4fa;color:#89b4fa}
 .callout strong{font-weight:700}
 
-/* checklist */
-.checklist{list-style:none}
-.checklist li{padding:4px 0}
-.checklist label{display:flex;align-items:center;gap:8px;font-size:14px;color:#a6adc8;cursor:pointer}
-.checklist input[type=checkbox]{accent-color:#89b4fa;width:15px;height:15px;cursor:pointer}
+.next-step-box{background:linear-gradient(135deg,#1e293b,#1a2535);border:1px solid #334155;border-radius:12px;padding:18px 22px;margin-top:22px;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.next-step-box h4{color:#94a3b8;font-size:13px;margin-bottom:10px}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.checklist li label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.93rem;color:#a6adc8}
+.checklist input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#89b4fa}
+.arrow-next{margin-top:12px;font-size:.93rem;font-weight:600;color:#89b4fa}
 
-.next-step-box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-top:16px}
-.next-step-box h4{font-size:14px;font-weight:700;color:#89b4fa;margin-bottom:10px}
-.arrow-next{margin-top:10px;font-size:14px;color:#a6adc8;font-weight:600}
+details.faq{margin:12px 0;border:1px solid #313244;border-radius:8px;overflow:hidden}
+details.faq summary{padding:10px 14px;cursor:pointer;font-size:.93rem;font-weight:600;color:#a6adc8;list-style:none;background:#313244}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq > div{padding:12px 14px;font-size:.88rem;color:#6c7086;background:#2a2a3e;line-height:1.6}
+details.faq code{background:#11111b;padding:1px 6px;border-radius:3px;color:#89b4fa}
 
-.phase-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-.phase-table th{padding:8px 12px;text-align:left;background:#181825;border-bottom:2px solid #313244;color:#89b4fa;font-weight:700}
-.phase-table td{padding:8px 12px;border-bottom:1px solid #313244;color:#a6adc8}
-.phase-table tr:last-child td{border-bottom:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
-.badge-ps{background:#1c3a4a;color:#74c7ec}
-.badge-wsl{background:#2a1e3a;color:#cba6f7}
-.badge-both{background:#1c3a2c;color:#a6e3a1}
-
-.sec-pip{width:8px;height:8px;border-radius:50%;background:#313244;flex-shrink:0;transition:background .2s}
-.sec-pip.visited{background:#585b70}
-.sec-pip.current{background:#f59e0b;transform:scale(1.3)}
-
-.warn-box{background:#2d1a1a;border:1px solid #f38ba8;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:13px;color:#f38ba8}
-.info-box{background:#1e1e3a;border:1px solid #89b4fa;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:13px;color:#89b4fa}
-.success-box{background:#1c3a2c;border:1px solid #a6e3a1;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:13px;color:#a6e3a1}
-
-.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
-.diff-col{background:#1e1e2e;border:1px solid #313244;border-radius:8px;padding:12px}
-.diff-col-h{font-size:12px;font-weight:700;margin-bottom:8px}
-.diff-item{font-size:12px;color:#a6adc8;padding:3px 0;border-bottom:1px solid #313244;display:flex;justify-content:space-between;align-items:center}
-.diff-item:last-child{border-bottom:none}
-.diff-val{font-family:monospace;font-size:11px;color:#cdd6f4}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:8px}
+.phase-card{background:#313244;border-radius:8px;padding:14px 16px;border-left:4px solid}
+.phase-card .ph-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;opacity:.7}
+.phase-card .ph-title{font-size:14px;font-weight:700;color:#cdd6f4;margin-bottom:4px}
+.phase-card .ph-desc{font-size:.85rem;color:#6c7086;line-height:1.5}
 
 /* ── PDF mode ── */
 #pdf-mode{display:none}
@@ -147,284 +112,254 @@ code{font-family:inherit;font-size:inherit;color:inherit}
 </head>
 <body>
 <div id="app">
-<aside class="sidebar">
-  <div class="sb-header">
-    <div class="sb-eyebrow">Windows Guide</div>
-    <div class="sb-title">us-stock 구축 가이드<br><small style="font-weight:400;color:#585b70">Windows 10/11</small></div>
-  </div>
-  <nav class="sb-nav" id="sb-nav"></nav>
-  <div class="sb-footer">
-    <div class="prog-row"><span id="prog-txt">1 / 45</span><span id="prog-pct">2%</span></div>
-    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
-    <div class="kbd-hint">← → Space | 1~0 섹션</div>
-    <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap;max-width:220px;margin-top:7px" id="secProgressRow"></div>
-  </div>
-</aside>
-<main class="main">
-  <header class="top-bar">
-    <span class="sec-badge" id="sec-badge">SECTION 01</span>
-    <span class="top-title" id="top-title">슬라이드 제목</span>
-    <span class="top-cnt" id="top-cnt">1 / 4</span>
-  </header>
-  <div class="slide-area">
-    <div class="slide-card" id="slide-content"></div>
-  </div>
-  <footer class="bot-nav">
-    <button class="nav-btn" id="prev-btn" onclick="nav(-1)">← 이전</button>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div id="dots" class="dots"></div>
+  <nav class="sidebar">
+    <div class="sb-header">
+      <div class="sb-eyebrow">Claude Code Guide</div>
+      <div class="sb-title">US Stock<br>강의안 (Mac)</div>
     </div>
-    <button class="nav-btn pri" id="next-btn" onclick="nav(1)">다음 →</button>
-  </footer>
-</main>
+    <div class="sb-nav" id="sb-nav"></div>
+    <div class="sb-footer">
+      <div class="prog-row"><span id="prog-txt">1/1</span><span id="prog-pct">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="kbd-hint">← → Space | 1~6 섹션</div>
+    </div>
+  </nav>
+  <div class="main">
+    <div class="top-bar">
+      <span class="sec-badge" id="sec-badge">SECTION 01</span>
+      <span class="top-title" id="top-title">슬라이드 제목</span>
+      <span class="top-cnt" id="top-cnt">1 / 1</span>
+    </div>
+    <div class="slide-area">
+      <div class="slide-card" id="slide-content"></div>
+    </div>
+    <div class="bot-nav">
+      <button class="nav-btn" id="prev-btn" onclick="nav(-1)">← 이전</button>
+      <div id="dots" class="dots"></div>
+      <div id="secProgressRow" style="display:flex;gap:3px;align-items:center;flex-wrap:wrap;max-width:400px;justify-content:center"></div>
+      <button class="nav-btn pri" id="next-btn" onclick="nav(1)">다음 →</button>
+    </div>
+  </div>
 </div>
-
 <script>
 const SEC = [
-{id:1,num:"01",title:"시작 전 준비",sub:"API 키 발급 & Windows 환경 요건",color:"#7c3aed",cl:"rgba(124,58,237,0.15)",
-slides:[
-{t:"시스템 개요",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 01 · 시작 전 준비</div>
-<div class="s-title">us-stock 미국 주식 분석 시스템</div>
-<div class="s-sub">Claude Code Plan Mode로 처음부터 구축 — Windows 10/11 완전 가이드</div>
-<div class="grid2">
-<div class="icard" style="border-left:4px solid #7c3aed">
-<div class="icard-t" style="color:#cba6f7">5개 파트 구성</div>
-<div class="icard-b">
-<strong style="color:#cdd6f4">Part 1</strong> S&amp;P 500 데이터 수집<br>
-<strong style="color:#cdd6f4">Part 2</strong> 시장 체제 감지 (5-sensor)<br>
-<strong style="color:#cdd6f4">Part 3</strong> 스마트머니 스크리닝<br>
-<strong style="color:#cdd6f4">Part 4</strong> AI 분석 리포트<br>
-<strong style="color:#cdd6f4">Part 5</strong> Next.js 대시보드 (13페이지)
-</div>
-</div>
-<div class="icard" style="border-left:4px solid #a6e3a1">
-<div class="icard-t" style="color:#a6e3a1">자동화 목표</div>
-<div class="icard-b">
-• 평일 07:00 Task Scheduler 자동 실행<br>
-• SQLite DB + JSON 파일 저장<br>
-• 전체 분석 소요: 5~15분<br>
-• 아침 5분으로 투자 결정 가능<br>
-• AI API 비용: 약 $0.20/일
-</div>
-</div>
-</div>
-<div class="info-box">
-<strong>총 예상 소요시간:</strong> 2~3시간 | <strong>구독:</strong> Claude Pro $20/월 (약 3만원) | <strong>전제:</strong> WSL2 필수 설치
-</div>`},
-{t:"API 키 발급 가이드",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 01</div>
-<div class="s-title">API 키 발급 가이드</div>
-<div class="s-sub">아래 키를 메모장에 복사해두세요 — Phase 1 .env 파일에 입력합니다</div>
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 01 — 사전 준비
+  // ─────────────────────────────────────────────────────────────────
+  {id:1, num:"01", title:"사전 준비", sub:"API 키 발급 & Windows 환경 요건", color:"#cba6f7", cl:"rgba(203,166,247,.15)", slides:[
+    {t:"us-stock 시스템 전체 개요", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 01</div>
+<h2 class="s-title">us-stock 시스템 전체 개요</h2>
+<p class="s-sub">S&amp;P 500 503개 종목을 매일 자동 분석하는 Claude Code 기반 투자 보조 시스템</p>
 <table class="tbl">
-<tr><th>키</th><th>필수</th><th>발급 URL</th><th>무료 한도</th></tr>
-<tr><td><code>FRED_API_KEY</code></td><td><span class="badge" style="background:#1c3a2c;color:#a6e3a1">필수</span></td><td><a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" style="color:#89b4fa">발급 →</a></td><td>무제한</td></tr>
-<tr><td><code>GOOGLE_API_KEY</code></td><td><span class="badge" style="background:#1c3a4a;color:#89b4fa">AI용</span></td><td><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#89b4fa">발급 →</a></td><td>월 60회/분</td></tr>
-<tr><td><code>OPENAI_API_KEY</code></td><td><span class="badge" style="background:#313244;color:#a6adc8">선택</span></td><td><a href="https://platform.openai.com/api-keys" target="_blank" style="color:#89b4fa">발급 →</a></td><td>유료</td></tr>
-<tr><td><code>PERPLEXITY_API_KEY</code></td><td><span class="badge" style="background:#313244;color:#a6adc8">선택</span></td><td><a href="https://www.perplexity.ai/settings/api" target="_blank" style="color:#89b4fa">발급 →</a></td><td>유료</td></tr>
-<tr><td><code>FINNHUB_API_KEY</code></td><td><span class="badge" style="background:#313244;color:#a6adc8">선택</span></td><td><a href="https://finnhub.io/register" target="_blank" style="color:#89b4fa">발급 →</a></td><td>분당 60회</td></tr>
+<tr><th>파트</th><th>내용</th><th>프롬프트 수</th><th>예상 시간</th></tr>
+<tr><td>사전 준비</td><td>API 키 발급, 환경 설치, Claude Code 설치</td><td>—</td><td>30분</td></tr>
+<tr><td>Part 1</td><td>데이터 수집 (S&amp;P500 + 가격 + 매크로 + 섹터)</td><td>14개</td><td>1~2시간</td></tr>
+<tr><td>Part 2</td><td>시장 체제 감지 (5-sensor 가중 투표)</td><td>12개</td><td>1시간</td></tr>
+<tr><td>Part 3</td><td>Smart Money 스크리닝 (6팩터 복합 점수)</td><td>14개</td><td>1~2시간</td></tr>
+<tr><td>Part 4</td><td>AI 종목 분석 (Gemini + GPT + Perplexity)</td><td>12개</td><td>1시간</td></tr>
+<tr><td>Part 5~6</td><td>ML 지수 예측 + 리스크 관리</td><td>12+7개</td><td>1~2시간</td></tr>
 </table>
-<div class="callout tip"><strong>최소 요건:</strong> FRED + Google Gemini 두 개만 있으면 핵심 기능 전부 작동. AI 키는 3개 중 1개 이상. 우선순위: Gemini > OpenAI > Perplexity</div>`},
-{t:"Windows 환경 요건 확인",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 01</div>
-<div class="s-title">Windows 환경 요건 확인</div>
-<div class="s-sub">Windows 10 22H2+ / Python 3.13 / Node.js 20 LTS / WSL2 (Claude Code 필수)</div>
+<div class="callout tip">💡 <strong>이 강의안 사용법:</strong> 각 슬라이드의 코드 블록을 <strong>복사 버튼</strong>으로 복사 → Claude Code에 붙여넣기 → 실행 결과 확인 → 다음 슬라이드로 이동</div>
+<div class="callout note" style="margin-top:8px">📌 <strong>키보드 단축키:</strong> ← → 슬라이드 이동 | 숫자 1~9 섹션 점프 | Space 다음</div>
+`},
+    {t:"API 키 발급 가이드", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 01</div>
+<h2 class="s-title">API 키 발급 가이드</h2>
+<p class="s-sub">필수 2개 먼저 발급 — 나머지는 나중에 추가 가능</p>
+<table class="tbl">
+<tr><th>서비스</th><th>발급 경로</th><th>필수</th><th>비용</th></tr>
+<tr><td><strong>FRED</strong></td><td>fred.stlouisfed.org → My Account → API Keys</td><td>✅ 필수</td><td>무료</td></tr>
+<tr><td><strong>Google AI Studio</strong></td><td>aistudio.google.com → Get API Key</td><td>✅ 필수 (AI)</td><td>무료 티어</td></tr>
+<tr><td>OpenAI</td><td>platform.openai.com → API Keys</td><td>선택</td><td>유료</td></tr>
+<tr><td>Perplexity</td><td>perplexity.ai → Settings → API</td><td>선택</td><td>유료</td></tr>
+<tr><td>Finnhub</td><td>finnhub.io → API → Get free API key</td><td>선택</td><td>무료 티어</td></tr>
+</table>
+<div class="callout tip">💡 <strong>팁:</strong> FRED + Google AI Studio 2개만으로 핵심 기능이 전부 동작합니다. OpenAI/Perplexity는 나중에 추가해도 됩니다.</div>
+<div class="callout warning" style="margin-top:8px">⚠️ <strong>순서:</strong> API 키를 먼저 준비한 뒤 Claude Code 설치로 넘어가세요. 구축 도중 키가 없으면 분석기 검증 단계에서 막힙니다.</div>
+`},
+    {t:"Windows 환경 요건 확인", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 01</div>
+<h2 class="s-title">Windows 환경 요건 확인</h2>
+<p class="s-sub">Windows 10/11 (64bit) / Python 3.13 / Node.js 20 LTS / winget</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">powershell (관리자 권한)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># Python 3.13 설치</span>
-winget install Python.Python.3.13
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># PowerShell을 관리자 권한으로 실행 후 입력
+# winget 버전 확인 (Windows 10 1809 이상 기본 포함)
+winget --version
 
-<span class="comment"># Node.js 20 LTS 설치</span>
-winget install OpenJS.NodeJS.LTS
+# Python 3.13 설치
+winget install Python.Python.3.13 --source winget
 
-<span class="comment"># WSL2 설치 (Claude Code 필수!)</span>
-wsl --install
+# Node.js 20 LTS 설치
+winget install OpenJS.NodeJS.LTS --source winget
 
-<span class="comment"># 버전 확인 (재시작 후 PowerShell에서)</span>
-python --version   <span class="comment"># Python 3.13.x</span>
-node --version     <span class="comment"># v20.x.x</span></code></pre>
+# 터미널 재시작 후 버전 확인
+python --version   # Python 3.13.x
+node --version     # v20.x.x
+npm --version      # 10.x.x</code></pre>
 </div>
-<div class="callout warning"><strong>중요:</strong> Claude Code는 WSL2(Windows Subsystem for Linux)가 반드시 필요합니다. WSL2 설치 후 Ubuntu 터미널에서 모든 Claude Code 작업을 진행하세요.</div>
-<div class="callout tip"><strong>팁:</strong> winget 대신 python.org에서 직접 다운로드도 가능합니다. 설치 시 "Add to PATH" 체크박스 반드시 선택!</div>`},
-{t:"WSL2 설정 + 작업 디렉토리",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 01</div>
-<div class="s-title">WSL2 Ubuntu 설정</div>
-<div class="s-sub">Claude Code는 WSL2 Ubuntu 환경에서 실행 — Windows PowerShell 아님!</div>
+<div class="callout warning">⚠️ <strong>주의:</strong> winget install 후 반드시 <strong>PowerShell을 닫고 새로 열어야</strong> PATH가 적용됩니다.</div>
+<details class="faq">
+<summary>❓ winget을 찾을 수 없다면?</summary>
+<div>Microsoft Store에서 "앱 설치 관리자(App Installer)"를 업데이트하거나, <code>https://aka.ms/getwinget</code> 에서 직접 설치하세요.</div>
+</details>
+`},
+    {t:"작업 디렉토리 생성", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 01</div>
+<h2 class="s-title">작업 디렉토리 생성</h2>
+<p class="s-sub">프로젝트를 저장할 폴더를 만들고 진입합니다</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># WSL2 Ubuntu 터미널 열기: 시작 → Ubuntu 검색</span>
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># 홈 디렉토리 아래 projects 폴더 + us-stock 생성
+mkdir "$HOME\\projects\\us-stock"
+cd "$HOME\\projects\\us-stock"
 
-<span class="comment"># Ubuntu 업데이트</span>
-sudo apt update && sudo apt upgrade -y
-
-<span class="comment"># Python 3.13 (Ubuntu PPA)</span>
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt install -y python3.13 python3.13-venv
-
-<span class="comment"># 작업 디렉토리 생성</span>
-mkdir -p ~/projects && cd ~/projects</code></pre>
+# 현재 위치 확인 (이후 모든 작업은 이 폴더에서)
+pwd</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 01 완료 체크</h4>
+<h4>✅ SECTION 01 완료 체크</h4>
 <ul class="checklist">
 <li><label><input type="checkbox" onchange="saveCheck(this)"> FRED API 키 발급 완료</label></li>
 <li><label><input type="checkbox" onchange="saveCheck(this)"> Google AI Studio API 키 발급 완료</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> WSL2 Ubuntu 설치 완료 (PC 재시작)</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> python3.13 --version 확인 (WSL2 내부)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> python --version 확인 (3.13.x)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> node --version v20.x 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> $HOME\\projects\\us-stock 폴더 생성</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 02 → Claude Code 설치</div>
-</div>`}
-]},
-
-{id:2,num:"02",title:"Claude Code 설치",sub:"WSL2 + bun으로 설치 & Plan Mode",color:"#0891b2",cl:"rgba(8,145,178,0.15)",
-slides:[
-{t:"Claude Code란?",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 02 · Claude Code 설치</div>
-<div class="s-title">Claude Code란?</div>
-<div class="s-sub">터미널에서 동작하는 AI 코딩 에이전트 — 한국어로 대화하며 시스템 전체를 구축</div>
-<div class="grid2">
-<div class="icard" style="border-left:4px solid #0891b2">
-<div class="icard-t" style="color:#74c7ec">Claude란?</div>
-<div class="icard-b">
-Anthropic이 개발한 AI. 단순 답변을 넘어 함께 고민하는 지적 파트너 역할. <br><br>
-<strong style="color:#cdd6f4">Opus 4.5:</strong> SWE-bench 80.8%<br>
-<strong style="color:#cdd6f4">Sonnet 4.6:</strong> 일반 구현 (기본, 속도↑ 비용↓)
+<div class="arrow-next">👉 다음: SECTION 02 → Claude Code 설치</div>
 </div>
-</div>
-<div class="icard" style="border-left:4px solid #a6e3a1">
-<div class="icard-t" style="color:#a6e3a1">구독 플랜</div>
-<div class="icard-b">
-<strong style="color:#cdd6f4">Pro</strong> $20/월 — 이 프로젝트에 충분<br>
-<strong style="color:#cdd6f4">Max 5x</strong> $100/월 — 헤비 유저<br>
-<strong style="color:#cdd6f4">Max 20x</strong> $200/월 — 팀/전문가<br>
-<strong style="color:#cdd6f4">API</strong> 사용량 기반 ($6/일 평균)
-</div>
-</div>
-</div>
-<div class="warn-box"><strong>Windows 주의:</strong> Claude Code는 macOS에 최적화되어 있습니다. Windows에서는 반드시 WSL2 (Ubuntu) 환경에서 실행해야 합니다.</div>`},
-{t:"WSL2에서 bun + Claude Code 설치",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 02</div>
-<div class="s-title">WSL2 Ubuntu에서 Claude Code 설치</div>
-<div class="s-sub">반드시 WSL2 Ubuntu 터미널에서 실행 — PowerShell 아님!</div>
+`}
+  ]},
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 02 — Claude Code 설치
+  // ─────────────────────────────────────────────────────────────────
+  {id:2, num:"02", title:"Claude Code 설치", sub:"bun 설치 → 로그인 → Plan Mode 활성화", color:"#89b4fa", cl:"rgba(137,180,250,.15)", slides:[
+    {t:"Claude Code란?", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 02</div>
+<h2 class="s-title">Claude Code란?</h2>
+<p class="s-sub">Anthropic의 AI 코딩 에이전트 — 터미널에서 자연어로 코드를 생성한다</p>
+<table class="tbl">
+<tr><th>구독</th><th>월 비용</th><th>사용량</th><th>권장 대상</th></tr>
+<tr><td>Pro</td><td>$20/월</td><td>표준</td><td>개인 학습 ✅</td></tr>
+<tr><td>Max 5×</td><td>$100/월</td><td>5배</td><td>적극적 개발</td></tr>
+<tr><td>Max 20×</td><td>$200/월</td><td>20배</td><td>전문 개발자</td></tr>
+<tr><td>API 직접</td><td>평균 $6/일</td><td>종량제</td><td>API 능숙자</td></tr>
+</table>
+<div class="callout tip">💡 <strong>팁:</strong> Pro $20/월로 시작 → 부족하면 Max 5× 업그레이드. us-stock 구축에는 Pro면 충분합니다.</div>
+<div class="callout note" style="margin-top:8px">📌 <strong>모델:</strong> 대부분의 작업은 Sonnet(기본)으로 충분. 오류가 반복되거나 설계 결정이 필요할 때만 <code>/model opus</code>로 전환.</div>
+`},
+    {t:"bun + Claude Code 설치", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 02</div>
+<h2 class="s-title">Claude Code 설치 (Windows PowerShell)</h2>
+<p class="s-sub">bun은 npm보다 빠른 JavaScript 런타임 — Claude Code 권장 설치 방법</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># Node.js 20 설치 (WSL2 내부)</span>
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># Step 1: bun 설치 (PowerShell 관리자 권한)
+powershell -c "irm bun.sh/install.ps1 | iex"
 
-<span class="comment"># bun 설치</span>
-curl -fsSL https://bun.sh/install | bash
-source ~/.bashrc
+# 터미널 재시작 후 bun 확인
+bun --version
 
-<span class="comment"># Claude Code 설치</span>
-bun install -g @anthropic-ai/claude-code
+# Step 2: Claude Code 설치
+npm install -g @anthropic-ai/claude-code
 
-<span class="comment"># 버전 확인</span>
+# Step 3: 버전 확인
 claude --version</code></pre>
 </div>
-<div class="callout danger"><strong>주의:</strong> Windows PowerShell에서 설치하면 작동하지 않습니다. 반드시 WSL2 Ubuntu 터미널에서 실행하세요.</div>
-<div class="callout tip">WSL2 안의 파일은 Windows 탐색기에서 <code>\\\\wsl$\\Ubuntu\\home\\{사용자명}\\projects\\us-stock</code> 경로로 접근할 수 있습니다.</div>`},
-{t:"로그인 & 초기 설정",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 02</div>
-<div class="s-title">로그인 & 초기 설정</div>
-<div class="s-sub">WSL2 Ubuntu 터미널에서 최초 1회 실행</div>
+<details class="faq">
+<summary>❓ bun 설치 스크립트 실행이 막히면?</summary>
+<div>PowerShell 실행 정책 문제입니다. 먼저 <code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code>를 실행 후 다시 시도하세요.</div>
+</details>
+<details class="faq">
+<summary>❓ bun 설치가 안 되면 npm 방법으로 대체</summary>
+<div><code>npm install -g bun</code> 으로 설치한 뒤 <code>npm install -g @anthropic-ai/claude-code</code> 를 이어서 실행하세요.</div>
+</details>
+`},
+    {t:"로그인 & 최초 실행", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 02</div>
+<h2 class="s-title">Claude Code 로그인</h2>
+<p class="s-sub">claude.ai 계정으로 로그인 — 브라우저 인증 자동 열림</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># 프로젝트 디렉토리 생성</span>
-mkdir -p ~/projects/us-stock && cd ~/projects/us-stock
-
-<span class="comment"># Claude Code 실행 → 브라우저 자동 열림 → Anthropic 계정 로그인</span>
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># 프로젝트 폴더로 이동 후 실행
+cd "$HOME\\projects\\us-stock"
 claude
 
-<span class="comment"># 로그인 완료 후 종료: Ctrl+C 또는 /exit</span></code></pre>
+# → 최초 실행 시 브라우저가 자동으로 열립니다
+# → claude.ai 계정으로 승인 클릭
+# → 터미널로 복귀 후 로그인 완료 메시지 확인</code></pre>
 </div>
-<div class="info-box"><strong>참고:</strong> WSL2에서 실행 시 Windows 기본 브라우저가 자동으로 열립니다. claude.ai 계정으로 로그인 후 터미널로 복귀합니다.</div>`},
-{t:"Plan Mode 사용법",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 02</div>
-<div class="s-title">Plan Mode 사용법</div>
-<div class="s-sub">코드를 수정하지 않고 설계만 — 전체 구축 계획을 검토 후 승인</div>
+<div class="callout note">📌 <strong>참고:</strong> 최초 1회만 로그인하면 됩니다. 이후에는 자동 인증됩니다.</div>
+<div class="callout tip" style="margin-top:8px">💡 <strong>CLAUDE.md 초기화:</strong> 로그인 후 터미널에서 <code>/init</code>을 입력하면 프로젝트 설명 파일이 자동 생성됩니다.</div>
+`},
+    {t:"Plan Mode & 핵심 명령어", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 02</div>
+<h2 class="s-title">Plan Mode & 핵심 명령어</h2>
+<p class="s-sub">프롬프트를 붙여넣기 전에 반드시 Plan Mode를 먼저 켜세요</p>
 <table class="tbl">
-<tr><th>단축키 / 명령</th><th>기능</th></tr>
-<tr><td><code>Shift + Tab</code></td><td><strong>Plan Mode 진입</strong> — 코드 수정 없이 설계만</td></tr>
-<tr><td><code>/model opus</code></td><td>Opus로 전환 — 복잡한 설계·디버깅 시 사용</td></tr>
-<tr><td><code>/model sonnet</code></td><td>Sonnet으로 전환 — 일반 구현 (기본)</td></tr>
-<tr><td><code>/context</code></td><td>현재 토큰 사용량 확인 (비용 관리)</td></tr>
-<tr><td><code>/compact</code></td><td>컨텍스트가 가득 찼을 때 요약 압축</td></tr>
-<tr><td><code>/init</code></td><td>프로젝트에 맞는 CLAUDE.md 자동 생성</td></tr>
-<tr><td><code>Esc</code></td><td>현재 작업 중단</td></tr>
-<tr><td><code>Esc + Esc</code></td><td>이전 상태로 되돌리기 (Rewind)</td></tr>
-<tr><td><code>y / n</code></td><td>파일 수정 권한 승인 / 거부</td></tr>
+<tr><th>명령어 / 단축키</th><th>기능</th></tr>
+<tr><td><strong>Shift+Tab</strong></td><td>Plan Mode 토글 (ON/OFF)</td></tr>
+<tr><td><code>/init</code></td><td>CLAUDE.md 초기화 (프로젝트 시작 시)</td></tr>
+<tr><td><code>/model opus</code></td><td>Claude Opus 전환 (복잡한 작업)</td></tr>
+<tr><td><code>/model sonnet</code></td><td>Claude Sonnet 전환 (기본)</td></tr>
+<tr><td><code>/compact</code></td><td>컨텍스트 압축 (긴 작업 중)</td></tr>
+<tr><td>Escape</td><td>현재 실행 중단</td></tr>
+<tr><td>Esc + Esc</td><td>이전 상태로 되돌리기 (Rewind)</td></tr>
+<tr><td>y / n</td><td>파일 수정 권한 승인 / 거부</td></tr>
 </table>
-<div class="callout tip"><strong>모델 전략:</strong> 대부분의 Phase는 Sonnet(기본)으로 충분합니다. 오류가 반복되거나 아키텍처 설계가 필요할 때만 <code>/model opus</code>로 전환하세요.</div>`},
-{t:"이 프롬프트로 구축 시작",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 02</div>
-<div class="s-title">Plan Mode로 구축 시작</div>
-<div class="s-sub">windows_v2.md 전체를 복사해 Plan Mode에 붙여넣기</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># 1. 프로젝트 디렉토리로 이동</span>
-cd ~/projects/us-stock
-
-<span class="comment"># 2. Claude Code 실행</span>
-claude
-
-<span class="comment"># 3. Shift+Tab 눌러 Plan Mode 진입 → [PLAN MODE] 표시 확인</span>
-
-<span class="comment"># 4. windows_v2.md 전체 내용 복사 → 붙여넣기 → Enter</span>
-
-<span class="comment"># 5. Claude가 전체 구축 계획 작성 → 검토 후 승인 → Phase 0부터 자동 진행</span></code></pre>
-</div>
+<div class="callout warning">⚠️ <strong>중요:</strong> 이 강의안의 프롬프트를 붙여넣을 때 <strong>Shift+Tab → Plan Mode ON</strong> 후 붙여넣으면 Claude가 계획을 먼저 보여줍니다. 확인 후 "진행해줘"를 입력하세요.</div>
 <div class="next-step-box">
-<h4>SECTION 02 완료 체크</h4>
+<h4>✅ SECTION 02 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> WSL2 Ubuntu에서 bun 설치 완료</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> claude --version 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Anthropic 계정 로그인 완료</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Plan Mode (Shift+Tab) 진입 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> claude --version 출력 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> claude 최초 로그인 완료</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> Shift+Tab Plan Mode 진입 성공</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 03 → 프로젝트 구조 생성</div>
-</div>`}
-]},
-
-{id:3,num:"03",title:"프로젝트 구조 생성",sub:"venv + requirements + .env",color:"#059669",cl:"rgba(5,150,105,0.15)",
-slides:[
-{t:"디렉토리 구조 생성",html:`
-<div class="s-eye" style="color:#059669">SECTION 03 · 프로젝트 구조 생성</div>
-<div class="s-title">Phase 1: 디렉토리 구조 생성</div>
-<div class="s-sub">WSL2 Ubuntu에서 전체 폴더 구조를 한 번에 생성</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>cd ~/projects/us-stock
-
-<span class="comment"># 전체 디렉토리 구조 생성</span>
-mkdir -p src/{collectors,analyzers,ml/{pipeline,features/{equity,macro},validation},us_market,db,pipeline}
-mkdir -p scripts tests output/{picks,reports,models} data logs
-mkdir -p .claude/agents/{ai,equity,frontend,macro,mlops,model,performance,research,system,ingest}
-mkdir -p frontend/app frontend/src/{components,lib}
-
-<span class="comment"># __init__.py 생성</span>
-touch src/__init__.py src/collectors/__init__.py src/analyzers/__init__.py
-touch src/ml/__init__.py src/ml/pipeline/__init__.py
-touch src/ml/features/__init__.py src/ml/features/equity/__init__.py
-touch src/ml/features/macro/__init__.py src/ml/validation/__init__.py
-touch src/us_market/__init__.py src/db/__init__.py src/pipeline/__init__.py</code></pre>
+<div class="arrow-next">👉 다음: SECTION 03 → 프로젝트 초기화</div>
 </div>
-<div class="info-box">WSL2(Linux 환경)이므로 Windows와 달리 슬래시(/) 경로 구분자를 사용합니다.</div>`},
-{t:"가상환경 + requirements.txt",html:`
-<div class="s-eye" style="color:#059669">SECTION 03</div>
-<div class="s-title">가상환경 생성 & 패키지 설치</div>
-<div class="s-sub">WSL2 Ubuntu에서 Python 3.13 가상환경 — Windows 방식과 활성화 명령이 다름!</div>
+`}
+  ]},
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 03 — 프로젝트 초기화
+  // ─────────────────────────────────────────────────────────────────
+  {id:3, num:"03", title:"프로젝트 초기화", sub:"디렉토리 구조 → venv → requirements → .env", color:"#a6e3a1", cl:"rgba(166,227,161,.15)", slides:[
+    {t:"디렉토리 구조 생성", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 03</div>
+<h2 class="s-title">프로젝트 디렉토리 구조 생성</h2>
+<p class="s-sub">us-stock 표준 폴더 트리를 먼저 만들어야 합니다</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>python3.13 -m venv .venv
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>cd "$HOME\\projects\\us-stock"
 
-<span class="comment"># 활성화 (Linux 방식! .venv\Scripts\activate 아님)</span>
-source .venv/bin/activate
+# src 하위 구조
+New-Item -ItemType Directory -Force src\\collectors, src\\analyzers, src\\pipeline, src\\ml\\pipeline, src\\us_market, src\\db
 
-pip install -r requirements.txt</code></pre>
+# 실행·출력·데이터 디렉토리
+New-Item -ItemType Directory -Force scripts, tests, output\\picks, output\\reports, output\\models, data, logs, frontend
+
+# __init__.py 일괄 생성
+$dirs = "src","src\\collectors","src\\analyzers","src\\pipeline","src\\ml","src\\us_market","src\\db"
+foreach ($d in $dirs) { New-Item -Force "$d\\__init__.py" -ItemType File }</code></pre>
 </div>
+<div class="callout note">📌 <strong>확인:</strong> <code>ls src</code> 로 폴더가 만들어졌는지 확인하세요.</div>
+`},
+    {t:"가상환경 + requirements.txt", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 03</div>
+<h2 class="s-title">가상환경 생성 & 패키지 설치</h2>
+<p class="s-sub">Python 가상환경 필수 — 시스템 Python 오염 방지</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">requirements.txt</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># 가상환경 생성
+python -m venv .venv
+
+# 활성화 (터미널 세션마다 필요)
+.venv\\Scripts\\activate
+# → 프롬프트 앞에 (.venv) 표시 확인</code></pre>
+</div>
+<p style="color:#a6adc8;font-size:.93rem;margin:8px 0 4px">requirements.txt 주요 패키지:</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">text</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
   <pre><code>yfinance==1.2.0
 fredapi==0.5.2
 curl_cffi==0.13.0
@@ -437,954 +372,1289 @@ beautifulsoup4==4.14.3
 requests==2.33.1
 python-dotenv==1.2.2
 matplotlib==3.10.8
-seaborn==0.13.2
 joblib==1.5.3
 lxml==6.0.2
-scipy==1.17.1
 tqdm
 optuna</code></pre>
 </div>
-<div class="callout warning"><strong>주의:</strong> WSL2(Linux 환경)이므로 Windows 방식 <code>.venv\Scripts\activate</code>가 아닌 <code>source .venv/bin/activate</code>를 사용합니다.</div>`},
-{t:".env 파일 설정",html:`
-<div class="s-eye" style="color:#059669">SECTION 03</div>
-<div class="s-title">.env 파일 설정</div>
-<div class="s-sub">발급받은 API 키를 입력하세요</div>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">.env</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>FRED_API_KEY=여기에_FRED_API_키_입력
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>pip install -r requirements.txt</code></pre>
+</div>
+`},
+    {t:".env 파일 설정", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 03</div>
+<h2 class="s-title">.env 파일 설정</h2>
+<p class="s-sub">API 키를 .env 파일에 저장 — 절대 git에 커밋 금지</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code># .env 파일 생성 (PowerShell — 실제 키로 교체)
+@"
+FRED_API_KEY=여기에_FRED_API_키_입력
 GOOGLE_API_KEY=여기에_Gemini_API_키_입력
 OPENAI_API_KEY=여기에_OpenAI_API_키_입력
 PERPLEXITY_API_KEY=여기에_Perplexity_API_키_입력
-FINNHUB_API_KEY=여기에_Finnhub_API_키_입력_선택사항
-DATA_DB_PATH=output/data.db</code></pre>
+FINNHUB_API_KEY=여기에_Finnhub_API_키_입력
+"@ | Out-File -FilePath .env -Encoding utf8
+
+# .gitignore 설정
+Add-Content .gitignore ".env"
+Add-Content .gitignore ".venv/"</code></pre>
 </div>
-<div class="callout danger"><strong>보안:</strong> .env 파일은 절대 Git에 커밋하지 마세요. .gitignore에 .env가 포함되어 있는지 확인하세요.</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#059669">SECTION 03</div>
-<div class="s-title">환경 검증</div>
-<div class="s-sub">패키지 설치가 정상적으로 완료되었는지 확인</div>
+<div class="callout danger">🚫 <strong>절대 금지:</strong> .env 파일을 git commit하지 마세요. API 키가 공개되면 즉시 발급 사이트에서 취소하세요.</div>
+`},
+    {t:"패키지 설치 검증", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 03</div>
+<h2 class="s-title">패키지 설치 검증</h2>
+<p class="s-sub">핵심 패키지 import 성공 여부 확인</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
-python -c "import yfinance, lightgbm, fredapi, curl_cffi, pandas; print('패키지 설치 OK')"</code></pre>
-</div>
-<div class="next-step-box">
-<h4>SECTION 03 완료 체크</h4>
-<ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> 디렉토리 구조 생성 완료</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> source .venv/bin/activate 정상 작동</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> requirements.txt 설치 완료 (오류 없음)</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> .env 파일 API 키 입력 완료</label></li>
-</ul>
-<div class="arrow-next">다음: SECTION 04 → Python 수집기 구축</div>
-</div>`}
-]},
-
-{id:4,num:"04",title:"Python 수집기 구축",sub:"src/collectors/ — 5개 파일",color:"#2563eb",cl:"rgba(37,99,235,0.15)",
-slides:[
-{t:"수집기 구조",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 04 · Python 수집기 구축</div>
-<div class="s-title">src/collectors/ 구조</div>
-<div class="s-sub">5개 파일 — S&amp;P 500 종목, 주가, 매크로 데이터 수집</div>
-<table class="tbl">
-<tr><th>파일</th><th>역할</th></tr>
-<tr><td><code>fetch_sp500_list.py</code></td><td>Wikipedia에서 S&amp;P 500 종목 리스트 파싱 → CSV 저장</td></tr>
-<tr><td><code>us_price_fetcher.py</code></td><td>USPriceFetcher — yfinance + curl_cffi Chrome 세션</td></tr>
-<tr><td><code>macro_collector.py</code></td><td>MacroDataCollector — FRED API + VIX + Fear&amp;Greed</td></tr>
-<tr><td><code>data_fetcher.py</code></td><td>USStockDataFetcher — yfinance → Finnhub fallback</td></tr>
-<tr><td><code>fetch_sp500_prices.py</code></td><td>503종목 배치 OHLCV 다운로드 (ThreadPoolExecutor)</td></tr>
-</table>
-<div class="callout note"><strong>핵심 패턴:</strong> curl_cffi <code>Session(impersonate="chrome")</code>으로 rate limit 회피. fetch_sp500_list.py는 __main__ 가드 없이 작성 (파이프라인에서 직접 import 사용)</div>`},
-{t:"fetch_sp500_list.py",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 04</div>
-<div class="s-title">fetch_sp500_list.py</div>
-<div class="s-sub">Wikipedia 파싱 → data/sp500_list.csv 저장</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># Wikipedia에서 S&P 500 종목 리스트 파싱</span>
-<span class="comment"># URL: https://en.wikipedia.org/wiki/List_of_S%26P_500_companies</span>
-<span class="comment"># pandas.read_html(url)[0]으로 테이블 파싱</span>
-<span class="comment"># Symbol 컬럼의 .을 -로 변환 (BRK.B → BRK-B)</span>
-<span class="comment"># data/sp500_list.csv 저장 (Symbol, Security, GICS Sector)</span>
-
-<span class="kw">def</span> validate_sp500_list(df):
-    <span class="comment"># 행수 >= 500</span>
-    <span class="comment"># GICS Sector 종류 >= 11</span>
-    <span class="comment"># Symbol에 . 없음</span>
-    <span class="comment"># 중복 없음</span>
-
-<span class="comment"># 주의: if __name__ == "__main__" 가드 없이 작성!</span></code></pre>
-</div>`},
-{t:"us_price_fetcher.py",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 04</div>
-<div class="s-title">us_price_fetcher.py</div>
-<div class="s-sub">curl_cffi Chrome 세션으로 yfinance rate limit 회피</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="kw">from</span> curl_cffi <span class="kw">import</span> requests <span class="kw">as</span> cffi_requests
-<span class="kw">import</span> yfinance <span class="kw">as</span> yf
-
-<span class="kw">class</span> USPriceFetcher:
-    MAX_RETRIES = <span class="num">3</span>
-
-    <span class="kw">def</span> __init__(self):
-        self.session = cffi_requests.Session(impersonate=<span class="str">"chrome"</span>)
-
-    <span class="kw">def</span> fetch_ohlcv(self, symbol: str, period: str = <span class="str">"1y"</span>) -> pd.DataFrame:
-        <span class="comment"># yf.download with session=self.session</span>
-        <span class="comment"># exponential backoff retry (2**attempt 초 대기)</span>
-        <span class="comment"># 빈 df 시 빈 DataFrame 반환 (절대 crash 없음)</span>
-
-    <span class="kw">def</span> fetch_batch(self, symbols: list, period: str = <span class="str">"1y"</span>) -> dict:
-        <span class="comment"># 여러 종목 수집. 종목 간 1초 sleep. {symbol: df} dict 반환</span></code></pre>
-</div>`},
-{t:"macro_collector.py",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 04</div>
-<div class="s-title">macro_collector.py</div>
-<div class="s-sub">FRED API + VIX + Fear&amp;Greed 지수 수집</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>VIX_BOUNDARIES = {<span class="str">"risk_on"</span>: <span class="num">16</span>, <span class="str">"neutral"</span>: <span class="num">22</span>, <span class="str">"risk_off"</span>: <span class="num">30</span>}
-
-<span class="kw">class</span> MacroDataCollector:
-    <span class="kw">def</span> __init__(self):
-        self.fred = Fred(api_key=os.getenv(<span class="str">"FRED_API_KEY"</span>))
-        self.session = cffi_requests.Session(impersonate=<span class="str">"chrome"</span>)
-
-    <span class="kw">def</span> get_vix(self) -> dict:       <span class="comment"># current_vix, ma20, trend</span>
-    <span class="kw">def</span> get_fred_data(self) -> dict: <span class="comment"># DFF, T10Y2Y, BAMLH0A0HYM2</span>
-    <span class="kw">def</span> get_fear_greed(self) -> dict:<span class="comment"># score, classification</span>
-    <span class="kw">def</span> get_macro_summary(self) -> dict
-    <span class="kw">def</span> get_regime_from_vix(self, vix: float) -> str:
-        <span class="comment"># risk_on / neutral / risk_off / crisis</span></code></pre>
-</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 04</div>
-<div class="s-title">수집기 검증</div>
-<div class="s-sub">WSL2 Ubuntu 터미널에서 실행</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
-
-python src/collectors/fetch_sp500_list.py
-wc -l data/sp500_list.csv   <span class="comment"># 500+ 줄 확인</span>
-
-python -c "
-from src.collectors.us_price_fetcher import USPriceFetcher
-p = USPriceFetcher()
-df = p.fetch_ohlcv('AAPL')
-print(f'AAPL 데이터: {len(df)}행, 컬럼: {list(df.columns[:5])}')
+  <div class="code-header"><span class="lang-badge">powershell</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>python -c "
+import yfinance
+import lightgbm
+import curl_cffi
+import fredapi
+import pandas as pd
+import optuna
+print('모든 패키지 설치 완료')
+print(f'  yfinance: {yfinance.__version__}')
+print(f'  lightgbm: {lightgbm.__version__}')
+print(f'  pandas: {pd.__version__}')
 "</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 04 완료 체크</h4>
+<h4>✅ SECTION 03 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> fetch_sp500_list.py 실행 → data/sp500_list.csv 생성</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> USPriceFetcher AAPL 데이터 수집 성공</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> MacroDataCollector FRED 연결 성공</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> (.venv) 프롬프트 표시 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> pip install -r requirements.txt 완료</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> 패키지 import 에러 없음</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> .env 파일 생성 + 실제 키 입력</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> .gitignore에 .env 추가</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 05 → 분석기 구축</div>
-</div>`}
-]},
+<div class="arrow-next">👉 다음: SECTION 04 → Part 1 데이터 수집 프롬프트</div>
+</div>
+`}
+  ]},
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 04 — Part 1: 데이터 수집
+  // ─────────────────────────────────────────────────────────────────
+  {id:4, num:"04", title:"Part 1: 데이터 수집", sub:"S&P 500 가격·매크로·섹터 데이터 수집", color:"#89b4fa", cl:"rgba(137,180,250,.15)", slides:[
+    {t:"Part 1 개요", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">Part 1: 데이터 수집</h2>
+<p class="s-sub">S&P 500 가격·매크로·섹터 데이터를 수집하는 5개 모듈</p>
+<table class="tbl">
+<tr><th>서브섹션</th><th>파일</th><th>역할</th></tr>
+<tr><td>1-1</td><td>fetch_sp500_list.py</td><td>Wikipedia에서 503개 종목 티커·섹터 수집</td></tr>
+<tr><td>1-2</td><td>us_price_fetcher.py</td><td>curl_cffi로 Yahoo Finance OHLCV 수집</td></tr>
+<tr><td>1-3</td><td>technical_indicators.py</td><td>SMA/RSI/ATR/볼린저밴드 계산</td></tr>
+<tr><td>1-4</td><td>macro_collector.py</td><td>FRED API + VIX + Fear&Greed</td></tr>
+<tr><td>1-5</td><td>sector_analyzer.py</td><td>11개 SPDR 섹터 ETF 분석</td></tr>
+<tr><td>1-6</td><td>us_data_pipeline.py / run_pipeline.py</td><td>전 과정 통합 CLI 파이프라인</td></tr>
+</table>
+<div class="callout note">📌 <strong>순서 준수:</strong> Part 1-1부터 1-6까지 반드시 순서대로 입력하세요</div>
+`},
+    {t:"Part 1-1: S&P 500 종목 리스트 수집", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">1-1. S&P 500 종목 리스트 수집</h2>
+<p class="s-sub">Wikipedia 크롤링으로 503개 종목 티커와 섹터 정보 수집</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>미국 S&P 500 종목 리스트를 수집하는 Python 스크립트를 만들어줘. 요구사항:
+1. Wikipedia의 "List of S&P 500 companies" 페이지에서 pandas read_html로 테이블을 가져와
+2. 컬럼: Symbol, Security, GICS Sector, GICS Sub-Industry
+3. Symbol에서 '.'을 '-'로 변환해 (yfinance 호환: BRK.B → BRK-B)
+4. 결과를 sp500_list.csv로 저장
+5. 섹터별 종목 수를 출력
+파일명: src/collectors/fetch_sp500_list.py</code></pre>
+</div>
+<div class="callout tip">💡 <strong>핵심:</strong> BRK.B → BRK-B 변환이 핵심. 야후 파이낸스는 마침표 대신 하이픈을 씁니다</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>방금 만든 sp500_list.csv를 로드해서 다음을 검증하는 코드를 추가해줘:
+1. 총 종목 수가 500개 이상인지 확인
+2. 11개 GICS 섹터가 모두 포함되어 있는지 확인
+3. Symbol에 '.'이 포함된 것이 없는지 확인
+4. 중복 Symbol이 없는지 확인
+5. 검증 결과를 출력
+fetch_sp500_list.py의 맨 아래에 validate_sp500_list() 함수를 추가하고 실행해줘.</code></pre>
+</div>
+<div class="callout warning">⚠️ <strong>주의:</strong> fetch_sp500_list.py는 if __name__ == '__main__' 가드 없이 작성합니다. 파이프라인이 내부 로직을 직접 import합니다.</div>
+`},
+    {t:"Part 1-2: 일봉 데이터 수집", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">1-2. 일봉 데이터 수집</h2>
+<p class="s-sub">curl_cffi로 Yahoo Finance 봉쇄를 우회한 OHLCV 수집기</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>yfinance로 미국 주식 일봉 데이터를 수집하는 클래스를 만들어줘. 요구사항:
+1. 클래스명: USPriceFetcher
+2. __init__에서 yfinance import하고, curl_cffi가 설치되어 있으면 Session(impersonate="chrome")을 사용
+3. fetch_ohlcv(symbol, period="1y") 메서드: 1년치 OHLCV 데이터를 pandas DataFrame으로 반환
+4. fetch_batch(symbols, period="1y") 메서드: 여러 종목을 순차 수집, 종목 간 1초 sleep
+5. 에러 발생 시 빈 DataFrame 반환하고 로깅
+6. logging 모듈 사용 (print 금지)
 
-{id:5,num:"05",title:"분석기 구축",sub:"src/analyzers/ — 8개 파일",color:"#ea580c",cl:"rgba(234,88,12,0.15)",
-slides:[
-{t:"분석기 구조",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05 · 분석기 구축</div>
-<div class="s-title">src/analyzers/ 구조</div>
-<div class="s-sub">8개 파일 — 기술적 지표, 시장 체제, 스크리닝, AI 요약</div>
+참고 - 실제 프로덕션 코드 패턴:
+try:
+    from curl_cffi import requests as curl_requests
+    self.yf_session = curl_requests.Session(impersonate="chrome")
+except ImportError:
+    logger.info("curl_cffi not installed - may hit rate limits")
+
+파일명: src/collectors/us_price_fetcher.py</code></pre>
+</div>
+<div class="callout tip">💡 Session(impersonate='chrome')이 없으면 Yahoo Finance가 429 Too Many Requests를 반환합니다</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>us_price_fetcher.py의 USPriceFetcher를 테스트하는 코드를 만들어줘. 테스트 내용:
+1. AAPL 1년치 데이터 수집 → 행 수가 200 이상인지 확인
+2. OHLCV 5개 컬럼이 모두 있는지 확인
+3. 존재하지 않는 티커 'ZZZZZ' 수집 시 빈 DataFrame이 반환되는지 확인
+4. ['AAPL', 'MSFT', 'GOOGL'] 배치 수집 → 3개 모두 데이터가 있는지 확인
+파일명: tests/test_price_fetcher.py (실행하면 테스트가 자동으로 돌아가게)</code></pre>
+</div>
+`},
+    {t:"Part 1-3: 기술적 지표 계산", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">1-3. 기술적 지표 계산</h2>
+<p class="s-sub">SMA/RSI/ATR/볼린저밴드 — 원본 DataFrame 불변 원칙</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>주식 OHLCV DataFrame에 기술적 지표를 추가하는 함수들을 만들어줘. 요구사항:
+1. add_moving_averages(df): SMA_20, SMA_50, SMA_200 컬럼 추가
+2. add_rsi(df, period=14): RSI 컬럼 추가 (Wilder's smoothing 방식)
+3. add_atr(df, period=14): ATR 컬럼 추가
+4. add_bollinger_bands(df, period=20, std_dev=2): BB_Upper, BB_Middle, BB_Lower, BB_Width 추가
+5. add_all_indicators(df): 위 4개를 한 번에 적용
+6. 모든 함수는 입력 df를 직접 수정하지 말고 copy를 반환
+
+참고 - 실제 프로덕션 코드에서 이동평균 계산 패턴:
+ma20 = float(series.rolling(20).mean().iloc[-1])
+
+파일명: src/analyzers/technical_indicators.py</code></pre>
+</div>
+<div class="callout warning">⚠️ copy()를 반환하지 않으면 원본 데이터가 오염됩니다</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>technical_indicators.py의 함수들을 검증하는 코드를 만들어줘. 검증 내용:
+1. AAPL 1년치 데이터에 add_all_indicators 적용
+2. SMA_200의 처음 199행이 NaN인지 확인
+3. RSI 값이 모두 0~100 범위인지 확인
+4. ATR 값이 모두 양수인지 확인
+5. BB_Upper > BB_Middle > BB_Lower가 항상 성립하는지 확인
+6. 원본 DataFrame이 변경되지 않았는지 확인 (id 비교)
+각 검증 결과를 PASS/FAIL로 출력. us_price_fetcher.py의 USPriceFetcher로 데이터를 수집해서 사용해줘.
+파일명: tests/test_indicators.py</code></pre>
+</div>
+`},
+    {t:"Part 1-4 & 1-5: 매크로 + 섹터 ETF", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">1-4. 매크로 &amp; 1-5. 섹터 ETF</h2>
+<p class="s-sub">FRED API + VIX + Fear&amp;Greed + 11개 SPDR 섹터 ETF</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>FRED API와 웹 스크래핑으로 미국 매크로 경제 데이터를 수집하는 클래스를 만들어줘. 요구사항:
+1. 클래스명: MacroDataCollector
+2. __init__에서 FRED API 키를 환경변수(FRED_API_KEY)에서 로드
+3. fetch_fred_series(series_id, start_date) 메서드: FRED에서 시계열 데이터 수집
+4. fetch_interest_rates(): 연방기금금리(FEDFUNDS), 10년물(DGS10), 2년물(DGS2) 수집
+5. fetch_vix(): yfinance로 ^VIX 데이터 수집
+6. fetch_fear_greed(): CNN Fear & Greed API에서 현재 값 수집
+7. get_macro_summary(): 모든 매크로 지표를 dict로 반환
+
+참고 - VIX 기반 시장 국면 분류:
+VIX_BOUNDARIES = {'risk_on': (0,16), 'neutral': (16,22), 'risk_off': (22,30), 'crisis': (30,999)}
+
+파일명: src/collectors/macro_collector.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>FRED API 키를 .env 파일로 관리하는 코드를 추가해줘. 요구사항:
+1. python-dotenv를 사용해서 .env 파일에서 FRED_API_KEY를 로드
+2. .env.example 파일도 만들어서 어떤 환경변수가 필요한지 문서화
+3. macro_collector.py의 __init__에서 .env를 자동으로 로드하도록 수정
+4. API 키가 없을 때 경고 메시지를 출력하되, 프로그램은 중단하지 않게
+5. .env.example 내용: FRED_API_KEY=your_fred_api_key_here</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>11개 SPDR 섹터 ETF 데이터를 수집하고 섹터 분석을 수행하는 클래스를 만들어줘. 요구사항:
+1. 클래스명: SectorAnalyzer
+2. SECTOR_ETFS 딕셔너리: 11개 ETF 티커 → 섹터명 매핑 (XLK, XLF, XLE, XLV, XLY, XLP, XLI, XLB, XLRE, XLU, XLC)
+3. fetch_all_sectors(period="1y"): 11개 ETF의 1년치 종가 수집 → DataFrame
+4. calculate_returns(): 1일, 5일, 20일, 60일 수익률 계산
+5. get_sector_ranking(): 20일 수익률 기준 섹터 순위 반환
+6. get_rotation_signal(): 방어주 vs 공격주 상대강도 비교
+파일명: src/analyzers/sector_analyzer.py</code></pre>
+</div>
+`},
+    {t:"Part 1-6: 통합 파이프라인", html:`
+<div class="s-eye" style="color:#89b4fa">SECTION 04</div>
+<h2 class="s-title">1-6. 통합 파이프라인</h2>
+<p class="s-sub">데이터 수집 전 과정을 하나의 CLI로 실행</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>1-1부터 1-5까지 만든 모듈을 통합하는 데이터 수집 파이프라인을 만들어줘. 요구사항:
+1. 클래스명: USDataPipeline
+2. __init__에서 앞서 만든 모듈들을 초기화
+3. run_full_collection() 메서드 순서:
+   a. S&P 500 종목 리스트 수집 → sp500_list.csv
+   b. 상위 50개 종목 OHLCV 수집 → 종목별 지표 추가
+   c. 전체를 us_daily_prices.csv로 저장
+   d. 매크로 데이터 → us_macro.csv
+   e. 섹터 데이터 → us_sectors.csv
+4. validate_data(df): 결측치 비율, 이상치 체크
+5. 수집 결과 요약 출력
+
+저장 형식:
+- us_daily_prices.csv: Symbol + Date를 MultiIndex로
+- float은 소수점 4자리, Date는 YYYY-MM-DD 형식
+
+파일명: src/pipeline/us_data_pipeline.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>us_data_pipeline.py의 USDataPipeline을 실행하는 스크립트를 만들어줘. 요구사항:
+1. python src/pipeline/run_pipeline.py로 실행 가능
+2. argparse로 옵션:
+   --top-n: 수집할 종목 수 (기본값 50)
+   --period: 데이터 기간 (기본값 1y)
+   --output-dir: 출력 디렉토리 (기본값 ./data)
+3. 시작/종료 시각과 소요 시간을 출력
+
+실행 예시:
+python src/pipeline/run_pipeline.py --top-n 30 --period 6mo --output-dir ./output
+파일명: src/pipeline/run_pipeline.py</code></pre>
+</div>
+<div class="next-step-box">
+<h4>Part 1 완료 체크</h4>
+<ul class="checklist">
+<li><label><input type="checkbox" onchange="saveCheck(this)"> sp500_list.csv 생성 (500+ 행)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> data/us_daily_prices.csv 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> data/us_macro.csv 생성 (VIX 수치 출력)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> data/us_sectors.csv 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> tests/test_price_fetcher.py PASS</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> tests/test_indicators.py PASS</label></li>
+</ul>
+<div class="arrow-next">다음: Part 2 → 시장 체제 감지</div>
+</div>
+`}
+  ]},
+
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 02 — Part 2: 시장 체제 감지
+  // ─────────────────────────────────────────────────────────────────
+  {id:2, num:"05", title:"Part 2: 시장 체제 감지", sub:"5-sensor 가중 투표로 시장 국면 판정", color:"#a6e3a1", cl:"rgba(166,227,161,.15)", slides:[
+    {t:"Part 2 개요", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 05</div>
+<h2 class="s-title">Part 2: 시장 체제 감지</h2>
+<p class="s-sub">5개 센서 가중 투표로 risk_on/neutral/risk_off/crisis 판정</p>
 <table class="tbl">
-<tr><th>파일</th><th>역할</th></tr>
-<tr><td><code>technical_indicators.py</code></td><td>SMA/RSI/ATR/BB (순수 함수, df.copy() 반환)</td></tr>
-<tr><td><code>sector_analyzer.py</code></td><td>SectorAnalyzer — 11 SPDR 섹터 ETF 분석</td></tr>
-<tr><td><code>market_regime.py</code></td><td>MarketRegimeDetector — 5-sensor 가중 투표</td></tr>
-<tr><td><code>market_gate.py</code></td><td>GO/CAUTION/STOP + 거래량-가격 다이버전스</td></tr>
-<tr><td><code>smart_money_screener_v2.py</code></td><td>EnhancedSmartMoneyScreener — 6-factor 복합 점수</td></tr>
-<tr><td><code>ai_response_parser.py</code></td><td>AI JSON 응답 파싱 + 검증</td></tr>
-<tr><td><code>ai_summary_generator.py</code></td><td>Gemini/OpenAI/Perplexity 생성기</td></tr>
-<tr><td><code>final_report_generator.py</code></td><td>FinalReportGenerator — Top 10 최종 리포트</td></tr>
-</table>`},
-{t:"5-sensor 시장 체제 감지",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05</div>
-<div class="s-title">market_regime.py — 5-sensor 가중 투표</div>
-<div class="s-sub">5개 센서의 가중 합산으로 시장 체제를 4단계로 판정</div>
-<div class="grid2">
-<div>
-<table class="tbl">
-<tr><th>센서</th><th>가중치</th><th>소스</th></tr>
-<tr><td>VIX</td><td>30%</td><td>^VIX</td></tr>
-<tr><td>Trend</td><td>25%</td><td>SPY vs SMA50/200</td></tr>
+<tr><th>센서</th><th>가중치</th><th>데이터 소스</th></tr>
+<tr><td>VIX</td><td>30%</td><td>^VIX — 공포 지수</td></tr>
+<tr><td>Trend</td><td>25%</td><td>SPY vs SMA50/SMA200</td></tr>
 <tr><td>Breadth</td><td>18%</td><td>RSP/SPY 상대강도</td></tr>
 <tr><td>Credit</td><td>15%</td><td>HYG/IEF 비율</td></tr>
-<tr><td>Yield Curve</td><td>12%</td><td>^TNX - ^IRX</td></tr>
+<tr><td>Yield Curve</td><td>12%</td><td>^TNX - ^IRX 스프레드</td></tr>
 </table>
-</div>
-<div>
-<table class="tbl">
-<tr><th>체제</th><th>점수 범위</th></tr>
-<tr><td><span class="badge" style="background:#1c3a2c;color:#a6e3a1">risk_on</span></td><td>&lt; 0.75</td></tr>
-<tr><td><span class="badge" style="background:#1c3a4a;color:#89b4fa">neutral</span></td><td>0.75 ~ 1.5</td></tr>
-<tr><td><span class="badge" style="background:#2d2617;color:#f9e2af">risk_off</span></td><td>1.5 ~ 2.25</td></tr>
-<tr><td><span class="badge" style="background:#2d1a1a;color:#f38ba8">crisis</span></td><td>≥ 2.25</td></tr>
+<table class="tbl" style="margin-top:14px">
+<tr><th>가중 합계</th><th>체제</th></tr>
+<tr><td>&lt; 0.75</td><td>risk_on</td></tr>
+<tr><td>0.75 ~ 1.5</td><td>neutral</td></tr>
+<tr><td>1.5 ~ 2.25</td><td>risk_off</td></tr>
+<tr><td>&ge; 2.25</td><td>crisis</td></tr>
 </table>
-</div>
-</div>
-<div class="info-box"><strong>출력 파일:</strong> output/regime_result.json, output/regime_config.json</div>`},
-{t:"6-factor 스마트머니 스크리너",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05</div>
-<div class="s-title">smart_money_screener_v2.py</div>
-<div class="s-sub">6개 팩터 가중 복합 점수 → 등급 A~F 판정</div>
-<table class="tbl">
-<tr><th>팩터</th><th>가중치</th><th>내용</th></tr>
-<tr><td>Technical</td><td>25%</td><td>RSI/MACD/MA 신호</td></tr>
-<tr><td>Fundamental</td><td>20%</td><td>PE/Growth/ROE</td></tr>
-<tr><td>Analyst</td><td>15%</td><td>추천/목표가 괴리율</td></tr>
-<tr><td>Relative Strength</td><td>15%</td><td>vs SPY 20일 비교</td></tr>
-<tr><td>Volume</td><td>15%</td><td>SD 점수</td></tr>
-<tr><td>13F Holdings</td><td>10%</td><td>기관 보유 (filing_date ≤ 어제)</td></tr>
-</table>
-<div class="grid2" style="margin-top:12px">
-<div class="icard">
-<div class="icard-t" style="color:#a6e3a1">등급 기준</div>
-<div class="icard-b">
-A (80+) Strong Accumulation<br>
-B (70+) Moderate Accumulation<br>
-C (60+) Neutral<br>
-D (50+) Distribution<br>
-F (&lt;50) Capitulation
-</div>
-</div>
-<div class="icard">
-<div class="icard-t" style="color:#89b4fa">Strategy/Setup</div>
-<div class="icard-b">
-Trend / Swing / Reversal<br>
-Breakout / Pullback / Base<br><br>
-<strong style="color:#cdd6f4">출력:</strong> output/picks/smart_money_picks_YYYYMMDD.csv
-</div>
-</div>
-</div>`},
-{t:"AI 요약 생성기",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05</div>
-<div class="s-title">ai_summary_generator.py</div>
-<div class="s-sub">Gemini → OpenAI → Perplexity 우선순위 fallback chain</div>
+`},
+    {t:"MarketRegimeDetector 기본 구조", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 05</div>
+<h2 class="s-title">MarketRegimeDetector 기본 구조</h2>
+<p class="s-sub">클래스 골격 → 데이터 수집 → VIX 분석</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="kw">class</span> GeminiSummaryGenerator:
-    MODEL = <span class="str">"gemini-2.5-flash-preview-04-17"</span>
-    <span class="comment"># temperature=0.3</span>
-    <span class="comment"># responseSchema=AI_OUTPUT_SCHEMA, responseMimeType="application/json"</span>
-    <span class="comment"># 실패 시 _get_fallback_json(ticker) 반환 (절대 crash 없음)</span>
-
-<span class="kw">class</span> OpenAISummaryGenerator:
-    MODEL = <span class="str">"gpt-4o-mini"</span>
-
-<span class="kw">class</span> PerplexitySummaryGenerator:
-    MODEL = <span class="str">"sonar-pro"</span>
-    <span class="comment"># timeout=90초, 실시간 웹 검색 포함</span>
-
-AI_OUTPUT_SCHEMA = {
-    <span class="str">"thesis"</span>: str,          <span class="comment"># 핵심 투자 논거 (50자 이상)</span>
-    <span class="str">"catalysts"</span>: list,      <span class="comment"># 상승 촉매 3개</span>
-    <span class="str">"bear_cases"</span>: list,     <span class="comment"># 하락 위험 3개 (필수)</span>
-    <span class="str">"recommendation"</span>: str,  <span class="comment"># BUY/HOLD/SELL</span>
-    <span class="str">"confidence"</span>: int        <span class="comment"># 0-100</span>
-}</code></pre>
-</div>`},
-{t:"Verdict & Action 판정 로직",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05</div>
-<div class="s-title">Verdict & Action 매핑</div>
-<div class="s-sub">Regime + Gate + ML 예측을 종합해 최종 판정</div>
-<div class="icard" style="margin-bottom:12px">
-<div class="icard-t" style="color:#89b4fa">Verdict 판정 로직</div>
-<div class="icard-b">
-<code>if regime in ("crisis","risk_off") or gate == "STOP" → <span style="color:#f38ba8">STOP</span></code><br>
-<code>elif regime == "risk_on" and gate == "GO" and ml_bullish → <span style="color:#a6e3a1">GO</span></code><br>
-<code>else → <span style="color:#f9e2af">CAUTION</span></code>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>src/analyzers 폴더에 market_regime.py 파일을 생성해줘. 필요한 라이브러리를 import하고, MarketRegimeDetector 클래스의 기본 구조를 잡아줘. yfinance, pandas, numpy, json, logging을 사용할 거야. output 폴더에 결과를 저장할 예정이야.</code></pre>
 </div>
-</div>
-<table class="tbl">
-<tr><th>Verdict</th><th>Grade A/B</th><th>Grade C</th><th>Grade D+</th></tr>
-<tr><td><span class="badge" style="background:#1c3a2c;color:#a6e3a1">GO</span></td><td><strong style="color:#a6e3a1">BUY</strong></td><td>WATCH</td><td>WATCH</td></tr>
-<tr><td><span class="badge" style="background:#2d2617;color:#f9e2af">CAUTION</span></td><td><strong style="color:#f9e2af">SMALL BUY</strong></td><td>WATCH</td><td>WATCH</td></tr>
-<tr><td><span class="badge" style="background:#2d1a1a;color:#f38ba8">STOP</span></td><td>HOLD</td><td>HOLD</td><td>HOLD</td></tr>
-</table>
-<div class="next-step-box">
-<h4>SECTION 05 완료 체크</h4>
-<ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> technical_indicators.py — add_all_indicators() 정상 작동</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> market_regime.py — detect() 체제 판정 출력</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> smart_money_screener_v2.py — 상위 20개 CSV 저장</label></li>
-</ul>
-<div class="arrow-next">다음: SECTION 06 → ML 파이프라인</div>
-</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#ea580c">SECTION 05</div>
-<div class="s-title">분석기 검증</div>
-<div class="s-sub">WSL2 Ubuntu 터미널에서 실행</div>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
-
-python -c "
-from src.analyzers.market_regime import MarketRegimeDetector
-d = MarketRegimeDetector()
-result = d.detect()
-print(f'체제: {result[\"regime\"]}, 점수: {result[\"weighted_score\"]:.2f}')
-"
-
-python -c "
-from src.analyzers.market_gate import USMarketGate
-gate = USMarketGate()
-result = gate.analyze()
-print(f'게이트: {result.gate}, 평균점수: {result.avg_score:.1f}')
-"</code></pre>
-</div>`}
-]},
-
-{id:6,num:"06",title:"ML 파이프라인",sub:"src/ml/ — LightGBM + Optuna",color:"#7c3aed",cl:"rgba(124,58,237,0.15)",
-slides:[
-{t:"ML 파이프라인 구조",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 06 · ML 파이프라인</div>
-<div class="s-title">src/ml/ 구조</div>
-<div class="s-sub">피처 스토어 → 학습 → 추론 → Walk-Forward 검증</div>
-<table class="tbl">
-<tr><th>파일</th><th>역할</th></tr>
-<tr><td><code>pipeline/feature_store.py</code></td><td>FeatureStore — parquet 저장/로드, 누출 검증</td></tr>
-<tr><td><code>features/macro/build_macro_features.py</code></td><td>FRED 25개 피처 (Z-score, Momentum, Spread)</td></tr>
-<tr><td><code>features/equity/build_equity_features.py</code></td><td>40+ 기술 지표 피처 (모멘텀/평균회귀/변동성)</td></tr>
-<tr><td><code>pipeline/train.py</code></td><td>LightGBM rank_xendcg + Optuna HPO</td></tr>
-<tr><td><code>pipeline/predict.py</code></td><td>최신 피처로 상위 20개 예측</td></tr>
-<tr><td><code>validation/walk_forward.py</code></td><td>Walk-Forward + PBO + DSR</td></tr>
-</table>
-<div class="info-box"><strong>핵심 원칙:</strong> shift(1) 필수 (look-ahead bias 방지) | TimeSeriesSplit(n_splits=5) | SEED=42</div>`},
-{t:"LightGBM 학습 (train.py)",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 06</div>
-<div class="s-title">pipeline/train.py</div>
-<div class="s-sub">시계열 교차검증 + Optuna HPO</div>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>MarketRegimeDetector 클래스에 _fetch_series 메서드를 추가해줘. yfinance.download()로 특정 티커의 Close 가격 시계열을 가져오는 범용 함수야. 기본 기간은 6개월(period='6mo'), 실패하면 None을 반환하도록 해줘. progress=False로 설정해서 불필요한 출력을 막아줘.</code></pre>
+</div>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>SEED = <span class="num">42</span>
-TARGET_COLUMNS = [
-    <span class="str">"fwd_5d_return"</span>, <span class="str">"fwd_20d_return"</span>, <span class="str">"fwd_60d_return"</span>,
-    <span class="str">"fwd_5d_rank"</span>, <span class="str">"fwd_20d_rank"</span>
-]
-
-DEFAULT_LGBM_PARAMS = {
-    <span class="str">"objective"</span>: <span class="str">"rank_xendcg"</span>,
-    <span class="str">"metric"</span>: <span class="str">"ndcg"</span>,
-    <span class="str">"num_leaves"</span>: <span class="num">31</span>,
-    <span class="str">"learning_rate"</span>: <span class="num">0.05</span>,
-    <span class="str">"seed"</span>: SEED,
-}
-
-<span class="kw">def</span> train_model(features_df, target_col=<span class="str">"fwd_20d_rank"</span>):
-    <span class="comment"># TimeSeriesSplit(n_splits=5) 시계열 교차검증</span>
-    <span class="comment"># early_stopping(patience=50)</span>
-    <span class="comment"># Optuna HPO 50 trials (일요일만)</span>
-    <span class="comment"># 모델 저장: models/lgbm_{target}_{YYYYMMDD}.pkl</span></code></pre>
-</div>`},
-{t:"Walk-Forward 검증",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 06</div>
-<div class="s-title">validation/walk_forward.py</div>
-<div class="s-sub">과적합 방지 + 통계적 신뢰성 검증</div>
-<div class="grid2">
-<div class="icard">
-<div class="icard-t" style="color:#cba6f7">윈도우 설정</div>
-<div class="icard-b">
-TRAIN_WINDOW = 730일 (2년)<br>
-VAL_WINDOW = 180일 (6개월)<br>
-TEST_WINDOW = 90일 (3개월)<br>
-EMBARGO = 20일 (누출 방지 갭)
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>_vix_signal 메서드를 추가해줘. VIX 시계열을 입력받아서:
+1. 현재 VIX 값 추출
+2. 20일 이동평균 계산 (데이터 20일 미만이면 현재값 사용)
+3. 추세 판단: current < ma20이면 'falling', 아니면 'rising'
+4. 체제 분류: 0~16 risk_on, 16~22 neutral, 22~30 risk_off, 30+ crisis
+이 경계값은 클래스 변수 VIX_BOUNDARIES로 정의해줘.
+반환값은 딕셔너리: vix_current, vix_ma20, vix_trend, vix_regime</code></pre>
 </div>
-</div>
-<div class="icard">
-<div class="icard-t" style="color:#89b4fa">검증 지표</div>
-<div class="icard-b">
-<strong style="color:#cdd6f4">PBO</strong> — Probability of Backtest Overfitting<br>
-(López de Prado)<br><br>
-<strong style="color:#cdd6f4">DSR</strong> — Deflated Sharpe Ratio<br>
-(n_trials로 조정)
-</div>
-</div>
-</div>`},
-{t:"피처 엔지니어링",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 06</div>
-<div class="s-title">build_equity_features.py</div>
-<div class="s-sub">40+ 기술 지표 피처 — 카테고리별 분류</div>
-<table class="tbl">
-<tr><th>카테고리</th><th>개수</th><th>피처</th></tr>
-<tr><td>모멘텀</td><td>6</td><td>ret_1m, ret_3m, ret_6m, ret_12m, ret_1m_minus_12m, ret_6m_skip1m</td></tr>
-<tr><td>평균회귀</td><td>5</td><td>rsi_14, bb_pct_b, distance_52w_high/low, z_score_60d</td></tr>
-<tr><td>변동성</td><td>6</td><td>vol_20d, vol_60d, atr_14, beta_60d, realized_skew, realized_kurt</td></tr>
-<tr><td>거래량</td><td>4</td><td>vol_ratio_20_60, dollar_volume, amihud_illiq, turnover_rate</td></tr>
-<tr><td>MA교차</td><td>4</td><td>price_ma20, price_ma50, ma20_slope, golden_cross</td></tr>
-</table>
-<div class="callout warning"><strong>look-ahead bias 방지:</strong> cross-sectional rank 계산 시 pct=True | shift(1) 필수</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#7c3aed">SECTION 06</div>
-<div class="s-title">ML 파이프라인 검증</div>
+`},
+    {t:"센서 구현 (SPY 추세 / Breadth / 금리차 / 신용)", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 05</div>
+<h2 class="s-title">SPY 추세 + Breadth + 금리차 + 신용 스프레드</h2>
+<p class="s-sub">나머지 4개 센서 순서대로 구현</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>_trend_signal 메서드를 추가해줘. SPY Close 시계열을 입력받아서:
+1. 현재가, 50일 SMA, 200일 SMA 계산
+2. 200일 SMA의 20일 전 값과 비교하여 slope(기울기) 계산
+3. 추세 분류:
+   - 가격 > 50일선 AND 가격 > 200일선 AND slope > 0 → risk_on
+   - 가격 > 200일선 (그 외) → neutral
+   - 가격 < 200일선 AND slope < 0 → risk_off
+   - 그 외 → neutral
+4. 데이터가 200일 미만이면 neutral + data_insufficient=True 반환
+반환값: trend_regime, spy_above_50, spy_above_200, sma200_slope</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>_breadth_signal 메서드를 추가해줘. yfinance로 ^MMFI(NYSE 50일 MA 위 종목 비율)를 3개월치 가져와서:
+- 70% 이상: risk_on
+- 50~70%: neutral
+- 30~50%: risk_off
+- 30% 미만: crisis
+데이터 수집 실패 시 {'breadth_pct': None, 'breadth_regime': 'neutral'} 반환.
+logger.debug로 에러 로깅하되 시스템은 멈추지 않도록 해줘.</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>_yield_curve_signal 메서드를 추가해줘. ^TNX(10년 국채 금리)에서 ^IRX(13주 T-bill 금리)를 빼서 스프레드 계산:
+- 스프레드 > 0.5: risk_on (정상적 금리 구조)
+- 0 < 스프레드 <= 0.5: neutral
+- 스프레드 < 0: risk_off (역전, 경기침체 경고)
+실패 시 neutral 반환. 값은 소수점 둘째자리까지 반올림.</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>_credit_spread_signal 메서드를 추가해줘. HYG(하이일드 회사채 ETF) / IEF(7-10년 국채 ETF) 비율을 계산:
+1. 비율의 20일 이동평균 계산
+2. 현재 비율 vs 20일 평균 비교:
+   - current > ma20 * 1.01: risk_on (위험 선호 증가)
+   - ma20 * 0.99 ~ ma20 * 1.01: neutral
+   - ma20 * 0.97 ~ ma20 * 0.99: risk_off
+   - current < ma20 * 0.97: crisis
+둘 다 최소 20일 이상 데이터 필요. 실패 시 neutral.</code></pre>
+</div>
+`},
+    {t:"가중 투표 + JSON 저장", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 05</div>
+<h2 class="s-title">가중 투표 합산 + 설정 파일 저장</h2>
+<p class="s-sub">5개 신호를 종합해 최종 체제 판정 → JSON으로 저장</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>detect_regime 메서드를 만들어줘. 위에서 만든 5개 신호를 가중 합산해서 최종 체제를 결정해.
+1. ^VIX 3개월, SPY 1년 데이터 수집
+2. 5개 신호 함수 호출 (데이터 없으면 neutral 기본값)
+3. 점수 매핑: risk_on=0, neutral=1, risk_off=2, crisis=3
+4. 가중치: vix 0.30, trend 0.25, breadth 0.18, credit 0.15, yield 0.12
+5. 가중 합계로 최종 체제:
+   - < 0.75: risk_on
+   - 0.75~1.5: neutral
+   - 1.5~2.25: risk_off
+   - >= 2.25: crisis
+6. Confidence: 5개 신호 중 다수결 일치 비율 (%)
+7. 모든 결과를 딕셔너리로 반환</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>detect_regime 결과를 output/regime_config.json에 저장하는 기능을 추가해줘.
+체제에 따라 다른 적응형 파라미터도 함께 저장해:
+- risk_on: stop_loss -10%, max_drawdown_warning -12%
+- neutral: stop_loss -8%, max_drawdown_warning -10%
+- risk_off: stop_loss -5%, max_drawdown_warning -7%
+- crisis: stop_loss -3%, max_drawdown_warning -5%
 
-python src/ml/features/macro/build_macro_features.py
-ls data/macro_features_*.parquet   <span class="comment"># 파일 생성 확인</span>
-
-python src/ml/features/equity/build_equity_features.py
-ls data/gbm_predictions.parquet</code></pre>
+메인 실행 블록(if __name__ == '__main__')도 만들어서 python src/analyzers/market_regime.py로 바로 실행 가능하도록 해줘.</code></pre>
+</div>
+`},
+    {t:"Market Gate — GO / CAUTION / STOP", html:`
+<div class="s-eye" style="color:#a6e3a1">SECTION 05</div>
+<h2 class="s-title">Market Gate — GO / CAUTION / STOP</h2>
+<p class="s-sub">11개 섹터 RSI/MACD/거래량으로 시장 신호등 구현</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>market_gate.py 파일을 새로 만들어줘. 다음 함수들을 구현해:
+1. calculate_rsi(series, period=14): Wilder's Smoothing 사용 (ewm(alpha=1/period, adjust=False))
+   NaN이면 50.0 반환
+2. calculate_macd_signal(series): EMA12, EMA26으로 MACD 라인, EMA9로 시그널 라인 계산
+   크로스오버 감지: MACD가 시그널 위로 올라오면 "BULLISH", 아래로 내려가면 "BEARISH"
+   반환: "BULLISH" / "BEARISH" / "NEUTRAL"
+3. calculate_volume_ratio(volume, period=20): 현재 거래량 / 20일 평균 거래량
+이 함수들은 클래스 없이 일반 함수로 만들어줘.
+파일 경로: src/analyzers/market_gate.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>market_gate.py에 다음을 추가해줘:
+1. dataclass 2개:
+   - SectorResult: name, ticker, score, signal, price, change_1d, rsi, rs_vs_spy
+   - USMarketGateResult: gate(GO/CAUTION/STOP), score, reasons, sectors, metrics
+2. SECTORS 딕셔너리: 11개 미국 섹터 ETF
+   Technology:XLK, Health Care:XLV, Financials:XLF, Cons Disc:XLY, Cons Staples:XLP,
+   Energy:XLE, Industrials:XLI, Materials:XLB, Real Estate:XLRE, Utilities:XLU, Communication:XLC
+3. 각 섹터 ETF에 대해 RSI, MACD, 거래량비율, SPY 대비 상대강도를 계산하고 종합 점수 산출
+4. 전체 섹터 점수의 평균으로 게이트 판정:
+   - 70 이상: GO
+   - 40~70: CAUTION
+   - 40 미만: STOP</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 06 완료 체크</h4>
+<h4>Part 2 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> macro_features_*.parquet 생성 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> equity 피처 40+ 컬럼 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> train.py 실행 → models/ 디렉토리에 모델 저장</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/regime_result.json 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/regime_config.json 생성 (적응형 파라미터 포함)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> python src/analyzers/market_regime.py 실행 성공</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> Gate 판정(GO/CAUTION/STOP) 출력 확인</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 07 → DB + US Market</div>
-</div>`}
-]},
+<div class="arrow-next">다음: Part 3 → Smart Money 스크리닝</div>
+</div>
+`}
+  ]},
 
-{id:7,num:"07",title:"DB + US Market",sub:"SQLite data.db + IndexPredictor",color:"#0891b2",cl:"rgba(8,145,178,0.15)",
-slides:[
-{t:"SQLite 데이터 저장소",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 07 · DB + US Market</div>
-<div class="s-title">src/db/data_store.py</div>
-<div class="s-sub">11개 테이블로 구성된 SQLite 데이터베이스</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>DB_PATH = os.getenv(<span class="str">"DATA_DB_PATH"</span>, <span class="str">"output/data.db"</span>)
-
-<span class="comment"># 11개 테이블 스키마</span>
-<span class="comment"># 시계열 (date PK): data_daily_reports, data_risk_alerts, data_prediction_history</span>
-<span class="comment"># 스냅샷 (id=1 단일행): data_regime, data_market_gate, data_ai_summaries,</span>
-<span class="comment">#   data_gbm_predictions, data_index_prediction, data_risk, data_performance, data_graph</span>
-
-<span class="kw">def</span> get_db() -> sqlite3.Connection
-<span class="kw">def</span> init_db(conn)           <span class="comment"># 테이블 생성</span>
-<span class="kw">def</span> upsert_daily_report(conn, date, data: dict)
-<span class="kw">def</span> upsert_regime(conn, data: dict)
-<span class="kw">def</span> get_latest_report(conn) -> dict</code></pre>
-</div>`},
-{t:"IndexPredictor (SPY/QQQ)",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 07</div>
-<div class="s-title">src/us_market/index_predictor.py</div>
-<div class="s-sub">27개 피처로 SPY/QQQ 다음주 방향 예측</div>
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 03 — Part 3: Smart Money 스크리닝
+  // ─────────────────────────────────────────────────────────────────
+  {id:3, num:"06", title:"Part 3: Smart Money 스크리닝", sub:"6팩터 복합 점수로 상위 20개 종목 선별", color:"#f9e2af", cl:"rgba(249,226,175,.15)", slides:[
+    {t:"Part 3 개요", html:`
+<div class="s-eye" style="color:#f9e2af">SECTION 06</div>
+<h2 class="s-title">Part 3: Smart Money 스크리닝</h2>
+<p class="s-sub">6팩터 복합 점수로 S&P 500 상위 20개 종목 선별</p>
 <table class="tbl">
-<tr><th>피처 그룹</th><th>개수</th></tr>
-<tr><td>SPY (return/RSI/MACD/BB/volume/ATR)</td><td>7</td></tr>
-<tr><td>VIX (level/change/ma20_diff)</td><td>3</td></tr>
-<tr><td>QQQ (return_5d/spy_ratio)</td><td>2</td></tr>
-<tr><td>시장폭 (advance_decline/new_high_low)</td><td>2</td></tr>
-<tr><td>섹터 (XLK/XLY/XLU relative)</td><td>3</td></tr>
-<tr><td>매크로 (yield_curve/credit_spread/fear_greed)</td><td>3</td></tr>
-<tr><td>거래량 (spy_volume_surge/sector_trend/dark_pool)</td><td>3</td></tr>
-<tr><td>모멘텀 (1m/3m/6m/roc_20)</td><td>4</td></tr>
+<tr><th>팩터</th><th>가중치</th><th>세부 항목</th></tr>
+<tr><td>Technical</td><td>25%</td><td>RSI / MACD / 이동평균</td></tr>
+<tr><td>Fundamental</td><td>20%</td><td>PER / 성장률 / ROE</td></tr>
+<tr><td>Analyst</td><td>15%</td><td>추천등급 / 목표가 업사이드</td></tr>
+<tr><td>RS vs SPY</td><td>15%</td><td>SPY 대비 상대강도</td></tr>
+<tr><td>Volume/SD</td><td>15%</td><td>MFI / OBV / 거래량 비율</td></tr>
+<tr><td>13F Holdings</td><td>10%</td><td>기관 보유 비중</td></tr>
 </table>
-<div class="info-box"><strong>출력:</strong> direction(bullish/bearish), probability(0-1), confidence(HIGH/MODERATE/LOW), key_drivers(상위 5개)</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#0891b2">SECTION 07</div>
-<div class="s-title">DB + US Market 검증</div>
+<table class="tbl" style="margin-top:14px">
+<tr><th>등급</th><th>점수</th><th>의미</th></tr>
+<tr><td>A</td><td>80+</td><td>Strong Accumulation</td></tr>
+<tr><td>B</td><td>65~80</td><td>Moderate Accumulation</td></tr>
+<tr><td>C</td><td>50~65</td><td>Neutral</td></tr>
+<tr><td>D</td><td>35~50</td><td>Moderate Distribution</td></tr>
+<tr><td>F</td><td>&lt;20</td><td>Capitulation</td></tr>
+</table>
+`},
+    {t:"데이터 수집기 & 스크리너 기본 구조", html:`
+<div class="s-eye" style="color:#f9e2af">SECTION 06</div>
+<h2 class="s-title">데이터 수집기 &amp; 스크리너 기본 구조</h2>
+<p class="s-sub">USStockDataFetcher → EnhancedSmartMoneyScreener 골격</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>src/collectors 폴더에 data_fetcher.py 파일을 만들어줘.
+USStockDataFetcher 클래스를 만들어야 해.
+yfinance를 주요 데이터 소스로 사용하고, Finnhub을 fallback으로 써.
 
-python -c "
-from src.db.data_store import get_db, init_db
-conn = get_db()
-init_db(conn)
-print('DB 초기화 완료')
-"
+__init__에서:
+- yfinance import 시도 (실패하면 yf_available=False)
+- curl_cffi가 있으면 Session(impersonate="chrome")으로 세션 생성
+- Finnhub API 키는 환경변수 FINNHUB_API_KEY에서 가져옴
 
-python -c "
-from src.us_market.index_predictor import IndexPredictor
-p = IndexPredictor('SPY')
-result = p.predict_next_week()
-print(f'SPY 예측: {result[\"direction\"]}, 확률: {result[\"probability\"]:.2f}')
-"</code></pre>
+get_history(ticker, period="3mo") 메서드:
+- yfinance로 주가 이력 DataFrame 반환
+- 실패 시 빈 DataFrame 반환
+
+get_info(ticker) 메서드:
+- yfinance Ticker(ticker).info 딕셔너리 반환
+- 실패 시 빈 딕셔너리 반환</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>src/analyzers 폴더에 smart_money_screener_v2.py 파일을 만들어줘.
+
+EnhancedSmartMoneyScreener 클래스:
+- __init__(data_dir): output 경로 설정, USStockDataFetcher 초기화
+- volume_df, holdings_df, etf_df, spy_data를 None으로 초기화
+- _info_cache: Dict[str, Dict] = {} (API 캐시)
+
+from collectors.data_fetcher import USStockDataFetcher 로 import해줘.
+logging, pandas, numpy, yfinance, tqdm을 사용할 거야.</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>load_data() 메서드를 만들어줘.
+다음 파일들을 로드:
+1. output/us_volume_analysis.csv → self.volume_df (필수, 없으면 return False)
+2. output/us_13f_holdings.csv → self.holdings_df
+   - filing_date 컬럼이 있으면 pd.to_datetime으로 변환 (errors='coerce')
+   - 어제 이전에 제출된 데이터만 사용 (Look-ahead bias 방지)
+   - 파일이 없으면 holdings_df = None으로 두고 계속 진행 (13f_score는 0으로 처리)
+3. sp500_list.csv 또는 data/us_stocks_list.csv → self.stocks_df (섹터 정보)
+4. SPY 3개월 데이터 → self.spy_data
+각 파일 로드 성공/실패를 logger.info/warning으로 기록해줘.
+volume_df만 필수이고, 나머지는 없어도 진행 가능하도록 처리.
+모든 로드 완료 시 True 반환.</code></pre>
+</div>
+`},
+    {t:"기술적 / 펀더멘탈 / 애널리스트 분석", html:`
+<div class="s-eye" style="color:#f9e2af">SECTION 06</div>
+<h2 class="s-title">기술적 + 펀더멘탈 + 애널리스트 분석</h2>
+<p class="s-sub">RSI / MACD / 이동평균 / PER / 목표가</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>get_technical_analysis(ticker) 메서드의 RSI 계산 부분을 만들어줘.
+1. self.fetcher.get_history(ticker, period="1y")로 1년치 데이터
+2. 데이터가 50일 미만이면 _default_technical() 반환
+3. RSI 14일, Wilder's Smoothing 사용:
+   - delta = close.diff()
+   - gain = delta.where(delta > 0, 0).ewm(alpha=1/14, adjust=False).mean()
+   - loss = (-delta.where(delta < 0, 0)).ewm(alpha=1/14, adjust=False).mean()
+   - rs = gain / loss
+   - rsi = 100 - (100 / (1 + rs))
+
+_default_technical()도 만들어줘:
+rsi=50, macd=0, macd_signal=0, macd_histogram=0,
+ma20=0, ma50=0, ma_signal='Unknown', cross_signal='None', technical_score=50</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>get_technical_analysis에 MACD와 이동평균 분석을 추가해줘.
+
+MACD:
+- ema12 = close.ewm(span=12, adjust=False).mean()
+- ema26 = close.ewm(span=26, adjust=False).mean()
+- macd = ema12 - ema26
+- signal = macd.ewm(span=9, adjust=False).mean()
+- histogram = macd - signal
+
+이동평균:
+- ma20, ma50 = 20일/50일 rolling mean
+- 배열: price > ma20 > ma50이면 "Bullish", price < ma20 < ma50이면 "Bearish", 나머지 "Neutral"
+
+Golden/Death Cross:
+- 현재 ma50 vs ma200와 5일 전 ma50 vs ma200 비교
+- ma50가 ma200 위로 돌파: "Golden Cross"
+- ma50가 ma200 아래로 돌파: "Death Cross"</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>get_fundamental_analysis(ticker) 메서드를 만들어줘.
+1. info = self._get_info_cached(ticker) 로 캐시된 정보 사용
+2. 추출할 필드:
+   - trailingPE, forwardPE, priceToBook, priceToSalesTrailing12Months
+   - revenueGrowth, earningsGrowth, profitMargins, returnOnEquity
+   - marketCap, dividendYield
+   모든 필드에 <code>or 0</code> 처리 (None/빈값 방어)
+3. fundamental_score 계산 (기본 50점):
+   - P/E 0~15: +15, 15~25: +10, >40: -10, <0(적자): -15
+   - 매출성장 >20%: +15, 10~20%: +10, 0~10%: +5, <0: -10
+   - ROE >20%: +10, 10~20%: +5, <0: -10
+4. 시가총액 분류: >200B: "Mega Cap", >10B: "Large Cap", >2B: "Mid Cap", 나머지 "Small Cap"</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>get_analyst_ratings(ticker) 메서드를 만들어줘.
+info = self._get_info_cached(ticker) 에서:
+- longName 또는 shortName → company_name
+- currentPrice 또는 regularMarketPrice → 현재가
+- targetMeanPrice, targetHighPrice, targetLowPrice → 목표가
+- recommendationKey → 추천 (strongBuy/buy/hold/sell/strongSell)
+- numberOfAnalystOpinions → 애널리스트 수
+
+업사이드 = (targetMeanPrice - currentPrice) / currentPrice * 100
+
+analyst_score (기본 50점):
+- strongBuy: +15, buy: +10, hold: +0, sell: -10, strongSell: -15
+- 업사이드 > 30%: +10, 10~30%: +5, 0~10%: +2, 음수: -10
+- 애널리스트 > 10명: +5 (신뢰도 보정)</code></pre>
+</div>
+`},
+    {t:"수급 분석 + 13F + 종합 점수", html:`
+<div class="s-eye" style="color:#f9e2af">SECTION 06</div>
+<h2 class="s-title">수급 분석 + 13F + 종합 점수</h2>
+<p class="s-sub">MFI/OBV/Volume → 기관 보유 → 6팩터 가중 합산</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>src/analyzers/smart_money_screener_v2.py 내 VolumeAnalyzer 메서드를 만들어줘.
+yfinance로 S&P 500 구성종목의 최근 3개월 일봉 데이터를 수집해서
+각 종목별로 sd_score(0~100)를 계산하고 output/us_volume_analysis.csv로 저장해.
+
+계산할 지표 3가지:
+1. MFI (Money Flow Index, 14일):
+   - typical_price = (high + low + close) / 3
+   - raw_money_flow = typical_price * volume
+   - positive_flow = 상승일의 raw_money_flow 14일 합
+   - MFI = 100 - (100 / (1 + positive_flow / negative_flow))
+2. OBV (On-Balance Volume): 상승일 거래량은 +, 하락일은 - 누적
+3. Volume Ratio: 최근 5일 평균 거래량 / 최근 20일 평균 거래량
+
+CSV 컬럼: ticker, mfi, obv_change_20d, vol_ratio, sd_score, sd_stage
+rate limiting: 각 API 호출 후 time.sleep(0.3)
+tqdm 진행바 표시.</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>calculate_composite_score(ticker) 메서드를 만들어줘.
+6개 팩터 점수를 모두 가져와서 가중 합산:
+1. get_technical_analysis(ticker) → technical_score
+2. get_fundamental_analysis(ticker) → fundamental_score
+3. get_analyst_ratings(ticker) → analyst_score
+4. get_relative_strength(ticker) → rs_vs_spy (보정 후 0~100 스케일)
+5. volume_df에서 해당 ticker의 sd_score
+6. holdings_df에서 해당 ticker의 13f_score
+
+composite_score = 가중 평균 (0~100)
+
+등급 분류:
+- 80+: "A" (Strong Accumulation)
+- 65~80: "B" (Moderate Accumulation)
+- 50~65: "C" (Neutral)
+- 35~50: "D" (Moderate Distribution)
+- <20: "F" (Capitulation)
+
+결과 딕셔너리에 모든 개별 점수와 등급 포함.</code></pre>
+</div>
+`},
+    {t:"스크리너 실행 & 검증", html:`
+<div class="s-eye" style="color:#f9e2af">SECTION 06</div>
+<h2 class="s-title">스크리너 실행 &amp; 검증</h2>
+<p class="s-sub">run_screening() 메서드 구현 후 전체 실행</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>run_screening() 메서드와 if __name__ == '__main__' 블록을 만들어줘.
+
+run_screening():
+1. load_data() 호출 (실패 시 종료)
+2. volume_df의 모든 ticker를 tqdm으로 순회
+3. 각 ticker에 calculate_composite_score() 호출
+4. 결과를 리스트에 추가
+5. DataFrame 생성 → composite_score 내림차순 정렬
+6. 상위 20개만 선택
+7. output/smart_money_picks_YYYYMMDD.csv로 저장
+8. 결과 요약 로깅 (총 종목 수, 소요 시간, 상위 5개 미리보기)
+
+메인 블록:
+screener = EnhancedSmartMoneyScreener(data_dir='.')
+screener.run_screening()</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>.venv\Scripts\activate
+python scripts/run_screening.py</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 07 완료 체크</h4>
+<h4>Part 3 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> output/data.db 생성 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> 11개 테이블 존재 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> IndexPredictor SPY/QQQ 예측 성공</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/us_volume_analysis.csv 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/smart_money_picks_YYYYMMDD.csv 생성 (20개 종목)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> Grade A/B 종목 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> composite_score 정렬 확인</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 08 → 실행 스크립트</div>
-</div>`}
-]},
+<div class="arrow-next">다음: Part 4 → AI 종목 분석</div>
+</div>
+`}
+  ]},
 
-{id:8,num:"08",title:"실행 스크립트",sub:"scripts/ + Task Scheduler 자동화",color:"#059669",cl:"rgba(5,150,105,0.15)",
-slides:[
-{t:"스크립트 구조",html:`
-<div class="s-eye" style="color:#059669">SECTION 08 · 실행 스크립트</div>
-<div class="s-title">scripts/ 구조</div>
-<div class="s-sub">5개 진입점 — 통합 분석, 전체 파이프라인, 자동화</div>
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 04 — Part 4: AI 종목 분석
+  // ─────────────────────────────────────────────────────────────────
+  {id:4, num:"07", title:"Part 4: AI 종목 분석", sub:"Gemini + GPT + Perplexity 심층 분석", color:"#cba6f7", cl:"rgba(203,166,247,.15)", slides:[
+    {t:"Part 4 개요", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 07</div>
+<h2 class="s-title">Part 4: AI 종목 분석</h2>
+<p class="s-sub">Gemini + GPT-5-mini + Perplexity로 Top 20 종목 심층 분석</p>
 <table class="tbl">
-<tr><th>스크립트</th><th>역할</th></tr>
-<tr><td><code>run_integrated_analysis.py</code></td><td>Phase 0~3 통합 분석 (메인 실행 파일)</td></tr>
-<tr><td><code>run_full_pipeline.py</code></td><td>9단계 전체 파이프라인 (데이터→DB→대시보드)</td></tr>
-<tr><td><code>run_screening.py</code></td><td>S&amp;P 500 스크리닝 단독 실행 (tqdm 진행 표시)</td></tr>
-<tr><td><code>run_daily_scheduler.py</code></td><td>--status, --install-task, --time HH:MM</td></tr>
-<tr><td><code>regen_dashboard_data.py</code></td><td>output/data.db → frontend/public/data/*.json</td></tr>
-</table>`},
-{t:"run_integrated_analysis.py",html:`
-<div class="s-eye" style="color:#059669">SECTION 08</div>
-<div class="s-title">run_integrated_analysis.py — 4단계 통합 분석</div>
+<tr><th>AI 제공자</th><th>모델</th><th>특징</th><th>비용</th></tr>
+<tr><td>Gemini Flash</td><td>gemini-2.5-flash</td><td>빠름, 추론 내장</td><td>무료 티어</td></tr>
+<tr><td>GPT-5-mini</td><td>gpt-5-mini</td><td>추론 특화</td><td>유료</td></tr>
+<tr><td>Perplexity sonar</td><td>sonar</td><td>실시간 웹 검색</td><td>유료</td></tr>
+</table>
+<div class="callout warning">⚠️ <strong>비중 주의:</strong> AI 점수 비중은 10%입니다. 수치(90%)가 핵심이고 AI는 '왜 좋은지' 맥락 설명 역할</div>
+`},
+    {t:"뉴스 수집기 — Yahoo + Google + Finnhub", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 07</div>
+<h2 class="s-title">뉴스 수집기 — Yahoo + Google + Finnhub</h2>
+<p class="s-sub">NewsCollector 클래스 구현</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Python 설계 명세</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># argparse: --date YYYY-MM-DD (기본: 오늘)</span>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>ai_summary_generator.py 파일을 만들어줘. 먼저 NewsCollector 클래스부터.
 
-<span class="comment"># Phase 0: 데이터 최신성 체크</span>
-<span class="comment">#   sp500_list.csv mtime > 7일이면 재수집</span>
-<span class="comment">#   us_daily_prices.csv mtime > 1일이면 incremental 다운로드</span>
+__init__(self, finnhub_key=None):
+- headers에 User-Agent 설정 (브라우저 흉내)
+- finnhub_key는 인자 또는 환경변수 FINNHUB_API_KEY
 
-<span class="comment"># Phase 1: Verdict 판정</span>
-<span class="comment">#   regime = MarketRegimeDetector().detect()</span>
-<span class="comment">#   gate   = USMarketGate().analyze()</span>
-<span class="comment">#   ml     = IndexPredictor("SPY").predict_next_week()</span>
-
-<span class="comment"># Phase 2: 종목 선별 + Strategy/Setup 분류</span>
-
-<span class="comment"># Phase 3: Action 매핑 (GO+A/B→BUY, CAUTION+A→SMALL BUY, STOP→HOLD)</span>
-
-<span class="comment"># 결과: output/latest_report.json, SQLite upsert</span></code></pre>
-</div>`},
-{t:"Task Scheduler 자동화 (Windows 전용)",html:`
-<div class="s-eye" style="color:#059669">SECTION 08</div>
-<div class="s-title">Task Scheduler 자동화 (Windows)</div>
-<div class="s-sub">평일 07:00 자동 실행 — PowerShell (관리자 권한)에서 등록</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">powershell (관리자 권한)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="comment"># WSL2 Ubuntu에서 Python 경로 확인 후 사용</span>
-$Action = New-ScheduledTaskAction -Execute <span class="str">"wsl"</span> \`
-    -Argument <span class="str">"-d Ubuntu -e bash -c 'cd ~/projects/us-stock && source .venv/bin/activate && python scripts/run_integrated_analysis.py'"</span>
-
-$Trigger = New-ScheduledTaskTrigger -Weekly \`
-    -DaysOfWeek Monday,Tuesday,Wednesday,Thursday,Friday \`
-    -At <span class="str">"07:00AM"</span>
-
-Register-ScheduledTask \`
-    -TaskName <span class="str">"US-Stock-Daily"</span> \`
-    -Action $Action \`
-    -Trigger $Trigger \`
-    -RunLevel Highest \`
-    -Description <span class="str">"US Stock daily analysis pipeline"</span></code></pre>
-</div>
-<div class="callout tip"><strong>팁:</strong> Task Scheduler는 PowerShell (관리자 권한)에서 실행하세요. WSL2 경로는 시스템마다 다를 수 있습니다.</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#059669">SECTION 08</div>
-<div class="s-title">스크립트 검증</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
-python scripts/run_integrated_analysis.py
-ls -la output/latest_report.json   <span class="comment"># 파일 존재 및 크기 > 0</span></code></pre>
+get_yahoo_news(self, ticker, limit=3):
+- import yfinance as yf
+- stock = yf.Ticker(ticker)
+- stock.news에서 title, publisher, link 추출
+- providerPublishTime을 datetime으로 변환해서 'YYYY-MM-DD' 형식
+- 각 기사를 딕셔너리로: title, publisher, link, published, source='Yahoo'
+- 에러 시 빈 리스트 반환, logger.debug로 에러 기록
+파일 경로: src/analyzers/ai_summary_generator.py</code></pre>
 </div>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">powershell (관리자 권한)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>Get-ScheduledTask -TaskName "US-Stock-Daily" | Select-Object TaskName, State
-<span class="comment"># State: Ready 이면 정상</span></code></pre>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>NewsCollector에 통합 메서드를 추가해줘.
+
+get_news_for_ticker(self, ticker, company_name=None):
+1. Yahoo 뉴스 (3개)
+2. Google 뉴스 (3개)
+3. Finnhub 뉴스 (API 키 있을 때만, 3개)
+4. 전체 합치기
+5. _deduplicate_news()로 중복 제거
+6. published 날짜 기준 내림차순 정렬
+7. 최대 8개만 반환
+
+_deduplicate_news(self, news):
+- 제목(title) 앞 50자를 소문자로 변환해서 비교
+- 이미 본 제목이면 건너뛰기
+- seen_titles = set() 사용</code></pre>
+</div>
+`},
+    {t:"AI 분석 생성기 3개 구현", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 07</div>
+<h2 class="s-title">AI 분석 생성기 3개 구현</h2>
+<p class="s-sub">Gemini → GPT-5-mini → Perplexity sonar</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>GeminiSummaryGenerator 클래스를 만들어줘.
+
+__init__(self, api_key=None):
+- self.api_key = api_key or os.getenv('GOOGLE_API_KEY')
+- 없으면 ValueError
+- model = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
+- self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+generate_summary(self, ticker, data, news, lang='ko', macro_context=None):
+- prompt = self._build_prompt(ticker, data, news, lang, macro_context)
+- POST 요청: base_url?key=api_key
+- body: contents: [{"role": "user", "parts": [{"text": prompt}]}]
+  generationConfig: temperature: 0.3, maxOutputTokens: 4000
+  thinkingConfig: {"thinkingLevel": "low"}
+- timeout: 120초
+- 응답 파싱: candidates[0].content.parts에서 'thought' 아닌 것만 필터
+- 에러 시: _get_fallback_json(ticker, reason)</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>OpenAISummaryGenerator 클래스를 만들어줘.
+
+__init__(self, api_key=None):
+- self.api_key = api_key or os.getenv('OPENAI_API_KEY')
+- self.base_url = "https://api.openai.com/v1/chat/completions"
+- self.model = "gpt-5-mini"
+
+generate_summary(self, ticker, data, news, lang='ko', macro_context=None):
+- GeminiSummaryGenerator의 _build_prompt 재사용
+- POST 요청 (Authorization Bearer 헤더):
+  model: "gpt-5-mini"
+  messages: [
+    {"role": "developer", "content": "You are a professional hedge fund analyst. Always respond with valid JSON only."},
+    {"role": "user", "content": prompt}
+  ]
+  reasoning: {"effort": "medium"}
+  max_completion_tokens: 8000
+  ⚠️ 주의: temperature 파라미터 넣지 마! — reasoning 모델은 temperature 미지원
+- timeout: 120초</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>PerplexitySummaryGenerator 클래스를 만들어줘.
+
+__init__(self, api_key=None):
+- self.api_key = api_key or os.getenv('PERPLEXITY_API_KEY')
+- self.base_url = "https://api.perplexity.ai/chat/completions"
+- self.model = "sonar"
+
+generate_summary에 웹 검색 지시문 추가:
+"IMPORTANT — USE WEB SEARCH to find and verify:
+1. Latest earnings report or guidance update for {ticker}
+2. Analyst rating changes in past 7 days
+3. Insider trading (Form 4) in past 30 days
+4. Breaking news/regulatory/product from past 48 hours
+5. Short interest or unusual options activity
+Cite sources and dates. If no results: 'No recent data found'. Do NOT fabricate."
+
+model: "sonar", temperature: 0.3, max_tokens: 4000, timeout: 90초</code></pre>
+</div>
+`},
+    {t:"Factory + Final Report Generator", html:`
+<div class="s-eye" style="color:#cba6f7">SECTION 07</div>
+<h2 class="s-title">Factory + Final Report Generator</h2>
+<p class="s-sub">팩토리 패턴으로 AI 선택 → 최종 Top 10 리포트 생성</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>get_ai_provider(provider='gemini') 팩토리 함수를 만들어줘.
+- 'gemini': GeminiSummaryGenerator()
+- 'openai': OpenAISummaryGenerator()
+- 'perplexity': PerplexitySummaryGenerator()
+- 그 외: ValueError(f"Unknown provider: {provider}")
+
+if __name__ == '__main__' 블록에 argparse CLI:
+--provider: 기본 'gemini'
+--top: 분석할 종목 수, 기본 20
+--ticker: 특정 종목만 분석 (선택)
+--lang: 'ko' 또는 'en', 기본 'ko'
+
+메인 로직:
+1. smart_money_picks_YYYYMMDD.csv 로드
+2. macro_context = load_macro_context() ← Part 2의 regime_config.json 활용
+3. NewsCollector로 뉴스 수집
+4. get_ai_provider(args.provider)로 AI 생성
+5. output/ai_summaries.json에 저장</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>final_report_generator.py를 만들어줘. FinalReportGenerator 클래스:
+
+load_data():
+- output/smart_money_picks_YYYYMMDD.csv (없으면 FileNotFoundError)
+- output/ai_summaries.json (없으면 빈 딕셔너리)
+
+calculate_final_score(row, ai_summaries):
+- quant_score = row.composite_score
+- ai_contribution = min(max(0, ai_score), 10) * 0.5
+- final_score = quant_score * 0.9 + ai_contribution
+
+generate_report():
+- 모든 종목에 calculate_final_score
+- final_score 내림차순 → 상위 10개
+- output/final_top10_report.json 저장
+파일 경로: src/analyzers/final_report_generator.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>전체 파이프라인을 한 번에 실행하는 run_full_pipeline.py 스크립트를 만들어줘.
+
+1. MarketRegimeDetector().detect_regime() → regime_config.json
+2. EnhancedSmartMoneyScreener().run_screening() → smart_money_picks_YYYYMMDD.csv
+3. AI 분석 (기본 Gemini) → ai_summaries.json
+4. FinalReportGenerator().generate_report() → final_top10_report.json
+
+각 단계의 소요 시간 로깅.
+한 단계 실패해도 다음 단계 계속 진행 (가능한 범위에서).
+최종 요약: 시장 체제, 분석 종목 수, Top 10 미리보기.
+파일 경로: scripts/run_full_pipeline.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>.venv\Scripts\activate
+
+# Gemini로 분석 (기본)
+python src/analyzers/ai_summary_generator.py --provider gemini --top 20
+
+# 특정 종목만 분석
+python src/analyzers/ai_summary_generator.py --provider gemini --ticker AAPL
+
+# 전체 파이프라인 한 번에
+python scripts/run_full_pipeline.py</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 08 완료 체크</h4>
+<h4>Part 4 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> run_integrated_analysis.py 실행 성공</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> output/latest_report.json 파일 생성</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Task Scheduler "US-Stock-Daily" Ready 상태</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/ai_summaries.json 생성 (종목별 JSON)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/final_top10_report.json 생성 (상위 10개)</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> JSON 파싱 에러 없음</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> 비용 요약 출력 확인</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 09 → Next.js 프론트엔드</div>
-</div>`}
-]},
+<div class="arrow-next">다음: Part 5 → ML 지수 예측</div>
+</div>
+`}
+  ]},
 
-{id:9,num:"09",title:"Next.js 프론트엔드",sub:"13개 페이지 대시보드",color:"#2563eb",cl:"rgba(37,99,235,0.15)",
-slides:[
-{t:"프론트엔드 개요",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 09 · Next.js 프론트엔드</div>
-<div class="s-title">Next.js 15 대시보드</div>
-<div class="s-sub">13개 페이지, API Routes, SQLite 연동, i18n (한국어/영어), 다크/라이트 테마</div>
-<div class="grid2">
-<div class="icard" style="border-left:4px solid #2563eb">
-<div class="icard-t" style="color:#89b4fa">13개 페이지</div>
-<div class="icard-b">
-/board — Reddit 스타일 게시판<br>
-/ — 홈 대시보드<br>
-/regime — 시장 체제 (5센서)<br>
-/top-picks — Top 10 종목<br>
-/ai — AI 분석 리포트<br>
-/forecast — SPY/QQQ 방향 예측<br>
-/ml — GBM ML 리더보드<br>
-/risk — 리스크 모니터<br>
-/performance — 성과 추적<br>
-/graph — 종목 관계도<br>
-/ai-builder — AI 에이전트 포털<br>
-/download — 자료 다운로드<br>
-/costs — API 비용 (항상 마지막)
-</div>
-</div>
-<div class="icard" style="border-left:4px solid #a6e3a1">
-<div class="icard-t" style="color:#a6e3a1">핵심 의존성</div>
-<div class="icard-b">
-next: ^15.1.6<br>
-react: ^19.0.0<br>
-better-sqlite3: ^12.9.0<br>
-recharts: ^3.8.1<br>
-react-force-graph-2d: ^1.29.1<br>
-tailwindcss: ^3.4.17<br>
-next-themes: ^0.4.6
-</div>
-</div>
-</div>`},
-{t:"Node.js 설치 & 프론트엔드 빌드",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 09</div>
-<div class="s-title">Node.js 설치 & 프론트엔드 빌드</div>
-<div class="s-sub">WSL2 Ubuntu에서 npm 실행 — Windows Node.js 아님!</div>
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 05 — Part 5: ML 지수 예측
+  // ─────────────────────────────────────────────────────────────────
+  {id:5, num:"08", title:"Part 5: ML 지수 예측", sub:"27개 피처 + GradientBoosting으로 SPY/QQQ 예측", color:"#fab387", cl:"rgba(250,179,135,.15)", slides:[
+    {t:"Part 5 개요", html:`
+<div class="s-eye" style="color:#fab387">SECTION 08</div>
+<h2 class="s-title">Part 5: ML 지수 예측</h2>
+<p class="s-sub">27개 피처 + GradientBoosting으로 SPY/QQQ 다음 주 방향 예측</p>
+<div class="callout note">📌 Part 4가 '종목 선택'이라면, Part 5는 '지금 시장에 진입할 타이밍인가?'를 판단</div>
+<table class="tbl" style="margin-top:14px">
+<tr><th>피처 그룹</th><th>피처 수</th><th>내용</th></tr>
+<tr><td>SPY 관련</td><td>7개</td><td>수익률, MA 위치, RSI, MACD, BB 위치</td></tr>
+<tr><td>VIX 관련</td><td>3개</td><td>VIX 값, 5일 변화, 백분위</td></tr>
+<tr><td>QQQ 관련</td><td>2개</td><td>수익률, RSI</td></tr>
+<tr><td>시장폭</td><td>2개</td><td>50MA 위 종목 비율, AD 비율</td></tr>
+<tr><td>섹터</td><td>3개</td><td>XLK/XLU/XLY 상대강도</td></tr>
+<tr><td>매크로</td><td>3개</td><td>금리차, 금 수익률, DXY 수익률</td></tr>
+<tr><td>거래량/모멘텀</td><td>7개</td><td>거래량 비율, 추세, ROC, RSI 기울기</td></tr>
+</table>
+`},
+    {t:"IndexPredictor 클래스 구현", html:`
+<div class="s-eye" style="color:#fab387">SECTION 08</div>
+<h2 class="s-title">IndexPredictor 클래스 구현</h2>
+<p class="s-sub">클래스 골격 → 데이터 수집 메서드</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>cd ~/projects/us-stock/frontend
-npm install
-npm run build
-npm run dev
-<span class="comment"># → http://localhost:3000 접속</span></code></pre>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>미국 주식 지수(SPY, QQQ) 방향을 예측하는 IndexPredictor 클래스를 만들어줘.
+파일 경로: src/us_market/index_predictor.py
+
+요구사항:
+- 클래스명: IndexPredictor
+- __init__에서 data_dir 받기 (기본값 '.')
+- output_file: output/index_prediction.json
+- model_path_spy: output/predictor_model_spy.joblib
+- model_path_qqq: output/predictor_model_qqq.joblib
+- FEATURE_NAMES 리스트를 클래스 변수로 정의 (27개):
+  SPY 관련: spy_return_1w, spy_return_1m, spy_above_200ma, spy_above_50ma,
+            spy_rsi, spy_macd_signal, spy_bb_position
+  VIX 관련: vix_value, vix_change_5d, vix_percentile
+  QQQ 관련: qqq_return_1w, qqq_rsi
+  시장폭: breadth_pct_above_50ma, advance_decline_ratio
+  섹터: xlk_relative_1m, xlu_relative_1m, xly_relative_1m
+  매크로: yield_spread_proxy, gold_return_1w, dxy_return_1w
+  거래량: spy_vol_ratio, spy_vol_trend_5d, qqq_vol_ratio
+  모멘텀: spy_roc_10d, spy_price_vs_50ma_pct, spy_rsi_slope_5d, vix_above_20
+- INVERSE_FEATURES 집합: vix_value, vix_change_5d, vix_percentile, vix_above_20, xlu_relative_1m, dxy_return_1w
+- logging 사용 (print 금지)</code></pre>
 </div>
-<div class="callout note"><strong>참고:</strong> WSL2에서 실행된 localhost:3000은 Windows 브라우저에서 그대로 접속 가능합니다.</div>`},
-{t:"API Routes 구조",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 09</div>
-<div class="s-title">frontend/app/api/data/ API Routes</div>
-<div class="s-sub">better-sqlite3로 output/data.db를 쿼리해 JSON 반환</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>IndexPredictor에 _fetch_price_data(start_date='2023-01-01') 메서드를 추가해줘.
+
+요구사항:
+- yfinance로 다음 티커 다운로드: SPY, QQQ, ^VIX, XLK, XLU, XLY, GC=F, DX-Y.NYB, ^TNX, ^FVX
+- lookback_start를 start_date에서 300일 전으로 설정 (이동평균 계산용)
+- Close 가격을 가져오되, 심볼을 깔끔한 이름으로 rename:
+  ^VIX → VIX, GC=F → GOLD, DX-Y.NYB → DXY, ^TNX → TNX, ^FVX → FVX
+- Volume 데이터도 추가: SPY_VOL, QQQ_VOL 컬럼
+- 에러 시 빈 DataFrame 반환, logger.error 기록</code></pre>
+</div>
+`},
+    {t:"GradientBoosting 학습 & 예측", html:`
+<div class="s-eye" style="color:#fab387">SECTION 08</div>
+<h2 class="s-title">GradientBoosting 학습 &amp; 예측</h2>
+<p class="s-sub">TimeSeriesSplit CV 학습 → predict_next_week() 구현</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>IndexPredictor에 train(df, target_ticker='SPY') 메서드를 추가해줘.
+
+요구사항:
+- scikit-learn의 GradientBoostingClassifier + GradientBoostingRegressor 사용
+- 클래스 불균형 보정: n_bearish, n_bullish 카운트 → weight = total / (2 * n_class)
+- TimeSeriesSplit(n_splits=5) CV:
+  각 fold에서 StandardScaler를 fit_transform(train) / transform(test)
+  GradientBoostingClassifier(n_estimators=150, max_depth=4, learning_rate=0.05,
+    subsample=0.8, min_samples_leaf=10, random_state=42)
+- 전체 데이터로 최종 모델 학습
+- Feature importances 상위 10개 추출
+- joblib.dump으로 저장
+- 반환: accuracy, brier_score, training_samples, top_features</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>IndexPredictor에 predict_next_week() 메서드를 추가해줘.
+
+SPY와 QQQ를 for 루프로 각각 독립 예측.
+각 ticker에 대해:
+1. 모델 파일 존재 확인
+2. trained_at 체크 → retrain_interval_days(기본 7) 초과 시 재학습
+3. 최신 피처 벡터 준비 (누락 피처는 0으로 채움)
+4. scaler.transform()으로 스케일링
+5. classifier.predict_proba()로 상승 확률
+6. regressor.predict()로 예상 수익률
+7. confidence 등급: high(70%+), moderate(60%+), low(미만)
+8. key_drivers: feature_importance 상위 5개 + 현재값 + 방향(bullish/bearish)
+- 결과를 output/index_prediction.json에 저장</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>index_predictor.py에 if __name__ == '__main__' 블록을 추가해줘.
+
+실행 순서:
+1. IndexPredictor(data_dir='.') 초기화
+2. predict_next_week() 호출
+3. 결과 출력:
+   - SPY: 방향, 확률, 예상 수익률, 신뢰도
+   - QQQ: 방향, 확률, 예상 수익률, 신뢰도
+   - 상위 3개 key_drivers
+4. output/index_prediction.json 저장 확인 로그
+
+실행 방법: python src/us_market/index_predictor.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>.venv\Scripts\activate
+python src/us_market/index_predictor.py</code></pre>
+</div>
+<div class="next-step-box">
+<h4>Part 5 완료 체크</h4>
+<ul class="checklist">
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/predictor_model_spy.joblib 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/predictor_model_qqq.joblib 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/index_prediction.json 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> SPY/QQQ 방향, 확률, 신뢰도 출력 확인</label></li>
+</ul>
+<div class="arrow-next">다음: Part 6 → 리스크 관리</div>
+</div>
+`}
+  ]},
+
+  // ─────────────────────────────────────────────────────────────────
+  // SECTION 06 — Part 6: 리스크 관리
+  // ─────────────────────────────────────────────────────────────────
+  {id:6, num:"09", title:"Part 6: 리스크 관리", sub:"가격 하락 + AI SELL + ML Bearish 교차 경고", color:"#f38ba8", cl:"rgba(243,139,168,.15)", slides:[
+    {t:"Part 6 개요", html:`
+<div class="s-eye" style="color:#f38ba8">SECTION 09</div>
+<h2 class="s-title">Part 6: 리스크 관리 시스템</h2>
+<p class="s-sub">Part 2~5 연동 — 가격 하락 + AI SELL + ML Bearish 교차 경고</p>
 <table class="tbl">
-<tr><th>Route</th><th>데이터</th></tr>
-<tr><td><code>reports/route.ts</code></td><td>일일 리포트 목록</td></tr>
-<tr><td><code>regime/route.ts</code></td><td>시장 체제 데이터</td></tr>
-<tr><td><code>market-gate/route.ts</code></td><td>마켓 게이트 GO/CAUTION/STOP</td></tr>
-<tr><td><code>ai-summaries/route.ts</code></td><td>AI 종목 요약</td></tr>
-<tr><td><code>index-prediction/route.ts</code></td><td>SPY/QQQ 예측</td></tr>
-<tr><td><code>prediction-history/route.ts</code></td><td>예측 이력 (최대 100개)</td></tr>
-<tr><td><code>gbm-predictions/route.ts</code></td><td>GBM 리더보드</td></tr>
-<tr><td><code>risk/route.ts</code></td><td>리스크 모니터</td></tr>
-<tr><td><code>performance/route.ts</code></td><td>성과 추적</td></tr>
-<tr><td><code>graph/route.ts</code></td><td>종목 관계도</td></tr>
-<tr><td><code>dates/route.ts</code></td><td>리포트 날짜 목록</td></tr>
-</table>`},
-{t:"공유 컴포넌트",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 09</div>
-<div class="s-title">frontend/src/components/ 공유 컴포넌트</div>
+<tr><th>연동 파트</th><th>역할</th></tr>
+<tr><td>Part 2 (체제 감지)</td><td>적응형 Stop-Loss 임계값 공급</td></tr>
+<tr><td>Part 3 (스크리닝)</td><td>모니터링 대상 포트폴리오 공급</td></tr>
+<tr><td>Part 4 (AI 분석)</td><td>AI SELL 경고 신호 감지</td></tr>
+<tr><td>Part 5 (ML 예측)</td><td>Bearish 시 레버리지 경고 상향</td></tr>
+</table>
+`},
+    {t:"RiskAlertSystem 클래스 구현", html:`
+<div class="s-eye" style="color:#f38ba8">SECTION 09</div>
+<h2 class="s-title">RiskAlertSystem 클래스 구현</h2>
+<p class="s-sub">클래스 골격 → Drawdown 계산 → VaR 계산</p>
 <div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">Navigation.tsx (costs 항상 마지막)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code><span class="kw">const</span> NAV = [
-  { href: <span class="str">"/board"</span>,       labelKey: <span class="str">"nav.board"</span>       },
-  { href: <span class="str">"/"</span>,            labelKey: <span class="str">"nav.overview"</span>    },
-  { href: <span class="str">"/regime"</span>,      labelKey: <span class="str">"nav.regime"</span>      },
-  { href: <span class="str">"/top-picks"</span>,   labelKey: <span class="str">"nav.topPicks"</span>    },
-  { href: <span class="str">"/ai"</span>,          labelKey: <span class="str">"nav.ai"</span>          },
-  { href: <span class="str">"/forecast"</span>,    labelKey: <span class="str">"nav.forecast"</span>    },
-  { href: <span class="str">"/ml"</span>,          labelKey: <span class="str">"nav.ml"</span>          },
-  { href: <span class="str">"/risk"</span>,        labelKey: <span class="str">"nav.risk"</span>        },
-  { href: <span class="str">"/performance"</span>, labelKey: <span class="str">"nav.performance"</span> },
-  { href: <span class="str">"/graph"</span>,       labelKey: <span class="str">"nav.graph"</span>       },
-  { href: <span class="str">"/ai-builder"</span>,  labelKey: <span class="str">"nav.aiBuilder"</span>   },
-  { href: <span class="str">"/download"</span>,    labelKey: <span class="str">"nav.download"</span>    },
-  { href: <span class="str">"/costs"</span>,       labelKey: <span class="str">"nav.costs"</span>       }, <span class="comment">// 항상 마지막</span>
-]</code></pre>
-</div>`},
-{t:"검증",html:`
-<div class="s-eye" style="color:#2563eb">SECTION 09</div>
-<div class="s-title">프론트엔드 검증</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>cd ~/projects/us-stock/frontend
-npm install
-npm run build   <span class="comment"># TypeScript 에러 없음 확인</span>
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>포트폴리오 리스크를 모니터링하는 RiskAlertSystem 클래스를 만들어줘.
+파일 경로: src/us_market/risk_alert.py
 
-npm run dev &   <span class="comment"># 백그라운드 실행</span>
-sleep 5 && curl -s -o /dev/null -w "%{http_code}" http://localhost:3000
-<span class="comment"># 200 이면 정상</span></code></pre>
+요구사항:
+- 클래스명: RiskAlertSystem
+- __init__에서 data_dir 받기 (기본값 '.')
+- output_file: output/risk_alerts.json
+- DEFAULT_THRESHOLDS 클래스 변수:
+  max_drawdown_warning: -10.0
+  max_drawdown_critical: -20.0
+  stop_loss_default: -8.0
+  concentration_threshold: 0.80
+  var_confidence: 0.95
+- _load_regime_config()로 output/regime_config.json 읽기 (thresholds 오버라이드)
+- _load_index_prediction()로 output/index_prediction.json 읽기 (Part 5 연결)
+- _load_ai_summaries()로 output/ai_summaries.json 읽기 (Part 4 연결)
+- logging 사용</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>RiskAlertSystem에 calculate_drawdowns(tickers, period='3mo') 메서드를 추가해줘.
+
+요구사항:
+- yfinance로 tickers의 3개월 Close 가격 다운로드
+- 각 ticker별 계산:
+  current_price: 최신 종가
+  peak_price: 3개월 최고가 (prices.max())
+  current_dd: (현재가/최고가 - 1) * 100
+  max_dd: 누적최고가(cummax) 대비 최대 하락률
+  from_peak_days: 최고가 날짜부터 현재까지 일수
+- 모든 값 float 변환 후 round(2)</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>RiskAlertSystem에 calculate_portfolio_var(tickers, confidence=0.95, horizon_days=5, portfolio_value=100000) 메서드를 추가해줘.
+
+요구사항:
+1. yfinance로 6개월 Close 가격 다운로드
+2. 일별 수익률 계산 후 동일 비중 포트폴리오 수익률 합성
+3. horizon_days > 1이면 rolling(horizon_days).sum()으로 N일 수익률 생성
+4. Historical VaR: np.percentile(horizon_returns, (1-confidence)*100)
+5. CVaR: VaR 이하 수익률의 평균 (tail_returns.mean())
+6. 반환: var_pct, var_dollar, cvar_pct, cvar_dollar, confidence, horizon_days</code></pre>
+</div>
+`},
+    {t:"Stop-Loss 체크 + 알림 생성", html:`
+<div class="s-eye" style="color:#f38ba8">SECTION 09</div>
+<h2 class="s-title">Stop-Loss 체크 + 알림 생성</h2>
+<p class="s-sub">손절 위반 감지 → 집중도 분석 → 전체 실행</p>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>RiskAlertSystem에 check_stop_losses(picks, threshold=None) 메서드를 추가해줘.
+
+요구사항:
+- threshold 기본값: self.thresholds['stop_loss_default'] (= -8.0%)
+- picks에서 entry_price > 0인 종목의 ticker 리스트 추출
+- yfinance로 1일 종가 다운로드
+- 각 pick에 대해:
+  change_pct = ((current / entry) - 1) * 100
+  change_pct <= threshold 이면 breached 리스트에 추가
+- breached 항목: ticker, name, entry_price, current_price, change_pct, threshold
+- 에러 시 빈 리스트 반환</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>RiskAlertSystem에 analyze_concentration_risk(picks) 메서드를 추가해줘.
+
+1. 섹터 집중도 분석:
+   - picks에서 sector별 종목 수 카운트
+   - weight_pct = count/total * 100
+   - 40% 초과 섹터에 대해 경고 문자열 생성
+
+2. 상관관계 분석:
+   - yfinance로 3개월 수익률 다운로드
+   - 상관 행렬 계산: returns.corr()
+   - 상관계수 0.80 초과 쌍 추출
+
+3. 반환:
+   {'sector_concentration': {sector: {count, weight_pct}},
+    'concentration_warnings': [문자열 리스트],
+    'high_correlation_pairs': [{pair: [A, B], correlation: 0.85}]}</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">claude</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>RiskAlertSystem에 run_full_analysis() 메서드와 if __name__ == '__main__' 블록을 만들어줘.
+
+run_full_analysis():
+1. load_picks()로 포트폴리오 로드
+2. calculate_drawdowns()로 낙폭 계산
+3. check_stop_losses()로 손절 체크
+4. calculate_portfolio_var()로 VaR 계산
+5. analyze_concentration_risk()로 집중도 분석
+6. 모든 결과를 output/risk_alerts.json으로 저장
+7. 경고 사항 콘솔 출력
+
+실행 방법: python src/us_market/risk_alert.py</code></pre>
+</div>
+<div class="code-wrapper">
+  <div class="code-header"><span class="lang-badge">bash</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+  <pre><code>.venv\Scripts\activate
+python src/us_market/risk_alert.py</code></pre>
 </div>
 <div class="next-step-box">
-<h4>SECTION 09 완료 체크</h4>
+<h4>전체 완료 체크</h4>
 <ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> npm run build 성공 (TypeScript 에러 없음)</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> http://localhost:3000 접속 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> 13개 페이지 네비게이션 정상 동작</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> 다크/라이트 테마 전환 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> output/risk_alerts.json 생성</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> VaR / CVaR 계산 결과 출력</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> Stop-Loss 위반 종목 리스트 확인</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> 전체 파이프라인 실행: python scripts/run_full_pipeline.py</label></li>
+<li><label><input type="checkbox" onchange="saveCheck(this)"> 대시보드 실행: cd frontend && npm run dev</label></li>
 </ul>
-<div class="arrow-next">다음: SECTION 10 → 에이전트 & 최종 검증</div>
-</div>`}
-]},
-
-{id:10,num:"10",title:"에이전트 & 최종 검증",sub:"21+ 에이전트 + 완료 체크리스트",color:"#dc2626",cl:"rgba(220,38,38,0.15)",
-slides:[
-{t:"에이전트 구조",html:`
-<div class="s-eye" style="color:#dc2626">SECTION 10 · 에이전트 & 최종 검증</div>
-<div class="s-title">.claude/agents/ 구조</div>
-<div class="s-sub">10개 팀, 25개+ 에이전트 정의 파일</div>
-<div class="grid2">
-<div class="icard">
-<div class="icard-t" style="color:#f38ba8">팀 구성</div>
-<div class="icard-b">
-<strong style="color:#cdd6f4">performance/</strong> 5개 에이전트<br>
-<strong style="color:#cdd6f4">equity/</strong> 3개<br>
-<strong style="color:#cdd6f4">model/</strong> 4개<br>
-<strong style="color:#cdd6f4">macro/</strong> 3개<br>
-<strong style="color:#cdd6f4">mlops/</strong> 3개<br>
-<strong style="color:#cdd6f4">system/</strong> 3개<br>
-<strong style="color:#cdd6f4">ai/</strong> 3개<br>
-<strong style="color:#cdd6f4">frontend/</strong> 3개<br>
-<strong style="color:#cdd6f4">research/</strong> 4개<br>
-<strong style="color:#cdd6f4">ingest/</strong> 3개
+<div class="arrow-next">수고하셨습니다! 전체 6파트 구현 완료</div>
 </div>
-</div>
-<div class="icard">
-<div class="icard-t" style="color:#89b4fa">모델 선택 기준</div>
-<div class="icard-b">
-Lead 에이전트: <strong style="color:#cdd6f4">claude-opus-4-5</strong><br>
-일반 구현: <strong style="color:#cdd6f4">claude-sonnet-4-6</strong><br>
-단순 검증: <strong style="color:#cdd6f4">claude-haiku-4-5</strong><br><br>
-예시: gbm-trainer.md<br>
-<code>model: claude-sonnet-4-6</code>
-</div>
-</div>
-</div>`},
-{t:"에이전트 파일 형식",html:`
-<div class="s-eye" style="color:#dc2626">SECTION 10</div>
-<div class="s-title">에이전트 파일 형식</div>
-<div class="s-sub">.claude/agents/{팀}/{에이전트명}.md</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">.claude/agents/model/gbm-trainer.md</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>---
-name: gbm-trainer
-model: claude-sonnet-4-6
----
+`}
+  ]}
+];
 
-# GBM Trainer
+// ── state ──
+const LS = 'lecture-win-';
+let si = 0, gi = 0;
 
-## 역할
-LightGBM 모델 학습과 하이퍼파라미터 최적화를 담당합니다.
-
-## 담당 파일
-- src/ml/pipeline/train.py
-- src/ml/pipeline/feature_store.py
-
-## 주요 기능
-- TimeSeriesSplit 교차검증 실행
-- Optuna HPO (일요일 50 trials)
-- 모델 직렬화 및 메타데이터 저장
-
-## 제약사항
-- look-ahead bias 유발 코드 작성 금지
-- 학습 데이터에 미래 수익률 직접 포함 금지</code></pre>
-</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>find .claude/agents -name "*.md" | wc -l
-<span class="comment"># 25 이상이면 정상</span></code></pre>
-</div>`},
-{t:"최종 검증 체크리스트",html:`
-<div class="s-eye" style="color:#dc2626">SECTION 10</div>
-<div class="s-title">최종 검증 체크리스트</div>
-<div class="s-sub">모든 Phase 완료 후 순서대로 확인</div>
-<div class="code-wrapper">
-  <div class="code-header"><span class="lang-badge">bash (Ubuntu WSL2)</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-  <pre><code>source .venv/bin/activate
-
-<span class="comment"># 1. Python 패키지 확인</span>
-python -c "import yfinance, lightgbm, fredapi, curl_cffi, pandas; print('패키지 OK')"
-
-<span class="comment"># 2. S&P 500 데이터</span>
-python src/collectors/fetch_sp500_list.py
-wc -l data/sp500_list.csv   <span class="comment"># 500+ 줄</span>
-
-<span class="comment"># 3. 시장 체제 감지</span>
-python -c "from src.analyzers.market_regime import MarketRegimeDetector; print(MarketRegimeDetector().detect()['regime'])"
-
-<span class="comment"># 4. 통합 분석</span>
-python scripts/run_integrated_analysis.py
-ls -la output/latest_report.json
-
-<span class="comment"># 5. SQLite DB 확인</span>
-python -c "
-import sqlite3; conn = sqlite3.connect('output/data.db')
-tables = conn.execute(\"SELECT name FROM sqlite_master WHERE type='table'\").fetchall()
-print(f'DB 테이블 수: {len(tables)}')
-"
-
-<span class="comment"># 6. 프론트엔드 빌드</span>
-cd frontend && npm run build && echo "빌드 성공"</code></pre>
-</div>`},
-{t:"구축 완료!",html:`
-<div class="s-eye" style="color:#dc2626">SECTION 10</div>
-<div class="s-title">구축 완료!</div>
-<div class="s-sub">모든 항목이 정상이면 구축 완료입니다</div>
-<div class="next-step-box">
-<h4>최종 완료 체크</h4>
-<ul class="checklist">
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Python 패키지 전체 설치 OK</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> S&P 500 500개+ 종목 수집 완료</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> 시장 체제 감지 정상 작동</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> output/latest_report.json 생성 (크기 > 0)</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> SQLite DB 11개 테이블 확인</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Next.js 빌드 성공 (TypeScript 오류 없음)</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> http://localhost:3000 접속 정상</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> Task Scheduler "US-Stock-Daily" Ready</label></li>
-<li><label><input type="checkbox" onchange="saveCheck(this)"> .claude/agents/ 25개+ 파일 생성</label></li>
-</ul>
-</div>
-<div class="grid2" style="margin-top:12px">
-<div class="icard" style="border-left:4px solid #a6e3a1">
-<div class="icard-t" style="color:#a6e3a1">완료 후 일상 루틴</div>
-<div class="icard-b">
-평일 07:00: Task Scheduler 자동 실행<br>
-아침: http://localhost:3000 접속<br>
-Overview → Regime → Top Picks 순서로 확인<br>
-5분 만에 투자 결정
-</div>
-</div>
-<div class="icard" style="border-left:4px solid #89b4fa">
-<div class="icard-t" style="color:#89b4fa">문제 발생 시</div>
-<div class="icard-b">
-WSL2에서 claude 실행<br>
-Plan Mode (Shift+Tab) 진입<br>
-오류 메시지 붙여넣기<br>
-Claude가 자동 수정 제안
-</div>
-</div>
-</div>`}
-]}
-]
-
-const ALL = SEC.flatMap(s => s.slides.map((sl,i) => ({...sl, sec:s, secIdx:i, secLen:s.slides.length})))
-let cur = 0
-
-function render(idx) {
-  cur = idx
-  const sl = ALL[idx]
-  const sec = sl.sec
-  document.querySelectorAll('.sb-sec').forEach((el,i) => {
-    el.classList.toggle('active', SEC[i].id === sec.id)
-    el.style.color = SEC[i].id === sec.id ? sec.color : ''
-  })
-  const badge = document.getElementById('sec-badge')
-  badge.textContent = `SECTION ${sec.num}`
-  badge.style.background = sec.cl
-  badge.style.color = sec.color
-  document.getElementById('top-title').textContent = sl.t
-  document.getElementById('top-cnt').textContent = `${sl.secIdx+1} / ${sl.secLen}`
-  document.getElementById('slide-content').innerHTML = sl.html
-  const pct = Math.round(((idx+1)/ALL.length)*100)
-  document.getElementById('prog-txt').textContent = `${idx+1} / ${ALL.length}`
-  document.getElementById('prog-pct').textContent = `${pct}%`
-  document.getElementById('prog-fill').style.width = pct+'%'
-  document.getElementById('prev-btn').disabled = idx === 0
-  document.getElementById('next-btn').disabled = idx === ALL.length-1
-  const dotsEl = document.getElementById('dots')
-  dotsEl.innerHTML = ''
-  const secSlides = SEC.find(s=>s.id===sec.id).slides
-  secSlides.forEach((_,i) => {
-    const d = document.createElement('div')
-    d.className = 'd' + (i===sl.secIdx?' on':'')
-    if(i===sl.secIdx) d.style.background = sec.color
-    dotsEl.appendChild(d)
-  })
-  document.querySelector('.slide-area').scrollTop = 0
-  try { localStorage.setItem('win-slide-sync', String(idx)) } catch(e) {}
-  try {
-    const visited = JSON.parse(localStorage.getItem('win-slide-visited') || '[]')
-    if (!visited.includes(idx)) { visited.push(idx); localStorage.setItem('win-slide-visited', JSON.stringify(visited)) }
-  } catch(e) {}
-  updateSecProgress(idx)
-  setTimeout(restoreChecks, 0)
+function totalSlides(){return SEC.reduce((a,s)=>a+s.slides.length,0)}
+function globalIdx(si,gi){
+  let n=0;
+  for(let i=0;i<si;i++) n+=SEC[i].slides.length;
+  return n+gi;
+}
+function fromGlobal(g){
+  let n=0;
+  for(let i=0;i<SEC.length;i++){
+    if(n+SEC[i].slides.length>g) return{si:i,gi:g-n};
+    n+=SEC[i].slides.length;
+  }
+  return{si:SEC.length-1,gi:SEC[SEC.length-1].slides.length-1};
 }
 
-function updateSecProgress(idx) {
-  const row = document.getElementById('secProgressRow')
-  if (!row) return
-  let visited = []
-  try { visited = JSON.parse(localStorage.getItem('win-slide-visited') || '[]') } catch(e) {}
-  row.innerHTML = ''
-  ALL.forEach((sl, i) => {
-    const pip = document.createElement('div')
-    pip.className = 'sec-pip' + (i === idx ? ' current' : visited.includes(i) ? ' visited' : '')
-    if(i === idx) pip.style.background = '#f59e0b'
-    else if(visited.includes(i)) pip.style.background = sl.sec.color
-    row.appendChild(pip)
-  })
+function saveCheck(el){
+  const key=LS+'chk-'+si+'-'+gi+'-'+[...el.closest('.checklist').querySelectorAll('input')].indexOf(el);
+  localStorage.setItem(key,el.checked?'1':'0');
+}
+function loadChecks(){
+  document.querySelectorAll('.checklist input').forEach((el,i)=>{
+    const key=LS+'chk-'+si+'-'+gi+'-'+i;
+    el.checked=localStorage.getItem(key)==='1';
+  });
 }
 
-function nav(dir) { const n = cur+dir; if(n>=0&&n<ALL.length) render(n) }
-function jumpSec(id) { const idx=ALL.findIndex(s=>s.sec.id===id); if(idx>=0) render(idx) }
-
-function copyCode(btn) {
-  const code = btn.closest('.code-wrapper').querySelector('code').innerText
-  navigator.clipboard.writeText(code).then(() => {
-    btn.textContent = '복사됨!'
-    setTimeout(() => { btn.textContent = '복사' }, 2000)
-  }).catch(() => {
-    btn.textContent = '복사됨!'
-    setTimeout(() => { btn.textContent = '복사' }, 2000)
-  })
+function render(){
+  const sec=SEC[si], slide=sec.slides[gi];
+  // sidebar
+  document.querySelectorAll('.sb-sec').forEach((el,i)=>{
+    el.classList.toggle('active',i===si);
+    el.style.color=i===si?sec.color:'';
+    el.querySelector('.sb-dot').style.borderColor=SEC[i].color;
+    if(i===si) el.querySelector('.sb-dot').style.background=sec.color;
+    else el.querySelector('.sb-dot').style.background='';
+  });
+  // top bar
+  const badge=document.getElementById('sec-badge');
+  badge.textContent='SECTION '+sec.num;
+  badge.style.background=sec.cl;
+  badge.style.color=sec.color;
+  badge.style.border='1px solid '+sec.color+'44';
+  document.getElementById('top-title').textContent=slide.t;
+  document.getElementById('top-cnt').textContent=(gi+1)+' / '+sec.slides.length;
+  // slide content
+  const card=document.getElementById('slide-content');
+  card.style.borderTop='3px solid '+sec.color;
+  card.innerHTML=slide.html;
+  card.style.animation='none';
+  card.offsetHeight;
+  card.style.animation='';
+  loadChecks();
+  // dots (within section)
+  const dots=document.getElementById('dots');
+  dots.innerHTML=sec.slides.map((_,i)=>`<div class="d${i===gi?' on':''}" style="${i===gi?'background:'+sec.color:''}"></div>`).join('');
+  // section progress pips
+  const row=document.getElementById('secProgressRow');
+  row.innerHTML=SEC.map((s,i)=>{
+    const visited=localStorage.getItem(LS+'vis-'+i)==='1'||i===si;
+    const cls='sec-pip'+(i===si?' current':(visited?' visited':''));
+    const style=i===si?`background:${s.color}`:`background:${s.color}55`;
+    return`<div class="${cls}" style="${style}" title="${s.title}" onclick="jumpSec(${i})"></div>`;
+  }).join('');
+  // buttons
+  const g=globalIdx(si,gi);
+  document.getElementById('prev-btn').disabled=g===0;
+  document.getElementById('next-btn').disabled=g===totalSlides()-1;
+  // progress bar
+  const tot=totalSlides();
+  const pct=Math.round((g+1)/tot*100);
+  document.getElementById('prog-txt').textContent=(g+1)+'/'+tot;
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  // mark visited
+  localStorage.setItem(LS+'vis-'+si,'1');
+  localStorage.setItem(LS+'pos',g);
+  // scroll to top
+  document.querySelector('.slide-area').scrollTop=0;
 }
 
-function saveCheck(cb) {
-  try {
-    const checks = JSON.parse(localStorage.getItem('win-checks')||'{}')
-    checks[cb.parentElement.textContent.trim()] = cb.checked
-    localStorage.setItem('win-checks', JSON.stringify(checks))
-  } catch(e) {}
+function nav(d){
+  const g=globalIdx(si,gi)+d;
+  if(g<0||g>=totalSlides()) return;
+  const pos=fromGlobal(g);
+  si=pos.si; gi=pos.gi;
+  render();
+}
+function jumpSec(i){si=i;gi=0;render();}
+
+function copyCode(btn){
+  const code=btn.closest('.code-wrapper').querySelector('pre code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='복사됨!';
+    btn.style.color='#a6e3a1';
+    setTimeout(()=>{btn.textContent='복사';btn.style.color='';},1500);
+  });
 }
 
-function restoreChecks() {
-  try {
-    const checks = JSON.parse(localStorage.getItem('win-checks')||'{}')
-    document.querySelectorAll('.checklist input[type=checkbox]').forEach(cb => {
-      const key = cb.parentElement.textContent.trim()
-      if(checks[key]) cb.checked = true
-    })
-  } catch(e) {}
-}
-
-const nav2 = document.getElementById('sb-nav')
-SEC.forEach(s => {
-  const btn = document.createElement('button')
-  btn.className = 'sb-sec'
-  btn.onclick = () => jumpSec(s.id)
-  btn.innerHTML = `<span class="sb-dot" style="border-color:${s.color}"></span><span class="sb-num">${s.num}</span><span class="sb-name">${s.title}</span><span class="sb-cnt">${s.slides.length}</span>`
-  nav2.appendChild(btn)
-})
-
-document.addEventListener('keydown', e => {
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return
-  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nav(1)}
-  else if(e.key==='ArrowLeft'){e.preventDefault();nav(-1)}
-  else if(e.key>='1'&&e.key<='9'){e.preventDefault();jumpSec(parseInt(e.key))}
-  else if(e.key==='0'){e.preventDefault();jumpSec(10)}
-})
-
-try {
-  const saved = localStorage.getItem('win-slide-sync')
-  render(saved!==null ? Math.min(parseInt(saved)||0, ALL.length-1) : 0)
-} catch(e) { render(0) }
-updateSecProgress(cur)
-
-// PDF / Print: beforeprint shows all slides, afterprint restores
-window.addEventListener('beforeprint',function(){
-  document.getElementById('app').style.display='none';
-  const pm=document.getElementById('pdf-mode');
-  pm.style.display='block';
-  if(!pm.children.length){
-    ALL.forEach(sl=>{
-      const d=document.createElement('div');
-      d.className='pdf-slide slide-card';
-      d.innerHTML=sl.html;
-      pm.appendChild(d);
-    });
+// keyboard
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nav(1);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();nav(-1);}
+  else if(e.key>='1'&&e.key<='9'){
+    const i=parseInt(e.key)-1;
+    if(i<SEC.length){jumpSec(i);}
   }
 });
-window.addEventListener('afterprint',function(){
-  document.getElementById('app').style.display='flex';
-  const pm=document.getElementById('pdf-mode');
-  pm.style.display='none';
-  pm.innerHTML='';
-});
+
+// build sidebar
+(()=>{
+  const nav=document.getElementById('sb-nav');
+  SEC.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='sb-sec';
+    btn.innerHTML=`<span class="sb-dot" style="border-color:${s.color}"></span><span class="sb-num">${s.num}</span><span class="sb-name">${s.title}</span><span class="sb-cnt">${s.slides.length}</span>`;
+    btn.onclick=()=>jumpSec(i);
+    nav.appendChild(btn);
+  });
+})();
+
+// restore position
+(()=>{
+  const saved=parseInt(localStorage.getItem(LS+'pos')||'0');
+  const pos=fromGlobal(Math.min(saved,totalSlides()-1));
+  si=pos.si; gi=pos.gi;
+  render();
+})();
 </script>
-<div id="pdf-mode"></div>
 </body>
 </html>
