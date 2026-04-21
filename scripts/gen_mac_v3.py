@@ -1499,8 +1499,10 @@ document.getElementById('bth').textContent = (localStorage.getItem(KEY+'theme')|
 </body>
 </html>"""
 
+OUT2 = os.path.join(os.path.dirname(OUT), 'mac_v2.html')
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
-with open(OUT, 'w', encoding='utf-8') as f:
-    f.write(HTML)
-print(f"생성 완료: {os.path.abspath(OUT)}")
+for path in [OUT, OUT2]:
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(HTML)
+    print(f"생성 완료: {os.path.abspath(path)}")
 print(f"슬라이드 수: {len(SLIDES)}")
