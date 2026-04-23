@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - Frindle Tools</title>
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Frindle Tools — 회원가입">
+<meta property="og:description" content="미국 주식 시장 분석 서비스. 시장 체제 실시간 판단 · Smart Money 스크리닝 · AI 분석.">
+<meta property="og:url" content="https://edu.frindle.synology.me/register">
+<meta property="og:image" content="https://edu.frindle.synology.me/images/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.card{background:#12121a;border:1px solid #1e1e2e;border-radius:16px;padding:40px 36px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.logo{text-align:center;margin-bottom:32px}
+.logo-text{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.logo-text span{color:#6366f1}
+.logo-sub{font-size:12px;color:#64748b;margin-top:4px;letter-spacing:0.5px}
+h2{font-size:20px;font-weight:700;margin-bottom:6px;color:#f1f5f9}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:24px}
+.field{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:6px}
+label .req{color:#f87171;margin-left:2px}
+input,select{width:100%;background:#1a1a28;border:1px solid #2d2d44;border-radius:8px;padding:12px 14px;font-size:15px;color:#f1f5f9;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+input:focus,select:focus{border-color:#6366f1}
+input::placeholder{color:#4a5568}
+select option{background:#1a1a28}
+.pw-hint{font-size:12px;color:#64748b;margin-top:4px}
+.section-title{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px}
+.agree-block{background:#0f0f18;border:1px solid #1e1e2e;border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.agree-header{display:flex;align-items:center;gap:10px;cursor:pointer}
+.agree-header input[type=checkbox]{width:18px;height:18px;min-width:18px;cursor:pointer;accent-color:#6366f1;background:#1a1a28;border:1px solid #2d2d44}
+.agree-label{font-size:14px;color:#cbd5e1;flex:1}
+.agree-label a{color:#6366f1;text-decoration:none}
+.agree-label a:hover{text-decoration:underline}
+.toggle-btn{font-size:12px;color:#6366f1;cursor:pointer;white-space:nowrap;padding:2px 8px;border:1px solid #2d2d44;border-radius:4px;background:transparent}
+.agree-content{margin-top:12px;max-height:160px;overflow-y:auto;font-size:12px;line-height:1.7;color:#64748b;display:none;scrollbar-width:thin;scrollbar-color:#2d2d44 transparent}
+.agree-content.open{display:block}
+.agree-content h4{font-size:12px;font-weight:700;color:#94a3b8;margin:10px 0 4px}
+.agree-content p,.agree-content li{margin-bottom:4px}
+.agree-content ul{padding-left:16px}
+.btn{width:100%;background:#6366f1;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
+.btn:hover{background:#4f46e5}
+.btn:disabled{background:#2d2d44;cursor:not-allowed;color:#64748b}
+.msg{font-size:13px;padding:10px 14px;border-radius:6px;margin-top:12px;display:none}
+.msg.err{background:#2d1a1a;border:1px solid #7f1d1d;color:#fca5a5}
+.msg.ok{background:#1a2d1a;border:1px solid #14532d;color:#86efac}
+.divider{border-top:1px solid #1e1e2e;margin:20px 0}
+.links{text-align:center;font-size:13px;color:#64748b}
+.links a{color:#6366f1;text-decoration:none}
+.links a:hover{text-decoration:underline}
+.footer-info{margin-top:32px;padding-top:20px;border-top:1px solid #1e1e2e;font-size:11px;color:#475569;line-height:1.8;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-text"><span>Frindle</span> Tools</div>
+  </div>
+  <h2>회원가입</h2>
+  <p class="subtitle">서비스 이용을 위해 정보를 입력해 주세요.</p>
+
+  <form id="regForm">
+    <div class="section-title">기본 정보</div>
+
+    <div class="field">
+      <label>이름<span class="req">*</span></label>
+      <input type="text" id="name" placeholder="실명을 입력해 주세요" required>
+    </div>
+    <div class="field">
+      <label>이메일<span class="req">*</span></label>
+      <input type="email" id="email" placeholder="example@email.com" required autocomplete="email">
+    </div>
+    <div class="field">
+      <label>비밀번호<span class="req">*</span></label>
+      <input type="password" id="password" placeholder="8자 이상 입력" required autocomplete="new-password">
+      <div class="pw-hint">영문, 숫자 조합 8자 이상</div>
+    </div>
+    <div class="field">
+      <label>비밀번호 확인<span class="req">*</span></label>
+      <input type="password" id="password2" placeholder="비밀번호를 다시 입력해 주세요" required autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label>전화번호<span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="010-0000-0000" required>
+    </div>
+    <div class="field">
+      <label>유입경로<span class="req">*</span></label>
+      <select id="referral" required>
+        <option value="" disabled selected>어떻게 알게 되셨나요?</option>
+        <option value="SNS(인스타그램/페이스북)">SNS (인스타그램/페이스북)</option>
+        <option value="유튜브">유튜브</option>
+        <option value="지인 추천">지인 추천</option>
+        <option value="네이버/구글 검색">네이버/구글 검색</option>
+        <option value="온라인 광고">온라인 광고</option>
+        <option value="오프라인 광고/홍보물">오프라인 광고/홍보물</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+
+    <div class="section-title">약관 동의</div>
+
+    <div class="agree-block">
+      <div class="agree-header">
+        <input type="checkbox" id="agreeTerms" required>
+        <span class="agree-label">[필수] 이용약관 동의</span>
+        <span class="toggle-btn" onclick="toggle('termsContent')">전문 보기</span>
+      </div>
+      <div class="agree-content" id="termsContent">
+        <h4>제1조 [목적]</h4>
+        <p>이 약관은 "프린들 연구소"가 온라인으로 제공하는 이러닝의 이용과 관련하여 "프린들 연구소"와 "이용자"의 권리·의무 등에 관한 사항을 규정함을 목적으로 합니다.</p>
+        <h4>제2조 [정의]</h4>
+        <p>"이용자"라 함은 "프린들 연구소"의 웹사이트에 접속하여 이러닝 이용계약을 체결하여 "이러닝서비스"를 이용하는 "회원" 및 "비회원"을 말합니다.</p>
+        <h4>제6조 [회원가입]</h4>
+        <p>회원가입은 "이용자"가 약관 동의 및 회원가입 신청을 하고, "프린들 연구소"가 "이용자"의 위 신청을 승낙함으로써 이루어집니다. "이용자"는 회원가입 신청 시 이름, 이메일, 전화번호 등의 사항을 기재해야 합니다.</p>
+        <h4>제9조 [회원의 아이디와 비밀번호 관리]</h4>
+        <p>"회원"의 아이디와 비밀번호에 관한 관리책임은 "회원"에게 있으며, 이를 제3자가 이용하도록 해서는 안 됩니다.</p>
+        <h4>제10조 [회원 탈퇴와 자격 제한 및 상실]</h4>
+        <p>"회원"은 "프린들 연구소"에 언제든지 탈퇴를 요청할 수 있으며, "프린들 연구소"는 즉시 회원탈퇴를 처리합니다.</p>
+        <h4>제19조 [이러닝서비스의 제공과 중지·중단]</h4>
+        <p>이러닝서비스는 연중무휴, 1일 24시간 제공함을 원칙으로 합니다. "프린들 연구소"는 컴퓨터 등 정보통신설비의 보수·점검·교체·고장·통신두절 또는 운영상 상당한 이유가 있는 경우 서비스의 제공을 일시적으로 중지할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="agree-block">
+      <div class="agree-header">
+        <input type="checkbox" id="agreePrivacy" required>
+        <span class="agree-label">[필수] 개인정보처리방침 동의</span>
+        <span class="toggle-btn" onclick="toggle('privacyContent')">전문 보기</span>
+      </div>
+      <div class="agree-content" id="privacyContent">
+        <h4>수집하는 개인정보의 항목 및 수집방법</h4>
+        <p><strong>필수항목:</strong> 이름, 이메일, 전화번호</p>
+        <p><strong>수집방법:</strong> 홈페이지, 서면양식, 전화, 이메일</p>
+        <h4>개인정보의 수집 및 이용목적</h4>
+        <ul>
+          <li>서비스 제공에 관한 계약 이행 및 서비스 제공에 따른 요금정산</li>
+          <li>회원제 서비스 이용에 따른 본인확인, 개인 식별</li>
+          <li>고지사항 전달, 불만처리 등 민원처리</li>
+          <li>이벤트 등 광고성 정보 전달</li>
+        </ul>
+        <h4>개인정보의 보유 및 이용기간</h4>
+        <p>회원탈퇴 시까지 보유합니다. 단, 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 보유합니다.</p>
+        <h4>개인정보관리책임자</h4>
+        <p>책임자: 박지훈 | 이메일: frindlefilm@naver.com | 전화: 010-8465-2019</p>
+        <p>귀하는 위의 개인정보 수집·이용에 동의하지 않을 수 있으며, 미동의 시 서비스 이용이 제한될 수 있습니다.</p>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">회원가입</button>
+    <div class="msg" id="msg"></div>
+  </form>
+
+  <div class="divider"></div>
+  <div class="links">이미 회원이신가요? <a href="/login">로그인</a></div>
+
+  <div class="footer-info">
+    고객센터 010-5350-8798 &nbsp;|&nbsp; 운영시간 오전9시~오후5시(주말, 공휴일 제외)<br>
+    주소 서울 서초구 매헌로 16 &nbsp;|&nbsp; 사업자등록번호 501-87-00877<br>
+    업체명 (주) 토러스 &nbsp;|&nbsp; 대표이사 박지훈<br>
+    개인정보관리 책임자 frindlefilm@naver.com
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+document.getElementById('regForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('msg');
+
+  const pw = document.getElementById('password').value;
+  const pw2 = document.getElementById('password2').value;
+
+  if (pw !== pw2) {
+    msg.className = 'msg err';
+    msg.textContent = '비밀번호가 일치하지 않습니다.';
+    msg.style.display = 'block';
+    return;
+  }
+  if (pw.length < 8) {
+    msg.className = 'msg err';
+    msg.textContent = '비밀번호는 8자 이상이어야 합니다.';
+    msg.style.display = 'block';
+    return;
+  }
+  if (!document.getElementById('agreeTerms').checked) {
+    msg.className = 'msg err';
+    msg.textContent = '이용약관에 동의해 주세요.';
+    msg.style.display = 'block';
+    return;
+  }
+  if (!document.getElementById('agreePrivacy').checked) {
+    msg.className = 'msg err';
+    msg.textContent = '개인정보처리방침에 동의해 주세요.';
+    msg.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '처리 중...';
+  msg.style.display = 'none';
+
+  try {
+    const res = await fetch('/auth/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        referral: document.getElementById('referral').value,
+        password: pw
+      })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.className = 'msg ok';
+      msg.textContent = '회원가입이 완료되었습니다. 로그인 페이지로 이동합니다...';
+      msg.style.display = 'block';
+      setTimeout(() => { window.location.href = '/login'; }, 1500);
+    } else {
+      msg.className = 'msg err';
+      msg.textContent = data.detail || '회원가입에 실패했습니다.';
+      msg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '회원가입';
+    }
+  } catch {
+    msg.className = 'msg err';
+    msg.textContent = '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '회원가입';
+  }
+});
+</script>
+</body>
+</html>

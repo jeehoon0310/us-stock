@@ -11,6 +11,11 @@ import { TopNav } from "@/components/TopNav";
 export const metadata: Metadata = {
   title: "Market Intelligence Terminal",
   description: "US Stock Market Intelligence · Regime · Smart Money · AI",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
