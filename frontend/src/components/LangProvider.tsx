@@ -18,6 +18,7 @@ const LangContext = createContext<LangContextValue>({
 });
 
 const STORAGE_KEY = "lang";
+const LANG_VERSION = "2"; // 기본값이 ko→en으로 변경된 버전
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
@@ -25,8 +26,14 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
-      if (saved === "ko" || saved === "en") setLangState(saved);
+      const version = window.localStorage.getItem("langVersion");
+      if (version === LANG_VERSION) {
+        // 이 버전 이후 명시적으로 저장한 값만 복원
+        const saved = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
+        if (saved === "ko" || saved === "en") setLangState(saved);
+      }
+      // 버전 불일치(구버전 "ko" 저장) → 기본값 "en" 유지, 버전 갱신
+      window.localStorage.setItem("langVersion", LANG_VERSION);
     } catch {}
     setMounted(true);
   }, []);
