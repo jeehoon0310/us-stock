@@ -70,8 +70,18 @@ class EnhancedSmartMoneyScreener:
         # 1. volume_df (선택 — 없으면 개별 계산)
         vol_path = base / "us_volume_analysis.csv"
         if vol_path.exists():
-            self.volume_df = pd.read_csv(vol_path)
-            logger.info("volume_df 로드: %d행 (%s)", len(self.volume_df), vol_path)
+            _vol_df = pd.read_csv(vol_path)
+            # sd_score 전체가 단일값(기본값 50)이면 실계산 폴백
+            if "sd_score" in _vol_df.columns and _vol_df["sd_score"].nunique() <= 1:
+                logger.info(
+                    "volume_df sd_score 단일값(%.0f) 감지 — 개별 실계산 경로로 폴백 (%s)",
+                    _vol_df["sd_score"].iloc[0] if len(_vol_df) > 0 else 50,
+                    vol_path,
+                )
+                self.volume_df = None
+            else:
+                self.volume_df = _vol_df
+                logger.info("volume_df 로드: %d행 (%s)", len(self.volume_df), vol_path)
         else:
             logger.info("volume_df 파일 없음: %s — 개별 계산으로 폴백", vol_path)
             self.volume_df = None
@@ -117,9 +127,18 @@ class EnhancedSmartMoneyScreener:
         return self._info_cache[ticker]
 
     def _prefetch_ticker_data(self, ticker: str) -> None:
-        """ThreadPoolExecutor에서 호출 — yfinance info 사전 로드."""
+        """ThreadPoolExecutor에서 호출 — yfinance info + history 사전 로드.
+
+        "1y" 데이터를 미리 수집해 캐시에 적재한다.
+        이후 calculate_composite_score 내에서 "6mo"/"3mo"/"1mo" 요청은
+        USStockDataFetcher 캐시 슬라이싱으로 처리되어 네트워크 호출이 발생하지 않는다.
+        """
         try:
             self._get_info_cached(ticker)
+        except Exception:
+            pass
+        try:
+            self.fetcher.get_history(ticker, period="1y")
         except Exception:
             pass
 

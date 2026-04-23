@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.overnight-news</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/caffeinate</string>
+        <string>-i</string>
+        <string>/Users/frindle/workspace/synology/us-stock/.venv/bin/python3</string>
+        <string>/Users/frindle/workspace/synology/us-stock/scripts/overnight_news_monitor.py</string>
+    </array>
+
+    <!-- 15분마다 실행 (900초). 스크립트 내부에서 KST 21:30~08:00 활성 시간 체크 -->
+    <key>StartInterval</key>
+    <integer>900</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/frindle/workspace/synology/us-stock/logs/overnight_news.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/frindle/workspace/synology/us-stock/logs/overnight_news.err.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/frindle</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+</dict>
+</plist>

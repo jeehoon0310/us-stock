@@ -15,12 +15,13 @@ export function AdminButton() {
 
   return (
     <>
-      <button
+      <Link
+        href="/admin"
         className="p-2 hover:bg-surface-container-high rounded-lg transition-colors"
-        title="스케줄"
+        title="스케줄 관리"
       >
         <span className="material-symbols-outlined text-on-surface">schedule</span>
-      </button>
+      </Link>
       <Link
         href="/admin"
         className="p-2 hover:bg-surface-container-high rounded-lg transition-colors"

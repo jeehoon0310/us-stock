@@ -103,9 +103,9 @@ export default function TopPicksPage() {
           status={status !== t("common.loading") ? status : undefined}
         />
       </div>
-    <section className="bg-surface-container-low rounded-xl overflow-hidden">
+    <section className="bg-surface-container-low rounded-xl">
       {/* Header */}
-      <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50">
+      <div className="px-8 py-6 border-b border-outline-variant/10 bg-surface-container-high/50 rounded-t-xl">
         <div>
           <h3 className="text-xl font-bold tracking-tight flex items-center gap-2">{t("top.heroTitle")} <HelpBtn topic="smart_money_screening" /></h3>
           <p className="text-xs text-on-surface-variant font-medium">
@@ -125,8 +125,8 @@ export default function TopPicksPage() {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="table-x-scroll rounded-b-xl">
+          <table className="min-w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-high/20">
                 {([
@@ -180,13 +180,28 @@ export default function TopPicksPage() {
                         <Link
                           href={`/stock/${s.ticker}?date=${date}`}
                           className="text-sm font-black tracking-tight group-hover:text-primary transition-colors hover:underline"
-                          title={`${s.ticker} 상세 분석`}
+                          title={`${s.ticker} 상세 분석 · ⌘클릭 → TradingView`}
+                          onClick={(e) => {
+                            if (e.metaKey || e.ctrlKey) {
+                              e.preventDefault();
+                              window.open(
+                                `https://www.tradingview.com/chart/?symbol=${s.ticker}`,
+                                "_blank",
+                                "noopener,noreferrer"
+                              );
+                            }
+                          }}
                         >
                           {s.ticker}
                         </Link>
-                        <span className="text-[10px] text-on-surface-variant">
+                        <a
+                          href={`https://www.tradingview.com/chart/?symbol=${s.ticker}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-on-surface-variant hover:text-primary hover:underline transition-colors"
+                        >
                           {s.company_name ?? ""}
-                        </span>
+                        </a>
                       </div>
                     </td>
 
@@ -245,14 +260,14 @@ export default function TopPicksPage() {
                           {mapAction(lang, action)}
                         </span>
                         <a
-                          href={`https://kr.tradingview.com/chart/?symbol=${s.ticker}`}
+                          href={`https://www.tradingview.com/chart/?symbol=${s.ticker}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors"
-                          title="TradingView 차트"
+                          className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors opacity-40 hover:opacity-100"
+                          title="TradingView 차트 열기 (티커에서 ⌘클릭도 가능)"
                         >
                           <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-base">
-                            open_in_new
+                            show_chart
                           </span>
                         </a>
                       </div>

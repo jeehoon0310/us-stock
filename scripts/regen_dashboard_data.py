@@ -214,11 +214,241 @@ def _load_sp500_names() -> dict:
     return lookup
 
 
+_SCHEDULE_DEFS = [
+    {
+        "id": "main_pipeline",
+        "name": "메인 분석 파이프라인",
+        "name_en": "Main Analysis Pipeline",
+        "cron_kst": "0 7 * * 1-5",
+        "cron_desc": "평일 매일 07:00 KST",
+        "category": "daily",
+        "enabled": True,
+    },
+    {
+        "id": "sp500_update",
+        "name": "S&P500 구성종목 갱신",
+        "name_en": "S&P 500 List Update",
+        "cron_kst": "0 8 1 * *",
+        "cron_desc": "매월 1일 08:00 KST",
+        "category": "monthly",
+        "enabled": False,
+    },
+    {
+        "id": "holdings_13f",
+        "name": "13F 홀딩스 업데이트",
+        "name_en": "13F Holdings Update",
+        "cron_kst": "0 8 1 2,5,8,11 *",
+        "cron_desc": "분기별 1일 08:00 KST (2/5/8/11월)",
+        "category": "quarterly",
+        "enabled": False,
+    },
+    {
+        "id": "ml_retrain",
+        "name": "ML 모델 재훈련",
+        "name_en": "ML Model Retrain",
+        "cron_kst": "0 8 * * 0",
+        "cron_desc": "매주 일요일 08:00 KST",
+        "category": "weekly",
+        "enabled": False,
+    },
+    {
+        "id": "backtest_verify",
+        "name": "성능 검증 (백테스트)",
+        "name_en": "Backtest Verification",
+        "cron_kst": "0 18 * * 5",
+        "cron_desc": "매주 금요일 18:00 KST",
+        "category": "weekly",
+        "enabled": False,
+    },
+    {
+        "id": "research_agent",
+        "name": "리서치 에이전트",
+        "name_en": "Research Agent",
+        "cron_kst": "0 9 * * 1",
+        "cron_desc": "매주 월요일 09:00 KST",
+        "category": "weekly",
+        "enabled": False,
+    },
+    {
+        "id": "system_health",
+        "name": "시스템 상태 점검",
+        "name_en": "System Health Check",
+        "cron_kst": "30 9 * * 1",
+        "cron_desc": "매주 월요일 09:30 KST",
+        "category": "weekly",
+        "enabled": False,
+    },
+]
+
+
+def _next_cron_kst(cron_expr: str) -> str | None:
+    """Calculate next run time for a cron expression (KST, no external deps)."""
+    from datetime import datetime, timedelta, timezone
+
+    KST = timezone(timedelta(hours=9))
+    now = datetime.now(KST)
+
+    parts = cron_expr.strip().split()
+    if len(parts) != 5:
+        return None
+
+    c_min, c_hour, c_dom, c_month, c_dow = parts
+
+    def _matches(field: str, value: int) -> bool:
+        if field == "*":
+            return True
+        for part in field.split(","):
+            if "-" in part:
+                lo, hi = map(int, part.split("-"))
+                if lo <= value <= hi:
+                    return True
+            elif int(part) == value:
+                return True
+        return False
+
+    t = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
+    limit = t + timedelta(days=400)
+
+    while t < limit:
+        # Python weekday Mon=0..Sun=6 → cron DOW Sun=0, Mon=1..Sat=6
+        cron_dow = (t.weekday() + 1) % 7
+
+        month_ok = _matches(c_month, t.month)
+        dom_ok = _matches(c_dom, t.day)
+        dow_ok = _matches(c_dow, cron_dow)
+
+        # Unix cron: both dom and dow restricted → either match satisfies
+        if c_dom != "*" and c_dow != "*":
+            day_ok = dom_ok or dow_ok
+        else:
+            day_ok = dom_ok and dow_ok
+
+        if month_ok and day_ok and _matches(c_hour, t.hour) and _matches(c_min, t.minute):
+            return t.strftime("%Y-%m-%dT%H:%M:00+09:00")
+
+        if not month_ok or not day_ok:
+            t = (t + timedelta(days=1)).replace(hour=0, minute=0)
+        elif not _matches(c_hour, t.hour):
+            next_h = next((h for h in range(t.hour + 1, 24) if _matches(c_hour, h)), None)
+            if next_h is not None:
+                t = t.replace(hour=next_h, minute=0)
+            else:
+                t = (t + timedelta(days=1)).replace(hour=0, minute=0)
+        else:
+            t += timedelta(minutes=1)
+
+    return None
+
+
+def _parse_daily_logs(logs_dir: Path, days: int = 14) -> dict[str, dict]:
+    """Parse logs/daily_run_YYYYMMDD.log files → {date: {status, started_at, duration_sec}}."""
+    import re
+
+    results: dict[str, dict] = {}
+    ts_re = re.compile(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})")
+    fmt = "%Y-%m-%d %H:%M:%S"
+
+    for log_file in sorted(logs_dir.glob("daily_run_*.log"))[-days:]:
+        m = re.match(r"daily_run_(\d{4})(\d{2})(\d{2})\.log", log_file.name)
+        if not m:
+            continue
+        date_str = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+
+        try:
+            content = log_file.read_text(errors="replace")
+        except OSError:
+            continue
+
+        lines = content.strip().splitlines()
+        if not lines:
+            continue
+
+        first_ts = last_ts = None
+        for line in lines:
+            m2 = ts_re.search(line)
+            if m2:
+                if first_ts is None:
+                    first_ts = m2.group(1)
+                last_ts = m2.group(1)
+
+        # Check last 5 lines for completion — takes priority over intermediate ERRORs
+        last5 = "\n".join(lines[-5:])
+        if any(kw in last5 for kw in ("완료", "Phase 4", "complete")):
+            status = "success"
+        elif "Traceback (most recent" in content or "SystemExit" in content[-500:]:
+            status = "failure"
+        else:
+            status = "unknown"
+
+        duration_sec = None
+        if first_ts and last_ts:
+            try:
+                from datetime import datetime as _dt
+                dt1 = _dt.strptime(first_ts, fmt)
+                dt2 = _dt.strptime(last_ts, fmt)
+                duration_sec = max(0, int((dt2 - dt1).total_seconds()))
+            except Exception:
+                pass
+
+        results[date_str] = {
+            "status": status,
+            "started_at": first_ts,
+            "duration_sec": duration_sec,
+        }
+
+    return results
+
+
+def update_schedules_in_db() -> None:
+    """Parse logs and upsert all schedule definitions + run history into data_schedules."""
+    try:
+        from db import data_store as _ds
+    except ImportError:
+        logger.warning("data_store 임포트 실패 — schedules 업데이트 건너뜀")
+        return
+
+    logs_dir = ROOT / "logs"
+    log_history = _parse_daily_logs(logs_dir, days=14) if logs_dir.exists() else {}
+
+    # Build 14-day history list for main_pipeline
+    from datetime import date, timedelta
+    today = date.today()
+    history_14d = []
+    for i in range(13, -1, -1):
+        d = (today - timedelta(days=i)).isoformat()
+        entry = log_history.get(d)
+        history_14d.append({"date": d, "status": entry["status"] if entry else "no_run"})
+
+    latest = max(log_history.items(), key=lambda x: x[0]) if log_history else None
+
+    try:
+        conn = _ds.get_db()
+        for sdef in _SCHEDULE_DEFS:
+            row = dict(sdef)
+            row["next_run_at"] = _next_cron_kst(sdef["cron_kst"])
+
+            if sdef["id"] == "main_pipeline" and latest:
+                info = latest[1]
+                row["last_run_at"] = info.get("started_at")
+                row["last_status"] = info.get("status")
+                row["last_duration_sec"] = info.get("duration_sec")
+                row["run_count"] = sum(1 for v in log_history.values() if v["status"] == "success")
+                row["history"] = history_14d
+
+            _ds.upsert_schedule(conn, row)
+
+        conn.close()
+        logger.info("schedules 업데이트 완료 (%d개)", len(_SCHEDULE_DEFS))
+    except Exception as e:
+        logger.warning("schedules DB 업데이트 실패: %s", e)
+
+
 def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
     save_market_gate_json()
     save_gbm_json()
     enrich_top10_with_company_names()
+    update_schedules_in_db()
     print("\n✓ Dashboard JSONs regenerated.")
 
 

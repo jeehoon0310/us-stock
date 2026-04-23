@@ -110,6 +110,39 @@ CREATE TABLE IF NOT EXISTS data_graph (
   data_json    TEXT NOT NULL,
   updated_at   TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS data_schedules (
+  id                TEXT PRIMARY KEY,
+  name              TEXT NOT NULL,
+  name_en           TEXT DEFAULT '',
+  cron_kst          TEXT NOT NULL,
+  cron_desc         TEXT DEFAULT '',
+  category          TEXT DEFAULT 'daily',
+  enabled           INTEGER DEFAULT 1,
+  last_run_at       TEXT,
+  last_status       TEXT,
+  last_duration_sec INTEGER,
+  next_run_at       TEXT,
+  run_count         INTEGER DEFAULT 0,
+  history_json      TEXT DEFAULT '[]',
+  updated_at        TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS data_mpva_posts (
+  ntt_no      TEXT PRIMARY KEY,
+  title       TEXT NOT NULL,
+  author      TEXT,
+  department  TEXT,
+  contact     TEXT,
+  content     TEXT,
+  date        TEXT,
+  views       INTEGER,
+  url         TEXT,
+  files_json  TEXT DEFAULT '[]',
+  fetched_at  TEXT,
+  created_at  TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_mpva_date ON data_mpva_posts(date DESC);
 """
 
 
@@ -310,6 +343,57 @@ def upsert_graph(conn: sqlite3.Connection, graph_data: dict) -> None:
         (
             graph_data.get("generated_at", ""),
             json.dumps(graph_data, ensure_ascii=False),
+        ),
+    )
+    conn.commit()
+
+
+def upsert_mpva_post(conn: sqlite3.Connection, post: dict) -> None:
+    """Insert or replace a single MPVA board post."""
+    conn.execute(
+        """INSERT OR REPLACE INTO data_mpva_posts
+           (ntt_no, title, author, department, contact, content,
+            date, views, url, files_json, fetched_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            post["ntt_no"],
+            post["title"],
+            post.get("author", ""),
+            post.get("department", ""),
+            post.get("contact", ""),
+            post.get("content", ""),
+            post.get("date", ""),
+            post.get("views", 0),
+            post.get("url", ""),
+            json.dumps(post.get("files", []), ensure_ascii=False),
+            post.get("fetched_at", datetime.now().isoformat()),
+        ),
+    )
+    conn.commit()
+
+
+def upsert_schedule(conn: sqlite3.Connection, schedule: dict) -> None:
+    """Upsert a schedule definition + run status into data_schedules."""
+    conn.execute(
+        """INSERT OR REPLACE INTO data_schedules
+           (id, name, name_en, cron_kst, cron_desc, category, enabled,
+            last_run_at, last_status, last_duration_sec, next_run_at,
+            run_count, history_json, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
+        (
+            schedule["id"],
+            schedule["name"],
+            schedule.get("name_en", ""),
+            schedule["cron_kst"],
+            schedule.get("cron_desc", ""),
+            schedule.get("category", "daily"),
+            1 if schedule.get("enabled", True) else 0,
+            schedule.get("last_run_at"),
+            schedule.get("last_status"),
+            schedule.get("last_duration_sec"),
+            schedule.get("next_run_at"),
+            schedule.get("run_count", 0),
+            json.dumps(schedule.get("history", []), ensure_ascii=False),
         ),
     )
     conn.commit()

@@ -334,7 +334,7 @@ export function DashboardClient() {
                           {stock.composite_score ?? 0}
                         </p>
                         <a
-                          href={`https://kr.tradingview.com/chart/?symbol=${stock.ticker}`}
+                          href={`https://www.tradingview.com/chart/?symbol=${stock.ticker}`}
                           target="_blank"
                           rel="noopener"
                           className="inline-flex items-center justify-center w-7 h-7 rounded-lg hover:bg-primary/10 transition-colors"

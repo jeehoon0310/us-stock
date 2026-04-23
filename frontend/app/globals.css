@@ -160,6 +160,26 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* 테이블 가로 스크롤바 — macOS overlay 스크롤바 항상 표시 */
+.table-x-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.table-x-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.table-x-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-x-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+}
+.table-x-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
 /* ─── Glass panel ───────────────────────────────────────────────────── */
 .glass-panel {
   backdrop-filter: blur(20px);
