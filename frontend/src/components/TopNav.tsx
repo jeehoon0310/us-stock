@@ -2,13 +2,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useT } from "@/lib/i18n";
+import { useEffect, useState } from "react";
 
 export function TopNav() {
   const pathname = usePathname();
   const t = useT();
   const isBoard = pathname.startsWith("/board");
   const isDownload = pathname.startsWith("/download");
-  const isTools = !isBoard && !isDownload;
+  const isAdmin = pathname.startsWith("/admin");
+  const isTools = !isBoard && !isDownload && !isAdmin;
+
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    fetch("/auth/me", { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.is_admin) setAdmin(true); })
+      .catch(() => {});
+  }, []);
 
   const cls = (active: boolean) =>
     active
@@ -26,6 +36,11 @@ export function TopNav() {
       <Link href="/download" className={cls(isDownload)}>
         {t("top.download")}
       </Link>
+      {admin && (
+        <Link href="/admin" className={cls(isAdmin)}>
+          ADMIN
+        </Link>
+      )}
     </nav>
   );
 }

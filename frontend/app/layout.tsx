@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangProvider } from "@/components/LangProvider";
 import { LangToggle } from "@/components/LangToggle";
 import { TopNav } from "@/components/TopNav";
+import { AdminButton } from "@/components/AdminButton";
 
 export const metadata: Metadata = {
   title: "Market Intelligence Terminal",
@@ -51,9 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex items-center gap-2">
                   <LangToggle />
                   <ThemeToggle />
-                  <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
-                    <span className="material-symbols-outlined text-on-surface">sensors</span>
-                  </button>
+                  <AdminButton />
                   <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
                     <span className="material-symbols-outlined text-on-surface">schedule</span>
                   </button>
