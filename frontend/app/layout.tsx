@@ -8,6 +8,7 @@ import { LangProvider } from "@/components/LangProvider";
 import { LangToggle } from "@/components/LangToggle";
 import { TopNav } from "@/components/TopNav";
 import { AdminButton } from "@/components/AdminButton";
+import { UserButton } from "@/components/UserButton";
 
 export const metadata: Metadata = {
   title: "Market Intelligence Terminal",
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const syncedAt = "Live Feed Active";
 
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -53,9 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <LangToggle />
                   <ThemeToggle />
                   <AdminButton />
-                  <button className="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
-                    <span className="material-symbols-outlined text-on-surface">schedule</span>
-                  </button>
+                  <UserButton />
                 </div>
               </div>
             </header>

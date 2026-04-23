@@ -14,12 +14,20 @@ export function AdminButton() {
   if (!isAdmin) return null;
 
   return (
-    <Link
-      href="/admin"
-      className="p-2 hover:bg-surface-container-high rounded-lg transition-colors"
-      title="관리자 패널"
-    >
-      <span className="material-symbols-outlined text-on-surface">manage_accounts</span>
-    </Link>
+    <>
+      <button
+        className="p-2 hover:bg-surface-container-high rounded-lg transition-colors"
+        title="스케줄"
+      >
+        <span className="material-symbols-outlined text-on-surface">schedule</span>
+      </button>
+      <Link
+        href="/admin"
+        className="p-2 hover:bg-surface-container-high rounded-lg transition-colors"
+        title="관리자 패널"
+      >
+        <span className="material-symbols-outlined text-on-surface">manage_accounts</span>
+      </Link>
+    </>
   );
 }

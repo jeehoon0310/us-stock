@@ -20,7 +20,7 @@ const LangContext = createContext<LangContextValue>({
 const STORAGE_KEY = "lang";
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("ko");
+  const [lang, setLangState] = useState<Lang>("en");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

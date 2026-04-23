@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request, Response, UploadFile, File
 from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
-import sqlite3, hashlib, secrets, os, shutil, urllib.parse
+import sqlite3, hashlib, secrets, os, shutil, urllib.parse, re
 from datetime import datetime, timedelta
 from typing import Optional
 import httpx
@@ -9,8 +9,15 @@ import httpx
 app = FastAPI(docs_url=None, redoc_url=None)
 
 DB_PATH = "/data/users.db"
-FILES_DIR = "/data/files"
+FILES_DIR = os.getenv("DOWNLOADS_DIR", "/downloads")
 os.makedirs(FILES_DIR, exist_ok=True)
+
+
+def sanitize_filename(name: str) -> str:
+    name = os.path.basename(name)
+    name = re.sub(r'[^\w.\-]', '_', name)
+    name = name.lstrip('._') or "file"
+    return name
 
 ALLOWED_EXTENSIONS = {
     ".pdf", ".zip", ".xlsx", ".xls", ".pptx", ".ppt",
@@ -313,11 +320,31 @@ async def admin_delete_user(user_id: int, request: Request):
 async def admin_files(request: Request):
     await require_admin(request)
     conn = get_db()
-    files = conn.execute(
-        "SELECT filename, original_name, size, uploaded_at FROM files ORDER BY uploaded_at DESC"
-    ).fetchall()
+    db_files = {row["filename"]: dict(row) for row in conn.execute(
+        "SELECT filename, original_name, size, uploaded_at FROM files"
+    ).fetchall()}
     conn.close()
-    return {"files": [dict(f) for f in files]}
+
+    result = []
+    if os.path.exists(FILES_DIR):
+        for fname in sorted(os.listdir(FILES_DIR)):
+            fpath = os.path.join(FILES_DIR, fname)
+            if not os.path.isfile(fpath):
+                continue
+            if not re.search(r'\.(pdf|zip|xlsx|xls|pptx|ppt|docx|doc|mp4|mov|png|jpg|jpeg)$', fname, re.I):
+                continue
+            st = os.stat(fpath)
+            if fname in db_files:
+                result.append(db_files[fname])
+            else:
+                result.append({
+                    "filename": fname,
+                    "original_name": fname,
+                    "size": st.st_size,
+                    "uploaded_at": datetime.fromtimestamp(st.st_mtime).strftime('%Y-%m-%d %H:%M:%S'),
+                })
+    result.sort(key=lambda x: x["uploaded_at"], reverse=True)
+    return {"files": result}
 
 
 @app.post("/admin/api/upload")
@@ -327,7 +354,8 @@ async def admin_upload(request: Request, file: UploadFile = File(...)):
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail=f"허용되지 않는 파일 형식입니다. ({', '.join(ALLOWED_EXTENSIONS)})")
 
-    safe_name = secrets.token_hex(8) + ext
+    safe_name = sanitize_filename(file.filename or ("upload" + ext))
+    os.makedirs(FILES_DIR, exist_ok=True)
     dest = os.path.join(FILES_DIR, safe_name)
 
     content = await file.read()
@@ -338,17 +366,12 @@ async def admin_upload(request: Request, file: UploadFile = File(...)):
         f.write(content)
 
     conn = get_db()
-    try:
-        conn.execute(
-            "INSERT INTO files (filename, original_name, size) VALUES (?,?,?)",
-            (safe_name, file.filename, len(content))
-        )
-        conn.commit()
-    except Exception:
-        os.remove(dest)
-        raise HTTPException(status_code=500, detail="파일 저장에 실패했습니다.")
-    finally:
-        conn.close()
+    conn.execute(
+        "INSERT OR REPLACE INTO files (filename, original_name, size) VALUES (?,?,?)",
+        (safe_name, file.filename, len(content))
+    )
+    conn.commit()
+    conn.close()
 
     return {"success": True, "filename": safe_name, "original_name": file.filename}
 
@@ -375,17 +398,16 @@ async def download_file(filename: str, request: Request):
         raise HTTPException(status_code=401)
     if "/" in filename or ".." in filename:
         raise HTTPException(status_code=400)
-    conn = get_db()
-    file_row = conn.execute("SELECT * FROM files WHERE filename=?", (filename,)).fetchone()
-    conn.close()
-    if not file_row:
-        raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
     dest = os.path.join(FILES_DIR, filename)
     if not os.path.exists(dest):
-        raise HTTPException(status_code=404, detail="파일이 존재하지 않습니다.")
+        raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
+    conn = get_db()
+    file_row = conn.execute("SELECT original_name FROM files WHERE filename=?", (filename,)).fetchone()
+    conn.close()
+    display_name = file_row["original_name"] if file_row else filename
     return FileResponse(
         path=dest,
-        filename=file_row["original_name"],
+        filename=display_name,
         media_type="application/octet-stream"
     )
 
@@ -579,9 +601,13 @@ async def google_callback(request: Request, response: Response,
             conn.commit()
 
     if not user:
-        # 기가입 회원만 Google OAuth 허용 — 미가입자 차단
-        conn.close()
-        return RedirectResponse(url="/login?error=google_not_registered")
+        # Google 계정 자동 가입 허용
+        conn.execute(
+            "INSERT INTO users (name, email, phone, referral, password_hash, google_sub, is_active) VALUES (?,?,?,?,NULL,?,1)",
+            (name, email, "", "Google 로그인", google_sub)
+        )
+        conn.commit()
+        user = conn.execute("SELECT * FROM users WHERE google_sub=?", (google_sub,)).fetchone()
 
     if not user["is_active"]:
         conn.close()

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파일 관리 - Frindle Admin</title>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;display:flex}
+
+.sidebar{width:220px;min-height:100vh;background:#12121a;border-right:1px solid #1e1e2e;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid #1e1e2e}
+.logo-text{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.logo-text span{color:#6366f1}
+.logo-sub{font-size:11px;color:#64748b;margin-top:3px;letter-spacing:0.5px}
+.sidebar-nav{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:14px;color:#94a3b8;text-decoration:none;transition:background .15s,color .15s}
+.nav-item:hover{background:#1e1e2e;color:#f1f5f9}
+.nav-item.active{background:#1e1e2e;color:#6366f1;font-weight:600}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.nav-divider{border-top:1px solid #1e1e2e;margin:8px 0}
+
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.header{height:60px;background:#12121a;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50}
+.header-title{font-size:16px;font-weight:700;color:#f1f5f9}
+.logout-btn{background:transparent;border:1px solid #2d2d44;color:#94a3b8;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .15s}
+.logout-btn:hover{border-color:#6366f1;color:#6366f1}
+
+.content{padding:24px;flex:1}
+.section-title{font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:14px}
+
+/* Upload zone */
+.upload-zone{background:#12121a;border:2px dashed #2d2d44;border-radius:12px;padding:32px;text-align:center;margin-bottom:24px;transition:border-color .2s,background .2s;cursor:pointer;position:relative}
+.upload-zone.dragover{border-color:#6366f1;background:#1a1a2e}
+.upload-zone:hover{border-color:#4a5568}
+.upload-icon{font-size:36px;margin-bottom:10px}
+.upload-text{font-size:14px;color:#94a3b8;margin-bottom:8px}
+.upload-hint{font-size:12px;color:#64748b}
+.upload-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.btn-upload{display:inline-block;background:#6366f1;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;transition:background .2s}
+.btn-upload:hover{background:#4f46e5}
+.btn-upload:disabled{background:#2d2d44;cursor:not-allowed;color:#64748b}
+
+/* Progress */
+.progress-wrap{margin-top:14px;display:none}
+.progress-wrap.show{display:block}
+.progress-bar-bg{background:#1a1a28;border-radius:4px;height:6px;overflow:hidden}
+.progress-bar{height:100%;background:#6366f1;border-radius:4px;transition:width .2s}
+.progress-label{font-size:12px;color:#64748b;margin-top:6px}
+
+/* Table */
+.table-wrap{background:#12121a;border:1px solid #1e1e2e;border-radius:12px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th{background:#1a1a28;font-size:12px;font-weight:600;color:#64748b;padding:12px 16px;text-align:left;border-bottom:1px solid #1e1e2e;letter-spacing:0.3px;white-space:nowrap}
+td{padding:11px 16px;font-size:14px;color:#e2e8f0;border-bottom:1px solid #1a1a28;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1a1a28}
+.filename{font-family:monospace;font-size:13px;color:#c4b5fd;word-break:break-all}
+
+/* Action buttons */
+.action-wrap{display:flex;gap:6px}
+.btn-action{background:transparent;border:1px solid #2d2d44;color:#94a3b8;border-radius:6px;padding:5px 11px;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-action:hover{border-color:#6366f1;color:#6366f1}
+.btn-action.danger:hover{border-color:#7f1d1d;color:#fca5a5}
+.btn-action:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Loading / empty */
+.loading{display:flex;align-items:center;justify-content:center;padding:48px;color:#64748b;font-size:14px}
+.spinner{width:20px;height:20px;border:2px solid #2d2d44;border-top-color:#6366f1;border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Confirm modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center}
+.modal{background:#12121a;border:1px solid #2d2d44;border-radius:12px;padding:28px;width:340px;max-width:90vw}
+.modal-title{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:10px}
+.modal-body{font-size:14px;color:#94a3b8;margin-bottom:20px;line-height:1.5}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn-cancel{background:transparent;border:1px solid #2d2d44;color:#94a3b8;border-radius:8px;padding:8px 18px;font-size:13px;cursor:pointer}
+.btn-cancel:hover{border-color:#6366f1;color:#6366f1}
+.btn-delete{background:#7f1d1d;border:none;color:#fca5a5;border-radius:8px;padding:8px 18px;font-size:13px;cursor:pointer;font-weight:600}
+.btn-delete:hover{background:#991b1b}
+.btn-delete:disabled{opacity:0.5;cursor:not-allowed}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#1e1e2e;border:1px solid #2d2d44;border-radius:8px;padding:12px 16px;font-size:13px;color:#f1f5f9;min-width:200px;animation:slideIn .2s ease}
+.toast.success{border-color:#14532d;background:#1a2d1a;color:#86efac}
+.toast.error{border-color:#7f1d1d;background:#2d1a1a;color:#fca5a5}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+[x-cloak]{display:none!important}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+}
+</style>
+</head>
+<body x-data="fileManager()" x-init="init()">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text"><span>Frindle</span> Admin</div>
+    <div class="logo-sub">관리자 패널</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/admin" class="nav-item"><span class="icon">📊</span> 대시보드</a>
+    <a href="/admin/members" class="nav-item"><span class="icon">👥</span> 회원 관리</a>
+    <a href="/admin/files" class="nav-item active"><span class="icon">📁</span> 파일 관리</a>
+    <a href="/admin/notices" class="nav-item"><span class="icon">📢</span> 공지 관리</a>
+    <div class="nav-divider"></div>
+    <a href="/" class="nav-item"><span class="icon">🔙</span> 사이트로 돌아가기</a>
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <header class="header">
+    <span class="header-title">파일 관리</span>
+    <button class="logout-btn" @click="logout()">로그아웃</button>
+  </header>
+
+  <main class="content">
+    <!-- 업로드 영역 -->
+    <div class="section-title">파일 업로드</div>
+    <div
+      class="upload-zone"
+      :class="{ dragover: isDragging }"
+      @dragover.prevent="isDragging = true"
+      @dragleave="isDragging = false"
+      @drop.prevent="handleDrop($event)"
+      @click="$refs.fileInput.click()"
+    >
+      <input
+        type="file"
+        x-ref="fileInput"
+        style="display:none"
+        @change="handleFileSelect($event)"
+        multiple
+      >
+      <div class="upload-icon">📂</div>
+      <div class="upload-text">클릭하거나 파일을 여기로 드래그하세요</div>
+      <div class="upload-hint" x-show="!selectedFile">여러 파일을 동시에 업로드할 수 있습니다</div>
+      <div class="upload-hint" x-show="selectedFile" x-text="selectedFile"></div>
+
+      <div class="progress-wrap" :class="{ show: uploading }">
+        <div class="progress-bar-bg">
+          <div class="progress-bar" :style="`width:${uploadProgress}%`"></div>
+        </div>
+        <div class="progress-label" x-text="`업로드 중... ${uploadProgress}%`"></div>
+      </div>
+    </div>
+
+    <!-- 파일 목록 -->
+    <div class="section-title">업로드된 파일 <span style="font-size:13px;font-weight:400;color:#64748b" x-text="`(${files.length}개)`"></span></div>
+
+    <div class="loading" x-show="loading">
+      <div class="spinner"></div> 파일 목록을 불러오는 중...
+    </div>
+
+    <div class="table-wrap" x-show="!loading">
+      <table>
+        <thead>
+          <tr>
+            <th>파일명</th>
+            <th>크기</th>
+            <th>업로드일</th>
+            <th>액션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="file in files" :key="file.filename">
+            <tr>
+              <td><span class="filename" x-text="file.filename"></span></td>
+              <td x-text="formatSize(file.size)"></td>
+              <td x-text="file.uploaded_at"></td>
+              <td>
+                <div class="action-wrap">
+                  <button class="btn-action" @click="copyLink(file.filename)">링크 복사</button>
+                  <button class="btn-action danger" @click="confirmDelete(file)">삭제</button>
+                </div>
+              </td>
+            </tr>
+          </template>
+          <template x-if="!loading && files.length === 0">
+            <tr>
+              <td colspan="4" style="text-align:center;color:#64748b;padding:32px">
+                업로드된 파일이 없습니다.
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- 삭제 확인 모달 -->
+<div class="modal-backdrop" x-show="deleteTarget" x-cloak @click.self="deleteTarget = null">
+  <div class="modal">
+    <div class="modal-title">파일 삭제</div>
+    <div class="modal-body" x-text="`'${deleteTarget?.filename}' 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" @click="deleteTarget = null">취소</button>
+      <button class="btn-delete" :disabled="deleteLoading" @click="doDelete()" x-text="deleteLoading ? '삭제 중...' : '삭제'"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+function fileManager() {
+  return {
+    loading: true,
+    files: [],
+    isDragging: false,
+    uploading: false,
+    uploadProgress: 0,
+    selectedFile: '',
+    deleteTarget: null,
+    deleteLoading: false,
+
+    async init() {
+      await this.load();
+    },
+
+    async load() {
+      this.loading = true;
+      try {
+        const res = await fetch('/admin/api/files');
+        if (res.status === 401 || res.status === 403) { window.location.href = '/login'; return; }
+        if (!res.ok) throw new Error('서버 오류');
+        const data = await res.json();
+        this.files = data.files || [];
+      } catch (e) {
+        showToast(e.message || '파일 목록 로드에 실패했습니다.', 'error');
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    handleDrop(e) {
+      this.isDragging = false;
+      const files = e.dataTransfer.files;
+      if (files.length > 0) this.uploadFiles(files);
+    },
+
+    handleFileSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) this.uploadFiles(files);
+      e.target.value = '';
+    },
+
+    async uploadFiles(fileList) {
+      for (const file of fileList) {
+        await this.uploadSingle(file);
+      }
+    },
+
+    async uploadSingle(file) {
+      this.uploading = true;
+      this.uploadProgress = 0;
+      this.selectedFile = file.name;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/admin/api/upload');
+
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              this.uploadProgress = Math.round((e.loaded / e.total) * 100);
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status === 401 || xhr.status === 403) {
+              window.location.href = '/login';
+              reject(new Error('인증 오류'));
+              return;
+            }
+            if (xhr.status >= 200 && xhr.status < 300) resolve();
+            else reject(new Error('업로드 실패'));
+          };
+          xhr.onerror = () => reject(new Error('네트워크 오류'));
+          xhr.send(formData);
+        });
+
+        showToast(`'${file.name}' 업로드 완료`, 'success');
+        await this.load();
+      } catch (e) {
+        showToast(e.message || '업로드에 실패했습니다.', 'error');
+      } finally {
+        this.uploading = false;
+        this.uploadProgress = 0;
+        this.selectedFile = '';
+      }
+    },
+
+    copyLink(filename) {
+      const url = `${window.location.origin}/dl/${encodeURIComponent(filename)}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('링크가 클립보드에 복사되었습니다.', 'success');
+      }).catch(() => {
+        showToast('링크 복사에 실패했습니다.', 'error');
+      });
+    },
+
+    confirmDelete(file) {
+      this.deleteTarget = file;
+    },
+
+    async doDelete() {
+      if (!this.deleteTarget) return;
+      this.deleteLoading = true;
+      try {
+        const res = await fetch(`/admin/api/files/${encodeURIComponent(this.deleteTarget.filename)}`, { method: 'DELETE' });
+        if (res.status === 401 || res.status === 403) { window.location.href = '/login'; return; }
+        if (!res.ok) throw new Error('삭제 실패');
+        this.files = this.files.filter(f => f.filename !== this.deleteTarget.filename);
+        showToast(`'${this.deleteTarget.filename}' 파일을 삭제했습니다.`, 'success');
+        this.deleteTarget = null;
+      } catch (e) {
+        showToast(e.message || '삭제에 실패했습니다.', 'error');
+      } finally {
+        this.deleteLoading = false;
+      }
+    },
+
+    formatSize(bytes) {
+      if (bytes === null || bytes === undefined) return '-';
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+      return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    },
+
+    async logout() {
+      try { await fetch('/auth/logout', { method: 'POST' }); } catch {}
+      window.location.href = '/login';
+    }
+  };
+}
+
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+</script>
+</body>
+</html>
