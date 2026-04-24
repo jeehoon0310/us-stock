@@ -262,7 +262,7 @@
     closeBtn.addEventListener('click', function() { isOpen = false; chatBox.classList.remove('open'); });
 
     inputEl.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _send(); }
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); _send(); }
     });
 
     inputEl.addEventListener('input', function() {
