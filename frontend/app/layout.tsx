@@ -76,14 +76,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </LangProvider>
         </ThemeProvider>
 
-        {/* AI 채팅 위젯 — NEXT_PUBLIC_CHATBOT_SERVER_URL 설정 시 활성화 */}
-        {process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL && (
-          <Script
-            src={`${process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL}/widget.js`}
-            data-server-url={process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL}
-            strategy="afterInteractive"
-          />
-        )}
+        {/* AI 채팅 위젯 */}
+        <Script src="/chat-widget.js" strategy="afterInteractive" />
       </body>
     </html>
   );

@@ -20,6 +20,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -88,6 +89,33 @@ async def _ask_claude(message: str, history: list[dict]) -> str:
     except FileNotFoundError:
         log.error("claude binary not found at: %s", CLAUDE_PATH)
         return f"claude CLI를 찾을 수 없습니다. CLAUDE_PATH 환경변수를 확인해 주세요."
+
+
+class ChatRequest(BaseModel):
+    session_id: str
+    content: str
+
+
+class ChatResponse(BaseModel):
+    reply: str
+    session_id: str
+
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat(req: ChatRequest):
+    session_id = req.session_id
+    if session_id not in _sessions:
+        _sessions[session_id] = []
+    history = _sessions[session_id]
+
+    response = await _ask_claude(req.content, history)
+
+    history.append({"role": "user", "content": req.content})
+    history.append({"role": "assistant", "content": response})
+    if len(history) > _MAX_HISTORY:
+        _sessions[session_id] = history[-_MAX_HISTORY:]
+
+    return ChatResponse(reply=response, session_id=session_id)
 
 
 @app.get("/health")
