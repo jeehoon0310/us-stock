@@ -8,6 +8,14 @@ type DailyReport = {
   generated_at?: string;
 };
 
+type ChatDaily = { day: string; questions: number; tokens: number; cost: number };
+type ChatStats = {
+  total_questions: number;
+  total_tokens: number;
+  total_cost_usd: number;
+  daily: ChatDaily[];
+};
+
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -16,6 +24,8 @@ export default function CostsPage() {
   const t = useT();
   const [date, setDate] = useState<string>(todayStr());
   const [status, setStatus] = useState<string>("");
+  const [chatStats, setChatStats] = useState<ChatStats | null>(null);
+  const [chatLoading, setChatLoading] = useState(true);
 
   async function loadReport(dateStr: string) {
     try {
@@ -56,6 +66,12 @@ export default function CostsPage() {
         setStatus("");
       })
       .catch(() => {});
+
+    fetch("/api/admin/chat-logs?type=stats", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: ChatStats) => setChatStats(d))
+      .catch(() => {})
+      .finally(() => setChatLoading(false));
   }, []);
 
   return (
@@ -140,6 +156,66 @@ export default function CostsPage() {
             <p className="text-2xl font-bold text-tertiary">~$0.030</p>
           </div>
         </div>
+      </div>
+
+      {/* AI톡 사용량 */}
+      <div className="bg-surface-container-low rounded-xl p-6">
+        <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface mb-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-base">chat</span>
+          AI톡 사용량
+        </h4>
+        <p className="text-[10px] text-on-surface-variant mb-6">Claude CLI 누적 토큰 · 비용 (전체 기간)</p>
+
+        {chatLoading ? (
+          <div className="flex items-center gap-2 text-on-surface-variant/50 text-sm">
+            <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
+            불러오는 중…
+          </div>
+        ) : !chatStats || chatStats.total_questions === 0 ? (
+          <p className="text-sm text-on-surface-variant/50">아직 AI톡 사용 기록이 없습니다.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10 text-center">
+                <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">총 질문 수</p>
+                <p className="text-2xl font-bold text-primary">{chatStats.total_questions.toLocaleString()}</p>
+              </div>
+              <div className="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10 text-center">
+                <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">총 토큰</p>
+                <p className="text-2xl font-bold text-secondary">{chatStats.total_tokens.toLocaleString()}</p>
+              </div>
+              <div className="bg-surface-container-high/40 p-5 rounded-xl border border-outline-variant/10 text-center">
+                <p className="text-[10px] text-on-surface-variant uppercase font-bold mb-2">총 비용</p>
+                <p className="text-2xl font-bold text-tertiary">${chatStats.total_cost_usd.toFixed(4)}</p>
+              </div>
+            </div>
+
+            {chatStats.daily.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-outline-variant/20">
+                      <th className="py-2 pr-6 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">날짜</th>
+                      <th className="py-2 pr-6 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">질문</th>
+                      <th className="py-2 pr-6 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">토큰</th>
+                      <th className="py-2 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">비용</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/10">
+                    {chatStats.daily.map((row) => (
+                      <tr key={row.day} className="hover:bg-surface-container-high/20 transition-colors">
+                        <td className="py-2.5 pr-6 font-mono text-xs text-on-surface-variant">{row.day}</td>
+                        <td className="py-2.5 pr-6 text-right font-medium text-on-surface">{row.questions}</td>
+                        <td className="py-2.5 pr-6 text-right text-on-surface-variant">{row.tokens.toLocaleString()}</td>
+                        <td className="py-2.5 text-right text-on-surface-variant">${row.cost.toFixed(4)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

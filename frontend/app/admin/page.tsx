@@ -3,6 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface ChatLog {
+  id: number;
+  session_id: string;
+  username: string;
+  email: string;
+  question: string;
+  answer: string;
+  input_tokens: number;
+  output_tokens: number;
+  cost_usd: number;
+  created_at: string;
+}
+
 interface MpvaPost {
   ntt_no: string;
   title: string;
@@ -193,6 +206,9 @@ export default function AdminPage() {
   const [mpvaPosts, setMpvaPosts] = useState<MpvaPost[]>([]);
   const [mpvaTotal, setMpvaTotal] = useState(0);
   const [expandedNtt, setExpandedNtt] = useState<string | null>(null);
+  const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
+  const [chatTotal, setChatTotal] = useState(0);
+  const [expandedChat, setExpandedChat] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/auth/me", { credentials: "include" })
@@ -223,6 +239,17 @@ export default function AdminPage() {
       .then((data) => {
         setMpvaPosts(Array.isArray(data.posts) ? data.posts : []);
         setMpvaTotal(data.total ?? 0);
+      })
+      .catch(() => {});
+  }, [authChecked, isAdmin]);
+
+  useEffect(() => {
+    if (!authChecked || !isAdmin) return;
+    fetch("/api/admin/chat-logs?limit=100")
+      .then((r) => r.json())
+      .then((data) => {
+        setChatLogs(Array.isArray(data.logs) ? data.logs : []);
+        setChatTotal(data.total ?? 0);
       })
       .catch(() => {});
   }, [authChecked, isAdmin]);
@@ -293,6 +320,71 @@ export default function AdminPage() {
         <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-warning" />불명</div>
         <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-base-300" />미실행</div>
         <div className="ml-auto">미등록 = launchd 미설정, 수동 실행 필요</div>
+      </div>
+
+      {/* AI톡 채팅 로그 섹션 */}
+      <div className="mt-10">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="material-symbols-outlined text-primary">chat</span>
+          <h2 className="text-lg font-bold text-base-content">AI톡 대화 로그</h2>
+          {chatTotal > 0 && (
+            <span className="badge badge-primary badge-sm">{chatTotal}건</span>
+          )}
+        </div>
+        <p className="text-xs text-base-content/40 mb-4">관리자가 AI톡에 입력한 질문 기록</p>
+
+        {chatLogs.length === 0 ? (
+          <div className="bg-base-200 rounded-xl p-6 text-center text-sm text-base-content/40">
+            아직 대화 기록이 없습니다.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {chatLogs.map((log) => (
+              <div key={log.id} className="bg-base-200 rounded-xl overflow-hidden">
+                <button
+                  className="w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-base-300 transition-colors"
+                  onClick={() => setExpandedChat(expandedChat === log.id ? null : log.id)}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-base-content truncate">{log.question}</div>
+                    <div className="flex items-center gap-2 mt-0.5 text-[11px] text-base-content/40 flex-wrap">
+                      {log.username && <span>{log.username}</span>}
+                      {log.email && <><span>·</span><span>{log.email}</span></>}
+                      <span>·</span>
+                      <span>{log.created_at.slice(0, 16).replace("T", " ")}</span>
+                      {(log.input_tokens + log.output_tokens) > 0 && (
+                        <><span>·</span><span>{(log.input_tokens + log.output_tokens).toLocaleString()} tokens</span></>
+                      )}
+                      {log.cost_usd > 0 && (
+                        <><span>·</span><span>${log.cost_usd.toFixed(5)}</span></>
+                      )}
+                    </div>
+                  </div>
+                  <span className="material-symbols-outlined text-sm text-base-content/30 shrink-0 mt-0.5">
+                    {expandedChat === log.id ? "expand_less" : "expand_more"}
+                  </span>
+                </button>
+                {expandedChat === log.id && (
+                  <div className="border-t border-base-300 px-4 py-3 flex flex-col gap-3">
+                    <div>
+                      <div className="text-[11px] text-base-content/40 font-medium mb-1">질문</div>
+                      <pre className="text-xs text-base-content/80 whitespace-pre-wrap font-sans leading-relaxed bg-base-300 rounded-lg p-3">{log.question}</pre>
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-base-content/40 font-medium mb-1">답변</div>
+                      <pre className="text-xs text-base-content/80 whitespace-pre-wrap font-sans leading-relaxed bg-base-300 rounded-lg p-3 max-h-60 overflow-y-auto">{log.answer}</pre>
+                    </div>
+                    <div className="flex gap-4 text-[11px] text-base-content/40">
+                      <span>입력 {log.input_tokens.toLocaleString()} / 출력 {log.output_tokens.toLocaleString()} tokens</span>
+                      <span>비용 ${log.cost_usd.toFixed(6)}</span>
+                      <span className="font-mono">{log.session_id}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* MPVA 게시판 섹션 */}

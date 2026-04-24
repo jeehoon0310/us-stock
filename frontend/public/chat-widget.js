@@ -5,10 +5,10 @@
 (function () {
   'use strict';
 
-  // admin 체크 먼저
+  // admin 체크 먼저 — 이름·이메일 저장해서 로그에 기록
   fetch('/auth/me', { credentials: 'include' })
     .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(d) { if (d && d.is_admin) _init(); })
+    .then(function(d) { if (d && d.is_admin) _init(d.name || '', d.email || ''); })
     .catch(function() {});
 
   const API_PATH = '/api/chat';
@@ -159,7 +159,7 @@
     </div>
   `;
 
-  function _init() {
+  function _init(username, email) {
     var host = document.createElement('div');
     host.id = 'chatbot-widget-host';
     document.body.appendChild(host);
@@ -229,7 +229,7 @@
       fetch(API_PATH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: SESSION_ID, content: text }),
+        body: JSON.stringify({ session_id: SESSION_ID, content: text, username: username, email: email }),
         credentials: 'include',
       })
         .then(function(r) { return r.json(); })
