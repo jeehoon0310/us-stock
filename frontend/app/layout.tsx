@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { SideNav, MobileNav } from "@/components/Navigation";
 import { QuotesTicker } from "@/components/QuotesTicker";
@@ -74,6 +75,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <MobileNav />
           </LangProvider>
         </ThemeProvider>
+
+        {/* AI 채팅 위젯 — NEXT_PUBLIC_CHATBOT_SERVER_URL 설정 시 활성화 */}
+        {process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL && (
+          <Script
+            src={`${process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL}/widget.js`}
+            data-server-url={process.env.NEXT_PUBLIC_CHATBOT_SERVER_URL}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

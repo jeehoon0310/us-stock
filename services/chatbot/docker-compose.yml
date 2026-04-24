@@ -1,0 +1,20 @@
+services:
+  chatbot:
+    build: .
+    container_name: us-stock-chatbot
+    ports:
+      - "8001:8001"
+    volumes:
+      # ⚠️ Synology에서 claude 인증 파일 경로 — 실제 경로로 수정
+      - /volume1/homes/jeehoon/.claude:/root/.claude
+    environment:
+      CHATBOT_SYSTEM_PROMPT: "당신은 US Stock 대시보드의 AI 도우미입니다. 미국 주식 분석, 시장 체제, 스크리닝에 관한 질문에 한국어로 간결하게 답변하세요."
+      CHATBOT_TITLE: "AI 도우미"
+      CHATBOT_MODEL: "claude-haiku-4-5-20251001"
+      ALLOWED_ORIGINS: "*"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
