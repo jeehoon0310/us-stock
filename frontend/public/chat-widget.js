@@ -1,26 +1,30 @@
 /**
- * AI 채팅 위젯 — HTTP fetch 기반, Shadow DOM, 의존성 없음
- * Next.js /api/chat 라우트를 통해 Claude와 통신합니다.
+ * AI톡 채팅 위젯 — admin 전용, HTTP fetch, Shadow DOM
+ * /auth/me 에서 is_admin 확인 후 렌더링
  */
 (function () {
   'use strict';
 
+  // admin 체크 먼저
+  fetch('/auth/me', { credentials: 'include' })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) { if (d && d.is_admin) _init(); })
+    .catch(function() {});
+
   const API_PATH = '/api/chat';
-  const TITLE = '  AI 도우미';
+  const TITLE = 'AI톡';
   const PLACEHOLDER = '궁금한 점을 입력하세요…';
 
-  // 세션 ID — 브라우저 탭마다 고유
   const SESSION_ID = (function () {
-    const key = 'chatbot_session_id';
-    let id = sessionStorage.getItem(key);
+    var key = 'chatbot_session_id';
+    var id = sessionStorage.getItem(key);
     if (!id) {
-      id = 'xxxxxxxxxxxx'.replace(/x/g, () => ((Math.random() * 16) | 0).toString(16));
+      id = 'xxxxxxxxxxxx'.replace(/x/g, function() { return ((Math.random() * 16) | 0).toString(16); });
       sessionStorage.setItem(key, id);
     }
     return id;
   })();
 
-  // ── 스타일 ─────────────────────────────────────────────────────────────
   const CSS = `
     :host { all: initial; display: block; }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -28,13 +32,13 @@
     #toggle-btn {
       position: fixed; bottom: 28px; right: 28px; z-index: 2147483646;
       width: 60px; height: 60px; border-radius: 50%;
-      background: #6366f1; border: none; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(99,102,241,.5);
+      background: #4ade80; border: none; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(74,222,128,.5);
       display: flex; align-items: center; justify-content: center;
       transition: transform .2s, box-shadow .2s;
     }
-    #toggle-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(99,102,241,.65); }
-    #toggle-btn svg { width: 28px; height: 28px; fill: #fff; }
+    #toggle-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(74,222,128,.65); }
+    #toggle-btn svg { width: 28px; height: 28px; fill: #14532d; }
 
     #badge {
       position: absolute; top: -4px; right: -4px;
@@ -58,17 +62,17 @@
     #chat-box.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
 
     #header {
-      background: #6366f1; color: #fff; padding: 14px 16px;
+      background: #4ade80; color: #14532d; padding: 14px 16px;
       display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
     }
-    #header-title { font-size: 15px; font-weight: 600; }
-    #header-sub { font-size: 11px; opacity: .75; margin-top: 1px; }
+    #header-title { font-size: 15px; font-weight: 700; }
+    #header-sub { font-size: 11px; opacity: .7; margin-top: 1px; }
     #close-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(255,255,255,.85); padding: 4px; border-radius: 6px;
+      color: rgba(20,83,45,.75); padding: 4px; border-radius: 6px;
       display: flex; align-items: center; transition: background .15s;
     }
-    #close-btn:hover { background: rgba(255,255,255,.2); }
+    #close-btn:hover { background: rgba(20,83,45,.15); }
     #close-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
     #messages {
@@ -82,7 +86,7 @@
     .msg.user { align-self: flex-end; align-items: flex-end; }
     .msg.bot  { align-self: flex-start; align-items: flex-start; }
     .bubble { padding: 9px 13px; border-radius: 16px; font-size: 13.5px; line-height: 1.5; word-break: break-word; }
-    .msg.user .bubble { background: #6366f1; color: #fff; border-bottom-right-radius: 4px; }
+    .msg.user .bubble { background: #4ade80; color: #14532d; border-bottom-right-radius: 4px; font-weight: 500; }
     .msg.bot  .bubble { background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 4px; }
     .msg-time { font-size: 10px; color: #9ca3af; }
 
@@ -112,25 +116,25 @@
       line-height: 1.4; max-height: 80px; overflow-y: auto;
       transition: border-color .15s;
     }
-    #input:focus { border-color: #6366f1; }
+    #input:focus { border-color: #4ade80; }
     #send-btn {
       width: 38px; height: 38px; border-radius: 10px;
-      background: #6366f1; border: none; cursor: pointer;
+      background: #4ade80; border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background .15s; flex-shrink: 0; align-self: flex-end;
     }
-    #send-btn:hover { background: #4f46e5; }
-    #send-btn:disabled { background: #c7d2fe; cursor: not-allowed; }
-    #send-btn svg { width: 17px; height: 17px; fill: #fff; }
+    #send-btn:hover { background: #22c55e; }
+    #send-btn:disabled { background: #bbf7d0; cursor: not-allowed; }
+    #send-btn svg { width: 17px; height: 17px; fill: #14532d; }
   `;
 
   const HTML = `
-    <button id="toggle-btn" aria-label="채팅 열기/닫기">
+    <button id="toggle-btn" aria-label="AI톡 열기/닫기">
       <span id="badge"></span>
       <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6V10h12v2zm0-3H6V7h12v2z"/></svg>
     </button>
 
-    <div id="chat-box" role="dialog" aria-label="AI 채팅">
+    <div id="chat-box" role="dialog" aria-label="AI톡">
       <div id="header">
         <div>
           <div id="header-title">${TITLE}</div>
@@ -155,121 +159,115 @@
     </div>
   `;
 
-  // ── 마운트 ─────────────────────────────────────────────────────────────
-  const host = document.createElement('div');
-  host.id = 'chatbot-widget-host';
-  document.body.appendChild(host);
-  const shadow = host.attachShadow({ mode: 'open' });
-  const styleEl = document.createElement('style');
-  styleEl.textContent = CSS;
-  shadow.appendChild(styleEl);
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = HTML;
-  shadow.appendChild(wrapper);
+  function _init() {
+    var host = document.createElement('div');
+    host.id = 'chatbot-widget-host';
+    document.body.appendChild(host);
+    var shadow = host.attachShadow({ mode: 'open' });
+    var styleEl = document.createElement('style');
+    styleEl.textContent = CSS;
+    shadow.appendChild(styleEl);
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = HTML;
+    shadow.appendChild(wrapper);
 
-  // ── 요소 참조 ──────────────────────────────────────────────────────────
-  const toggleBtn = shadow.getElementById('toggle-btn');
-  const chatBox   = shadow.getElementById('chat-box');
-  const closeBtn  = shadow.getElementById('close-btn');
-  const messages  = shadow.getElementById('messages');
-  const typing    = shadow.getElementById('typing');
-  const inputEl   = shadow.getElementById('input');
-  const sendBtn   = shadow.getElementById('send-btn');
-  const badge     = shadow.getElementById('badge');
+    var toggleBtn = shadow.getElementById('toggle-btn');
+    var chatBox   = shadow.getElementById('chat-box');
+    var closeBtn  = shadow.getElementById('close-btn');
+    var messages  = shadow.getElementById('messages');
+    var typing    = shadow.getElementById('typing');
+    var inputEl   = shadow.getElementById('input');
+    var sendBtn   = shadow.getElementById('send-btn');
+    var badge     = shadow.getElementById('badge');
 
-  let isOpen = false;
-  let unread = 0;
-  let busy   = false;
+    var isOpen = false, unread = 0, busy = false;
 
-  function _time() {
-    return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function _addMsg(role, text) {
-    const wrap   = document.createElement('div');
-    wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.textContent = text;
-    const time   = document.createElement('div');
-    time.className = 'msg-time';
-    time.textContent = _time();
-    wrap.appendChild(bubble);
-    wrap.appendChild(time);
-    messages.insertBefore(wrap, typing);
-    requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
-
-    if (role === 'bot' && !isOpen) {
-      unread++;
-      badge.textContent = unread > 9 ? '9+' : String(unread);
-      badge.classList.add('visible');
+    function _time() {
+      return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
     }
-  }
 
-  function _setTyping(on) {
-    if (on) {
-      messages.appendChild(typing);
-      typing.classList.add('visible');
-      requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
-    } else {
-      typing.classList.remove('visible');
+    function _addMsg(role, text) {
+      var wrap = document.createElement('div');
+      wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+      var bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      var time = document.createElement('div');
+      time.className = 'msg-time';
+      time.textContent = _time();
+      wrap.appendChild(bubble);
+      wrap.appendChild(time);
+      messages.insertBefore(wrap, typing);
+      requestAnimationFrame(function() { messages.scrollTop = messages.scrollHeight; });
+      if (role === 'bot' && !isOpen) {
+        unread++;
+        badge.textContent = unread > 9 ? '9+' : String(unread);
+        badge.classList.add('visible');
+      }
     }
-  }
 
-  async function _send() {
-    const text = inputEl.value.trim();
-    if (!text || busy) return;
+    function _setTyping(on) {
+      if (on) {
+        messages.appendChild(typing);
+        typing.classList.add('visible');
+        requestAnimationFrame(function() { messages.scrollTop = messages.scrollHeight; });
+      } else {
+        typing.classList.remove('visible');
+      }
+    }
 
-    busy = true;
-    sendBtn.disabled = true;
-    _addMsg('user', text);
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
-    _setTyping(true);
+    function _send() {
+      var text = inputEl.value.trim();
+      if (!text || busy) return;
+      busy = true;
+      sendBtn.disabled = true;
+      _addMsg('user', text);
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      _setTyping(true);
 
-    try {
-      const res = await fetch(API_PATH, {
+      fetch(API_PATH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: SESSION_ID, content: text }),
-      });
-      const data = await res.json();
-      _setTyping(false);
-      _addMsg('bot', data.reply || '답변을 받지 못했습니다.');
-    } catch {
-      _setTyping(false);
-      _addMsg('bot', '연결 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-    } finally {
-      busy = false;
-      sendBtn.disabled = false;
-      inputEl.focus();
+        credentials: 'include',
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          _setTyping(false);
+          _addMsg('bot', data.reply || '답변을 받지 못했습니다.');
+        })
+        .catch(function() {
+          _setTyping(false);
+          _addMsg('bot', '연결 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        })
+        .finally(function() {
+          busy = false;
+          sendBtn.disabled = false;
+          inputEl.focus();
+        });
     }
+
+    toggleBtn.addEventListener('click', function() {
+      isOpen = !isOpen;
+      chatBox.classList.toggle('open', isOpen);
+      if (isOpen) {
+        unread = 0; badge.textContent = ''; badge.classList.remove('visible');
+        setTimeout(function() { inputEl.focus(); }, 280);
+      }
+    });
+
+    closeBtn.addEventListener('click', function() { isOpen = false; chatBox.classList.remove('open'); });
+
+    inputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _send(); }
+    });
+
+    inputEl.addEventListener('input', function() {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 80) + 'px';
+    });
+
+    sendBtn.addEventListener('click', _send);
   }
-
-  toggleBtn.addEventListener('click', () => {
-    isOpen = !isOpen;
-    chatBox.classList.toggle('open', isOpen);
-    if (isOpen) {
-      unread = 0;
-      badge.textContent = '';
-      badge.classList.remove('visible');
-      setTimeout(() => inputEl.focus(), 280);
-    }
-  });
-
-  closeBtn.addEventListener('click', () => {
-    isOpen = false;
-    chatBox.classList.remove('open');
-  });
-
-  inputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _send(); }
-  });
-
-  inputEl.addEventListener('input', () => {
-    inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 80) + 'px';
-  });
-
-  sendBtn.addEventListener('click', _send);
 })();
