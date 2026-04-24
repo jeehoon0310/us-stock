@@ -82,6 +82,18 @@ jobs:
           target: /volume1/docker/us-stock/dashboard
           strip_components: 2
 
+      - name: Sync admin HTML files to Synology
+        uses: appleboy/scp-action@v0.1.7
+        continue-on-error: true
+        with:
+          host: ${{ secrets.SYNOLOGY_HOST }}
+          username: ${{ secrets.SYNOLOGY_USERNAME }}
+          key: ${{ secrets.SYNOLOGY_SSH_KEY }}
+          port: ${{ secrets.SYNOLOGY_PORT }}
+          source: "services/auth/admin"
+          target: /volume1/docker/us-stock/dashboard
+          strip_components: 2
+
       - name: Check for course download zips
         id: check_downloads
         run: |
