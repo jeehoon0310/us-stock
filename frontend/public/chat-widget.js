@@ -1,15 +1,15 @@
 /**
- * AI톡 채팅 위젯 — admin 전용, HTTP fetch, Shadow DOM
- * /auth/me 에서 is_admin 확인 후 렌더링
+ * AI톡 채팅 위젯 — 전체 공개, HTTP fetch, Shadow DOM
+ * /auth/me 에서 이름·이메일 가져와 로그에 기록 (로그인 여부 무관)
  */
 (function () {
   'use strict';
 
-  // admin 체크 먼저 — 이름·이메일 저장해서 로그에 기록
+  // 로그인 정보 가져오기 — 실패해도 익명으로 위젯 표시
   fetch('/auth/me', { credentials: 'include' })
     .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(d) { if (d && d.is_admin) _init(d.name || '', d.email || ''); })
-    .catch(function() {});
+    .then(function(d) { _init(d ? (d.name || '') : '', d ? (d.email || '') : ''); })
+    .catch(function() { _init('', ''); });
 
   const API_PATH = '/api/chat';
   const TITLE = 'AI톡';
