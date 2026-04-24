@@ -14,6 +14,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 import sqlite3
 import time
 from datetime import datetime, timezone
@@ -179,6 +180,40 @@ def _log_chat(
         log.error("DB log error: %s", e)
 
 
+# ── Local FAQ matcher (zero-token responses) ─────────────────────────────────
+
+_FAQ_RULES: List[Tuple[re.Pattern, str]] = [
+    (
+        re.compile(r"^(안녕|안뇽|하이|hi|hello|hey|ㅎㅇ|반가워|반갑|처음|시작|좋은\s*(아침|오후|저녁|밤))[!,~.\s]*$", re.IGNORECASE),
+        "안녕하세요! 프린들이 만든 US Stock 대시보드 AI입니다. 시장 체제, 종목 스크리닝, 등급·점수 기준 등 무엇이든 물어보세요.",
+    ),
+    (
+        re.compile(r"(고마워|고맙|감사|땡큐|thank)", re.IGNORECASE),
+        "도움이 됐다니 다행입니다. 더 궁금한 점 있으면 편하게 물어보세요!",
+    ),
+    (
+        re.compile(r"(뭐\s*해|뭐\s*할\s*수|어떻게\s*(사용|써)|사용법|도움말|도와줘|기능|할\s*수\s*있)", re.IGNORECASE),
+        "시장 체제(risk_on/neutral/risk_off/crisis), 마켓 게이트(GO/CAUTION/STOP), 종목 등급(A~F), BUY·HOLD 판단 기준, 데이터 출처 등을 설명해 드릴 수 있습니다. 궁금한 항목을 질문해 주세요.",
+    ),
+    (
+        re.compile(r"^(네|응|ㅇㅇ|ok|okay|알겠|알았|확인)[!,~.\s]*$", re.IGNORECASE),
+        "추가로 궁금한 점이 있으시면 편하게 물어보세요!",
+    ),
+    (
+        re.compile(r"^(ㅋ+|ㅎ+|😂|😅|ㅋㅋ|하하|호호)[!,~.\s]*$"),
+        "더 궁금한 점 있으시면 언제든지 물어보세요!",
+    ),
+]
+
+
+def _match_faq(message: str) -> Optional[str]:
+    msg = message.strip()
+    for pattern, reply in _FAQ_RULES:
+        if pattern.search(msg):
+            return reply
+    return None
+
+
 # ── Claude ───────────────────────────────────────────────────────────────────
 
 def _build_prompt(message: str, history: list) -> str:
@@ -258,7 +293,12 @@ async def chat(req: ChatRequest):
         _sessions[session_id] = []
     history = _sessions[session_id]
 
-    text, input_tokens, output_tokens, cost_usd = await _ask_claude(req.content, history)
+    faq_reply = _match_faq(req.content)
+    if faq_reply:
+        text, input_tokens, output_tokens, cost_usd = faq_reply, 0, 0, 0.0
+        log.info("FAQ hit (no API call): %s", req.content[:40])
+    else:
+        text, input_tokens, output_tokens, cost_usd = await _ask_claude(req.content, history)
 
     history.append({"role": "user", "content": req.content})
     history.append({"role": "assistant", "content": text})
