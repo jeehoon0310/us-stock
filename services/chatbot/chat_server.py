@@ -319,6 +319,20 @@ async def chat(req: ChatRequest):
     return ChatResponse(reply=text, session_id=session_id)
 
 
+@app.delete("/logs/{log_id}")
+async def delete_log(log_id: int):
+    try:
+        with sqlite3.connect(CHATBOT_DB_PATH) as conn:
+            cur = conn.execute("DELETE FROM chat_logs WHERE id = ?", (log_id,))
+            conn.commit()
+            if cur.rowcount == 0:
+                return JSONResponse({"error": "not found"}, status_code=404)
+        return {"status": "deleted", "id": log_id}
+    except Exception as e:
+        log.error("delete_log error: %s", e)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
 @app.get("/logs")
 async def get_logs(limit: int = 50, offset: int = 0):
     try:

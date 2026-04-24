@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI톡 관리 - Frindle Admin</title>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;display:flex}
+
+.sidebar{width:220px;min-height:100vh;background:#12121a;border-right:1px solid #1e1e2e;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid #1e1e2e}
+.logo-text{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.logo-text span{color:#6366f1}
+.logo-sub{font-size:11px;color:#64748b;margin-top:3px;letter-spacing:0.5px}
+.sidebar-nav{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:14px;color:#94a3b8;text-decoration:none;transition:background .15s,color .15s}
+.nav-item:hover{background:#1e1e2e;color:#f1f5f9}
+.nav-item.active{background:#1e1e2e;color:#6366f1;font-weight:600}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.nav-divider{border-top:1px solid #1e1e2e;margin:8px 0}
+
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.header{height:60px;background:#12121a;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50}
+.header-title{font-size:16px;font-weight:700;color:#f1f5f9}
+.logout-btn{background:transparent;border:1px solid #2d2d44;color:#94a3b8;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .15s}
+.logout-btn:hover{border-color:#6366f1;color:#6366f1}
+.content{padding:24px;flex:1;display:flex;flex-direction:column;gap:24px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stat-card{background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:20px;text-align:center}
+.stat-label{font-size:12px;color:#64748b;margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.stat-value{font-size:28px;font-weight:800;line-height:1}
+.stat-card.primary .stat-value{color:#6366f1}
+.stat-card.success .stat-value{color:#86efac}
+.stat-card.warning .stat-value{color:#fde68a}
+
+/* Knowledge editor */
+.panel{background:#12121a;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden}
+.panel-header{padding:16px 20px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:14px;font-weight:700;color:#f1f5f9}
+.panel-sub{font-size:12px;color:#64748b;margin-top:2px}
+.panel-actions{display:flex;align-items:center;gap:12px}
+.token-badge{font-size:12px;color:#64748b}
+.btn-save{background:#6366f1;border:none;color:#fff;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px}
+.btn-save:hover{background:#4f46e5}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed}
+.knowledge-textarea{width:100%;height:380px;padding:16px 20px;background:transparent;color:#e2e8f0;font-size:13px;font-family:'JetBrains Mono','Fira Code','Consolas',monospace;line-height:1.6;resize:none;outline:none;border:none}
+
+/* Log list */
+.log-item{border-bottom:1px solid #1a1a28;cursor:pointer}
+.log-item:last-child{border-bottom:none}
+.log-header{padding:14px 20px;display:flex;align-items:flex-start;gap:12px;transition:background .15s}
+.log-header:hover{background:#1a1a28}
+.log-question{font-size:14px;font-weight:500;color:#f1f5f9;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-meta{font-size:12px;color:#64748b;margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.log-cost{color:#fde68a}
+.log-expand{font-size:18px;color:#4a5568;flex-shrink:0;margin-top:2px;transition:transform .2s}
+.log-item.open .log-expand{transform:rotate(180deg)}
+.log-body{padding:0 20px 16px;display:none;flex-direction:column;gap:12px}
+.log-item.open .log-body{display:flex}
+.log-section-label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.log-text{font-size:13px;color:#e2e8f0;white-space:pre-wrap;background:#0a0a0f;border:1px solid #1e1e2e;border-radius:8px;padding:12px;max-height:200px;overflow-y:auto;line-height:1.5}
+.log-footer{display:flex;gap:20px;font-size:12px;color:#4a5568}
+
+/* Delete button */
+.btn-del{background:transparent;border:1px solid #2d2d44;color:#64748b;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;transition:all .15s;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.btn-del:hover{border-color:#7f1d1d;color:#fca5a5}
+.btn-del:disabled{opacity:0.3;cursor:not-allowed}
+
+/* Empty */
+.empty{padding:48px;text-align:center;color:#64748b;font-size:14px}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:48px;color:#64748b;font-size:14px}
+.spinner{width:20px;height:20px;border:2px solid #2d2d44;border-top-color:#6366f1;border-radius:50%;animation:spin .7s linear infinite;margin-right:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#1e1e2e;border:1px solid #2d2d44;border-radius:8px;padding:12px 16px;font-size:13px;color:#f1f5f9;min-width:200px;animation:slideIn .2s ease}
+.toast.success{border-color:#14532d;background:#1a2d1a;color:#86efac}
+.toast.error{border-color:#7f1d1d;background:#2d1a1a;color:#fca5a5}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body x-data="aitok()" x-init="init()">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text"><span>Frindle</span> Admin</div>
+    <div class="logo-sub">관리자 패널</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/admin" class="nav-item"><span class="icon">📊</span> 대시보드</a>
+    <a href="/admin/members" class="nav-item"><span class="icon">👥</span> 회원 관리</a>
+    <a href="/admin/files" class="nav-item"><span class="icon">📁</span> 파일 관리</a>
+    <a href="/admin/notices" class="nav-item"><span class="icon">📢</span> 공지 관리</a>
+    <a href="/admin/aitok" class="nav-item active"><span class="icon">🤖</span> AI톡 관리</a>
+    <div class="nav-divider"></div>
+    <a href="/" class="nav-item"><span class="icon">🔙</span> 사이트로 돌아가기</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="header">
+    <span class="header-title">AI톡 관리</span>
+    <button class="logout-btn" @click="logout()">로그아웃</button>
+  </header>
+
+  <main class="content">
+    <!-- 로딩 -->
+    <div class="loading" x-show="loading">
+      <div class="spinner"></div> 데이터를 불러오는 중...
+    </div>
+
+    <template x-if="!loading">
+      <div style="display:contents">
+
+        <!-- 통계 -->
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="stat-label">총 질문 수</div>
+            <div class="stat-value" x-text="(stats.total_questions ?? 0).toLocaleString()"></div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">총 토큰</div>
+            <div class="stat-value" x-text="(stats.total_tokens ?? 0).toLocaleString()"></div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-label">총 비용</div>
+            <div class="stat-value" x-text="'$' + (stats.total_cost_usd ?? 0).toFixed(4)"></div>
+          </div>
+        </div>
+
+        <!-- 지식베이스 편집 -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">지식베이스 편집</div>
+              <div class="panel-sub">저장 즉시 챗봇에 반영 — 서버 재시작 불필요</div>
+            </div>
+            <div class="panel-actions">
+              <span class="token-badge" x-text="'~' + knowledgeTokens.toLocaleString() + ' tokens/요청'"></span>
+              <button class="btn-save" :disabled="saving" @click="saveKnowledge()">
+                <span x-text="saved ? '✓ 저장됨' : saving ? '저장 중...' : '저장'"></span>
+              </button>
+            </div>
+          </div>
+          <textarea
+            class="knowledge-textarea"
+            x-model="knowledge"
+            spellcheck="false"
+            placeholder="지식베이스 내용을 입력하세요..."
+          ></textarea>
+        </div>
+
+        <!-- 대화 이력 -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">대화 이력</div>
+              <div class="panel-sub" x-text="total.toLocaleString() + '건'"></div>
+            </div>
+          </div>
+          <div x-show="logs.length === 0" class="empty">아직 대화 기록이 없습니다.</div>
+          <div>
+            <template x-for="(log, i) in logs" :key="log.id">
+              <div class="log-item" :id="'log-' + log.id">
+                <div class="log-header" @click="toggle(log.id)">
+                  <div style="flex:1;min-width:0">
+                    <div class="log-question" x-text="log.question"></div>
+                    <div class="log-meta">
+                      <span x-show="log.username" x-text="log.username" style="color:#94a3b8;font-weight:600"></span>
+                      <span x-show="log.email" x-text="log.email"></span>
+                      <span x-text="log.created_at.slice(0,16).replace('T',' ')"></span>
+                      <span x-show="(log.input_tokens + log.output_tokens) > 0" x-text="(log.input_tokens + log.output_tokens).toLocaleString() + ' tokens'"></span>
+                      <span x-show="log.cost_usd > 0" class="log-cost" x-text="'$' + log.cost_usd.toFixed(5)"></span>
+                    </div>
+                  </div>
+                  <button class="btn-del" @click.stop="deleteLog(log.id)" title="삭제">✕</button>
+                  <span class="log-expand">▼</span>
+                </div>
+                <div class="log-body" :id="'body-' + log.id">
+                  <div>
+                    <div class="log-section-label">질문</div>
+                    <div class="log-text" x-text="log.question"></div>
+                  </div>
+                  <div>
+                    <div class="log-section-label">답변</div>
+                    <div class="log-text" x-text="log.answer"></div>
+                  </div>
+                  <div class="log-footer">
+                    <span x-text="'입력 ' + log.input_tokens.toLocaleString() + ' / 출력 ' + log.output_tokens.toLocaleString() + ' tokens'"></span>
+                    <span x-text="'비용 $' + log.cost_usd.toFixed(6)"></span>
+                    <span x-text="log.session_id" style="font-family:monospace;opacity:0.4"></span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+    </template>
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+function aitok() {
+  return {
+    loading: true,
+    stats: {},
+    logs: [],
+    total: 0,
+    knowledge: '',
+    knowledgeTokens: 0,
+    saving: false,
+    saved: false,
+    expanded: new Set(),
+
+    async init() {
+      try {
+        const [logsRes, statsRes, kRes] = await Promise.all([
+          fetch('/api/admin/chat-logs?limit=200'),
+          fetch('/api/admin/chat-logs?type=stats'),
+          fetch('/api/admin/knowledge'),
+        ]);
+        if (logsRes.status === 401 || logsRes.status === 403) { window.location.href = '/login'; return; }
+        const [logsData, statsData, kData] = await Promise.all([logsRes.json(), statsRes.json(), kRes.json()]);
+        this.logs = Array.isArray(logsData.logs) ? logsData.logs : [];
+        this.total = logsData.total ?? 0;
+        this.stats = statsData;
+        this.knowledge = kData.content ?? '';
+        this.knowledgeTokens = kData.token_estimate ?? 0;
+      } catch (e) {
+        showToast('데이터 로드에 실패했습니다.', 'error');
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    toggle(id) {
+      const item = document.getElementById('log-' + id);
+      const body = document.getElementById('body-' + id);
+      if (item.classList.contains('open')) {
+        item.classList.remove('open');
+        body.style.display = 'none';
+      } else {
+        item.classList.add('open');
+        body.style.display = 'flex';
+      }
+    },
+
+    async saveKnowledge() {
+      this.saving = true;
+      try {
+        const r = await fetch('/api/admin/knowledge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: this.knowledge }),
+        });
+        const d = await r.json();
+        this.knowledgeTokens = d.token_estimate ?? 0;
+        this.saved = true;
+        showToast('지식베이스가 저장되었습니다.', 'success');
+        setTimeout(() => { this.saved = false; }, 2000);
+      } catch {
+        showToast('저장에 실패했습니다.', 'error');
+      } finally {
+        this.saving = false;
+      }
+    },
+
+    async deleteLog(id) {
+      if (!confirm('이 대화 기록을 삭제하시겠습니까?')) return;
+      try {
+        const r = await fetch('/api/admin/chat-logs?id=' + id, { method: 'DELETE' });
+        if (!r.ok) throw new Error();
+        this.logs = this.logs.filter(l => l.id !== id);
+        this.total = Math.max(0, this.total - 1);
+        showToast('삭제되었습니다.', 'success');
+      } catch {
+        showToast('삭제에 실패했습니다.', 'error');
+      }
+    },
+
+    async logout() {
+      try { await fetch('/auth/logout', { method: 'POST' }); } catch {}
+      window.location.href = '/login';
+    }
+  };
+}
+
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+</script>
+</body>
+</html>
