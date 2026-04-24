@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import sqlite3
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -33,6 +34,10 @@ MODEL = os.getenv("CHATBOT_MODEL", "claude-haiku-4-5-20251001")
 TITLE = os.getenv("CHATBOT_TITLE", "AI 도우미")
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 CHATBOT_DB_PATH = os.getenv("CHATBOT_DB_PATH", "/data/chatbot.db")
+REPORT_PATH = os.getenv(
+    "CHATBOT_REPORT_PATH",
+    str(Path(__file__).parent.parent.parent / "output" / "reports" / "latest_report.json"),
+)
 
 _DEFAULT_PROMPT = (
     "당신은 프린들(Frindle)이 개발한 US Stock 대시보드의 AI 도우미입니다. "
@@ -54,10 +59,56 @@ def _load_knowledge() -> str:
                 pass
     return ""
 
-_KNOWLEDGE = _load_knowledge()
-SYSTEM_PROMPT = os.getenv("CHATBOT_SYSTEM_PROMPT", _DEFAULT_PROMPT)
-if _KNOWLEDGE:
-    SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + _KNOWLEDGE
+_DAILY_CACHE: Dict[str, object] = {"summary": "", "ts": 0.0}
+_DAILY_TTL = 3600 * 6  # 6시간
+
+
+def _load_daily_summary() -> str:
+    """latest_report.json 에서 오늘의 시장 요약을 추출 (6시간 캐시)."""
+    now = time.time()
+    if now - float(_DAILY_CACHE["ts"]) < _DAILY_TTL and _DAILY_CACHE["summary"]:
+        return str(_DAILY_CACHE["summary"])
+    try:
+        p = Path(REPORT_PATH)
+        if not p.exists():
+            return ""
+        data = json.loads(p.read_text(encoding="utf-8"))
+        date = data.get("data_date", "")
+        regime = data.get("market_regime", {}).get("regime", "")
+        gate = data.get("market_gate", {}).get("signal", "")
+        picks = data.get("stock_picks", [])[:5]
+        lines = [f"## 오늘의 시장 데이터 ({date})"]
+        lines.append(f"시장체제: {regime} | 마켓게이트: {gate}")
+        if picks:
+            lines.append("TOP 종목:")
+            for p2 in picks:
+                ticker = p2.get("ticker", "")
+                grade = p2.get("grade", "")
+                action = p2.get("action", "")
+                score = p2.get("composite_score", 0)
+                lines.append(f"  {ticker} | {grade}등급 | {score:.0f}점 | {action}")
+        summary = "\n".join(lines)
+        _DAILY_CACHE["summary"] = summary
+        _DAILY_CACHE["ts"] = now
+        return summary
+    except Exception as e:
+        log.warning("daily summary load error: %s", e)
+        return ""
+
+
+_state: Dict[str, str] = {"knowledge": _load_knowledge()}
+
+
+def _get_system_prompt() -> str:
+    base = os.getenv("CHATBOT_SYSTEM_PROMPT", _DEFAULT_PROMPT)
+    k = _state.get("knowledge", "")
+    daily = _load_daily_summary()
+    parts = [base]
+    if k:
+        parts.append(k)
+    if daily:
+        parts.append(daily)
+    return "\n\n".join(parts)
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -132,8 +183,9 @@ def _log_chat(
 
 def _build_prompt(message: str, history: list) -> str:
     lines: list = []
-    if SYSTEM_PROMPT:
-        lines.append(f"System: {SYSTEM_PROMPT}\n")
+    sp = _get_system_prompt()
+    if sp:
+        lines.append(f"System: {sp}\n")
     for h in history[-(_MAX_HISTORY // 2 * 2):]:
         prefix = "Human" if h["role"] == "user" else "Assistant"
         lines.append(f"{prefix}: {h['content']}")
@@ -276,6 +328,33 @@ async def get_stats():
     except Exception as e:
         log.error("get_stats error: %s", e)
         return {"total_questions": 0, "total_tokens": 0, "total_cost_usd": 0.0, "daily": []}
+
+
+class KnowledgeUpdate(BaseModel):
+    content: str
+
+
+@app.get("/knowledge")
+async def get_knowledge():
+    k = _state.get("knowledge", "")
+    prompt = _get_system_prompt()
+    return {
+        "content": k,
+        "token_estimate": len(prompt) // 4,
+        "chars": len(k),
+    }
+
+
+@app.post("/knowledge")
+async def update_knowledge(req: KnowledgeUpdate):
+    _state["knowledge"] = req.content
+    path = Path(__file__).parent / "knowledge.md"
+    try:
+        path.write_text(req.content, encoding="utf-8")
+    except Exception as e:
+        log.error("knowledge write error: %s", e)
+    log.info("knowledge updated: %d chars", len(req.content))
+    return {"status": "ok", "chars": len(req.content), "token_estimate": len(req.content) // 4}
 
 
 @app.get("/health")

@@ -19,6 +19,7 @@ const NAV = [
   { href: "/download",    icon: "download",        labelKey: "nav.download",     adminOnly: false },
   // 관리자 전용 (하단 배치)
   { href: "/costs",       icon: "payments",        labelKey: "nav.costs",        adminOnly: true  },
+  { href: "/chat-logs",   icon: "chat",            labelKey: "nav.chatLogs",     adminOnly: true  },
   { href: "/graph",       icon: "hub",             labelKey: "nav.graph",        adminOnly: true  },
   { href: "/ai-builder",  icon: "smart_toy",       labelKey: "nav.aiBuilder",    adminOnly: true  },
 ];

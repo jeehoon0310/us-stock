@@ -17,6 +17,7 @@ const EN: Dict = {
   "nav.board": "Board",
   "nav.download": "Download",
   "nav.costs": "API Costs",
+  "nav.chatLogs": "AI톡 Logs",
   // Mobile short forms
   "nav.mobile.overview": "Overview",
   "nav.mobile.regime": "Regime",
@@ -295,6 +296,7 @@ const KO: Dict = {
   "nav.board": "게시판",
   "nav.download": "다운로드",
   "nav.costs": "API 비용",
+  "nav.chatLogs": "AI톡 로그",
   // Mobile short forms
   "nav.mobile.overview": "개요",
   "nav.mobile.regime": "체제",
