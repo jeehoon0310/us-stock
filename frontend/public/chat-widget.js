@@ -40,6 +40,21 @@
     #toggle-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(74,222,128,.6); }
     #toggle-btn img { width: 60px; height: 60px; display: block; }
 
+    #greeting {
+      position: fixed; bottom: 98px; right: 18px; z-index: 2147483646;
+      background: #27272a; color: #e4e4e7;
+      padding: 10px 14px; border-radius: 14px; border-bottom-right-radius: 4px;
+      font-size: 13px; line-height: 1.55; white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    #greeting::after {
+      content: ''; position: absolute; bottom: -7px; right: 22px;
+      border: 8px solid transparent;
+      border-top-color: #27272a; border-bottom: none; border-right: none;
+    }
+    #greeting.hidden { opacity: 0; transform: translateY(6px); pointer-events: none; }
+
     #badge {
       position: absolute; top: -4px; right: -4px;
       background: #ef4444; color: #fff; font-size: 11px; font-weight: 700;
@@ -131,6 +146,7 @@
   `;
 
   const HTML = `
+    <div id="greeting">친절한 프린들 AI입니다.<br>무엇이든 물어보세요</div>
     <button id="toggle-btn" aria-label="AI톡 열기/닫기">
       <span id="badge"></span>
       <img src="/ai-tok.png" alt="AI톡" />
@@ -182,6 +198,7 @@
     var sendBtn   = shadow.getElementById('send-btn');
     var badge     = shadow.getElementById('badge');
 
+    var greeting   = shadow.getElementById('greeting');
     var isOpen = false, unread = 0, busy = false;
 
     function _time() {
@@ -251,6 +268,7 @@
     }
 
     toggleBtn.addEventListener('click', function() {
+      greeting.classList.add('hidden');
       isOpen = !isOpen;
       chatBox.classList.toggle('open', isOpen);
       if (isOpen) {
