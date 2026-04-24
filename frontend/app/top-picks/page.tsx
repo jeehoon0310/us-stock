@@ -198,7 +198,7 @@ export default function TopPicksPage() {
                           href={`https://www.tradingview.com/chart/?symbol=${s.ticker}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10px] text-on-surface-variant hover:text-primary hover:underline transition-colors"
+                          className="text-[10px] text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
                         >
                           {s.company_name ?? ""}
                         </a>

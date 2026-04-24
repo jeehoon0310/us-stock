@@ -32,13 +32,13 @@
     #toggle-btn {
       position: fixed; bottom: 28px; right: 28px; z-index: 2147483646;
       width: 60px; height: 60px; border-radius: 50%;
-      background: #4ade80; border: none; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(74,222,128,.5);
-      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(74,222,128,.4);
+      padding: 0; overflow: hidden;
       transition: transform .2s, box-shadow .2s;
     }
-    #toggle-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(74,222,128,.65); }
-    #toggle-btn svg { width: 28px; height: 28px; fill: #14532d; }
+    #toggle-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(74,222,128,.6); }
+    #toggle-btn img { width: 60px; height: 60px; display: block; }
 
     #badge {
       position: absolute; top: -4px; right: -4px;
@@ -131,7 +131,7 @@
   const HTML = `
     <button id="toggle-btn" aria-label="AI톡 열기/닫기">
       <span id="badge"></span>
-      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6V10h12v2zm0-3H6V7h12v2z"/></svg>
+      <img src="/ai-tok.png" alt="AI톡" />
     </button>
 
     <div id="chat-box" role="dialog" aria-label="AI톡">
