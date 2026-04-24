@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request, Response, UploadFile, File
 from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import sqlite3, hashlib, secrets, os, shutil, urllib.parse, re
 from datetime import datetime, timedelta
@@ -7,6 +8,9 @@ from typing import Optional
 import httpx
 
 app = FastAPI(docs_url=None, redoc_url=None)
+
+if os.path.isdir("/app/images"):
+    app.mount("/images", StaticFiles(directory="/app/images"), name="images")
 
 DB_PATH = "/data/users.db"
 FILES_DIR = os.getenv("DOWNLOADS_DIR", "/downloads")
@@ -108,6 +112,47 @@ def init_db():
 init_db()
 
 
+# ──────────────────────────────────────────
+# HTML 페이지 서빙
+# ──────────────────────────────────────────
+
+_NO_CACHE = {"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"}
+
+
+@app.get("/login")
+async def login_page():
+    return FileResponse("/app/login.html", headers=_NO_CACHE)
+
+
+@app.get("/register")
+async def register_page():
+    return FileResponse("/app/register.html", headers=_NO_CACHE)
+
+
+@app.get("/admin")
+async def admin_index_page(request: Request):
+    await require_admin(request)
+    return FileResponse("/app/admin/index.html")
+
+
+@app.get("/admin/members")
+async def admin_members_page(request: Request):
+    await require_admin(request)
+    return FileResponse("/app/admin/members.html")
+
+
+@app.get("/admin/files")
+async def admin_files_page(request: Request):
+    await require_admin(request)
+    return FileResponse("/app/admin/files.html")
+
+
+@app.get("/admin/notices")
+async def admin_notices_page(request: Request):
+    await require_admin(request)
+    return FileResponse("/app/admin/notices.html")
+
+
 def hash_pw(password: str) -> str:
     salt = "frindle_edu_2026_salt"
     return hashlib.sha256(f"{salt}{password}".encode()).hexdigest()
@@ -147,6 +192,8 @@ class RegisterReq(BaseModel):
     phone: str
     referral: str
     password: str
+    agree_terms: bool = False
+    agree_privacy: bool = False
 
 
 class LoginReq(BaseModel):
@@ -156,12 +203,18 @@ class LoginReq(BaseModel):
 
 @app.post("/auth/register")
 async def register(req: RegisterReq):
+    if not req.agree_terms or not req.agree_privacy:
+        raise HTTPException(status_code=400, detail="이용약관 및 개인정보처리방침에 동의해 주세요.")
     if len(req.password) < 8:
         raise HTTPException(status_code=400, detail="비밀번호는 8자 이상이어야 합니다.")
     if not req.name.strip():
         raise HTTPException(status_code=400, detail="이름을 입력해 주세요.")
     if "@" not in req.email:
         raise HTTPException(status_code=400, detail="올바른 이메일 주소를 입력해 주세요.")
+    if not req.phone.strip():
+        raise HTTPException(status_code=400, detail="전화번호를 입력해 주세요.")
+    if not req.referral.strip():
+        raise HTTPException(status_code=400, detail="유입경로를 선택해 주세요.")
     conn = get_db()
     try:
         conn.execute(
@@ -540,7 +593,7 @@ _oauth_states: dict = {}
 @app.get("/auth/google/login")
 async def google_login():
     if not GOOGLE_CLIENT_ID:
-        raise HTTPException(status_code=503, detail="Google OAuth가 설정되지 않았습니다.")
+        return RedirectResponse(url="/login?error=google_not_configured")
     state = secrets.token_urlsafe(16)
     _oauth_states[state] = datetime.now().isoformat()
 
@@ -601,13 +654,8 @@ async def google_callback(request: Request, response: Response,
             conn.commit()
 
     if not user:
-        # Google 계정 자동 가입 허용
-        conn.execute(
-            "INSERT INTO users (name, email, phone, referral, password_hash, google_sub, is_active) VALUES (?,?,?,?,NULL,?,1)",
-            (name, email, "", "Google 로그인", google_sub)
-        )
-        conn.commit()
-        user = conn.execute("SELECT * FROM users WHERE google_sub=?", (google_sub,)).fetchone()
+        conn.close()
+        return RedirectResponse(url="/login?error=google_not_registered")
 
     if not user["is_active"]:
         conn.close()
