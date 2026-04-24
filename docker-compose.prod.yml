@@ -13,6 +13,7 @@ services:
       - DOWNLOAD_DIR=/data/downloads
       - DOWNLOAD_PASSWORD=${DOWNLOAD_PASSWORD:?set in /volume1/docker/us-stock/.env}
       - DOWNLOAD_SESSION_SECRET=${DOWNLOAD_SESSION_SECRET:?set in /volume1/docker/us-stock/.env}
+      - CHATBOT_SERVER_URL=http://localhost:8001
     volumes:
       - /volume1/docker/us-stock/board:/data
     restart: unless-stopped
