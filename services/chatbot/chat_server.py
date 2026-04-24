@@ -29,16 +29,35 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger(__name__)
 
 CLAUDE_PATH = os.getenv("CLAUDE_PATH", "claude")
-SYSTEM_PROMPT = os.getenv(
-    "CHATBOT_SYSTEM_PROMPT",
-    "당신은 US Stock 대시보드의 친절한 도우미입니다. "
-    "미국 주식 분석, 시장 체제, 종목 스크리닝에 관한 질문에 간결하게 답변하세요. "
-    "답변은 한국어로 작성하고 3문장 이내로 핵심만 전달하세요.",
-)
 MODEL = os.getenv("CHATBOT_MODEL", "claude-haiku-4-5-20251001")
 TITLE = os.getenv("CHATBOT_TITLE", "AI 도우미")
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 CHATBOT_DB_PATH = os.getenv("CHATBOT_DB_PATH", "/data/chatbot.db")
+
+_DEFAULT_PROMPT = (
+    "당신은 프린들(Frindle)이 개발한 US Stock 대시보드의 AI 도우미입니다. "
+    "미국 주식 분석, 시장 체제, 종목 스크리닝에 관한 질문에 한국어로 간결하게 답변하세요. "
+    "아래 지식베이스를 우선 참고하고, 3문장 이내로 핵심만 전달하세요."
+)
+
+def _load_knowledge() -> str:
+    """services/chatbot/knowledge.md를 로드해 시스템 프롬프트에 부착."""
+    paths = [
+        Path(__file__).parent / "knowledge.md",
+        Path("/data/knowledge.md"),
+    ]
+    for p in paths:
+        if p.exists():
+            try:
+                return p.read_text(encoding="utf-8")
+            except Exception:
+                pass
+    return ""
+
+_KNOWLEDGE = _load_knowledge()
+SYSTEM_PROMPT = os.getenv("CHATBOT_SYSTEM_PROMPT", _DEFAULT_PROMPT)
+if _KNOWLEDGE:
+    SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + _KNOWLEDGE
 
 STATIC_DIR = Path(__file__).parent / "static"
 
