@@ -7,13 +7,14 @@
   CHATBOT_TITLE       채팅창 제목 (위젯에 전달)
   ALLOWED_ORIGINS     CORS 허용 오리진 (쉼표 구분, 기본: *)
 """
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
 import os
-import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Dict, List, Optional
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -47,7 +48,7 @@ if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # 세션별 대화 이력 {session_id: [{"role": "user"|"assistant", "content": str}]}
-_sessions: dict[str, list[dict]] = {}
+_sessions: Dict[str, List[Dict]] = {}
 _MAX_HISTORY = 20  # 세션당 최대 보관 메시지 수
 
 
