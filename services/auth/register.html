@@ -19,34 +19,65 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .logo{text-align:center;margin-bottom:32px}
 .logo-text{font-size:22px;font-weight:800;letter-spacing:-0.5px}
 .logo-text span{color:#6366f1}
-.logo-sub{font-size:12px;color:#64748b;margin-top:4px;letter-spacing:0.5px}
 h2{font-size:20px;font-weight:700;margin-bottom:6px;color:#f1f5f9}
 .subtitle{font-size:13px;color:#64748b;margin-bottom:24px}
 .field{margin-bottom:16px}
-label{display:block;font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:6px}
-label .req{color:#f87171;margin-left:2px}
-input,select{width:100%;background:#1a1a28;border:1px solid #2d2d44;border-radius:8px;padding:12px 14px;font-size:15px;color:#f1f5f9;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+.field-label{display:block;font-size:13px;font-weight:500;color:#94a3b8;margin-bottom:6px}
+.field-label .req{color:#f87171;margin-left:2px}
+input[type=text],input[type=email],input[type=password],input[type=tel],select{
+  width:100%;background:#1a1a28;border:1px solid #2d2d44;border-radius:8px;
+  padding:12px 14px;font-size:15px;color:#f1f5f9;outline:none;
+  transition:border-color .2s;appearance:none;-webkit-appearance:none
+}
 input:focus,select:focus{border-color:#6366f1}
+input.input-err{border-color:#f87171}
+input.input-ok{border-color:#22c55e}
 input::placeholder{color:#4a5568}
 select option{background:#1a1a28}
-.pw-hint{font-size:12px;color:#64748b;margin-top:4px}
+.field-hint{font-size:12px;color:#64748b;margin-top:4px}
+.field-errmsg{font-size:12px;color:#f87171;margin-top:4px;display:none}
+.field-errmsg.show{display:block}
 .section-title{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px}
-.agree-block{background:#0f0f18;border:1px solid #1e1e2e;border-radius:8px;padding:12px 14px;margin-bottom:12px}
-.agree-header{display:flex;align-items:center;gap:10px;cursor:pointer}
-.agree-header input[type=checkbox]{width:18px;height:18px;min-width:18px;cursor:pointer;accent-color:#6366f1;background:#1a1a28;border:1px solid #2d2d44}
-.agree-label{font-size:14px;color:#cbd5e1;flex:1}
-.agree-label a{color:#6366f1;text-decoration:none}
-.agree-label a:hover{text-decoration:underline}
-.toggle-btn{font-size:12px;color:#6366f1;cursor:pointer;white-space:nowrap;padding:2px 8px;border:1px solid #2d2d44;border-radius:4px;background:transparent}
+
+/* 전체 동의 */
+.agree-all-block{background:#16162a;border:2px solid #2d2d44;border-radius:8px;padding:14px 16px;margin-bottom:10px;transition:border-color .2s,background .2s}
+.agree-all-block.checked{border-color:#6366f1;background:#13132a}
+.agree-all-label{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.agree-all-text{font-size:15px;font-weight:600;color:#e2e8f0}
+
+/* 개별 약관 */
+.agree-block{background:#0f0f18;border:1.5px solid #1e1e2e;border-radius:8px;padding:12px 14px;margin-bottom:10px;transition:border-color .2s,background .2s}
+.agree-block.checked{border-color:#22c55e;background:#0a1a0f}
+.agree-block.err-highlight{border-color:#f87171}
+.agree-label-row{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.agree-text{font-size:14px;color:#cbd5e1;flex:1}
+.toggle-btn{font-size:12px;color:#6366f1;cursor:pointer;white-space:nowrap;padding:2px 8px;border:1px solid #2d2d44;border-radius:4px;background:transparent;flex-shrink:0}
+.toggle-btn:hover{background:#1a1a28}
+
+.chk-btn{
+  width:28px;height:28px;border-radius:6px;border:2px solid #6366f1;
+  background:#1a1a28;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;flex-shrink:0;box-shadow:0 0 0 0 rgba(99,102,241,0.4)
+}
+.chk-btn svg{opacity:0;transition:opacity .2s}
+.chk-btn:hover{border-color:#818cf8;background:#1e1e35;box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
+.chk-btn.on{background:#22c55e;border-color:#22c55e;box-shadow:none}
+.chk-btn.on svg{opacity:1}
+.chk-btn.on-all{background:#6366f1;border-color:#6366f1;box-shadow:none}
+.chk-btn.on-all svg{opacity:1}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0.5)}50%{box-shadow:0 0 0 5px rgba(99,102,241,0)}}
+.agree-block.err-highlight .chk-btn{border-color:#f87171;animation:pulse-border 1s ease 2}
+
 .agree-content{margin-top:12px;max-height:160px;overflow-y:auto;font-size:12px;line-height:1.7;color:#64748b;display:none;scrollbar-width:thin;scrollbar-color:#2d2d44 transparent}
 .agree-content.open{display:block}
 .agree-content h4{font-size:12px;font-weight:700;color:#94a3b8;margin:10px 0 4px}
 .agree-content p,.agree-content li{margin-bottom:4px}
 .agree-content ul{padding-left:16px}
+
 .btn{width:100%;background:#6366f1;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
 .btn:hover{background:#4f46e5}
 .btn:disabled{background:#2d2d44;cursor:not-allowed;color:#64748b}
-.msg{font-size:13px;padding:10px 14px;border-radius:6px;margin-top:12px;display:none}
+.msg{font-size:13px;padding:10px 14px;border-radius:6px;margin-top:12px;display:none;line-height:1.6}
 .msg.err{background:#2d1a1a;border:1px solid #7f1d1d;color:#fca5a5}
 .msg.ok{background:#1a2d1a;border:1px solid #14532d;color:#86efac}
 .divider{border-top:1px solid #1e1e2e;margin:20px 0}
@@ -54,6 +85,10 @@ select option{background:#1a1a28}
 .links a{color:#6366f1;text-decoration:none}
 .links a:hover{text-decoration:underline}
 .footer-info{margin-top:32px;padding-top:20px;border-top:1px solid #1e1e2e;font-size:11px;color:#475569;line-height:1.8;text-align:center}
+.notice-box{background:#13132a;border:1px solid #2d2d44;border-radius:8px;padding:14px 16px;margin-bottom:24px;font-size:13px;color:#64748b;line-height:1.8}
+.notice-box strong{color:#94a3b8}
+.notice-box ul{padding-left:16px;margin-top:6px}
+.notice-box li{margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -64,33 +99,49 @@ select option{background:#1a1a28}
   <h2>회원가입</h2>
   <p class="subtitle">서비스 이용을 위해 정보를 입력해 주세요.</p>
 
-  <form id="regForm">
+  <div class="notice-box">
+    <strong>회원가입 안내사항</strong>
+    <ul>
+      <li>이름·전화번호는 <strong>실제 정보</strong>를 정확히 입력해 주세요.</li>
+      <li>하나의 이메일로 <strong>중복 가입이 불가</strong>합니다.</li>
+      <li>구글 로그인을 사용하려면 <strong>이메일·비밀번호로 먼저 가입</strong>한 후 연동해 주세요.</li>
+      <li>가입 완료 후 바로 서비스를 이용하실 수 있습니다.</li>
+      <li>문의: 010-5350-8798 (평일 오전 9시~오후 5시)</li>
+    </ul>
+  </div>
+
+  <form id="regForm" novalidate>
     <div class="section-title">기본 정보</div>
 
     <div class="field">
-      <label>이름<span class="req">*</span></label>
-      <input type="text" id="name" placeholder="실명을 입력해 주세요" required>
+      <label class="field-label" for="name">이름<span class="req">*</span></label>
+      <input type="text" id="name" placeholder="실명을 입력해 주세요" autocomplete="name">
+      <div class="field-errmsg" id="nameErr">이름을 입력해 주세요.</div>
     </div>
     <div class="field">
-      <label>이메일<span class="req">*</span></label>
-      <input type="email" id="email" placeholder="example@email.com" required autocomplete="email">
+      <label class="field-label" for="email">이메일<span class="req">*</span></label>
+      <input type="email" id="email" placeholder="example@email.com" autocomplete="email">
+      <div class="field-errmsg" id="emailErr">올바른 이메일 주소를 입력해 주세요.</div>
     </div>
     <div class="field">
-      <label>비밀번호<span class="req">*</span></label>
-      <input type="password" id="password" placeholder="8자 이상 입력" required autocomplete="new-password">
-      <div class="pw-hint">영문, 숫자 조합 8자 이상</div>
+      <label class="field-label" for="password">비밀번호<span class="req">*</span></label>
+      <input type="password" id="password" placeholder="8자 이상 입력" autocomplete="new-password">
+      <div class="field-hint">영문, 숫자 조합 8자 이상</div>
+      <div class="field-errmsg" id="pwErr">비밀번호는 8자 이상이어야 합니다.</div>
     </div>
     <div class="field">
-      <label>비밀번호 확인<span class="req">*</span></label>
-      <input type="password" id="password2" placeholder="비밀번호를 다시 입력해 주세요" required autocomplete="new-password">
+      <label class="field-label" for="password2">비밀번호 확인<span class="req">*</span></label>
+      <input type="password" id="password2" placeholder="비밀번호를 다시 입력해 주세요" autocomplete="new-password">
+      <div class="field-errmsg" id="pw2Err">비밀번호가 일치하지 않습니다.</div>
     </div>
     <div class="field">
-      <label>전화번호<span class="req">*</span></label>
-      <input type="tel" id="phone" placeholder="010-0000-0000" required>
+      <label class="field-label" for="phone">전화번호<span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="010-0000-0000" autocomplete="tel">
+      <div class="field-errmsg" id="phoneErr">전화번호를 입력해 주세요.</div>
     </div>
     <div class="field">
-      <label>유입경로<span class="req">*</span></label>
-      <select id="referral" required>
+      <label class="field-label" for="referral">유입경로<span class="req">*</span></label>
+      <select id="referral">
         <option value="" disabled selected>어떻게 알게 되셨나요?</option>
         <option value="SNS(인스타그램/페이스북)">SNS (인스타그램/페이스북)</option>
         <option value="유튜브">유튜브</option>
@@ -100,15 +151,33 @@ select option{background:#1a1a28}
         <option value="오프라인 광고/홍보물">오프라인 광고/홍보물</option>
         <option value="기타">기타</option>
       </select>
+      <div class="field-errmsg" id="referralErr">유입경로를 선택해 주세요.</div>
     </div>
 
     <div class="section-title">약관 동의</div>
 
-    <div class="agree-block">
-      <div class="agree-header">
-        <input type="checkbox" id="agreeTerms" required>
-        <span class="agree-label">[필수] 이용약관 동의</span>
-        <span class="toggle-btn" onclick="toggle('termsContent')">전문 보기</span>
+    <!-- 전체 동의 -->
+    <div class="agree-all-block" id="agreeAllBlock" onclick="setAll()" style="cursor:pointer">
+      <div class="agree-all-label">
+        <div class="chk-btn" id="allChk">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="agree-all-text">전체 약관에 동의합니다</span>
+      </div>
+    </div>
+
+    <!-- 이용약관 -->
+    <div class="agree-block" id="termsBlock">
+      <div class="agree-label-row" onclick="toggleCheck('terms')" style="cursor:pointer">
+        <div class="chk-btn" id="termsChk">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="agree-text">[필수] 이용약관 동의</span>
+        <button type="button" class="toggle-btn" onclick="toggle('termsContent', this); event.stopPropagation()">전문 보기</button>
       </div>
       <div class="agree-content" id="termsContent">
         <h4>제1조 [목적]</h4>
@@ -126,11 +195,16 @@ select option{background:#1a1a28}
       </div>
     </div>
 
-    <div class="agree-block">
-      <div class="agree-header">
-        <input type="checkbox" id="agreePrivacy" required>
-        <span class="agree-label">[필수] 개인정보처리방침 동의</span>
-        <span class="toggle-btn" onclick="toggle('privacyContent')">전문 보기</span>
+    <!-- 개인정보처리방침 -->
+    <div class="agree-block" id="privacyBlock">
+      <div class="agree-label-row" onclick="toggleCheck('privacy')" style="cursor:pointer">
+        <div class="chk-btn" id="privacyChk">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="agree-text">[필수] 개인정보처리방침 동의</span>
+        <button type="button" class="toggle-btn" onclick="toggle('privacyContent', this); event.stopPropagation()">전문 보기</button>
       </div>
       <div class="agree-content" id="privacyContent">
         <h4>수집하는 개인정보의 항목 및 수집방법</h4>
@@ -167,41 +241,130 @@ select option{background:#1a1a28}
 </div>
 
 <script>
-function toggle(id) {
+function toggle(id, btn) {
   const el = document.getElementById(id);
-  el.classList.toggle('open');
+  const isOpen = el.classList.toggle('open');
+  if (btn) btn.textContent = isOpen ? '전문 닫기' : '전문 보기';
 }
+
+const agreeState = { terms: false, privacy: false };
+
+function updateChkBtn(id, on, isAll) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.classList.remove('on', 'on-all');
+  if (on) btn.classList.add(isAll ? 'on-all' : 'on');
+}
+
+function updateBlockStyle(blockId, checked) {
+  const block = document.getElementById(blockId);
+  if (!block) return;
+  if (checked) {
+    block.classList.add('checked');
+    block.classList.remove('err-highlight');
+  } else {
+    block.classList.remove('checked');
+  }
+}
+
+function toggleCheck(type) {
+  agreeState[type] = !agreeState[type];
+  updateChkBtn(type + 'Chk', agreeState[type], false);
+  updateBlockStyle(type + 'Block', agreeState[type]);
+  const all = agreeState.terms && agreeState.privacy;
+  updateChkBtn('allChk', all, true);
+  updateBlockStyle('agreeAllBlock', all);
+}
+
+function setAll() {
+  const all = !(agreeState.terms && agreeState.privacy);
+  agreeState.terms = all;
+  agreeState.privacy = all;
+  updateChkBtn('termsChk', all, false);
+  updateChkBtn('privacyChk', all, false);
+  updateChkBtn('allChk', all, true);
+  updateBlockStyle('termsBlock', all);
+  updateBlockStyle('privacyBlock', all);
+  updateBlockStyle('agreeAllBlock', all);
+}
+
+// 실시간 유효성 검사
+function setFieldState(inputId, errId, ok) {
+  const input = document.getElementById(inputId);
+  const err = document.getElementById(errId);
+  if (ok) {
+    input.classList.remove('input-err');
+    input.classList.add('input-ok');
+    err.classList.remove('show');
+  } else {
+    input.classList.add('input-err');
+    input.classList.remove('input-ok');
+    err.classList.add('show');
+  }
+}
+
+document.getElementById('name').addEventListener('blur', function() {
+  setFieldState('name', 'nameErr', this.value.trim().length > 0);
+});
+document.getElementById('email').addEventListener('blur', function() {
+  setFieldState('email', 'emailErr', this.value.includes('@') && this.value.includes('.'));
+});
+document.getElementById('password').addEventListener('blur', function() {
+  setFieldState('password', 'pwErr', this.value.length >= 8);
+});
+document.getElementById('password2').addEventListener('blur', function() {
+  const ok = this.value === document.getElementById('password').value && this.value.length > 0;
+  setFieldState('password2', 'pw2Err', ok);
+  document.getElementById('pw2Err').textContent = this.value.length === 0
+    ? '비밀번호 확인을 입력해 주세요.'
+    : '비밀번호가 일치하지 않습니다.';
+});
+document.getElementById('phone').addEventListener('blur', function() {
+  setFieldState('phone', 'phoneErr', this.value.trim().length > 0);
+});
 
 document.getElementById('regForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('msg');
 
+  // 전체 유효성 검사
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
   const pw = document.getElementById('password').value;
   const pw2 = document.getElementById('password2').value;
+  const phone = document.getElementById('phone').value.trim();
+  const referral = document.getElementById('referral').value;
+  let hasErr = false;
 
-  if (pw !== pw2) {
-    msg.className = 'msg err';
-    msg.textContent = '비밀번호가 일치하지 않습니다.';
-    msg.style.display = 'block';
-    return;
+  if (!name) { setFieldState('name', 'nameErr', false); hasErr = true; }
+  if (!email.includes('@')) { setFieldState('email', 'emailErr', false); hasErr = true; }
+  if (pw.length < 8) { setFieldState('password', 'pwErr', false); hasErr = true; }
+  if (pw !== pw2) { setFieldState('password2', 'pw2Err', false); hasErr = true; }
+  if (!phone) { setFieldState('phone', 'phoneErr', false); hasErr = true; }
+
+  if (!referral) {
+    document.getElementById('referralErr').classList.add('show');
+    hasErr = true;
+  } else {
+    document.getElementById('referralErr').classList.remove('show');
   }
-  if (pw.length < 8) {
-    msg.className = 'msg err';
-    msg.textContent = '비밀번호는 8자 이상이어야 합니다.';
-    msg.style.display = 'block';
-    return;
+
+  if (!agreeState.terms) {
+    document.getElementById('termsBlock').classList.add('err-highlight');
+    hasErr = true;
   }
-  if (!document.getElementById('agreeTerms').checked) {
-    msg.className = 'msg err';
-    msg.textContent = '이용약관에 동의해 주세요.';
-    msg.style.display = 'block';
-    return;
+  if (!agreeState.privacy) {
+    document.getElementById('privacyBlock').classList.add('err-highlight');
+    hasErr = true;
   }
-  if (!document.getElementById('agreePrivacy').checked) {
+
+  if (hasErr) {
     msg.className = 'msg err';
-    msg.textContent = '개인정보처리방침에 동의해 주세요.';
+    msg.textContent = '입력하지 않은 항목이 있거나 약관 동의가 필요합니다. 빨간색 표시 항목을 확인해 주세요.';
     msg.style.display = 'block';
+    const firstErr = document.querySelector('.input-err, .err-highlight');
+    if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
 
@@ -213,13 +376,7 @@ document.getElementById('regForm').addEventListener('submit', async (e) => {
     const res = await fetch('/auth/register', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        referral: document.getElementById('referral').value,
-        password: pw
-      })
+      body: JSON.stringify({ name, email, phone, referral, password: pw, agree_terms: agreeState.terms, agree_privacy: agreeState.privacy })
     });
     const data = await res.json();
     if (res.ok) {
