@@ -15,6 +15,7 @@ const EN: Dict = {
   "nav.profile": "Risk Profile",
   "nav.graph": "System Graph",
   "nav.aiBuilder": "AI Builder",
+  "nav.sector": "Sector Analysis",
   "nav.board": "Board",
   "nav.download": "Download",
   "nav.costs": "API Costs",
@@ -22,6 +23,7 @@ const EN: Dict = {
   // Mobile short forms
   "nav.mobile.overview": "Overview",
   "nav.mobile.regime": "Regime",
+  "nav.mobile.sector": "Sector",
   "nav.mobile.topPicks": "Picks",
   "nav.mobile.ai": "AI",
   "nav.mobile.forecast": "Forecast",
@@ -296,6 +298,7 @@ const KO: Dict = {
   "nav.profile": "투자 성향",
   "nav.graph": "시스템 그래프",
   "nav.aiBuilder": "AI 빌더",
+  "nav.sector": "섹터 분석",
   "nav.board": "게시판",
   "nav.download": "다운로드",
   "nav.costs": "API 비용",
@@ -303,6 +306,7 @@ const KO: Dict = {
   // Mobile short forms
   "nav.mobile.overview": "개요",
   "nav.mobile.regime": "체제",
+  "nav.mobile.sector": "섹터",
   "nav.mobile.topPicks": "픽",
   "nav.mobile.ai": "AI",
   "nav.mobile.forecast": "예측",

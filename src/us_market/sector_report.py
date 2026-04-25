@@ -92,6 +92,16 @@ def generate_sector_report(data_dir: str = '.') -> Dict:
         json.dump(report, f, ensure_ascii=False, indent=2, default=str)
     logger.info("sector_report.json saved: %s", path)
 
+    # SQLite 저장 (프론트엔드 API 서빙용)
+    try:
+        from db.data_store import get_db, upsert_sector_snapshot
+        conn = get_db()
+        upsert_sector_snapshot(conn, report)
+        conn.close()
+        logger.info("sector_snapshot saved to data.db")
+    except Exception as e:
+        logger.warning("sector DB upsert failed (non-critical): %s", e)
+
     return report
 
 

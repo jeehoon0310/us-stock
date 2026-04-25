@@ -128,6 +128,13 @@ CREATE TABLE IF NOT EXISTS data_schedules (
   updated_at        TEXT DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS data_sector_snapshot (
+  id           INTEGER PRIMARY KEY CHECK (id = 1),
+  generated_at TEXT,
+  data_json    TEXT NOT NULL,
+  updated_at   TEXT DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS data_mpva_posts (
   ntt_no      TEXT PRIMARY KEY,
   title       TEXT NOT NULL,
@@ -343,6 +350,20 @@ def upsert_graph(conn: sqlite3.Connection, graph_data: dict) -> None:
         (
             graph_data.get("generated_at", ""),
             json.dumps(graph_data, ensure_ascii=False),
+        ),
+    )
+    conn.commit()
+
+
+def upsert_sector_snapshot(conn: sqlite3.Connection, sector_data: dict) -> None:
+    """Upsert sector_report.json payload (rotation + heatmap + options_flow)."""
+    conn.execute(
+        """INSERT OR REPLACE INTO data_sector_snapshot
+           (id, generated_at, data_json, updated_at)
+           VALUES (1, ?, ?, datetime('now'))""",
+        (
+            sector_data.get("generated_at", ""),
+            json.dumps(sector_data, ensure_ascii=False, default=str),
         ),
     )
     conn.commit()
