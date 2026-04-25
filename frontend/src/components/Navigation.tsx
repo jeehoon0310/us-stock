@@ -16,6 +16,7 @@ const NAV = [
   { href: "/ml",          icon: "leaderboard",     labelKey: "nav.ml",           adminOnly: false },
   { href: "/risk",        icon: "security",        labelKey: "nav.risk",         adminOnly: false },
   { href: "/performance", icon: "trending_up",     labelKey: "nav.performance",  adminOnly: false },
+  { href: "/profile",     icon: "person_search",   labelKey: "nav.profile",      adminOnly: false },
   { href: "/download",    icon: "download",        labelKey: "nav.download",     adminOnly: false },
   // 관리자 전용 (하단 배치)
   { href: "/costs",       icon: "payments",        labelKey: "nav.costs",        adminOnly: true  },
@@ -34,6 +35,7 @@ const MOBILE_NAV = [
   { href: "/ml",          icon: "leaderboard",  labelKey: "nav.mobile.ml"          },
   { href: "/risk",        icon: "security",     labelKey: "nav.mobile.risk"        },
   { href: "/performance", icon: "trending_up",  labelKey: "nav.mobile.performance" },
+  { href: "/profile",     icon: "person_search",labelKey: "nav.mobile.profile"     },
   { href: "/download",    icon: "download",     labelKey: "nav.mobile.download"    },
   { href: "/costs",       icon: "payments",     labelKey: "nav.mobile.costs",       adminOnly: true },
   { href: "/graph",       icon: "hub",          labelKey: "nav.mobile.graph",       adminOnly: true },
