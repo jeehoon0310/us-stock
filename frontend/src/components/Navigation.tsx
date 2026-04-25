@@ -10,7 +10,6 @@ const NAV = [
   { href: "/board",       icon: "forum",          labelKey: "nav.board",        adminOnly: false },
   { href: "/overview",    icon: "dashboard",       labelKey: "nav.overview",     adminOnly: false },
   { href: "/regime",      icon: "analytics",       labelKey: "nav.regime",       adminOnly: false },
-  { href: "/sector",      icon: "pie_chart",       labelKey: "nav.sector",       adminOnly: false },
   { href: "/top-picks",   icon: "star",            labelKey: "nav.topPicks",     adminOnly: false },
   { href: "/ai",          icon: "psychology",      labelKey: "nav.ai",           adminOnly: false },
   { href: "/forecast",    icon: "insights",        labelKey: "nav.forecast",     adminOnly: false },
@@ -21,6 +20,7 @@ const NAV = [
   { href: "/download",    icon: "download",        labelKey: "nav.download",     adminOnly: false },
   // 관리자 전용 (하단 배치)
   { href: "/costs",       icon: "payments",        labelKey: "nav.costs",        adminOnly: true  },
+  { href: "/sector",      icon: "pie_chart",       labelKey: "nav.sector",       adminOnly: true  },
   { href: "/chat-logs",   icon: "chat",            labelKey: "nav.chatLogs",     adminOnly: true  },
   { href: "/graph",       icon: "hub",             labelKey: "nav.graph",        adminOnly: true  },
   { href: "/ai-builder",  icon: "smart_toy",       labelKey: "nav.aiBuilder",    adminOnly: true  },
@@ -30,7 +30,6 @@ const MOBILE_NAV = [
   { href: "/board",       icon: "forum",        labelKey: "nav.mobile.board"       },
   { href: "/overview",    icon: "dashboard",    labelKey: "nav.mobile.overview"    },
   { href: "/regime",      icon: "analytics",    labelKey: "nav.mobile.regime"      },
-  { href: "/sector",      icon: "pie_chart",    labelKey: "nav.mobile.sector"      },
   { href: "/top-picks",   icon: "star",         labelKey: "nav.mobile.topPicks"    },
   { href: "/ai",          icon: "psychology",   labelKey: "nav.mobile.ai"          },
   { href: "/forecast",    icon: "insights",     labelKey: "nav.mobile.forecast"    },
@@ -40,6 +39,7 @@ const MOBILE_NAV = [
   { href: "/profile",     icon: "person_search",labelKey: "nav.mobile.profile"     },
   { href: "/download",    icon: "download",     labelKey: "nav.mobile.download"    },
   { href: "/costs",       icon: "payments",     labelKey: "nav.mobile.costs",       adminOnly: true },
+  { href: "/sector",      icon: "pie_chart",    labelKey: "nav.mobile.sector",      adminOnly: true },
   { href: "/graph",       icon: "hub",          labelKey: "nav.mobile.graph",       adminOnly: true },
   { href: "/ai-builder",  icon: "smart_toy",    labelKey: "nav.mobile.aiBuilder",   adminOnly: true },
 ];
