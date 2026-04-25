@@ -886,6 +886,86 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  sector_rotation: {
+    title: "경기 사이클 · Sector Rotation 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🔄 경제는 항상 4단계로 돌아가요!</Sec>
+        <p>주식 시장은 경기 사이클에 따라 <span className={H.bold}>어떤 업종이 잘 나가는지</span>가 바뀌어요.<br />
+        11개 SPDR ETF의 다기간 수익률을 분석해서 지금 어느 단계인지 알려줘요.</p>
+        <Box>
+          <p><span className={H.green}>Early Cycle (초기)</span> = 경기가 막 살아나요! 금융·소비재·산업재가 주도 🌱</p>
+          <p><span className={H.blue}>Mid Cycle (중반)</span> = 본격 성장 중! 기술·통신·소재가 주도 📈</p>
+          <p><span className={H.yellow}>Late Cycle (후기)</span> = 성장 둔화, 에너지·리츠·원자재가 주도 🌅</p>
+          <p><span className={H.red}>Recession (침체)</span> = 경기 후퇴! 유틸·필수소비재·헬스케어로 피신 🛡️</p>
+        </Box>
+        <Sec>각도(Angle)는 뭐예요?</Sec>
+        <Box>
+          <p>사이클을 시계처럼 표현한 거예요</p>
+          <p>0° = Early Cycle 시작 → 90° = Mid → 180° = Late → 270° = Recession</p>
+        </Box>
+        <Sec>주도/열위 섹터는?</Sec>
+        <Box>
+          <p><span className={H.green}>주도(Leading)</span> = 현재 국면에서 가장 강한 섹터 — 비중 늘려도 좋아요</p>
+          <p><span className={H.red}>열위(Lagging)</span> = 현재 국면에서 약한 섹터 — 비중 줄이는 게 좋아요</p>
+        </Box>
+      </>
+    ),
+  },
+
+  sector_heatmap: {
+    title: "섹터 히트맵 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🟩🟥 색깔로 오늘 성적표를 한눈에 봐요!</Sec>
+        <p>11개 업종(섹터) ETF가 <span className={H.bold}>오늘 얼마나 올랐는지 내렸는지</span>를 색깔로 보여줘요.</p>
+        <Box>
+          <p><span className={H.green}>진한 초록 (+2% 이상)</span> = 오늘 많이 올랐어요! 🚀</p>
+          <p><span className="text-primary/60 font-bold">연한 초록 (0~+2%)</span> = 조금 올랐어요</p>
+          <p><span className="text-error/60 font-bold">연한 빨강 (-2%~0)</span> = 조금 내렸어요</p>
+          <p><span className={H.red}>진한 빨강 (-2% 이하)</span> = 오늘 많이 내렸어요 📉</p>
+        </Box>
+        <Sec>11개 섹터는?</Sec>
+        <Box>
+          <p>XLK(기술) · XLF(금융) · XLV(헬스케어) · XLY(임의소비재)</p>
+          <p>XLP(필수소비재) · XLE(에너지) · XLI(산업재) · XLB(소재)</p>
+          <p>XLRE(리츠) · XLU(유틸리티) · XLC(통신)</p>
+        </Box>
+        <p className="text-[11px]">색이 진할수록 오늘 움직임이 큰 섹터예요!</p>
+      </>
+    ),
+  },
+
+  options_flow: {
+    title: "옵션 플로우 · Options Flow 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🎰 큰손들이 어떤 방향에 베팅하는지 봐요!</Sec>
+        <p>주식 옵션은 "<span className={H.bold}>오를 것에 베팅(Call)</span>"과 "<span className={H.bold}>내릴 것에 베팅(Put)</span>"으로 나뉘어요.<br />
+        기관 투자자들이 어느 방향에 돈을 거는지 분석해요.</p>
+        <Box>
+          <p><span className={H.bold}>P/C Ratio (풋/콜 비율)</span> = Put 거래량 ÷ Call 거래량</p>
+          <p><span className={H.green}>0.7 미만</span> = Call이 많아요 → 기관이 상승에 베팅 📈</p>
+          <p><span className={H.yellow}>0.7~1.3</span> = 비슷해요 → 방향 불확실</p>
+          <p><span className={H.red}>1.3 초과</span> = Put이 많아요 → 기관이 하락에 베팅 📉</p>
+        </Box>
+        <Sec>심리 점수(Sentiment Score)는?</Sec>
+        <Box>
+          <p><span className={H.green}>70점 이상</span> = Very Bullish — 기관이 강하게 상승 베팅</p>
+          <p><span className={H.yellow}>50~70점</span> = Neutral~Bullish — 약한 상승 기대</p>
+          <p><span className={H.red}>50점 미만</span> = Bearish — 하락 베팅 많음</p>
+        </Box>
+        <Sec>Unusual Activity(비정상 활동)는?</Sec>
+        <Box>
+          <p>평소보다 콜/풋 거래량이 비정상적으로 많은 경우예요</p>
+          <p><span className={H.green}>Heavy Call Buying</span> = 큰손이 콜을 대량 매수 → 강력 상승 기대</p>
+          <p><span className={H.red}>Heavy Put Buying</span> = 큰손이 풋을 대량 매수 → 강력 하락 헤지</p>
+        </Box>
+        <p className="text-[11px]">단독으로 판단하지 말고 Regime·Gate 신호와 함께 해석하세요!</p>
+      </>
+    ),
+  },
+
   api_costs: {
     title: "API Costs (AI 사용 비용) 이게 뭐야?",
     body: (

@@ -91,12 +91,15 @@ function etfLabel(ticker: string): string {
 
 // ── 컴포넌트 ────────────────────────────────────────────────────────────────
 
-function SectionHeader({ icon, title, sub }: { icon: string; title: string; sub?: string }) {
+function SectionHeader({ icon, title, sub, helpTopic }: { icon: string; title: string; sub?: string; helpTopic?: Parameters<typeof HelpBtn>[0]["topic"] }) {
   return (
     <div className="flex items-center gap-3 mb-6">
       <span className="material-symbols-outlined text-primary text-xl">{icon}</span>
-      <div>
-        <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface">{title}</h2>
+      <div className="flex-1">
+        <div className="flex items-center gap-1">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface">{title}</h2>
+          {helpTopic && <HelpBtn topic={helpTopic} />}
+        </div>
         {sub && <p className="text-[10px] text-on-surface-variant mt-0.5">{sub}</p>}
       </div>
     </div>
@@ -114,7 +117,7 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
 
   return (
     <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-      <SectionHeader icon="rotate_right" title="경기 사이클 · Sector Rotation" sub="11개 SPDR ETF 다기간 수익률 가중 평균" />
+      <SectionHeader icon="rotate_right" title="경기 사이클 · Sector Rotation" sub="11개 SPDR ETF 다기간 수익률 가중 평균" helpTopic="sector_rotation" />
 
       {/* Current Phase Hero */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
@@ -196,7 +199,7 @@ function HeatmapSection({ items }: { items: HeatmapItem[] }) {
   const sorted = [...items].sort((a, b) => b.change_pct - a.change_pct);
   return (
     <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-      <SectionHeader icon="grid_view" title="섹터 히트맵 · 11 SPDR ETFs" sub="당일 등락폭 기준 색상 (≥+2% 진초록 / ≤-2% 진빨강)" />
+      <SectionHeader icon="grid_view" title="섹터 히트맵 · 11 SPDR ETFs" sub="당일 등락폭 기준 색상 (≥+2% 진초록 / ≤-2% 진빨강)" helpTopic="sector_heatmap" />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {sorted.map((s) => (
           <div
@@ -230,6 +233,7 @@ function OptionsSection({ flow }: { flow: OptionsFlow }) {
         icon="candlestick_chart"
         title="옵션 플로우 · Options Flow"
         sub="P/C Ratio 기반 기관 심리 분석"
+        helpTopic="options_flow"
       />
 
       {/* Summary Cards */}
