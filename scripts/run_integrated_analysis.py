@@ -13,7 +13,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))        # project root — enables 'from src.xxx import'
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))  # src/ — enables 'from xxx import'
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -186,8 +187,11 @@ def phase2_stock_selection(target_date: datetime | None = None) -> list[dict]:
         # 날짜별 CSV 저장
         result_dir = BASE_DIR / "result"
         result_dir.mkdir(exist_ok=True)
+        picks_dir = BASE_DIR / "output" / "picks"
+        picks_dir.mkdir(exist_ok=True)
         ref = (target_date or datetime.now()).strftime("%Y%m%d")
         top20.to_csv(result_dir / f"smart_money_picks_{ref}.csv", index=False, encoding="utf-8-sig")
+        top20.to_csv(picks_dir / f"smart_money_picks_{ref}.csv", index=False, encoding="utf-8-sig")
 
     logger.info("[Phase 2] 완료 (%.1f초)", time.time() - t0)
     return picks
@@ -320,6 +324,33 @@ def phase4_risk_alert(portfolio_value: float = 100_000) -> dict | None:
         return None
 
 
+# ── Phase 5: 섹터 분석 ───────────────────────────────────────────
+
+def phase5_sector_report() -> dict:
+    """섹터 순환 + 히트맵 + 옵션 플로우 → data_sector_snapshot."""
+    logger.info("=" * 60)
+    logger.info("[Phase 5] 섹터 분석")
+    t0 = time.time()
+
+    try:
+        from us_market.sector_report import generate_sector_report
+        result = generate_sector_report(data_dir=str(BASE_DIR))
+        sr = result.get("sector_rotation", {})
+        hm = result.get("sector_heatmap", [])
+        of = result.get("options_flow", {})
+        logger.info(
+            "[Phase 5] 완료 (%.1f초) — phase=%s, heatmap=%d, options=%d",
+            time.time() - t0,
+            sr.get("current_phase", "N/A"),
+            len(hm) if isinstance(hm, list) else 0,
+            of.get("stocks_analyzed", 0),
+        )
+        return result
+    except Exception as e:
+        logger.error("[Phase 5] 섹터 분석 실패: %s", e)
+        return {}
+
+
 # ── 메인 ──────────────────────────────────────────────────────────
 
 def run_integrated_analysis(
@@ -380,6 +411,9 @@ def run_integrated_analysis(
                 "invested_pct": risk_result.get("portfolio_summary", {}).get("invested_pct", 0),
                 "cash_pct": risk_result.get("portfolio_summary", {}).get("cash_pct", 100),
             }
+
+        # Phase 5: 섹터 분석
+        phase5_sector_report()
 
         # 종합 요약
         elapsed = (datetime.now() - start).total_seconds()
