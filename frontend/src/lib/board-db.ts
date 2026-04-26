@@ -119,6 +119,27 @@ function initSchema(db: Database.Database) {
     VALUES ('notice', 'notice', '공지사항', '운영자 공지사항', ?)
   `).run(now());
 
+  // 마이그레이션: 투자 성향 분석 결과 테이블
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS profile_results (
+      id TEXT PRIMARY KEY,
+      user_name TEXT NOT NULL DEFAULT '익명',
+      user_email TEXT,
+      profile TEXT NOT NULL,
+      score INTEGER NOT NULL,
+      age INTEGER NOT NULL,
+      experience INTEGER NOT NULL,
+      purpose TEXT NOT NULL,
+      sectors TEXT NOT NULL,
+      required_return REAL NOT NULL DEFAULT 0,
+      investable INTEGER,
+      target INTEGER,
+      duration INTEGER NOT NULL DEFAULT 3,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_profile_results_created ON profile_results(created_at DESC);
+  `);
+
   // 마이그레이션: 카테고리 이름 변경
   const renames: [string, string][] = [
     ["stocks",     "강의자료"],
@@ -397,4 +418,61 @@ export function getVisitorStats(): { today: number; total: number } {
     today: todayRow?.count ?? 0,
     total: totalRow.total,
   };
+}
+
+// ── Profile Results ─────────────────────────────────────────────
+
+export interface ProfileResult {
+  id: string;
+  user_name: string;
+  user_email: string | null;
+  profile: string;
+  score: number;
+  age: number;
+  experience: number;
+  purpose: string;
+  sectors: string;
+  required_return: number;
+  investable: number | null;
+  target: number | null;
+  duration: number;
+  created_at: string;
+}
+
+export function saveProfileResult(data: {
+  user_name: string;
+  user_email?: string;
+  profile: string;
+  score: number;
+  age: number;
+  experience: number;
+  purpose: string;
+  sectors: string[];
+  required_return: number;
+  investable?: number;
+  target?: number;
+  duration: number;
+}): void {
+  const id = generateId();
+  getDb().prepare(`
+    INSERT INTO profile_results
+      (id, user_name, user_email, profile, score, age, experience, purpose, sectors, required_return, investable, target, duration, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id, data.user_name, data.user_email ?? null,
+    data.profile, data.score, data.age, data.experience,
+    data.purpose, JSON.stringify(data.sectors),
+    data.required_return, data.investable ?? null, data.target ?? null,
+    data.duration, now()
+  );
+}
+
+export function getProfileResults(limit = 200): ProfileResult[] {
+  return getDb()
+    .prepare('SELECT * FROM profile_results ORDER BY created_at DESC LIMIT ?')
+    .all(limit) as ProfileResult[];
+}
+
+export function deleteProfileResult(id: string): void {
+  getDb().prepare('DELETE FROM profile_results WHERE id = ?').run(id);
 }

@@ -295,6 +295,10 @@ export default function ProfilePage() {
   const [picks, setPicks] = useState<StockPick[]>([]);
   const [loadingPicks, setLoadingPicks] = useState(true);
 
+  // 사용자 정보
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
   // 채팅 상태
   const [chatMsgs, setChatMsgs] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
@@ -308,6 +312,10 @@ export default function ProfilePage() {
       .then((d) => { setPicks(d?.stock_picks ?? []); })
       .catch(() => {})
       .finally(() => setLoadingPicks(false));
+    fetch("/auth/me", { credentials: "include" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) { setUserName(d.name ?? ""); setUserEmail(d.email ?? ""); } })
+      .catch(() => {});
   }, []);
 
   // 스크롤 자동 이동
@@ -369,7 +377,28 @@ export default function ProfilePage() {
     const tgt = Number(target) || 0;
     const requiredReturn = calcRequiredReturn(inv, tgt, duration);
     const score = calcRiskScore({ age, experience, requiredReturn, purpose, sectors });
-    setResult({ profile: scoreToProfile(score), score, requiredReturn, age, experience, purpose, sectors });
+    const profile = scoreToProfile(score);
+    setResult({ profile, score, requiredReturn, age, experience, purpose, sectors });
+
+    // 결과 저장 (fire-and-forget)
+    fetch("/api/admin/profile-results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_name: userName || "익명",
+        user_email: userEmail || undefined,
+        profile,
+        score,
+        age,
+        experience,
+        purpose,
+        sectors,
+        required_return: requiredReturn,
+        investable: inv || undefined,
+        target: tgt || undefined,
+        duration,
+      }),
+    }).catch(() => {});
   };
 
   const handleSend = () => {

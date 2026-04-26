@@ -3,6 +3,36 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface ProfileResult {
+  id: string;
+  user_name: string;
+  user_email: string | null;
+  profile: string;
+  score: number;
+  age: number;
+  experience: number;
+  purpose: string;
+  sectors: string;
+  required_return: number;
+  investable: number | null;
+  target: number | null;
+  duration: number;
+  created_at: string;
+}
+
+const PROFILE_META: Record<string, { label: string; color: string }> = {
+  very_conservative: { label: "매우 보수적", color: "text-blue-400" },
+  conservative:      { label: "보수적",      color: "text-teal-400" },
+  neutral:           { label: "중립적",      color: "text-yellow-400" },
+  aggressive:        { label: "공격적",      color: "text-orange-400" },
+  very_aggressive:   { label: "매우 공격적", color: "text-red-400" },
+};
+
+const EXPERIENCE_LABELS: Record<number, string> = { 0: "0~1년", 2: "2~3년", 4: "4~5년", 6: "6~9년", 10: "10년+" };
+const PURPOSE_LABELS: Record<string, string> = {
+  preserve: "자본보전/노후대비", stable: "안정적 수익", grow: "자산 증식", lump_sum: "목돈 마련", fast: "빠른 자산 증대",
+};
+
 interface ChatLog {
   id: number;
   session_id: string;
@@ -209,6 +239,8 @@ export default function AdminPage() {
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
   const [chatTotal, setChatTotal] = useState(0);
   const [expandedChat, setExpandedChat] = useState<number | null>(null);
+  const [profileResults, setProfileResults] = useState<ProfileResult[]>([]);
+  const [profileTotal, setProfileTotal] = useState(0);
 
   useEffect(() => {
     fetch("/auth/me", { credentials: "include" })
@@ -250,6 +282,17 @@ export default function AdminPage() {
       .then((data) => {
         setChatLogs(Array.isArray(data.logs) ? data.logs : []);
         setChatTotal(data.total ?? 0);
+      })
+      .catch(() => {});
+  }, [authChecked, isAdmin]);
+
+  useEffect(() => {
+    if (!authChecked || !isAdmin) return;
+    fetch("/api/admin/profile-results")
+      .then((r) => r.json())
+      .then((data) => {
+        setProfileResults(Array.isArray(data.results) ? data.results : []);
+        setProfileTotal(data.total ?? 0);
       })
       .catch(() => {});
   }, [authChecked, isAdmin]);
@@ -383,6 +426,79 @@ export default function AdminPage() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* 투자 성향 분석 결과 섹션 */}
+      <div className="mt-10">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="material-symbols-outlined text-primary">person_search</span>
+          <h2 className="text-lg font-bold text-base-content">투자 성향 분석 결과</h2>
+          {profileTotal > 0 && (
+            <span className="badge badge-primary badge-sm">{profileTotal}건</span>
+          )}
+        </div>
+        <p className="text-xs text-base-content/40 mb-4">/profile 페이지에서 분석 버튼을 누른 기록</p>
+
+        {profileResults.length === 0 ? (
+          <div className="bg-base-200 rounded-xl p-6 text-center text-sm text-base-content/40">
+            아직 분석 기록이 없습니다.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table table-sm w-full">
+              <thead>
+                <tr>
+                  <th className="text-[11px]">일시</th>
+                  <th className="text-[11px]">회원</th>
+                  <th className="text-[11px]">성향</th>
+                  <th className="text-[11px]">점수</th>
+                  <th className="text-[11px]">나이</th>
+                  <th className="text-[11px]">경험</th>
+                  <th className="text-[11px]">목적</th>
+                  <th className="text-[11px]">목표수익률</th>
+                  <th className="text-[11px]">기간</th>
+                  <th className="text-[11px]">투자금→목표</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profileResults.map((r) => {
+                  const meta = PROFILE_META[r.profile];
+                  return (
+                    <tr key={r.id} className="hover">
+                      <td className="text-[11px] text-base-content/50 whitespace-nowrap">
+                        {r.created_at.slice(0, 16).replace("T", " ")}
+                      </td>
+                      <td className="text-[11px]">
+                        <div className="font-medium text-base-content">{r.user_name}</div>
+                        {r.user_email && <div className="text-base-content/40">{r.user_email}</div>}
+                      </td>
+                      <td>
+                        <span className={`text-xs font-bold ${meta?.color ?? "text-base-content"}`}>
+                          {meta?.label ?? r.profile}
+                        </span>
+                      </td>
+                      <td className="text-[11px] font-mono font-bold text-base-content">
+                        {r.score > 0 ? `+${r.score}` : r.score}
+                      </td>
+                      <td className="text-[11px] text-base-content/70">{r.age}세</td>
+                      <td className="text-[11px] text-base-content/70">{EXPERIENCE_LABELS[r.experience] ?? r.experience}</td>
+                      <td className="text-[11px] text-base-content/70">{PURPOSE_LABELS[r.purpose] ?? r.purpose}</td>
+                      <td className="text-[11px] font-bold text-primary">
+                        {r.required_return > 0 ? `+${r.required_return.toFixed(1)}%` : "—"}
+                      </td>
+                      <td className="text-[11px] text-base-content/70">{r.duration}년</td>
+                      <td className="text-[11px] text-base-content/50">
+                        {r.investable && r.target
+                          ? `${r.investable.toLocaleString()}→${r.target.toLocaleString()}만`
+                          : "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
