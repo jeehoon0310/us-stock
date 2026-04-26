@@ -1,6 +1,6 @@
 # US Stock 에이전트 팀 — 설치 가이드
 
-> **현재 상태 (2026-04-16 기준):** `.claude/agents/`에 22개 2세대 에이전트가 설치된 상태다. 이 가이드는 참고용이며 신규 설치 시 사용한다.
+> **현재 상태 (2026-04-24 기준):** `.claude/agents/`에 27개 2세대 에이전트가 설치된 상태다. improvement 팀(5개) 추가 — 매주 토요일 07:00 자동 실행. 이 가이드는 참고용이며 신규 설치 시 사용한다.
 
 ## 에이전트 세대 구분
 
@@ -37,6 +37,11 @@
 | **MLOps** | `mlops-lead` | GBM 파이프라인 아키텍처 결정 |
 | | `ml-pipeline-architect` | train/predict 파이프라인 구현 |
 | | `service-evolver` | 서비스 일일 진화 메타 에이전트 |
+| **Improvement** | `improvement-lead` | 주간 개선 사이클 총괄 오케스트레이터 (매주 토 07:00 자동) |
+| | `system-validator` | 파이프라인·코드·데이터 품질 검증 |
+| | `model-validator` | GBM 성능·체제 감지·피처 중요도 검증 |
+| | `trend-researcher` | WebSearch 기반 최신 퀀트 트렌드 발굴 |
+| | `strategy-validator` | 스크리닝 전략 유효성·팩터 alpha decay 검증 |
 
 ## 실행 방법
 

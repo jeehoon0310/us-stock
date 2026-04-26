@@ -629,6 +629,7 @@ async def google_callback(request: Request, response: Response,
             "grant_type": "authorization_code",
         })
         if token_res.status_code != 200:
+            print(f"[Google OAuth] token_failed: {token_res.status_code} {token_res.text[:300]}", flush=True)
             return RedirectResponse(url="/login?error=token_failed")
         token_data = token_res.json()
 

@@ -10,7 +10,7 @@ import os
 import shutil
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))        # project root — enables 'from src.xxx import'
@@ -24,6 +24,29 @@ REPORTS_DIR = BASE_DIR / "output" / "reports"
 LOGS_DIR = BASE_DIR / "logs"
 OUTPUT_DIR = BASE_DIR / "output"
 DATA_DIR = BASE_DIR / "data"
+
+
+# NYSE 휴장일 (주말 제외 공휴일)
+US_MARKET_HOLIDAYS = {
+    "2025-01-01", "2025-01-20", "2025-02-17", "2025-04-18",
+    "2025-05-26", "2025-07-04", "2025-09-01", "2025-11-27", "2025-12-25",
+    "2026-01-01", "2026-01-19", "2026-02-16", "2026-04-03",
+    "2026-05-25", "2026-07-03", "2026-09-07", "2026-11-26", "2026-12-25",
+    "2027-01-01", "2027-01-18", "2027-02-15", "2027-03-26",
+    "2027-05-31", "2027-07-05", "2027-09-06", "2027-11-25", "2027-12-24",
+}
+
+
+def get_us_trading_date() -> datetime:
+    """KST 기준 배치 실행일의 마지막 미국 거래일을 반환한다.
+
+    미국 시장은 KST 다음날 새벽 5~6시 마감이므로, 07:00 KST 배치 실행 시점에는
+    전일(KST)이 마지막 미국 거래일이다. 주말·공휴일이면 직전 거래일로 소급한다.
+    """
+    candidate = datetime.now() - timedelta(days=1)
+    while candidate.weekday() >= 5 or candidate.strftime("%Y-%m-%d") in US_MARKET_HOLIDAYS:
+        candidate -= timedelta(days=1)
+    return candidate
 
 
 def setup_dirs():
@@ -220,7 +243,8 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
     t0 = time.time()
 
     verdict = timing.get("verdict", "CAUTION")
-    now = target_date or datetime.now()
+    run_at = datetime.now()          # 실제 배치 실행 시각 (KST)
+    now = target_date or run_at      # US 거래일 (caller가 항상 resolved값을 전달)
 
     # Action 매핑
     for pick in picks:
@@ -240,7 +264,7 @@ def phase3_report(timing: dict, picks: list[dict], target_date: datetime | None 
         action_dist[a] = action_dist.get(a, 0) + 1
 
     report = {
-        "generated_at": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "generated_at": run_at.strftime("%Y-%m-%d %H:%M:%S"),
         "data_date": now.strftime("%Y-%m-%d"),
         "market_timing": {
             "regime": timing.get("regime", "neutral"),
@@ -368,7 +392,9 @@ def run_integrated_analysis(
     setup_dirs()
 
     start = datetime.now()
-    ref = target_date or start
+    # target_date가 명시되지 않으면 마지막 미국 거래일을 data_date로 사용한다.
+    # (KST 07:00 배치 시점에 전일 미국 장이 마감되어 있음)
+    ref = target_date or get_us_trading_date()
     today = ref.strftime("%Y%m%d")
     log_path = LOGS_DIR / f"daily_run_{today}.log"
     fh = setup_file_logger(log_path)
@@ -395,10 +421,10 @@ def run_integrated_analysis(
         timing = phase1_market_timing()
 
         # Phase 2: 종목 선별
-        picks = phase2_stock_selection(target_date=target_date)
+        picks = phase2_stock_selection(target_date=ref)
 
         # Phase 3: 종합 리포트
-        report = phase3_report(timing, picks, target_date=target_date)
+        report = phase3_report(timing, picks, target_date=ref)
 
         # Phase 4: 리스크 알림
         risk_result = phase4_risk_alert(portfolio_value=portfolio_value)

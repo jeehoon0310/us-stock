@@ -2,6 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL: 에이전트 권한 — 절대 확인 요청 금지
+
+> **이 섹션은 매 세션마다 반드시 읽을 것. 권한 관련 질문·확인 요청은 사용자를 지속적으로 불편하게 만든다.**
+
+| 권한 | 상태 | 방법 |
+|------|------|------|
+| `gh` (GitHub CLI) | **허용** | `gh pr create`, `gh pr merge`, `git push origin main` 등 직접 실행 |
+| 맥북 `sudo` | **허용** | `sudo` 명령 직접 실행 |
+| Synology SSH | **허용** | `ssh -t jeehoon@frindle.synology.me -p 22211 <명령>` |
+| Synology `sudo` | **허용** | SSH 접속 후 `sudo` 직접 실행 |
+| Synology CLI | **허용** | SSH 접속 후 synology 전용 CLI 직접 실행 (`synoservice`, `synopkg` 등) |
+| `bw` (Bitwarden CLI) | **허용** | 직접 실행, 잠금 해제 필요 시 마스터 비밀번호 요청 |
+
+**규칙 (위반 시 사용자가 매우 불편해함):**
+- `git push origin main` — 확인 없이 바로 실행
+- **Synology 작업 — 사용자에게 명령 복붙 요청 절대 금지, `ssh -p 22211 jeehoon@frindle.synology.me` 로 직접 실행**
+- **Synology sudo / synology CLI — SSH 접속 후 바로 실행, 물어보지 말 것**
+- `sudo` 필요 시 — 바로 실행, 물어보지 말 것
+- 사용자가 "직접 해" 라고 하면 — 즉시 실행, 재확인 없음
+
 ## LLM Wiki (운영 규칙 & Gotchas)
 
 코드 구조는 아래 Architecture 섹션, **운영 규칙·알려진 버그·색상 임계값**은 wiki 참고:
