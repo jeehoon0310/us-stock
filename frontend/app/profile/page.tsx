@@ -330,7 +330,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId, content }),
+        body: JSON.stringify({ session_id: sessionId, content, username: userName, email: userEmail }),
       });
       const data = await res.json();
       setChatMsgs((prev) => [...prev, { role: "ai", text: data.reply ?? "답변을 가져올 수 없습니다." }]);
