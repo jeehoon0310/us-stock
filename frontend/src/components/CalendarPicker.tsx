@@ -110,20 +110,19 @@ export function CalendarPicker({
     const total = daysInMonth(y, m - 1);
     const cells: Array<{ day: number | null; dateStr: string | null }> = [];
 
-    // 이전 달 빈칸
+    // 이전 달 빈칸 (숫자 미표시 — 현재 달과 혼동 방지)
     for (let i = 0; i < firstDayMon; i++) {
-      const prevDate = new Date(y, m - 1, -firstDayMon + i + 1);
-      cells.push({ day: prevDate.getDate(), dateStr: null });
+      cells.push({ day: null, dateStr: null });
     }
     // 이번 달
     for (let d = 1; d <= total; d++) {
       const ds = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       cells.push({ day: d, dateStr: ds });
     }
-    // 다음 달 빈칸 (6주 고정)
+    // 다음 달 빈칸 (숫자 미표시 — 현재 달과 혼동 방지)
     const remaining = 42 - cells.length;
     for (let d = 1; d <= remaining; d++) {
-      cells.push({ day: d, dateStr: null });
+      cells.push({ day: null, dateStr: null });
     }
     return cells;
   }
