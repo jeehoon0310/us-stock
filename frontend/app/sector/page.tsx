@@ -362,48 +362,65 @@ function HeatmapSection({
         {sorted.map((s) => {
           const pct = getChangePct(s);
           const isExpanded = expandedSector === s.name;
-          const stockList = sectorStocks[s.name] ?? [];
           return (
-            <div key={s.ticker} className="col-span-1">
-              <button
-                onClick={() => setExpandedSector(isExpanded ? null : s.name)}
-                className={`w-full text-left rounded-xl p-4 border ${heatBg(pct)} flex flex-col gap-1 transition-all hover:opacity-90`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-on-surface-variant">{s.ticker}</span>
-                  <span className="material-symbols-outlined text-[14px] text-on-surface-variant">
-                    {isExpanded ? "expand_less" : "expand_more"}
-                  </span>
-                </div>
-                <p className="text-[10px] text-on-surface-variant truncate">{s.name}</p>
-                <p className={`text-xl font-black ${heatText(pct)} leading-none`}>
-                  {pct >= 0 ? "+" : ""}{pct.toFixed(2)}%
-                </p>
-                <p className="text-[10px] text-on-surface-variant">${s.current_price.toFixed(2)}</p>
-              </button>
-
-              {/* 종목 펼치기 */}
-              {isExpanded && stockList.length > 0 && (
-                <div className={`mt-1 rounded-xl border ${heatBg(pct)} p-2 flex flex-col gap-1`}>
-                  {[...stockList]
-                    .sort((a, b) => b.change_pct - a.change_pct)
-                    .map((stock) => (
-                      <div
-                        key={stock.ticker}
-                        className="flex items-center justify-between px-1 py-0.5"
-                      >
-                        <span className="text-[10px] font-bold text-on-surface">{stock.ticker}</span>
-                        <span className={`text-[10px] font-bold ${heatText(stock.change_pct)}`}>
-                          {stock.change_pct >= 0 ? "+" : ""}{stock.change_pct.toFixed(2)}%
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
+            <button
+              key={s.ticker}
+              onClick={() => setExpandedSector(isExpanded ? null : s.name)}
+              className={`col-span-1 text-left rounded-xl p-4 border ${heatBg(pct)} flex flex-col gap-1 transition-all hover:opacity-90 ${isExpanded ? "ring-2 ring-primary/50" : ""}`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-on-surface-variant">{s.ticker}</span>
+                <span className="material-symbols-outlined text-[14px] text-on-surface-variant">
+                  {isExpanded ? "expand_less" : "expand_more"}
+                </span>
+              </div>
+              <p className="text-[10px] text-on-surface-variant truncate">{s.name}</p>
+              <p className={`text-xl font-black ${heatText(pct)} leading-none`}>
+                {pct >= 0 ? "+" : ""}{pct.toFixed(2)}%
+              </p>
+              <p className="text-[10px] text-on-surface-variant">${s.current_price.toFixed(2)}</p>
+            </button>
           );
         })}
       </div>
+
+      {/* 종목 펼치기 — 전체 너비 */}
+      {expandedSector && (() => {
+        const expandedItem = sorted.find((s) => s.name === expandedSector);
+        const stockList = sectorStocks[expandedSector] ?? [];
+        if (!expandedItem || stockList.length === 0) return null;
+        const pct = getChangePct(expandedItem);
+        return (
+          <div className={`mt-3 rounded-xl border ${heatBg(pct)} p-4`}>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                {expandedItem.ticker} · {expandedSector} ({stockList.length}종목)
+              </p>
+              <button
+                onClick={() => setExpandedSector(null)}
+                className="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-primary"
+              >
+                close
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+              {[...stockList]
+                .sort((a, b) => b.change_pct - a.change_pct)
+                .map((stock) => (
+                  <div
+                    key={stock.ticker}
+                    className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-surface-container-lowest/40"
+                  >
+                    <span className="text-[10px] font-bold text-on-surface">{stock.ticker}</span>
+                    <span className={`text-[10px] font-bold ${heatText(stock.change_pct)}`}>
+                      {stock.change_pct >= 0 ? "+" : ""}{stock.change_pct.toFixed(2)}%
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
