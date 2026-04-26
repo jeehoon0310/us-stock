@@ -886,6 +886,73 @@ const HELP_DATA: Record<string, { title: string; body: React.ReactNode }> = {
     ),
   },
 
+  cycle_phase: {
+    title: "현재 경기 국면 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🔄 지금 경기가 어느 단계인지 알려줘요!</Sec>
+        <p>11개 SPDR ETF의 1주·1개월·3개월 수익률을 가중 평균해서, 4단계 중 가장 점수가 높은 국면을 선택해요.</p>
+        <Box>
+          <p><span className={H.green}>Early Cycle</span> = 경기 회복 초기. 금융·소비재·산업재가 먼저 올라요 🌱</p>
+          <p><span className={H.blue}>Mid Cycle</span> = 본격 성장. 기술·통신·소재가 주도해요 📈</p>
+          <p><span className={H.yellow}>Late Cycle</span> = 성장 둔화. 에너지·리츠·원자재가 방어적으로 강해요 🌅</p>
+          <p><span className={H.red}>Recession</span> = 경기 후퇴. 유틸·필수소비재·헬스케어로 자금이 피신해요 🛡️</p>
+        </Box>
+        <Sec>각도(°)는 뭐예요?</Sec>
+        <Box>
+          <p>경기 사이클을 360° 시계로 표현해요</p>
+          <p>0° = Early Cycle 시작점 → 90° = Mid → 180° = Late → 270° = Recession</p>
+          <p>225° = Late Cycle 중반부예요</p>
+        </Box>
+        <Sec>옆의 +/- 숫자는요?</Sec>
+        <p>각 국면에 속하는 ETF들의 가중 수익률 점수예요.<br />
+        숫자가 <span className={H.green}>크면 클수록</span> 그 국면 ETF들이 최근 강하게 올랐다는 뜻이에요.</p>
+      </>
+    ),
+  },
+
+  phase_scores: {
+    title: "국면 점수(Phase Score) 이게 뭐야?",
+    body: (
+      <>
+        <Sec>📊 4개 국면 중 지금 어디가 가장 강한지 점수로 비교해요!</Sec>
+        <p>각 국면에 해당하는 ETF들의 <span className={H.bold}>1주/1개월/3개월 수익률</span>을 가중 평균한 점수예요.</p>
+        <Box>
+          <p><span className={H.bold}>가중치:</span> 1주 50% + 1개월 30% + 3개월 20%</p>
+          <p>최근 움직임에 더 많은 비중을 둬요</p>
+        </Box>
+        <Box>
+          <p><span className={H.green}>점수 높음 (+1 이상)</span> = 이 국면 ETF들이 최근 강해요 → 현재 국면일 가능성 높음</p>
+          <p><span className={H.yellow}>점수 0 근처</span> = 보합</p>
+          <p><span className={H.red}>점수 낮음 (-1 이하)</span> = 이 국면 ETF들이 최근 약해요</p>
+        </Box>
+        <p className="text-[11px]">4개 중 가장 높은 점수의 국면이 현재 경기 국면으로 선택돼요!</p>
+      </>
+    ),
+  },
+
+  leading_lagging: {
+    title: "주도/열위 섹터 이게 뭐야?",
+    body: (
+      <>
+        <Sec>🏆 지금 잘 나가는 업종 vs 뒤처지는 업종이에요!</Sec>
+        <p>현재 국면에서 각 ETF의 상대 수익률을 비교해서 상위·하위를 나눠요.</p>
+        <Box>
+          <p><span className={H.green}>↑ 주도(Leading)</span> = 최근 가장 강하게 오른 섹터</p>
+          <p>→ 현재 국면에서 자금이 몰리는 업종이에요</p>
+          <p><span className={H.red}>↓ 열위(Lagging)</span> = 최근 가장 약한 섹터</p>
+          <p>→ 자금이 빠져나가는 업종이에요</p>
+        </Box>
+        <Sec>어떻게 활용해요?</Sec>
+        <Box>
+          <p><span className={H.green}>주도 섹터</span> 종목 → 비중 늘리거나 새로 진입 고려</p>
+          <p><span className={H.red}>열위 섹터</span> 종목 → 비중 줄이거나 진입 자제</p>
+        </Box>
+        <p className="text-[11px]">Top Picks 페이지의 종목들이 주도 섹터에 속하면 더 좋은 신호예요!</p>
+      </>
+    ),
+  },
+
   sector_rotation: {
     title: "경기 사이클 · Sector Rotation 이게 뭐야?",
     body: (

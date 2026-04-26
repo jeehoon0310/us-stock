@@ -124,9 +124,12 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
         <div className={`md:col-span-5 rounded-xl p-6 border-2 ${style.border} ${style.bg} flex flex-col justify-between`}>
           <span className={`material-symbols-outlined text-4xl ${style.text}`}>{icon}</span>
           <div>
-            <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-              현재 경기 국면
-            </p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                현재 경기 국면
+              </p>
+              <HelpBtn topic="cycle_phase" />
+            </div>
             <p className={`text-3xl font-black ${style.text} leading-none`}>{phase}</p>
             <p className="text-[10px] text-on-surface-variant mt-1">
               각도 {rotation.angle}° · {
@@ -140,7 +143,12 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
         </div>
 
         {/* Phase Score Bars */}
-        <div className="md:col-span-7 grid grid-cols-2 gap-3">
+        <div className="md:col-span-7 flex flex-col gap-3">
+          <div className="flex items-center gap-1">
+            <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">국면별 점수</p>
+            <HelpBtn topic="phase_scores" />
+          </div>
+        <div className="grid grid-cols-2 gap-3">
           {Object.entries(scores).map(([ph, sc]) => {
             const s = PHASE_STYLE[ph] ?? style;
             const isActive = ph === phase;
@@ -166,12 +174,16 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
             );
           })}
         </div>
+        </div>
       </div>
 
       {/* Leading / Lagging */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-surface-container-high/30 rounded-xl p-4">
-          <p className="text-[10px] font-bold text-primary uppercase mb-3">↑ 주도 섹터 (Leading)</p>
+          <div className="flex items-center gap-1 mb-3">
+              <p className="text-[10px] font-bold text-primary uppercase">↑ 주도 섹터 (Leading)</p>
+              <HelpBtn topic="leading_lagging" />
+            </div>
           <div className="flex flex-wrap gap-2">
             {(rotation.leading_sectors ?? []).map((t) => (
               <span key={t} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-primary/15 text-primary">
@@ -181,7 +193,10 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
           </div>
         </div>
         <div className="bg-surface-container-high/30 rounded-xl p-4">
-          <p className="text-[10px] font-bold text-error uppercase mb-3">↓ 열위 섹터 (Lagging)</p>
+          <div className="flex items-center gap-1 mb-3">
+              <p className="text-[10px] font-bold text-error uppercase">↓ 열위 섹터 (Lagging)</p>
+              <HelpBtn topic="leading_lagging" />
+            </div>
           <div className="flex flex-wrap gap-2">
             {(rotation.lagging_sectors ?? []).map((t) => (
               <span key={t} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-error/15 text-error">
