@@ -13,13 +13,15 @@ interface Props {
   sectors: SectorData[];
 }
 
-function getHeatmapColor(pct: number): string {
-  if (pct >= 3) return "bg-green-600 text-white";
-  if (pct >= 1) return "bg-green-400 text-white";
-  if (pct >= 0) return "bg-green-200 text-gray-800";
-  if (pct >= -1) return "bg-red-200 text-gray-800";
-  if (pct >= -3) return "bg-red-400 text-white";
-  return "bg-red-600 text-white";
+function heatBg(pct: number): string {
+  if (pct >= 2)  return "border-primary/70 bg-primary/25";
+  if (pct >= 0)  return "border-primary/30 bg-primary/10";
+  if (pct >= -2) return "border-error/30 bg-error/10";
+  return              "border-error/70 bg-error/25";
+}
+
+function heatText(pct: number): string {
+  return pct >= 0 ? "text-primary" : "text-error";
 }
 
 export default function SectorHeatmap({ sectors }: Props) {
@@ -27,9 +29,9 @@ export default function SectorHeatmap({ sectors }: Props) {
 
   return (
     <div className="w-full">
-      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+      <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">
         섹터 수익률 히트맵
-      </h3>
+      </p>
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
         {sectors.map((s, i) => {
           const pct = s.change_pct ?? s.change_1d ?? s.momentum ?? 0;
@@ -37,10 +39,10 @@ export default function SectorHeatmap({ sectors }: Props) {
           return (
             <div
               key={label}
-              className={`rounded-lg p-3 text-center ${getHeatmapColor(pct)}`}
+              className={`rounded-xl p-3 border text-center ${heatBg(pct)}`}
             >
-              <div className="text-xs font-medium truncate">{label}</div>
-              <div className="text-lg font-bold">
+              <div className="text-[10px] font-medium text-on-surface-variant truncate">{label}</div>
+              <div className={`text-lg font-black ${heatText(pct)}`}>
                 {pct >= 0 ? "+" : ""}{pct.toFixed(1)}%
               </div>
             </div>

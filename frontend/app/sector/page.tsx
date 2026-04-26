@@ -7,12 +7,29 @@ import { HelpBtn } from "@/components/HelpBtn";
 
 type PhaseScores = Record<string, number>;
 
+type RsHistory = {
+  dates: string[];
+  [ticker: string]: string[] | number[];
+};
+
+type PerformanceEntry = {
+  name: string;
+  current_price: number;
+  "1w": number;
+  "1m": number;
+  "3m": number;
+  "6m": number;
+  "12m": number;
+};
+
 type SectorRotation = {
   current_phase: string;
   phase_scores: PhaseScores;
   leading_sectors: string[];
   lagging_sectors: string[];
   angle: number;
+  rs_history?: RsHistory;
+  performance?: Record<string, PerformanceEntry>;
 };
 
 type HeatmapItem = {
@@ -21,6 +38,13 @@ type HeatmapItem = {
   color: string;
   current_price: number;
   change_pct: number;
+};
+
+type StockItem = {
+  ticker: string;
+  name: string;
+  change_pct: number;
+  current_price: number;
 };
 
 type OptionsDetail = {
@@ -46,6 +70,7 @@ type SectorData = {
   generated_at?: string;
   sector_rotation?: SectorRotation;
   sector_heatmap?: HeatmapItem[] | Record<string, never>;
+  sector_stocks?: Record<string, StockItem[]>;
   options_flow?: OptionsFlow | Record<string, never>;
 };
 
@@ -89,6 +114,14 @@ function etfLabel(ticker: string): string {
   return MAP[ticker] ?? ticker;
 }
 
+const PERIOD_TABS = [
+  { key: "1d",  label: "1일" },
+  { key: "1w",  label: "1주" },
+  { key: "1m",  label: "1개월" },
+  { key: "3m",  label: "3개월" },
+] as const;
+type PeriodKey = (typeof PERIOD_TABS)[number]["key"];
+
 // ── 컴포넌트 ────────────────────────────────────────────────────────────────
 
 function SectionHeader({ icon, title, sub, helpTopic }: { icon: string; title: string; sub?: string; helpTopic?: Parameters<typeof HelpBtn>[0]["topic"] }) {
@@ -101,6 +134,70 @@ function SectionHeader({ icon, title, sub, helpTopic }: { icon: string; title: s
           {helpTopic && <HelpBtn topic={helpTopic} />}
         </div>
         {sub && <p className="text-[10px] text-on-surface-variant mt-0.5">{sub}</p>}
+      </div>
+    </div>
+  );
+}
+
+function RsHistoryTable({ rsHistory }: { rsHistory: RsHistory }) {
+  const dates = rsHistory.dates ?? [];
+  if (dates.length < 2) return null;
+
+  // 최근 4주만 표시 (인덱스 역순: 가장 최근이 왼쪽)
+  const recentDates = dates.slice(-4).reverse();
+  const recentIdxs  = recentDates.map((d) => dates.indexOf(d));
+
+  const sectorKeys = Object.keys(rsHistory).filter((k) => k !== "dates");
+
+  // 마지막 주 RS 기준으로 내림차순 정렬
+  const sorted = [...sectorKeys].sort((a, b) => {
+    const aArr = rsHistory[a] as number[];
+    const bArr = rsHistory[b] as number[];
+    const lastIdx = dates.length - 1;
+    return (bArr[lastIdx] ?? 0) - (aArr[lastIdx] ?? 0);
+  });
+
+  return (
+    <div className="mt-6">
+      <div className="flex items-center gap-1 mb-3">
+        <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+          RS History · SPY 대비 주간 상대수익률 (최근 4주)
+        </p>
+        <HelpBtn topic="rs_history" />
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-outline-variant/20">
+              <th className="text-left py-2 px-3 text-[10px] font-bold text-on-surface-variant uppercase">섹터</th>
+              {recentDates.map((d, i) => (
+                <th key={d} className="text-right py-2 px-3 text-[10px] font-bold text-on-surface-variant uppercase">
+                  {i === 0 ? "이번주" : `${i}주전`}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((ticker) => {
+              const arr = rsHistory[ticker] as number[];
+              return (
+                <tr key={ticker} className="border-b border-outline-variant/10 hover:bg-surface-container-high/20">
+                  <td className="py-2 px-3 font-bold text-on-surface">
+                    {ticker} · {etfLabel(ticker)}
+                  </td>
+                  {recentIdxs.map((idx, i) => {
+                    const val = arr[idx] ?? 0;
+                    return (
+                      <td key={i} className={`py-2 px-3 text-right font-bold ${val >= 0 ? "text-primary" : "text-error"}`}>
+                        {val >= 0 ? "+" : ""}{val.toFixed(2)}%
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -206,35 +303,106 @@ function CycleSection({ rotation }: { rotation: SectorRotation }) {
           </div>
         </div>
       </div>
+
+      {/* RS History 테이블 */}
+      {rotation.rs_history && (rotation.rs_history.dates ?? []).length >= 2 && (
+        <RsHistoryTable rsHistory={rotation.rs_history} />
+      )}
     </div>
   );
 }
 
-function HeatmapSection({ items }: { items: HeatmapItem[] }) {
-  const sorted = [...items].sort((a, b) => b.change_pct - a.change_pct);
+function HeatmapSection({
+  items,
+  sectorStocks,
+  rotation,
+}: {
+  items: HeatmapItem[];
+  sectorStocks: Record<string, StockItem[]>;
+  rotation?: SectorRotation;
+}) {
+  const [period, setPeriod] = useState<PeriodKey>("1d");
+  const [expandedSector, setExpandedSector] = useState<string | null>(null);
+
+  // 기간 탭별 데이터 계산
+  // 1d는 sector_heatmap 데이터, 나머지는 sector_rotation.performance에서 가져옴
+  function getChangePct(item: HeatmapItem): number {
+    if (period === "1d") return item.change_pct;
+    const perf = rotation?.performance?.[item.ticker];
+    if (!perf) return 0;
+    const map: Record<string, keyof PerformanceEntry> = { "1w": "1w", "1m": "1m", "3m": "3m" };
+    const key = map[period];
+    return key ? (perf[key] as number) ?? 0 : 0;
+  }
+
+  const sorted = [...items].sort((a, b) => getChangePct(b) - getChangePct(a));
+
   return (
     <div className="bg-surface-container-low rounded-xl p-6 mb-6">
-      <SectionHeader icon="grid_view" title="섹터 히트맵 · 11 SPDR ETFs" sub="당일 등락폭 기준 색상 (≥+2% 진초록 / ≤-2% 진빨강)" helpTopic="sector_heatmap" />
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        {sorted.map((s) => (
-          <div
-            key={s.ticker}
-            className={`rounded-xl p-4 border ${heatBg(s.change_pct)} flex flex-col gap-1`}
+      <SectionHeader icon="grid_view" title="섹터 히트맵 · 11 SPDR ETFs + 110 종목" sub="ETF 카드 클릭 시 해당 섹터 10종목 펼치기" helpTopic="sector_heatmap" />
+
+      {/* 기간 탭 */}
+      <div className="flex gap-2 mb-5">
+        {PERIOD_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setPeriod(tab.key)}
+            className={`text-[10px] font-bold px-3 py-1.5 rounded-lg border transition-colors ${
+              period === tab.key
+                ? "bg-primary/15 border-primary text-primary"
+                : "border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-high/40"
+            }`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-on-surface-variant">{s.ticker}</span>
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ background: s.color }}
-              />
-            </div>
-            <p className="text-[10px] text-on-surface-variant truncate">{s.name}</p>
-            <p className={`text-xl font-black ${heatText(s.change_pct)} leading-none`}>
-              {s.change_pct >= 0 ? "+" : ""}{s.change_pct.toFixed(2)}%
-            </p>
-            <p className="text-[10px] text-on-surface-variant">${s.current_price.toFixed(2)}</p>
-          </div>
+            {tab.label}
+          </button>
         ))}
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {sorted.map((s) => {
+          const pct = getChangePct(s);
+          const isExpanded = expandedSector === s.name;
+          const stockList = sectorStocks[s.name] ?? [];
+          return (
+            <div key={s.ticker} className="col-span-1">
+              <button
+                onClick={() => setExpandedSector(isExpanded ? null : s.name)}
+                className={`w-full text-left rounded-xl p-4 border ${heatBg(pct)} flex flex-col gap-1 transition-all hover:opacity-90`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-on-surface-variant">{s.ticker}</span>
+                  <span className="material-symbols-outlined text-[14px] text-on-surface-variant">
+                    {isExpanded ? "expand_less" : "expand_more"}
+                  </span>
+                </div>
+                <p className="text-[10px] text-on-surface-variant truncate">{s.name}</p>
+                <p className={`text-xl font-black ${heatText(pct)} leading-none`}>
+                  {pct >= 0 ? "+" : ""}{pct.toFixed(2)}%
+                </p>
+                <p className="text-[10px] text-on-surface-variant">${s.current_price.toFixed(2)}</p>
+              </button>
+
+              {/* 종목 펼치기 */}
+              {isExpanded && stockList.length > 0 && (
+                <div className={`mt-1 rounded-xl border ${heatBg(pct)} p-2 flex flex-col gap-1`}>
+                  {[...stockList]
+                    .sort((a, b) => b.change_pct - a.change_pct)
+                    .map((stock) => (
+                      <div
+                        key={stock.ticker}
+                        className="flex items-center justify-between px-1 py-0.5"
+                      >
+                        <span className="text-[10px] font-bold text-on-surface">{stock.ticker}</span>
+                        <span className={`text-[10px] font-bold ${heatText(stock.change_pct)}`}>
+                          {stock.change_pct >= 0 ? "+" : ""}{stock.change_pct.toFixed(2)}%
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -367,6 +535,7 @@ export default function SectorPage() {
   }
 
   const heatmap = Array.isArray(data.sector_heatmap) ? data.sector_heatmap : [];
+  const sectorStocks = data.sector_stocks ?? {};
   const hasFlow  = data.options_flow && "stocks_analyzed" in (data.options_flow as object);
   const generatedAt = data.generated_at
     ? new Date(data.generated_at).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
@@ -398,7 +567,7 @@ export default function SectorPage() {
 
       {/* 2. 섹터 히트맵 */}
       {heatmap.length > 0 ? (
-        <HeatmapSection items={heatmap} />
+        <HeatmapSection items={heatmap} sectorStocks={sectorStocks} rotation={data.sector_rotation} />
       ) : (
         <div className="bg-surface-container-low rounded-xl p-6 mb-6 text-center text-xs text-on-surface-variant">
           섹터 히트맵 데이터 없음

@@ -51,15 +51,28 @@ def generate_sector_report(data_dir: str = '.') -> Dict:
         logger.error("sector_rotation failed: %s", e)
         report['sector_rotation'] = {}
 
-    # 2. 섹터 히트맵
+    # 2. 섹터 히트맵 (ETF + 110종목)
     try:
         collector = SectorHeatmapCollector()
         heatmap: List[Dict] = collector.get_sector_performance('1d')
         report['sector_heatmap'] = heatmap
-        logger.info("sector_heatmap OK — %d sectors", len(heatmap))
+
+        stock_data: Dict[str, List[Dict]] = {}
+        for etf_item in heatmap:
+            sector_name = etf_item['name']
+            try:
+                stocks = collector.get_stock_performance(sector_name, '1d')
+                if stocks:
+                    stock_data[sector_name] = stocks
+            except Exception as stock_err:
+                logger.warning("stock_performance(%s) failed: %s", sector_name, stock_err)
+        report['sector_stocks'] = stock_data
+
+        logger.info("sector_heatmap OK — %d sectors, %d stock groups", len(heatmap), len(stock_data))
     except Exception as e:
         logger.error("sector_heatmap failed: %s", e)
         report['sector_heatmap'] = {}
+        report['sector_stocks'] = {}
 
     # 3. 옵션 플로우
     try:
