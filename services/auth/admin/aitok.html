@@ -105,6 +105,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     <a href="/admin/files" class="nav-item"><span class="icon">📁</span> 파일 관리</a>
     <a href="/admin/notices" class="nav-item"><span class="icon">📢</span> 공지 관리</a>
     <a href="/admin/aitok" class="nav-item active"><span class="icon">🤖</span> AI톡 관리</a>
+    <a href="/admin/profile" class="nav-item"><span class="icon">📈</span> 투자 성향 분석</a>
     <div class="nav-divider"></div>
     <a href="/" class="nav-item"><span class="icon">🔙</span> 사이트로 돌아가기</a>
   </nav>
@@ -168,12 +169,17 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
           <div class="panel-header">
             <div>
               <div class="panel-title">대화 이력</div>
-              <div class="panel-sub" x-text="total.toLocaleString() + '건'"></div>
+              <div class="panel-sub" x-text="(hideProfileLogs ? visibleLogs.length : total).toLocaleString() + '건'"></div>
             </div>
+            <button class="btn-save"
+              :style="hideProfileLogs ? 'background:transparent;border-color:#6366f1;color:#6366f1' : 'background:transparent;border:1px solid #2d2d44;color:#64748b'"
+              @click="hideProfileLogs = !hideProfileLogs"
+              x-text="hideProfileLogs ? '📈 성향 분석 숨김 ON' : '📈 성향 분석 포함'">
+            </button>
           </div>
           <div x-show="logs.length === 0" class="empty">아직 대화 기록이 없습니다.</div>
           <div>
-            <template x-for="(log, i) in logs" :key="log.id">
+            <template x-for="(log, i) in visibleLogs" :key="log.id">
               <div class="log-item" :id="'log-' + log.id">
                 <div class="log-header" @click="toggle(log.id)">
                   <div style="flex:1;min-width:0">
@@ -228,6 +234,13 @@ function aitok() {
     saving: false,
     saved: false,
     expanded: new Set(),
+    hideProfileLogs: false,
+
+    get visibleLogs() {
+      return this.hideProfileLogs
+        ? this.logs.filter(l => !l.question.startsWith('[투자 성향 분석 결과]'))
+        : this.logs;
+    },
 
     async init() {
       try {
