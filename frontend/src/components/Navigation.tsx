@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const NAV = [
   { href: "/board",       icon: "forum",          labelKey: "nav.board",        adminOnly: false },
   { href: "/overview",    icon: "dashboard",       labelKey: "nav.overview",     adminOnly: false },
+  { href: "/profile",     icon: "person_search",   labelKey: "nav.profile",      adminOnly: false },
   { href: "/regime",      icon: "analytics",       labelKey: "nav.regime",       adminOnly: false },
   { href: "/top-picks",   icon: "star",            labelKey: "nav.topPicks",     adminOnly: false },
   { href: "/ai",          icon: "psychology",      labelKey: "nav.ai",           adminOnly: false },
@@ -16,11 +17,10 @@ const NAV = [
   { href: "/ml",          icon: "leaderboard",     labelKey: "nav.ml",           adminOnly: false },
   { href: "/risk",        icon: "security",        labelKey: "nav.risk",         adminOnly: false },
   { href: "/performance", icon: "trending_up",     labelKey: "nav.performance",  adminOnly: false },
-  { href: "/profile",     icon: "person_search",   labelKey: "nav.profile",      adminOnly: false },
+  { href: "/sector",      icon: "pie_chart",       labelKey: "nav.sector",       adminOnly: false },
   { href: "/download",    icon: "download",        labelKey: "nav.download",     adminOnly: false },
   // 관리자 전용 (하단 배치)
   { href: "/costs",       icon: "payments",        labelKey: "nav.costs",        adminOnly: true  },
-  { href: "/sector",      icon: "pie_chart",       labelKey: "nav.sector",       adminOnly: true  },
   { href: "/chat-logs",   icon: "chat",            labelKey: "nav.chatLogs",     adminOnly: true  },
   { href: "/graph",       icon: "hub",             labelKey: "nav.graph",        adminOnly: true  },
   { href: "/ai-builder",  icon: "smart_toy",       labelKey: "nav.aiBuilder",    adminOnly: true  },
@@ -29,6 +29,7 @@ const NAV = [
 const MOBILE_NAV = [
   { href: "/board",       icon: "forum",        labelKey: "nav.mobile.board"       },
   { href: "/overview",    icon: "dashboard",    labelKey: "nav.mobile.overview"    },
+  { href: "/profile",     icon: "person_search",labelKey: "nav.mobile.profile"     },
   { href: "/regime",      icon: "analytics",    labelKey: "nav.mobile.regime"      },
   { href: "/top-picks",   icon: "star",         labelKey: "nav.mobile.topPicks"    },
   { href: "/ai",          icon: "psychology",   labelKey: "nav.mobile.ai"          },
@@ -36,10 +37,9 @@ const MOBILE_NAV = [
   { href: "/ml",          icon: "leaderboard",  labelKey: "nav.mobile.ml"          },
   { href: "/risk",        icon: "security",     labelKey: "nav.mobile.risk"        },
   { href: "/performance", icon: "trending_up",  labelKey: "nav.mobile.performance" },
-  { href: "/profile",     icon: "person_search",labelKey: "nav.mobile.profile"     },
+  { href: "/sector",      icon: "pie_chart",    labelKey: "nav.mobile.sector"      },
   { href: "/download",    icon: "download",     labelKey: "nav.mobile.download"    },
   { href: "/costs",       icon: "payments",     labelKey: "nav.mobile.costs",       adminOnly: true },
-  { href: "/sector",      icon: "pie_chart",    labelKey: "nav.mobile.sector",      adminOnly: true },
   { href: "/graph",       icon: "hub",          labelKey: "nav.mobile.graph",       adminOnly: true },
   { href: "/ai-builder",  icon: "smart_toy",    labelKey: "nav.mobile.aiBuilder",   adminOnly: true },
 ];
