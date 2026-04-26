@@ -9,7 +9,25 @@ interface CalendarPickerProps {
   status?: string;
 }
 
-const DAYS_KO = ["일", "월", "화", "수", "목", "금", "토"];
+// 월요일 시작
+const DAYS_KO = ["월", "화", "수", "목", "금", "토", "일"];
+
+// NYSE 휴장일
+const US_MARKET_HOLIDAYS = new Set([
+  "2025-01-01","2025-01-20","2025-02-17","2025-04-18",
+  "2025-05-26","2025-07-04","2025-09-01","2025-11-27","2025-12-25",
+  "2026-01-01","2026-01-19","2026-02-16","2026-04-03",
+  "2026-05-25","2026-07-03","2026-09-07","2026-11-26","2026-12-25",
+  "2027-01-01","2027-01-18","2027-02-15","2027-03-26",
+  "2027-05-31","2027-07-05","2027-09-06","2027-11-25","2027-12-24",
+]);
+
+function isRedDay(dateStr: string): boolean {
+  if (!dateStr) return false;
+  const d = new Date(dateStr + "T12:00:00");
+  const day = d.getDay(); // 0=일, 6=토
+  return day === 0 || day === 6 || US_MARKET_HOLIDAYS.has(dateStr);
+}
 
 function formatDisplay(dateStr: string): string {
   if (!dateStr) return "";
@@ -83,20 +101,19 @@ export function CalendarPicker({
     setOpen(false);
   }
 
-  // 달력 날짜 배열 생성
+  // 달력 날짜 배열 생성 (월요일 시작)
   function buildCalendar() {
     const [y, m] = viewMonth.split("-").map(Number);
-    const firstDay = new Date(y, m - 1, 1).getDay(); // 0=일
+    const rawFirstDay = new Date(y, m - 1, 1).getDay(); // 0=일
+    // 월요일=0, 화요일=1, ..., 토요일=5, 일요일=6
+    const firstDayMon = rawFirstDay === 0 ? 6 : rawFirstDay - 1;
     const total = daysInMonth(y, m - 1);
     const cells: Array<{ day: number | null; dateStr: string | null }> = [];
 
     // 이전 달 빈칸
-    for (let i = 0; i < firstDay; i++) {
-      const prevDate = new Date(y, m - 1, -firstDay + i + 1);
-      cells.push({
-        day: prevDate.getDate(),
-        dateStr: null, // 이전 달 → 선택 불가
-      });
+    for (let i = 0; i < firstDayMon; i++) {
+      const prevDate = new Date(y, m - 1, -firstDayMon + i + 1);
+      cells.push({ day: prevDate.getDate(), dateStr: null });
     }
     // 이번 달
     for (let d = 1; d <= total; d++) {
@@ -173,12 +190,12 @@ export function CalendarPicker({
             </button>
           </div>
 
-          {/* 요일 헤더 */}
+          {/* 요일 헤더 (월요일 시작, 토/일 빨간색) */}
           <div className="grid grid-cols-7 px-2 pt-2">
             {DAYS_KO.map((d, i) => (
               <div
                 key={d}
-                className={`text-center text-[10px] font-bold pb-1 ${i === 0 ? "text-error/70" : i === 6 ? "text-primary/70" : "text-on-surface-variant"}`}
+                className={`text-center text-[10px] font-bold pb-1 ${i >= 5 ? "text-error/70" : "text-on-surface-variant"}`}
               >
                 {d}
               </div>
@@ -192,28 +209,26 @@ export function CalendarPicker({
               const hasData = cell.dateStr ? availableDates.has(cell.dateStr) : false;
               const isSelected = cell.dateStr === value;
               const isToday = cell.dateStr === today;
-              const isSun = idx % 7 === 0;
-              const isSat = idx % 7 === 6;
+              // 실제 날짜 기반 빨간날(토/일/공휴일), 이전·다음 달은 위치 기반
+              const isRed = cell.dateStr ? isRedDay(cell.dateStr) : idx % 7 >= 5;
 
               let cellCls =
                 "w-full aspect-square flex items-center justify-center text-xs rounded-full transition-colors ";
 
               if (!isCurrentMonth) {
-                cellCls += "text-on-surface-variant/20 cursor-default";
+                cellCls += isRed
+                  ? "text-error/15 cursor-default"
+                  : "text-on-surface-variant/20 cursor-default";
               } else if (isSelected) {
                 cellCls += "bg-primary text-on-primary font-bold cursor-pointer";
               } else if (hasData) {
-                cellCls += `cursor-pointer hover:bg-primary/20 font-medium `;
+                cellCls += "cursor-pointer hover:bg-primary/20 font-medium ";
                 if (isToday) cellCls += "ring-1 ring-primary ";
-                cellCls += isSun
-                  ? "text-error"
-                  : isSat
-                    ? "text-primary"
-                    : "text-on-surface";
+                cellCls += isRed ? "text-error" : "text-on-surface";
               } else {
                 // 이번 달이지만 데이터 없음 (주말/공휴일)
-                cellCls += `cursor-not-allowed opacity-25 `;
-                cellCls += isSun ? "text-error" : isSat ? "text-primary" : "text-on-surface-variant";
+                cellCls += "cursor-not-allowed opacity-30 ";
+                cellCls += isRed ? "text-error" : "text-on-surface-variant";
               }
 
               return (
