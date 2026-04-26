@@ -28,6 +28,7 @@ export default function ChatLogsPage() {
   const [stats, setStats] = useState<ChatStats | null>(null);
   const [expanded, setExpanded] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hideProfile, setHideProfile] = useState(true);
 
   const [knowledgeContent, setKnowledgeContent] = useState("");
   const [knowledgeTokens, setKnowledgeTokens] = useState(0);
@@ -67,6 +68,22 @@ export default function ChatLogsPage() {
       setKnowledgeSaving(false);
     }
   }
+
+  async function deleteLog(id: number) {
+    if (!confirm("이 대화 기록을 삭제하시겠습니까?")) return;
+    try {
+      const r = await fetch(`/api/admin/chat-logs?id=${id}`, { method: "DELETE" });
+      if (!r.ok) throw new Error();
+      setLogs((prev) => prev.filter((l) => l.id !== id));
+      setTotal((prev) => Math.max(0, prev - 1));
+    } catch {
+      alert("삭제에 실패했습니다.");
+    }
+  }
+
+  const visibleLogs = hideProfile
+    ? logs.filter((l) => !l.question?.startsWith("[투자 성향 분석 결과]"))
+    : logs;
 
   if (loading) {
     return (
@@ -147,33 +164,45 @@ export default function ChatLogsPage() {
 
       {/* 로그 목록 */}
       <div>
-        <div className="flex items-center gap-2 mb-3">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">
-            대화 이력
-          </h2>
-          {total > 0 && (
-            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold">
-              {total}건
-            </span>
-          )}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+              대화 이력
+            </h2>
+            {total > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold">
+                {visibleLogs.length}건
+              </span>
+            )}
+          </div>
+          <button
+            onClick={() => setHideProfile((p) => !p)}
+            className={`px-3 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
+              hideProfile
+                ? "border-primary/40 text-primary bg-primary/10"
+                : "border-outline-variant/30 text-on-surface-variant/50"
+            }`}
+          >
+            📈 성향 분석 {hideProfile ? "숨김 ON" : "포함"}
+          </button>
         </div>
 
-        {logs.length === 0 ? (
+        {visibleLogs.length === 0 ? (
           <div className="bg-surface-container-low rounded-xl p-10 text-center text-sm text-on-surface-variant/50 border border-outline-variant/10">
             아직 대화 기록이 없습니다.
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            {logs.map((log) => (
+            {visibleLogs.map((log) => (
               <div
                 key={log.id}
                 className="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/10"
               >
-                <button
-                  className="w-full text-left px-5 py-3.5 flex items-start gap-3 hover:bg-surface-container-high/30 transition-colors"
-                  onClick={() => setExpanded(expanded === log.id ? null : log.id)}
-                >
-                  <div className="flex-1 min-w-0">
+                <div className="w-full px-5 py-3.5 flex items-start gap-3 hover:bg-surface-container-high/30 transition-colors">
+                  <button
+                    className="flex-1 min-w-0 text-left"
+                    onClick={() => setExpanded(expanded === log.id ? null : log.id)}
+                  >
                     <div className="text-sm font-medium text-on-surface truncate">{log.question}</div>
                     <div className="flex items-center gap-2 mt-0.5 text-[11px] text-on-surface-variant/50 flex-wrap">
                       {log.username && <span className="font-medium text-on-surface-variant">{log.username}</span>}
@@ -187,11 +216,25 @@ export default function ChatLogsPage() {
                         <><span>·</span><span className="text-tertiary">${log.cost_usd.toFixed(5)}</span></>
                       )}
                     </div>
+                  </button>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => deleteLog(log.id)}
+                      className="p-1 rounded text-on-surface-variant/30 hover:text-error hover:bg-error/10 transition-colors"
+                      title="삭제"
+                    >
+                      <span className="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                    <button
+                      onClick={() => setExpanded(expanded === log.id ? null : log.id)}
+                      className="p-1 rounded text-on-surface-variant/30 hover:text-on-surface-variant transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        {expanded === log.id ? "expand_less" : "expand_more"}
+                      </span>
+                    </button>
                   </div>
-                  <span className="material-symbols-outlined text-sm text-on-surface-variant/30 shrink-0 mt-0.5">
-                    {expanded === log.id ? "expand_less" : "expand_more"}
-                  </span>
-                </button>
+                </div>
 
                 {expanded === log.id && (
                   <div className="border-t border-outline-variant/10 px-5 py-4 flex flex-col gap-4">
