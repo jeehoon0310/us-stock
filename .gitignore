@@ -54,3 +54,4 @@ docs/prompts/prompt_v1.md
 # SQLite board DB (dev local file)
 board.db
 frontend/board.db*
+downloads/us-stock.zip
