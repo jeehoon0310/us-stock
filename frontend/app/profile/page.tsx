@@ -313,9 +313,12 @@ export default function ProfilePage() {
       .catch(() => {})
       .finally(() => setLoadingPicks(false));
     fetch("/auth/me", { credentials: "include" })
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => {
+        if (!r.ok) { window.location.href = "/login"; return null; }
+        return r.json();
+      })
       .then((d) => { if (d) { setUserName(d.name ?? ""); setUserEmail(d.email ?? ""); } })
-      .catch(() => {});
+      .catch(() => { window.location.href = "/login"; });
   }, []);
 
   // 스크롤 자동 이동

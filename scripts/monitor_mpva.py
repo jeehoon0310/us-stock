@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 국가보훈부 생업지원 게시판 모니터링
 URL: https://www.mpva.go.kr/mpva/selectBbsNttList.do?bbsNo=32&key=145

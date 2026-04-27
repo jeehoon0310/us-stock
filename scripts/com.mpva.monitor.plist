@@ -10,7 +10,7 @@
         <string>/usr/bin/caffeinate</string>
         <string>-i</string>
         <string>/Users/frindle/workspace/synology/us-stock/.venv/bin/python3</string>
-        <string>/Users/frindle/workspace/synology/us-stock/scripts/monitor_mpva.py</string>
+        <string>/Users/frindle/workspace/synology/us-stock/docs/_ideas/vending-machine/monitor.py</string>
     </array>
 
     <!-- 3시간마다 실행: 0, 3, 6, 9, 12, 15, 18, 21시 (주말 포함) -->
@@ -40,6 +40,10 @@
         <string>/Users/frindle</string>
         <key>PATH</key>
         <string>/usr/local/bin:/usr/bin:/bin</string>
+        <key>TELEGRAM_BOT_TOKEN</key>
+        <string>8710179946:AAGiYmKYINInCk8bQJ1xYBaFlmPI73KqycQ</string>
+        <key>TELEGRAM_CHAT_ID</key>
+        <string>183678616</string>
     </dict>
 </dict>
 </plist>
