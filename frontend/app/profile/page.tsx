@@ -298,6 +298,7 @@ export default function ProfilePage() {
   // 사용자 정보
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userLoading, setUserLoading] = useState(true);
 
   // 채팅 상태
   const [chatMsgs, setChatMsgs] = useState<ChatMsg[]>([]);
@@ -318,7 +319,8 @@ export default function ProfilePage() {
         return r.json();
       })
       .then((d) => { if (d) { setUserName(d.name ?? ""); setUserEmail(d.email ?? ""); } })
-      .catch(() => { window.location.href = "/login"; });
+      .catch(() => { window.location.href = "/login"; })
+      .finally(() => setUserLoading(false));
   }, []);
 
   // 스크롤 자동 이동
@@ -375,7 +377,7 @@ export default function ProfilePage() {
       ? calcRequiredReturn(Number(investable), Number(target), duration)
       : null;
 
-  const analyze = () => {
+  const analyze = async () => {
     const inv = Number(investable) || 0;
     const tgt = Number(target) || 0;
     const requiredReturn = calcRequiredReturn(inv, tgt, duration);
@@ -383,13 +385,31 @@ export default function ProfilePage() {
     const profile = scoreToProfile(score);
     setResult({ profile, score, requiredReturn, age, experience, purpose, sectors });
 
+    // 저장 시점에 userName이 없으면 /auth/me 재확인
+    let saveName = userName;
+    let saveEmail = userEmail;
+    if (!saveName) {
+      try {
+        const r = await fetch("/auth/me", { credentials: "include" });
+        if (!r.ok) { window.location.href = "/login"; return; }
+        const d = await r.json();
+        saveName = d.name ?? "";
+        saveEmail = d.email ?? "";
+        setUserName(saveName);
+        setUserEmail(saveEmail);
+      } catch {
+        window.location.href = "/login";
+        return;
+      }
+    }
+
     // 결과 저장 (fire-and-forget)
     fetch("/api/admin/profile-results", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: userName || "익명",
-        user_email: userEmail || undefined,
+        user_name: saveName || "익명",
+        user_email: saveEmail || undefined,
         profile,
         score,
         age,
@@ -560,10 +580,10 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <button onClick={analyze}
-            className="w-full py-4 rounded-xl text-base font-black bg-primary text-on-primary hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <button onClick={analyze} disabled={userLoading}
+            className="w-full py-4 rounded-xl text-base font-black bg-primary text-on-primary hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <span className="material-symbols-outlined">analytics</span>
-            투자 성향 분석하기
+            {userLoading ? "사용자 확인 중..." : "투자 성향 분석하기"}
           </button>
         </div>
 
